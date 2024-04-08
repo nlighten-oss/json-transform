@@ -1,0 +1,98 @@
+import com.vanniktech.maven.publish.JavaLibrary
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.SonatypeHost
+
+plugins {
+    id 'java-library'
+    id "com.vanniktech.maven.publish" version "0.28.0"
+}
+
+group 'co.nlighten'
+version = '0.1.1'
+
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+jar { archiveClassifier = '' }
+
+ext.genOutputDir = file("$buildDir/generated-resources")
+
+task generateVersionTxt()  {
+    ext.outputFile = file("$genOutputDir/version.txt")
+    outputs.file(outputFile)
+    doLast {
+        outputFile.text = """GroupId: ${project.group}
+Name: ${project.name}
+Version: $version
+Build-time: ${java.time.LocalDateTime.now()}
+"""
+    }
+}
+
+sourceSets.main.output.dir genOutputDir, builtBy: generateVersionTxt
+
+test {
+    useJUnitPlatform()
+}
+
+// NOTE: this is done automatically by mavenPublishing.configure
+//java {
+//    withJavadocJar()
+//    withSourcesJar()
+//}
+
+javadoc {
+    options.showAll()
+    options.encoding('UTF-8')
+    options.addStringOption('Xdoclint:none', '-quiet')
+    (options as StandardJavadocDocletOptions).tags("apiNote:a:API Note:")
+}
+
+mavenPublishing {
+    configure(new JavaLibrary(new JavadocJar.Javadoc(), true))
+    //publishToMavenCentral(SonatypeHost.DEFAULT, true)
+    // or when publishing to https://s01.oss.sonatype.org
+    // publishToMavenCentral(SonatypeHost.S01)
+    // or when publishing to https://central.sonatype.com/
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+
+    signAllPublications()
+
+    coordinates("${project.group}", 'json-transform-core', "${version}")
+
+    pom {
+        name = 'json-transform-core'
+        description = 'Core library for JSON transformation'
+        inceptionYear = "2024"
+        url = 'https://github.com/nlighten-oss/json-transform-core'
+        licenses {
+            license {
+                name = "The Apache License, Version 2.0"
+                url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                distribution = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        }
+        developers {
+            developer {
+                id = "elisherer"
+                name = "Eli Sherer"
+                url = "https://github.com/elisherer/"
+            }
+        }
+        scm {
+            url = 'https://github.com/nlighten-oss/json-transform-core'
+            connection = 'scm:git://github.com/nlighten-oss/json-transform-core.git'
+            developerConnection = 'scm:git://github.com/nlighten-oss/json-transform-core.git'
+        }
+    }
+}
