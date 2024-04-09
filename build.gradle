@@ -5,10 +5,21 @@ import com.vanniktech.maven.publish.SonatypeHost
 plugins {
     id 'java-library'
     id "com.vanniktech.maven.publish" version "0.28.0"
+    id 'me.champeau.jmh' version '0.7.1'
 }
 
 group 'co.nlighten'
 version = '0.1.1'
+
+ext {
+    gsonVersion = "2.10.1"
+    jsonVersion = '20240303'
+    jsonPathVersion = "2.9.0"
+    jmhVersion = "1.36"
+    snakeYamlVersion = "2.7"
+    coNlightenShortUuidVersion = "0.1.1"
+    slf4jVersion = "2.0.11"
+}
 
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
@@ -19,6 +30,22 @@ repositories {
 }
 
 dependencies {
+    implementation "co.nlighten:short-uuid:${coNlightenShortUuidVersion}"
+
+    /** Logging **/
+    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+
+    /** JSON **/
+    implementation "com.google.code.gson:gson:${gsonVersion}"
+    implementation "org.json:json:${jsonVersion}" // for XML conversion
+    implementation "com.jayway.jsonpath:json-path:${jsonPathVersion}"
+
+    /* YAML */
+    implementation "org.snakeyaml:snakeyaml-engine:${snakeYamlVersion}"
+
+    /** JMH (Benchmarking)  **/
+    jmhAnnotationProcessor "org.openjdk.jmh:jmh-generator-annprocess:${jmhVersion}"
+
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
@@ -45,6 +72,11 @@ test {
     useJUnitPlatform()
 }
 
+jmh {
+    includeTests = true // include 'test' module as dependency
+    duplicateClassesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 // NOTE: this is done automatically by mavenPublishing.configure
 //java {
 //    withJavadocJar()
@@ -68,13 +100,13 @@ mavenPublishing {
 
     signAllPublications()
 
-    coordinates("${project.group}", 'json-transform-core', "${version}")
+    coordinates("${project.group}", 'json-transform', "${version}")
 
     pom {
-        name = 'json-transform-core'
-        description = 'Core library for JSON transformation'
+        name = 'json-transform'
+        description = 'Library for JSON transformation'
         inceptionYear = "2024"
-        url = 'https://github.com/nlighten-oss/json-transform-core'
+        url = 'https://github.com/nlighten-oss/json-transform'
         licenses {
             license {
                 name = "The Apache License, Version 2.0"
@@ -90,9 +122,9 @@ mavenPublishing {
             }
         }
         scm {
-            url = 'https://github.com/nlighten-oss/json-transform-core'
-            connection = 'scm:git://github.com/nlighten-oss/json-transform-core.git'
-            developerConnection = 'scm:git://github.com/nlighten-oss/json-transform-core.git'
+            url = 'https://github.com/nlighten-oss/json-transform'
+            connection = 'scm:git://github.com/nlighten-oss/json-transform.git'
+            developerConnection = 'scm:git://github.com/nlighten-oss/json-transform.git'
         }
     }
 }

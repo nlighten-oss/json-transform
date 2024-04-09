@@ -1,6 +1,6 @@
 package co.nlighten.jsontransform.functions.annotations;
 
-import co.nlighten.jsontransform.functions.ArgType;
+import co.nlighten.jsontransform.functions.common.ArgType;
 
 import java.lang.annotation.*;
 
