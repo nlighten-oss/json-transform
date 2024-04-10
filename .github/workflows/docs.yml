@@ -15,10 +15,6 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
-defaults:
-  run:
-    working-directory: ./packages/docs
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,15 +31,17 @@ jobs:
           cache: npm
 
       - name: Install Dependencies
+        working-directory: './packages/docs'
         run: npm ci
 
       - name: Build
+        working-directory: './packages/docs'
         run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './build'
+          path: './packages/docs/build'
   deploy:
     name: Deploy to GitHub Pages
     needs: build
