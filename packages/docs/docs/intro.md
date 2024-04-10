@@ -1,0 +1,191 @@
+---
+# displayed_sidebar: referenceSidebar
+sidebar_position: 1
+slug: /
+---
+
+# Introduction
+
+Transformers are JSON value spec templates.
+
+It is used to transform multiple inputs (by spec) to a result object.
+
+The most basic input to a transformer is `$`. All references to it can use **JsonPath** syntax.
+
+## Input options
+
+Inputs available inside workflow transformers are:
+- `$._init` - The flow's input
+- `$._call` - The context of the call
+- `$.__id` - (In task related transformers) the task instance id (set by the flow manager at runtime).
+- `$.{task_id}` - Refers to a previously executed task's output in the same scope.
+
+In transport (that has a security profile defined), the output will be:
+- `$secure` - In request pipeline. The secure value (has predefined fields).
+- `$unsecure` - In response pipeline. The unsecure value.
+
+In harness `$` usually refers to the incoming message from the transport (http request, kafka message, ...)
+
+## Macros
+Starts with `#`, inside workflow transformers:
+
+- `#call_id` / `#caller_id` - The call and callers' id to this flow
+- `#current` - Under MAP task (current iteration object)
+- `#index` - Under MAP task (current iteration index)
+- `#exception` - Under a catch clause of TRY CATCH task
+- `#now` - ISO 8601 Timestamp as string
+- `#uuid` - Random UUID as string (with hyphens)
+- `#null` - Has the value `null` useful when used together with [spread](./spread.md#remove-keys) to remove a value
+- `#env` - Environment configuration variables (`Map<String, String>`)
+
+
+## JsonPath functions
+
+**JsonPath** functions are available for use (as defined in [json-path/JsonPath](https://github.com/json-path/JsonPath#functions))
+
+Some examples (from manual):
+
+| Function  | Description                                                        | Output type          |
+|:----------|:-------------------------------------------------------------------|:---------------------|
+| min()     | Provides the min value of an array of numbers                      | Double               |
+| max()     | Provides the max value of an array of numbers                      | Double               |
+| avg()     | Provides the average value of an array of numbers                  | Double               |
+| stddev()  | Provides the standard deviation value of an array of numbers       | Double               |
+| length()  | Provides the length of an array                                    | Integer              |
+| sum()     | Provides the sum value of an array of numbers                      | Double               |
+| keys()    | Provides the property keys (An alternative for terminal tilde `~`) | `Set<E>`             |
+| concat(X) | Provides a concatenated version of the path output with a new item | like input           |
+| append(X) | add an item to the json path output array                          | like input           |
+
+## Inline Functions
+
+Inline functions can be used as prefix to values (referenced by strings):
+- Functions are prefixes for a path or a value in the format `$$func:{value}`
+    - ending with just `:` will result with empty string as input `""` (omitting `:` will result in `null`)
+    - Functions can be piped to other functions as values
+- Functions may have arguments
+    - Specified after the function name between parenthesis (i.e. `$$func(arg1,arg2):{value}`)
+    - Arguments can be optional/required (parenthesis can be omitted if no arguments at all)
+    - All arguments can be quoted with (`'`) single quote, escape it by writing it twice `''` (e.g. `$$wrap('don''t '):{value}`)
+    - All arguments can be paths to other variables (e.g. `$$func($.somepath,#current):$.somevalue`)
+    - `Enum` argument values are case-insensitive
+    - Specifying `Path`/`String`/`Enum` arguments can be done without quotes
+        - `Enum` type values are detected even with spaces around them (trimmed)
+        - However, `String` & `Path` type values will not be trimmed (e.g. arg2 of `$$func(1, hi):{value}` will be processed as `" hi"`). To allow spaces between this kind of arguments, the values needs to be quoted (e.g. `$$func(1, 'hi'):{value}`)
+
+
+## Object functions
+
+There are special functions that support more complex arguments.
+- These functions are defined by putting an `Object` value with a "function key" (starts with `"$$"`).
+- The **primary** argument is the value of the function key. The rest of the arguments may be supplied as other keys in the same object.
+
+### Context
+
+Object functions also support nested [function context](./function-context.md)
+
+## Examples
+
+```mdx-code-block
+<div className="examples_grid">
+```
+
+**Input**
+
+**Definition**
+
+**Output**
+
+
+```json
+{ "hello": "world" }
+```
+```transformers
+"$.hello"
+```
+```json
+"world"
+```
+
+
+```json
+{ "hello": "world" }
+```
+```transformers
+{ "x": "$.hello" }
+```
+```json
+{ "x": "world"}
+```
+
+
+```json
+{ "d": 13.333 }
+```
+```transformers
+"$$long:$.d"
+```
+```json
+13
+```
+
+
+```json
+[1, 2, 3, 4]
+```
+```transformers
+"$.length()"
+```
+```json
+4
+```
+
+
+```json
+{ "a": [ "b", { "c": "d" } ] }
+```
+```transformers
+"$.a[1].c"
+```
+```json
+"d"
+```
+
+
+```json
+[ {"a": 1}, {"a": 2} ]
+```
+```transformers
+"$.*.a"
+```
+```json
+[1, 2]
+```
+
+
+```json
+"text"
+```
+```transformers
+"$$join(s):$$split(x):$"
+```
+```json
+"test"
+```
+
+
+```json
+{ "x": "text"}
+```
+```transformers
+"$$wrap(>):$$substring(1,3):$.x"
+```
+```json
+">ex"
+```
+
+
+```mdx-code-block
+</div>
+```
+

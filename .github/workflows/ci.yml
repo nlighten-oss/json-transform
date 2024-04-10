@@ -1,10 +1,14 @@
-name: CI
+name: Test Java CI
 
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - '!packages/**'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - '!packages/**'
 
 # cancel previous tests if new commit is pushed to PR branch
 concurrency:
