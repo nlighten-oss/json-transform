@@ -12,32 +12,16 @@ It is used to transform multiple inputs (by spec) to a result object.
 
 The most basic input to a transformer is `$`. All references to it can use **JsonPath** syntax.
 
-## Input options
+## Context
+Starts with `#`, inside transformers:
 
-Inputs available inside workflow transformers are:
-- `$._init` - The flow's input
-- `$._call` - The context of the call
-- `$.__id` - (In task related transformers) the task instance id (set by the flow manager at runtime).
-- `$.{task_id}` - Refers to a previously executed task's output in the same scope.
-
-In transport (that has a security profile defined), the output will be:
-- `$secure` - In request pipeline. The secure value (has predefined fields).
-- `$unsecure` - In response pipeline. The unsecure value.
-
-In harness `$` usually refers to the incoming message from the transport (http request, kafka message, ...)
-
-## Macros
-Starts with `#`, inside workflow transformers:
-
-- `#call_id` / `#caller_id` - The call and callers' id to this flow
-- `#current` - Under MAP task (current iteration object)
-- `#index` - Under MAP task (current iteration index)
-- `#exception` - Under a catch clause of TRY CATCH task
 - `#now` - ISO 8601 Timestamp as string
 - `#uuid` - Random UUID as string (with hyphens)
 - `#null` - Has the value `null` useful when used together with [spread](./spread.md#remove-keys) to remove a value
-- `#env` - Environment configuration variables (`Map<String, String>`)
 
+:::note
+You can add additional context by supplying a `Map<String, Object>` to the transform function.
+:::
 
 ## JsonPath functions
 
