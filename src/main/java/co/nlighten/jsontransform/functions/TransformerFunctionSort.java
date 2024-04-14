@@ -68,18 +68,18 @@ public class TransformerFunctionSort<JE, JA extends Iterable<JE>, JO extends JE>
 
             var thenArr = context.has("then") ? context.getJsonArray("then", false) : null;
             if (thenArr != null) {
-                var size = ARRAY.size(thenArr);
+                var size = jArray.size(thenArr);
                 for (var i = 0; i < size; i++) {
-                    var thenObj = OBJECT.convert(ARRAY.get(thenArr, i));
-                    var thenType = OBJECT.has(thenObj, "type") ? context.getAsString(OBJECT.get(thenObj, "type")).trim() : null;
-                    var thenOrder = OBJECT.get(thenObj,"order");
+                    var thenObj = jObject.convert(jArray.get(thenArr, i));
+                    var thenType = jObject.has(thenObj, "type") ? context.getAsString(jObject.get(thenObj, "type")).trim() : null;
+                    var thenOrder = jObject.get(thenObj,"order");
                     var thenComparator = CompareBy.createByComparator(adapter,i + 1, thenType);
                     var thenDescending = !adapter.isNull(thenOrder) && context.getAsString(thenOrder).equalsIgnoreCase("DESC");
                     if (thenDescending) {
                         thenComparator = thenComparator.reversed();
                     }
                     comparator = comparator.thenComparing(thenComparator);
-                    chain.add(OBJECT.get(thenObj,"by"));
+                    chain.add(jObject.get(thenObj,"by"));
                 }
             }
 

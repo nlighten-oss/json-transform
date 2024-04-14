@@ -236,15 +236,15 @@ public class JsonTransformerTest extends BaseTest {
     @Test
     public void testInputExtractorTransformDefinitionJsonArray() {
         // Given input is an object and InputExtractor definition is an array
-        var definition = adapter.ARRAY.create();;
-        adapter.ARRAY.add(definition, "element1");
-        adapter.ARRAY.add(definition, 1.23);
-        adapter.ARRAY.add(definition, false);
-        adapter.ARRAY.add(definition, 'c');
-        adapter.ARRAY.add(definition, adapter.jsonNull());
-        var nestedJson = adapter.OBJECT.create();
-        adapter.OBJECT.add(nestedJson, "nested", "*");
-        adapter.ARRAY.add(definition, nestedJson);
+        var definition = adapter.jArray.create();;
+        adapter.jArray.add(definition, "element1");
+        adapter.jArray.add(definition, 1.23);
+        adapter.jArray.add(definition, false);
+        adapter.jArray.add(definition, 'c');
+        adapter.jArray.add(definition, adapter.jsonNull());
+        var nestedJson = adapter.jObject.create();
+        adapter.jObject.add(nestedJson, "nested", "*");
+        adapter.jArray.add(definition, nestedJson);
 
         assertTransformation(fromJson("""
 {

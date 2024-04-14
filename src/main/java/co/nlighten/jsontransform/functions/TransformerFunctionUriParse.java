@@ -38,29 +38,29 @@ public class TransformerFunctionUriParse<JE, JA extends Iterable<JE>, JO extends
             return null;
         }
         try {
-            var result = OBJECT.create();
+            var result = jObject.create();
             URI uri = new URI(str);
-            OBJECT.add(result, "scheme", uri.getScheme());
+            jObject.add(result, "scheme", uri.getScheme());
             var userInfo = uri.getUserInfo();
             if (userInfo != null) {
-                OBJECT.add(result, "user_info", userInfo);
+                jObject.add(result, "user_info", userInfo);
             }
-            OBJECT.add(result, "authority", uri.getAuthority());
+            jObject.add(result, "authority", uri.getAuthority());
             var port = uri.getPort();
-            OBJECT.add(result, "host", port > -1 ? uri.getHost() + ":" + port : uri.getHost());
-            OBJECT.add(result, "hostname", uri.getHost());
+            jObject.add(result, "host", port > -1 ? uri.getHost() + ":" + port : uri.getHost());
+            jObject.add(result, "hostname", uri.getHost());
             if (port > -1) {
-                OBJECT.add(result, "port", port);
+                jObject.add(result, "port", port);
             }
-            OBJECT.add(result, "path", uri.getPath());
+            jObject.add(result, "path", uri.getPath());
             var queryString = uri.getQuery();
             if (queryString != null) {
-                OBJECT.add(result, "query", formUrlFormat.deserialize(queryString));
-                OBJECT.add(result, "query_raw", queryString);
+                jObject.add(result, "query", formUrlFormat.deserialize(queryString));
+                jObject.add(result, "query_raw", queryString);
             }
             var fragment = uri.getFragment();
             if (fragment != null) {
-                OBJECT.add(result, "fragment", fragment);
+                jObject.add(result, "fragment", fragment);
             }
             return result;
         } catch (URISyntaxException e) {

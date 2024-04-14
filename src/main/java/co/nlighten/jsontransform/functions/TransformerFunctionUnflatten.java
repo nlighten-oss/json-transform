@@ -29,16 +29,16 @@ public class TransformerFunctionUnflatten<JE, JA extends Iterable<JE>, JO extend
     public Object apply(FunctionContext<JE, JA, JO> context) {
         JO target;
         var targetValue = context.getJsonElement("target");
-        if (OBJECT.is(targetValue)) {
-            target = OBJECT.convert(targetValue);
+        if (jObject.is(targetValue)) {
+            target = jObject.convert(targetValue);
         } else {
-            target = OBJECT.create();
+            target = jObject.create();
         }
 
         var source = context.getJsonElement(null, true);
         var path = context.getString("path", true);
-        if (OBJECT.is(source)) {
-            OBJECT.entrySet(OBJECT.convert(source))
+        if (jObject.is(source)) {
+            jObject.entrySet(jObject.convert(source))
                     .forEach(ke -> adapter.mergeInto(target, ke.getValue(),
                                         (path != null ? path + '.' : "") + ke.getKey()));
         }

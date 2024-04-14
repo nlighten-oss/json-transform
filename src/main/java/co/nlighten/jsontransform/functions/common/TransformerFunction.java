@@ -5,7 +5,6 @@ import co.nlighten.jsontransform.adapters.JsonArrayAdapter;
 import co.nlighten.jsontransform.adapters.JsonObjectAdapter;
 import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 import co.nlighten.jsontransform.functions.annotations.InputType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,13 +22,13 @@ public abstract class TransformerFunction<JE, JA extends Iterable<JE>, JO extend
     protected final Map<String, Object> defaultValues;
     protected final JsonAdapter<JE, JA, JO> adapter;
 
-    protected final JsonArrayAdapter<JE, JA, JO> ARRAY;
-    protected final JsonObjectAdapter<JE, JA, JO> OBJECT;
+    protected final JsonArrayAdapter<JE, JA, JO> jArray;
+    protected final JsonObjectAdapter<JE, JA, JO> jObject;
 
     public TransformerFunction(JsonAdapter<JE, JA, JO> adapter) {
         this.adapter = adapter;
-        this.ARRAY = adapter.ARRAY;
-        this.OBJECT = adapter.OBJECT;
+        this.jArray = adapter.jArray;
+        this.jObject = adapter.jObject;
 
         var annArr = this.getClass().getAnnotationsByType(InputType.class);
         if (annArr.length > 0) {

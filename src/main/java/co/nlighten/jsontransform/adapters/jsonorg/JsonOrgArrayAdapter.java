@@ -80,11 +80,6 @@ class JsonOrgArrayAdapter extends JsonArrayAdapter<Object, JSONArray, JSONObject
     }
 
     @Override
-    public JSONArray cast(Object value) {
-        return (JSONArray) value;
-    }
-
-    @Override
     public Stream<Object> stream(JSONArray array, boolean parallel) {
         return StreamSupport.stream(array.spliterator(), parallel);
     }

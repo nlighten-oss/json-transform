@@ -19,17 +19,17 @@ public class JsonPatch<JE, JA extends Iterable<JE>, JO extends JE> {
     }
 
     public JE patch(JA ops, JE source) {
-        if (!adapter.OBJECT.is(source) && !adapter.ARRAY.is(ops)) {
+        if (!adapter.jObject.is(source) && !adapter.jArray.is(ops)) {
             throw new IllegalArgumentException("Invalid source argument (an object or array is required)");
         }
-        if (ops == null || adapter.ARRAY.size(ops) == 0) {
+        if (ops == null || adapter.jArray.size(ops) == 0) {
             return source;
         }
 
         var result = adapter.clone(source);
 
         for (JE operation : ops) {
-            if (!adapter.OBJECT.is(operation)) {
+            if (!adapter.jObject.is(operation)) {
                 throw new IllegalArgumentException("Invalid operation: " + operation);
             }
             result = perform((JO)operation, result);
@@ -39,14 +39,14 @@ public class JsonPatch<JE, JA extends Iterable<JE>, JO extends JE> {
     }
 
     private JE getRequiredJEArgument(JO operation, String arg, String context) {
-        if (!adapter.OBJECT.has(operation, arg)) {
+        if (!adapter.jObject.has(operation, arg)) {
             throw new IllegalArgumentException(context + " - Missing argument \"" + arg);
         }
-        return adapter.OBJECT.get(operation, arg);
+        return adapter.jObject.get(operation, arg);
     }
 
     private String getRequiredStringArgument(JO operation, String arg, String context) {
-        var el = adapter.OBJECT.get(operation, arg);
+        var el = adapter.jObject.get(operation, arg);
         if (!adapter.isJsonString(el)) {
             throw new IllegalArgumentException(context + " - Invalid argument \"" + arg + "\" = " + (el == null ? "null" : el));
         }

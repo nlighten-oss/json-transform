@@ -30,7 +30,6 @@ public abstract class JsonArrayAdapter<JE, JA extends Iterable<JE>, JO extends J
         return size(array) == 0;
     }
     public abstract boolean is(Object value);
-    public abstract JA cast(Object value);
 
     public abstract Stream<JE> stream(JA array, boolean parallel);
 

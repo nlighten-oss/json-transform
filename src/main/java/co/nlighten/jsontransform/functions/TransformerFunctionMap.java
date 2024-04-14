@@ -43,13 +43,13 @@ public class TransformerFunctionMap<JE, JA extends Iterable<JE>, JO extends JE> 
             var arr = context.getJsonArray(null, false); // we don't transform definitions to prevent premature evaluation
             if (arr == null)
                 return null;
-            var inputEl = context.transform(ARRAY.get(arr, 0));
-            if (!ARRAY.is(inputEl)) {
+            var inputEl = context.transform(jArray.get(arr, 0));
+            if (!jArray.is(inputEl)) {
                 logger.warn("{} was not specified with an array of items", context.getAlias());
                 return null;
             }
-            inputStream = ARRAY.stream((JA)inputEl);
-            to = ARRAY.get(arr, 1);
+            inputStream = jArray.stream((JA)inputEl);
+            to = jArray.get(arr, 1);
         }
         var i = new AtomicInteger(0);
         return JsonElementStreamer.fromTransformedStream(context, inputStream

@@ -109,7 +109,7 @@ public class CsvFormat<JE, JA extends Iterable<JE>, JO extends JE> implements Fo
         Iterable<?> iter = asIterable(value);
         if (iter == null) {
             // this is a normal case of array of objects
-            var jo = adapter.OBJECT.convert(value);
+            var jo = adapter.jObject.convert(value);
             if (jo == null)
                 return;
             var first = true;
@@ -119,7 +119,7 @@ public class CsvFormat<JE, JA extends Iterable<JE>, JO extends JE> implements Fo
                 } else {
                     first = false;
                 }
-                appendEscaped(sb, adapter.OBJECT.get(jo, name));
+                appendEscaped(sb, adapter.jObject.get(jo, name));
             }
         } else {
             var first = true;
@@ -149,9 +149,9 @@ public class CsvFormat<JE, JA extends Iterable<JE>, JO extends JE> implements Fo
             if (headers == null) {
                 var it = iter.iterator();
                 if (it.hasNext()) {
-                    var first = adapter.OBJECT.convert(it.next());
+                    var first = adapter.jObject.convert(it.next());
                     if (first != null) {
-                        headers = adapter.OBJECT.keySet(first);
+                        headers = adapter.jObject.keySet(first);
                         appendHeaders(sb, headers);
                     }
                 }
@@ -162,9 +162,9 @@ public class CsvFormat<JE, JA extends Iterable<JE>, JO extends JE> implements Fo
         } else if (payload.getClass().isArray()) {
             var len = Array.getLength(payload);
             if (headers == null && len > 0) {
-                var first = adapter.OBJECT.convert(Array.get(payload, 0));
+                var first = adapter.jObject.convert(Array.get(payload, 0));
                 if (first != null) {
-                    headers = adapter.OBJECT.keySet(first);
+                    headers = adapter.jObject.keySet(first);
                     appendHeaders(sb, headers);
                 }
             }
@@ -186,48 +186,48 @@ public class CsvFormat<JE, JA extends Iterable<JE>, JO extends JE> implements Fo
     }
 
     void accumulate(CsvParserContext context, JA result, JA values) {
-        if (adapter.ARRAY.isEmpty(result) && !context.namesRead && !noHeaders) {
+        if (adapter.jArray.isEmpty(result) && !context.namesRead && !noHeaders) {
             context.names = values;
             context.namesRead = true;
             return;
         }
         if (noHeaders && names == null) {
-            adapter.ARRAY.add(result, values); // set item as an array of values
+            adapter.jArray.add(result, values); // set item as an array of values
             return;
         }
         // there are names, make a map
         if (context.names != null) {
-            var item = adapter.OBJECT.create();
+            var item = adapter.jObject.create();
             int i;
-            for (i = 0; i < adapter.ARRAY.size(context.names); i++) {
-                var name = adapter.getAsString(adapter.ARRAY.get(context.names, i));
+            for (i = 0; i < adapter.jArray.size(context.names); i++) {
+                var name = adapter.getAsString(adapter.jArray.get(context.names, i));
                 if ((context.extractNames == null || context.extractNames.contains(name)) &&
-                        adapter.ARRAY.size(values) > i) {
-                    adapter.OBJECT.add(item, name, adapter.ARRAY.get(values, i));
+                        adapter.jArray.size(values) > i) {
+                    adapter.jObject.add(item, name, adapter.jArray.get(values, i));
                 }
             }
             // TODO: make it conditional
             // more values than names
-            for (; i < adapter.ARRAY.size(values); i++) {
-                if (!adapter.OBJECT.has(item, "$" + i)) {
-                    adapter.OBJECT.add(item, "$" + i, adapter.ARRAY.get(values, i));
+            for (; i < adapter.jArray.size(values); i++) {
+                if (!adapter.jObject.has(item, "$" + i)) {
+                    adapter.jObject.add(item, "$" + i, adapter.jArray.get(values, i));
                 }
             }
-            adapter.ARRAY.add(result, item);
+            adapter.jArray.add(result, item);
         }
     }
     @Override
     public JE deserialize(String input) {
-        var result = adapter.ARRAY.create();
+        var result = adapter.jArray.create();
         var context = new CsvParserContext();
         if (noHeaders && names != null) {
-            context.names = adapter.ARRAY.create();
-            names.forEach(item -> adapter.ARRAY.add(context.names, item));
+            context.names = adapter.jArray.create();
+            names.forEach(item -> adapter.jArray.add(context.names, item));
         }
         context.extractNames = names;
 
         var len = input.length();
-        var row = adapter.ARRAY.create();
+        var row = adapter.jArray.create();
         var cell = new StringBuilder();
         var offset = 0;
 
@@ -242,7 +242,7 @@ public class CsvFormat<JE, JA extends Iterable<JE>, JO extends JE> implements Fo
                 if (context.inQuotes) {
                     cell.append(separator);
                 } else {
-                    adapter.ARRAY.add(row, cell.toString());
+                    adapter.jArray.add(row, cell.toString());
                     cell.setLength(0);
                 }
 
@@ -254,10 +254,10 @@ public class CsvFormat<JE, JA extends Iterable<JE>, JO extends JE> implements Fo
                     if (context.inQuotes) {
                         cell.append(unix ? NEW_LINE_UNIX : NEW_LINE_WINDOWS);
                     } else {
-                        adapter.ARRAY.add(row, cell.toString());
+                        adapter.jArray.add(row, cell.toString());
                         cell.setLength(0);
                         accumulate(context, result, row);
-                        row = adapter.ARRAY.create();
+                        row = adapter.jArray.create();
                     }
                 }
                 offset += unix ? curSize : curAndNextSize;
@@ -285,8 +285,8 @@ public class CsvFormat<JE, JA extends Iterable<JE>, JO extends JE> implements Fo
             }
         }
 
-        if (!adapter.ARRAY.isEmpty(result) || !cell.isEmpty()) {
-            adapter.ARRAY.add(row, cell.toString());
+        if (!adapter.jArray.isEmpty(result) || !cell.isEmpty()) {
+            adapter.jArray.add(row, cell.toString());
             accumulate(context, result, row);
         }
         return (JE)result;

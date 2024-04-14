@@ -81,11 +81,6 @@ public class GsonArrayAdapter extends JsonArrayAdapter<JsonElement, JsonArray, J
     }
 
     @Override
-    public JsonArray cast(Object value) {
-        return (JsonArray) value;
-    }
-
-    @Override
     public Stream<JsonElement> stream(JsonArray array, boolean parallel) {
         return StreamSupport.stream(array.spliterator(), parallel);
     }

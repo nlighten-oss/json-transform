@@ -265,14 +265,14 @@ public class GsonTransformerFunctionsTest extends BaseTest {
 
         var result2 = transform(null, fromJson("""
                 ["#now"]"""), null);
-        Assertions.assertTrue(adapter.ARRAY.is(result2));
-        var arg2_0 = adapter.unwrap(adapter.ARRAY.get(adapter.ARRAY.cast(result2), 0), false);
+        Assertions.assertTrue(adapter.jArray.is(result2));
+        var arg2_0 = adapter.unwrap(adapter.jArray.get(adapter.jArray.type.cast(result2), 0), false);
         Assertions.assertDoesNotThrow(() -> DateTimeFormatter.ISO_INSTANT.parse(arg2_0.toString()));
 
         var result3 = transform(null, fromJson("""
                 ["#uuid"]"""), null);
-        Assertions.assertTrue(adapter.ARRAY.is(result3));
-        var arg3_0 = adapter.unwrap(adapter.ARRAY.get(adapter.ARRAY.cast(result3), 0), false);
+        Assertions.assertTrue(adapter.jArray.is(result3));
+        var arg3_0 = adapter.unwrap(adapter.jArray.get(adapter.jArray.type.cast(result3), 0), false);
         Assertions.assertDoesNotThrow(() -> UUID.fromString(arg3_0.toString()));
     }
 

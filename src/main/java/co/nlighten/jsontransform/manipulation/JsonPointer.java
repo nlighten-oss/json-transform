@@ -18,13 +18,13 @@ public class JsonPointer<JE, JA extends Iterable<JE>, JO extends JE> {
 
     private static final Pattern IndexPattern = Pattern.compile("^(0|[1-9]\\d*|-)$");
     private final JsonAdapter<JE, JA, JO> adapter;
-    private final JsonArrayAdapter<JE, JA, JO> ARRAY;
-    private final JsonObjectAdapter<JE, JA, JO> OBJECT;
+    private final JsonArrayAdapter<JE, JA, JO> jArray;
+    private final JsonObjectAdapter<JE, JA, JO> jObject;
 
     public JsonPointer(JsonAdapter<JE, JA, JO> adapter) {
         this.adapter = adapter;
-        this.ARRAY = adapter.ARRAY;
-        this.OBJECT = adapter.OBJECT;
+        this.jArray = adapter.jArray;
+        this.jObject = adapter.jObject;
     }
 
     public static String unescape(String str) {
@@ -55,8 +55,8 @@ public class JsonPointer<JE, JA extends Iterable<JE>, JO extends JE> {
         }
         for (String s : tokens) {
             var token = unescape(s);
-            if (OBJECT.is(obj) && OBJECT.has((JO)obj, token)) {
-                obj = OBJECT.get((JO)obj, token);
+            if (jObject.is(obj) && jObject.has((JO)obj, token)) {
+                obj = jObject.get((JO)obj, token);
             } else {
                 int tokenIndex;
                 try {
@@ -64,8 +64,8 @@ public class JsonPointer<JE, JA extends Iterable<JE>, JO extends JE> {
                 } catch (NumberFormatException ignored) {
                     return null;
                 }
-                if (ARRAY.is(obj) && ARRAY.size((JA)obj) > tokenIndex) {
-                    obj = ARRAY.get((JA)obj, tokenIndex);
+                if (jArray.is(obj) && jArray.size((JA)obj) > tokenIndex) {
+                    obj = jArray.get((JA)obj, tokenIndex);
                 } else {
                     return null;
                 }
@@ -94,54 +94,54 @@ public class JsonPointer<JE, JA extends Iterable<JE>, JO extends JE> {
 
         for (var i = 0; i < refTokens.size() - 1; ++i) {
             var tok = refTokens.get(i);
-            if (Objects.equals(tok, "-") && ARRAY.is(obj)) {
-                tok = String.valueOf(ARRAY.size((JA)obj));
+            if (Objects.equals(tok, "-") && jArray.is(obj)) {
+                tok = String.valueOf(jArray.size((JA)obj));
             }
             nextTok = refTokens.get(i + 1);
 
-            if (OBJECT.is(obj)) {
+            if (jObject.is(obj)) {
                 var jo = (JO)obj;
-                if (!OBJECT.has(jo, tok)) {
-                    obj = IndexPattern.matcher(nextTok).matches() ? (JE)ARRAY.create() : OBJECT.create();
-                    OBJECT.add(jo, tok, obj);
+                if (!jObject.has(jo, tok)) {
+                    obj = IndexPattern.matcher(nextTok).matches() ? (JE) jArray.create() : jObject.create();
+                    jObject.add(jo, tok, obj);
                 } else {
-                    obj = OBJECT.get(jo, tok);
+                    obj = jObject.get(jo, tok);
                 }
-            } else if (ARRAY.is(obj)) {
+            } else if (jArray.is(obj)) {
                 var ja = (JA)obj;
                 int intTok = Integer.parseUnsignedInt(tok);
-                if (ARRAY.size(ja) <= intTok) {
-                    obj = IndexPattern.matcher(nextTok).matches() ? (JE)ARRAY.create() : OBJECT.create();
-                    while (ARRAY.size(ja) <= intTok) {
-                        ARRAY.add(ja, adapter.jsonNull());
+                if (jArray.size(ja) <= intTok) {
+                    obj = IndexPattern.matcher(nextTok).matches() ? (JE) jArray.create() : jObject.create();
+                    while (jArray.size(ja) <= intTok) {
+                        jArray.add(ja, adapter.jsonNull());
                     }
-                    ARRAY.set(ja, intTok, obj);
+                    jArray.set(ja, intTok, obj);
                 } else {
-                    obj = ARRAY.get(ja, intTok);
+                    obj = jArray.get(ja, intTok);
                 }
             }
         }
-        if (OBJECT.is(obj)) {
-            OBJECT.add((JO)obj, nextTok, value);
-        } else if (ARRAY.is(obj)) {
+        if (jObject.is(obj)) {
+            jObject.add((JO)obj, nextTok, value);
+        } else if (jArray.is(obj)) {
             var ja = (JA)obj;
             if (Objects.equals(nextTok, "-")) {
-                ARRAY.add(ja, value);
+                jArray.add(ja, value);
             } else {
                 var intTok = Integer.parseUnsignedInt(nextTok);
                 // make sure target array is in the right size
-                while (ARRAY.size(ja) < intTok) {
-                    ARRAY.add(ja, adapter.jsonNull());
+                while (jArray.size(ja) < intTok) {
+                    jArray.add(ja, adapter.jsonNull());
                 }
                 if (insert) {
-                    ARRAY.add(ja, adapter.jsonNull());
+                    jArray.add(ja, adapter.jsonNull());
                     // move over all elements starting from intTok
-                    for (var j = ARRAY.size(ja) - 1; j > intTok; j--) {
-                        ARRAY.set(ja, j, ARRAY.get(ja, j - 1));
+                    for (var j = jArray.size(ja) - 1; j > intTok; j--) {
+                        jArray.set(ja, j, jArray.get(ja, j - 1));
                     }
                 }
                 // set the right index with the value
-                ARRAY.set(ja, intTok, value);
+                jArray.set(ja, intTok, value);
             }
         }
         return result;
@@ -171,47 +171,47 @@ public class JsonPointer<JE, JA extends Iterable<JE>, JO extends JE> {
 
         for (var i = 0; i < refTokens.size() - 1; ++i) {
             var tok = refTokens.get(i);
-            if (Objects.equals(tok, "-") && ARRAY.is(obj)) {
-                tok = String.valueOf(ARRAY.size((JA)obj));
+            if (Objects.equals(tok, "-") && jArray.is(obj)) {
+                tok = String.valueOf(jArray.size((JA)obj));
             }
             nextTok = refTokens.get(i + 1);
 
-            if (OBJECT.is(obj)) {
+            if (jObject.is(obj)) {
                 var jo = (JO)obj;
-                if (!OBJECT.has(jo, tok)) {
-                    obj = IndexPattern.matcher(nextTok).matches() ? (JE)ARRAY.create() : OBJECT.create();
-                    OBJECT.add(jo, tok, obj);
+                if (!jObject.has(jo, tok)) {
+                    obj = IndexPattern.matcher(nextTok).matches() ? (JE) jArray.create() : jObject.create();
+                    jObject.add(jo, tok, obj);
                 } else {
-                    obj = OBJECT.get(jo, tok);
+                    obj = jObject.get(jo, tok);
                 }
-            } else if (ARRAY.is(obj)) {
+            } else if (jArray.is(obj)) {
                 var ja = (JA)obj;
                 int intTok = Integer.parseUnsignedInt(tok);
-                if (ARRAY.size(ja) <= intTok) {
-                    obj = IndexPattern.matcher(nextTok).matches() ? (JE)ARRAY.create() : OBJECT.create();
-                    while (ARRAY.size(ja) <= intTok) {
-                        ARRAY.add(ja, adapter.jsonNull());
+                if (jArray.size(ja) <= intTok) {
+                    obj = IndexPattern.matcher(nextTok).matches() ? (JE) jArray.create() : jObject.create();
+                    while (jArray.size(ja) <= intTok) {
+                        jArray.add(ja, adapter.jsonNull());
                     }
-                    ARRAY.set(ja, intTok, obj);
+                    jArray.set(ja, intTok, obj);
                 } else {
-                    obj = ARRAY.get(ja, intTok);
+                    obj = jArray.get(ja, intTok);
                 }
             }
         }
-        if (OBJECT.is(obj)) {
-            var removed = OBJECT.remove((JO)obj, nextTok);
+        if (jObject.is(obj)) {
+            var removed = jObject.remove((JO)obj, nextTok);
             return returnDocument ? doc : removed;
-        } else if (ARRAY.is(obj)) {
-            var size = ARRAY.size((JA)obj);
+        } else if (jArray.is(obj)) {
+            var size = jArray.size((JA)obj);
             if (Objects.equals(nextTok, "-")) {
                 if (size > 0) {
-                    var removed = ARRAY.remove((JA)obj, size - 1);
+                    var removed = jArray.remove((JA)obj, size - 1);
                     return returnDocument ? doc : removed;
                 }
             } else {
                 var intTok = Integer.parseUnsignedInt(nextTok);
                 if (size > intTok) {
-                    var removed = ARRAY.remove((JA)obj, intTok);
+                    var removed = jArray.remove((JA)obj, intTok);
                     return returnDocument ? doc : removed;
                 }
             }

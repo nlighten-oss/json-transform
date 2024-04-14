@@ -142,7 +142,7 @@ public class TransformerFunctions<JE, JA extends Iterable<JE>, JO extends JE> {
         // look for an object function
         // (precedence is all internal functions sorted alphabetically first, then client added ones second, by registration order)
         for (String key : functions.keySet()) {
-            if (jsonAdapter.OBJECT.has(definition, FUNCTION_KEY_PREFIX + key)) {
+            if (jsonAdapter.jObject.has(definition, FUNCTION_KEY_PREFIX + key)) {
                 var func = functions.get(key);
                 var context = new ObjectFunctionContext<>(
                         definition,

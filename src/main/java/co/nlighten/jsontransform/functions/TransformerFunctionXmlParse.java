@@ -50,7 +50,7 @@ public class TransformerFunctionXmlParse<JE, JA extends Iterable<JE>, JO extends
                                  null,
                                  forceList == null
                                  ? null
-                                 : ARRAY.stream(forceList)
+                                 : jArray.stream(forceList)
                                          .map(context::getAsString)
                                          .collect(Collectors.toSet())
                                                        ).deserialize(xml);

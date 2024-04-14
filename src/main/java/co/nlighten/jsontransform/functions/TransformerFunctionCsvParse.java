@@ -44,7 +44,7 @@ public class TransformerFunctionCsvParse<JE, JA extends Iterable<JE>, JO extends
             return new CsvFormat(adapter,
                                  names == null
                                  ? null
-                                 : ARRAY.stream(names)
+                                 : jArray.stream(names)
                                          .map(context::getAsString)
                                          .collect(Collectors.toList()),
                                                         noHeaders,

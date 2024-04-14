@@ -25,16 +25,16 @@ public class TransformerFunctionObject<JE, JA extends Iterable<JE>, JO extends J
     @Override
     public Object apply(FunctionContext<JE, JA, JO> context) {
         var streamer = context.getJsonElementStreamer(null);
-        var result = OBJECT.create();
+        var result = jObject.create();
         if (streamer != null) {
             streamer.stream().forEach(entry -> {
-                if (ARRAY.is(entry)) {
+                if (jArray.is(entry)) {
                     var ja = (JA)entry;
-                    var size = ARRAY.size(ja);
+                    var size = jArray.size(ja);
                     if (size > 1) {
-                        var key = ARRAY.get(ja, 0);
+                        var key = jArray.get(ja, 0);
                         if (!adapter.isNull(key)) {
-                            OBJECT.add(result, context.getAsString(key), ARRAY.get(ja, 1));
+                            jObject.add(result, context.getAsString(key), jArray.get(ja, 1));
                         }
                     }
                 }

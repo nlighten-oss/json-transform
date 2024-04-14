@@ -6,7 +6,6 @@ import co.nlighten.jsontransform.adapters.JsonArrayAdapter;
 import co.nlighten.jsontransform.adapters.JsonObjectAdapter;
 import co.nlighten.jsontransform.JsonElementStreamer;
 import co.nlighten.jsontransform.JsonTransformerFunction;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -27,8 +26,8 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
     protected final ParameterResolver resolver;
     protected final JsonTransformerFunction<JE> extractor;
 
-    public final JsonArrayAdapter<JE, JA, JO> ARRAY;
-    public final JsonObjectAdapter<JE, JA, JO> OBJECT;
+    public final JsonArrayAdapter<JE, JA, JO> jArray;
+    public final JsonObjectAdapter<JE, JA, JO> jObject;
     protected final JsonAdapter<JE, JA, JO> adapter;
 
     public FunctionContext(JsonAdapter<JE, JA, JO> jsonAdapter,
@@ -36,8 +35,8 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
                            co.nlighten.jsontransform.functions.common.TransformerFunction<JE, JA, JO> function,
                            ParameterResolver resolver, JsonTransformerFunction<JE> extractor,
                            JO definition) {
-        this.ARRAY = jsonAdapter.ARRAY;
-        this.OBJECT = jsonAdapter.OBJECT;
+        this.jArray = jsonAdapter.jArray;
+        this.jObject = jsonAdapter.jObject;
         this.adapter = jsonAdapter;
         this.alias = alias;
         this.function = function;
@@ -54,11 +53,11 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
     }
 
     private ParameterResolver recalcResolver(JO definition, ParameterResolver resolver, JsonTransformerFunction<JE> extractor) {
-        if (adapter.OBJECT.has(definition, "context")) {
-            var contextElement = adapter.OBJECT.get(definition, "context");
-            if (adapter.OBJECT.is(contextElement)) {
-                var ctx = adapter.OBJECT.convert(contextElement);
-                var addCtx = adapter.OBJECT.entrySet(ctx).stream().collect(
+        if (adapter.jObject.has(definition, "context")) {
+            var contextElement = adapter.jObject.get(definition, "context");
+            if (adapter.jObject.is(contextElement)) {
+                var ctx = adapter.jObject.convert(contextElement);
+                var addCtx = adapter.jObject.entrySet(ctx).stream().collect(
                         Collectors.toMap(
                                 Map.Entry::getKey,
                                 kv -> adapter.getDocumentContext(extractor.transform(kv.getValue(), resolver, false))
@@ -272,7 +271,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
             return (JA)jes.toJsonArray();
         }
         var el = adapter.wrap(value);
-        if (!adapter.ARRAY.is(el)) return null;
+        if (!adapter.jArray.is(el)) return null;
         return (JA)el;
     }
 
@@ -296,7 +295,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
         }
         // in case val is already an array we don't transform it to prevent evaluation of its result values
         // so if is not an array, we must transform it and check after-wards (not lazy anymore)
-        if (!adapter.ARRAY.is(value)) {
+        if (!adapter.jArray.is(value)) {
             value = extractor.transform(wrap(value), resolver, true);
             if (value instanceof JsonElementStreamer jes) {
                 return jes;
@@ -304,7 +303,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
             transformed = true;
         }
         // check if initially or after transformation we got an array
-        if (adapter.ARRAY.is(value)) {
+        if (adapter.jArray.is(value)) {
             return JsonElementStreamer.fromJsonArray(this, (JA)value, transformed);
         }
         return null;

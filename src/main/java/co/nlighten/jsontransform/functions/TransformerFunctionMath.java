@@ -42,10 +42,10 @@ public class TransformerFunctionMath<JE, JA extends Iterable<JE>, JO extends JE>
         BigDecimal op1;
         BigDecimal op2;
         if (value != null) {
-            var size = ARRAY.size(value);
+            var size = jArray.size(value);
             if (size <= 1) return null; // invalid input
-            var arg0 = ARRAY.get(value, 0);
-            var arg1 = ARRAY.get(value, 1);
+            var arg0 = jArray.get(value, 0);
+            var arg1 = jArray.get(value, 1);
             parsedOp = context.getAsString(arg0);
             op = parseMathOp(parsedOp) ;
             if (size > 2 && op == MathOp.UNKNOWN) {
@@ -55,7 +55,7 @@ public class TransformerFunctionMath<JE, JA extends Iterable<JE>, JO extends JE>
             } else {
                 op1 = adapter.getNumberAsBigDecimal(arg1);
             }
-            op2 = size < 3 ? BigDecimal.ZERO : adapter.getNumberAsBigDecimal(ARRAY.get(value, 2));
+            op2 = size < 3 ? BigDecimal.ZERO : adapter.getNumberAsBigDecimal(jArray.get(value, 2));
         } else {
             // order of arguments ( op1, op, op2 )
             parsedOp = context.getEnum("op1");

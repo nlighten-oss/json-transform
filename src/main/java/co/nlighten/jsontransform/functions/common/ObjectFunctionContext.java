@@ -17,12 +17,12 @@ public class ObjectFunctionContext<JE, JA extends Iterable<JE>, JO extends JE> e
 
     @Override
     public boolean has(String name) {
-        return OBJECT.has(definition, name);
+        return jObject.has(definition, name);
     }
 
     @Override
     public Object get(String name, boolean transform) {
-        var el = OBJECT.get(definition, name == null ? alias : name);
+        var el = jObject.get(definition, name == null ? alias : name);
         if (adapter.isNull(el)) {
             return function.getDefaultValue(name);
         }

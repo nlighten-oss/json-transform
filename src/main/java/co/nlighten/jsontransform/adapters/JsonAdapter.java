@@ -14,6 +14,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+/**
+ * JsonAdapter is a base class for Json element adapters. It provides methods for working with Json elements
+ * @param <JE> the Json element type
+ * @param <JA> the Json array type
+ * @param <JO> the Json object type
+ */
 public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
 
     private static final String JSONPATH_ROOT = "$";
@@ -22,30 +28,87 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
     private static final String JSONPATH_ALT_PREFIX = "#";
     private static final String JSONPATH_ALT_PREFIX_ESC = "\\#";
 
-    public final JsonObjectAdapter<JE, JA, JO> OBJECT;
-    public final JsonArrayAdapter<JE, JA, JO> ARRAY;
+    public final JsonObjectAdapter<JE, JA, JO> jObject;
+    public final JsonArrayAdapter<JE, JA, JO> jArray;
     public final Class<JE> type;
 
     public JsonAdapter(
             Class<JE> jsonElementType,
             Function<JsonAdapter<JE, JA, JO>, JsonObjectAdapter<JE, JA, JO>> objectAdapterSupplier,
             Function<JsonAdapter<JE, JA, JO>, JsonArrayAdapter<JE, JA, JO>> arrayAdapterSupplier) {
-        this.OBJECT = objectAdapterSupplier.apply(this);
-        this.ARRAY = arrayAdapterSupplier.apply(this);
+        this.jObject = objectAdapterSupplier.apply(this);
+        this.jArray = arrayAdapterSupplier.apply(this);
         this.type = jsonElementType;
     }
 
+    /**
+     * Checks if the given object is a Json element
+     * @param value the object to check
+     * @return true if the object is a Json element
+     */
     public abstract boolean is(Object value);
+
+    /**
+     * Checks if the given object is a Json string
+     * @param value the object to check
+     * @return true if the object is a Json string
+     */
     public abstract boolean isJsonString(Object value);
+
+    /**
+     * Checks if the given object is a Json number
+     * @param value the object to check
+     * @return true if the object is a Json number
+     */
     public abstract boolean isJsonNumber(Object value);
+
+    /**
+     * Checks if the given object is a Json boolean
+     * @param value the object to check
+     * @return true if the object is a Json boolean
+     */
     public abstract boolean isJsonBoolean(Object value);
 
+    /**
+     * Checks if the given object is a Json Null
+     * @param value the object to check
+     * @return true if the object is a Json Null
+     */
     public abstract boolean isNull(Object value);
+
+    /**
+     * Creates a Json Null element
+     * @return a Json Null element
+     */
     public abstract JE jsonNull();
+
+    /**
+     * Wraps the given object into a Json element
+     * @param value the object to wrap
+     * @return a Json element
+     */
     public abstract JE wrap(Object value);
+
+    /**
+     * Unwraps the given Json element into a Java object
+     * @param value the Json element to unwrap
+     * @param reduceBigDecimals reduce big decimals to less precise java number types
+     * @return a Java object
+     */
     public abstract Object unwrap(JE value, boolean reduceBigDecimals);
+
+    /**
+     * Parses a Json string into a Json element
+     * @param jsonString the Json string to parse
+     * @return a Json element
+     */
     public abstract JE parse(String jsonString);
 
+    /**
+     * Clones a Json element
+     * @param value the Json element to clone
+     * @return a cloned Json element
+     */
     public abstract JE clone(JE value);
 
     private static boolean isMathematicalInteger(double x) {
@@ -79,16 +142,39 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
         return toString(value);
     }
 
+    /**
+     * Converts the given object into a Json element
+     * @param value the object to convert
+     * @return a Json element
+     */
     public abstract Number getNumber(JE value);
+
+    /**
+     * Converts the given object into a BigDecimal
+     * @param value the object to convert
+     * @return a BigDecimal
+     */
     public abstract BigDecimal getNumberAsBigDecimal(JE value);
+
+    /**
+     * Converts the given object into a Boolean
+     * @param value the object to convert
+     * @return a Boolean
+     */
     public abstract Boolean getBoolean(JE value);
 
+    /**
+     * Compares two Json elements
+     * @param a the first Json element
+     * @param b the second Json element
+     * @return a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second
+     */
     @SuppressWarnings("unchecked")
     public Integer compareTo(JE a, JE b) {
-        if (ARRAY.is(a) && ARRAY.is(b)) {
-            return Integer.compare(ARRAY.size((JA)a), ARRAY.size((JA)b));
-        } else if (OBJECT.is(a) && OBJECT.is(b)) {
-            return Integer.compare(OBJECT.size((JO)a), OBJECT.size((JO)b));
+        if (jArray.is(a) && jArray.is(b)) {
+            return Integer.compare(jArray.size((JA)a), jArray.size((JA)b));
+        } else if (jObject.is(a) && jObject.is(b)) {
+            return Integer.compare(jObject.size((JO)a), jObject.size((JO)b));
         } else if (isJsonString(a) && isJsonString(b)) {
             return getAsString(a).compareTo(getAsString(b));
         } else if (isJsonNumber(a) && isJsonNumber(b)) {
@@ -104,6 +190,10 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
         return null;
     }
 
+    /**
+     * Returns a comparator for Json elements
+     * @return a comparator for Json elements
+     */
     public Comparator<JE> comparator() {
         return (JE a, JE b) -> {
             var result = compareTo(a, b);
@@ -112,14 +202,26 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
         };
     }
 
+    /**
+     * Checks if the given object is truthy
+     * @param value the object to check
+     * @return true if the object is truthy
+     */
     public boolean isTruthy(Object value) {
         return isTruthy(value, true);
     }
+
+    /**
+     * Checks if the given object is truthy
+     * @param value the object to check
+     * @param javascriptStyle whether to use javascript style truthy checks
+     * @return true if the object is truthy
+     */
     public boolean isTruthy(Object value, boolean javascriptStyle) {
-        if (ARRAY.is(value)) {
-            return !ARRAY.isEmpty((JA)value);
-        } else if (OBJECT.is(value)) {
-            return !OBJECT.isEmpty((JO)value);
+        if (jArray.is(value)) {
+            return !jArray.isEmpty((JA)value);
+        } else if (jObject.is(value)) {
+            return !jObject.isEmpty((JO)value);
         }
         if (is(value)) {
             value = unwrap((JE)value, false);
@@ -151,8 +253,16 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
         }
     }
 
+    /**
+     * Setup JsonPath using specific provider for it
+     */
     public abstract void setupJsonPath();
 
+    /**
+     * Returns a document context for the given payload (Using JsonPath)
+     * @param payload the payload to create a document context for
+     * @return a document context
+     */
     public DocumentContext getDocumentContext(Object payload) {
         setupJsonPath();
         Object document = payload;
@@ -162,6 +272,11 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
         return JsonPath.parse(document);
     }
 
+    /**
+     * Converts the given object into a string representation
+     * @param value the object to convert
+     * @return a string representation of the object
+     */
     public abstract String toString(Object value);
 
     /**
@@ -220,39 +335,39 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
             if (point.equals("$")) {
                 continue;
             }
-            if (location.size() == 0 && !OBJECT.is(value)) {
+            if (location.size() == 0 && !jObject.is(value)) {
                 if (!isNull(value)) {
-                    OBJECT.add(object, point, value);
+                    jObject.add(object, point, value);
                 }
                 return root;
             }
-            if (OBJECT.has(object, point)) {
-                var current = OBJECT.get(object, point);
-                if (OBJECT.is(current)) {
+            if (jObject.has(object, point)) {
+                var current = jObject.get(object, point);
+                if (jObject.is(current)) {
                     object = (JO)current;
-                } else if (ARRAY.is(current)) {
-                    ARRAY.add((JA)current, wrapElement(value, location));
+                } else if (jArray.is(current)) {
+                    jArray.add((JA)current, wrapElement(value, location));
                     return root;
                 } else {
                     //we create an array and add ourselves
-                    var arr = ARRAY.create();
-                    ARRAY.add(arr, current);
-                    ARRAY.add(arr, wrapElement(value, location));
-                    OBJECT.add(object, point, arr);
+                    var arr = jArray.create();
+                    jArray.add(arr, current);
+                    jArray.add(arr, wrapElement(value, location));
+                    jObject.add(object, point, arr);
                 }
             } else {
                 var elm = wrapElement(value, location);
                 if (!isNull(elm)) {
-                    OBJECT.add(object, point, elm);
+                    jObject.add(object, point, elm);
                 }
                 return root;
             }
         }
         //we merge
-        if (OBJECT.is(value)) {
+        if (jObject.is(value)) {
             var obj = (JO)value;
             var finalObject = object;
-            OBJECT.entrySet(obj).forEach(kv -> OBJECT.add(finalObject, kv.getKey(), kv.getValue()));
+            jObject.entrySet(obj).forEach(kv -> jObject.add(finalObject, kv.getKey(), kv.getValue()));
         }
 
         return root;
@@ -270,8 +385,8 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
         var elm = value;
 
         while ((point = location.pollLast()) != null) {
-            var obj = OBJECT.create();
-            OBJECT.add(obj, point, elm);
+            var obj = jObject.create();
+            jObject.add(obj, point, elm);
             elm = obj;
         }
         return elm;

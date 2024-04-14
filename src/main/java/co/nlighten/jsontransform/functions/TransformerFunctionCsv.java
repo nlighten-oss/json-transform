@@ -48,7 +48,7 @@ public class TransformerFunctionCsv<JE, JA extends Iterable<JE>, JO extends JE> 
             var separator = context.getString("separator");
             List<String> namesList = null;
             if (names != null) {
-                var stringStream = (Stream<String>) ARRAY.stream(names).map(context::getAsString);
+                var stringStream = (Stream<String>) jArray.stream(names).map(context::getAsString);
                 namesList = stringStream.collect(Collectors.toList());
             }
             return new CsvFormat(

@@ -34,10 +34,10 @@ public class TransformerFunctionFlatten<JE, JA extends Iterable<JE>, JO extends 
     public Object apply(FunctionContext<JE, JA, JO> context) {
         var jeTarget = context.getJsonElement("target");
         JO target;
-        if (OBJECT.is(jeTarget)) {
+        if (jObject.is(jeTarget)) {
             target = (JO)jeTarget;
         } else {
-            target = OBJECT.create();
+            target = jObject.create();
         }
 
         return flatten(context.getJsonElement(null, true), target, context.getString("prefix"),
@@ -48,25 +48,25 @@ public class TransformerFunctionFlatten<JE, JA extends Iterable<JE>, JO extends 
         if (adapter.isNull(source)) {
             return target;
         }
-        if (adapter.OBJECT.is(source)) {
-            adapter.OBJECT.entrySet((JO)source)
+        if (adapter.jObject.is(source)) {
+            adapter.jObject.entrySet((JO)source)
                     .forEach(es -> flatten(es.getValue(), target,
                                            prefix == null ? es.getKey() : (prefix + "." + es.getKey()), arrayPrefix));
-        } else if (adapter.ARRAY.is(source)) {
+        } else if (adapter.jArray.is(source)) {
             var ja = (JA)source;
             if (arrayPrefix != null) {
-                var size = adapter.ARRAY.size(ja);
+                var size = adapter.jArray.size(ja);
                 for (var i = 0; i < size; i++) {
-                    flatten(adapter.ARRAY.get(ja, i), target, (prefix == null ? "" : (prefix + ".")) + arrayPrefix + i, arrayPrefix);
+                    flatten(adapter.jArray.get(ja, i), target, (prefix == null ? "" : (prefix + ".")) + arrayPrefix + i, arrayPrefix);
                 }
             } else {
-                adapter.OBJECT.add(target, prefix, ja);
+                adapter.jObject.add(target, prefix, ja);
             }
         } else {
             if (prefix == null || prefix.isBlank()) {
                 return source;
             }
-            adapter.OBJECT.add(target, prefix, source);
+            adapter.jObject.add(target, prefix, source);
         }
         return target;
     }

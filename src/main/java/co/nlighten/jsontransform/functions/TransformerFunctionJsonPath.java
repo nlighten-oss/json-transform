@@ -38,7 +38,7 @@ public class TransformerFunctionJsonPath<JE, JA extends Iterable<JE>, JO extends
         }
         GsonJsonPathConfigurator.setup();
         var optionsArray = context.getJsonArray("options");
-        if (optionsArray != null && !ARRAY.isEmpty(optionsArray)) {
+        if (optionsArray != null && !jArray.isEmpty(optionsArray)) {
             var conf = Configuration.defaultConfiguration();
             for (var option : optionsArray) {
                 conf = conf.addOptions(Option.valueOf(adapter.getAsString(option)));

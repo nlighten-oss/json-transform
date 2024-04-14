@@ -1,7 +1,5 @@
 package co.nlighten.jsontransform;
 
-import co.nlighten.jsontransform.ParameterResolver;
-
 @FunctionalInterface
 public interface JsonTransformerFunction<JE> {
     /**

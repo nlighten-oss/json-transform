@@ -34,9 +34,9 @@ public class TransformerFunctionIf<JE, JA extends Iterable<JE>, JO extends JE> e
             }
         } else {
             var arr = context.getJsonArray(null);
-            if (arr == null || ARRAY.size(arr) < 2)
+            if (arr == null || jArray.size(arr) < 2)
                 return null;
-            var cje = ARRAY.get(arr, 0);
+            var cje = jArray.get(arr, 0);
             if (adapter.isNull(cje)) {
                 condition = false;
             } else if (context.isJsonBoolean(cje)) {
@@ -46,9 +46,9 @@ public class TransformerFunctionIf<JE, JA extends Iterable<JE>, JO extends JE> e
             }
 
             if (condition) {
-                return context.transform(ARRAY.get(arr, 1));
-            } else if (ARRAY.size(arr) > 2) {
-                return context.transform(ARRAY.get(arr, 2));
+                return context.transform(jArray.get(arr, 1));
+            } else if (jArray.size(arr) > 2) {
+                return context.transform(jArray.get(arr, 2));
             }
         }
         return null; // default falsy value

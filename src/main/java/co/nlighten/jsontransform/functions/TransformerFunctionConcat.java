@@ -33,8 +33,8 @@ public class TransformerFunctionConcat<JE, JA extends Iterable<JE>, JO extends J
             .flatMap(itm -> {
                 if (adapter.isNull(itm)) {
                     return Stream.empty();
-                } else if (ARRAY.is(itm)) {
-                    return ARRAY.stream((JA)itm);
+                } else if (jArray.is(itm)) {
+                    return jArray.stream((JA)itm);
                 }
                 return Stream.of(itm);
             }));

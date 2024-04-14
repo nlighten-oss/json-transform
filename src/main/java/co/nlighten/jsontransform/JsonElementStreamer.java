@@ -26,7 +26,7 @@ public class JsonElementStreamer<JE, JA extends Iterable<JE>, JO extends JE> {
     }
 
     public boolean knownAsEmpty() {
-        return value != null && this.context.ARRAY.isEmpty(value);
+        return value != null && this.context.jArray.isEmpty(value);
     }
 
     public Stream<JE> stream() {
@@ -68,9 +68,9 @@ public class JsonElementStreamer<JE, JA extends Iterable<JE>, JO extends JE> {
         if (value != null) {
             return value;
         }
-        var ja = context.ARRAY.create();
+        var ja = context.jArray.create();
         if (stream != null) {
-            stream.forEach(item -> context.ARRAY.add(ja, item));
+            stream.forEach(item -> context.jArray.add(ja, item));
         }
         return ja;
     }

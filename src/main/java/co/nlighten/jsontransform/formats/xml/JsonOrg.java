@@ -34,15 +34,15 @@ public class JsonOrg<JE, JA extends Iterable<JE>, JO extends JE> {
     }
 
     public JA toJsonArray(JSONArray ja) {
-        var result = adapter.ARRAY.create();
-        ja.forEach(value -> adapter.ARRAY.add(result, toJsonElement(value)));
+        var result = adapter.jArray.create();
+        ja.forEach(value -> adapter.jArray.add(result, toJsonElement(value)));
         return result;
     }
 
     public JO toJsonObject(JSONObject jo) {
-        var results = adapter.OBJECT.create();
+        var results = adapter.jObject.create();
         for (String key : jo.keySet()) {
-            adapter.OBJECT.add(results, key, toJsonElement(jo.get(key)));
+            adapter.jObject.add(results, key, toJsonElement(jo.get(key)));
         }
         return results;
     }
@@ -57,10 +57,10 @@ public class JsonOrg<JE, JA extends Iterable<JE>, JO extends JE> {
             if (adapter.isNull(je)) {
                 return JSONObject.NULL;
             }
-            if (adapter.ARRAY.is(je)) {
+            if (adapter.jArray.is(je)) {
                 return toJSONArray((JA)je);
             }
-            if (adapter.OBJECT.is(je)) {
+            if (adapter.jObject.is(je)) {
                 return toJSONObject((JO)je);
             }
             return adapter.unwrap(je, true);
@@ -76,8 +76,8 @@ public class JsonOrg<JE, JA extends Iterable<JE>, JO extends JE> {
 
     public JSONObject toJSONObject(JO jo) {
         var results = new JSONObject();
-        for (String key : adapter.OBJECT.keySet(jo)) {
-            results.put(key, toJSONElement(adapter.OBJECT.get(jo, key)));
+        for (String key : adapter.jObject.keySet(jo)) {
+            results.put(key, toJSONElement(adapter.jObject.get(jo, key)));
         }
         return results;
     }

@@ -1,7 +1,5 @@
 package co.nlighten.jsontransform;
 
-import co.nlighten.jsontransform.*;
-import co.nlighten.jsontransform.ParameterResolver;
 import co.nlighten.jsontransform.adapters.JsonAdapter;
 import com.google.gson.JsonNull;
 
@@ -69,36 +67,36 @@ public abstract class JsonTransformer<JE, JA extends Iterable<JE>, JO extends JE
                     : adapter.wrap(res);
         }
 
-        var result = adapter.OBJECT.create();
-        if (adapter.OBJECT.has(definition, "*")) {
-            var val = adapter.OBJECT.get(definition, "*");
+        var result = adapter.jObject.create();
+        if (adapter.jObject.has(definition, "*")) {
+            var val = adapter.jObject.get(definition, "*");
             var res = (JE) fromJsonElement(val, resolver, false);
             if (res != null) {
-                var isArray = adapter.ARRAY.is(val);
-                if (isArray && adapter.ARRAY.is(res)) {
+                var isArray = adapter.jArray.is(val);
+                if (isArray && adapter.jArray.is(res)) {
                     for (JE x: (JA)res) {
-                        if (adapter.OBJECT.is(x)) {
+                        if (adapter.jObject.is(x)) {
                             var xo = (JO)x;
-                            for (Map.Entry<String, JE> e : adapter.OBJECT.entrySet(xo)) {
-                                adapter.OBJECT.add(result, e.getKey(), e.getValue());
+                            for (Map.Entry<String, JE> e : adapter.jObject.entrySet(xo)) {
+                                adapter.jObject.add(result, e.getKey(), e.getValue());
                             }
                         }
                     }
-                } else if (adapter.OBJECT.is(res)) {
+                } else if (adapter.jObject.is(res)) {
                     // override the base object with resolved one
                     result = (JO)res;
                 } else {
-                    adapter.OBJECT.add(result, "*", res);
+                    adapter.jObject.add(result, "*", res);
                 }
             }
         }
 
-        for (Map.Entry<String, JE> kv : adapter.OBJECT.entrySet(definition)) {
+        for (Map.Entry<String, JE> kv : adapter.jObject.entrySet(definition)) {
             if (kv.getKey().equals("*")) continue;
             var localKey = kv.getKey();
             var value = (JE) fromJsonElement(kv.getValue(), resolver, false);
-            if (!adapter.isNull(value) || adapter.OBJECT.has(result, localKey) /* we allow overriding with null*/) {
-                adapter.OBJECT.add(result, localKey, value);
+            if (!adapter.isNull(value) || adapter.jObject.has(result, localKey) /* we allow overriding with null*/) {
+                adapter.jObject.add(result, localKey, value);
             }
         }
 
@@ -108,14 +106,14 @@ public abstract class JsonTransformer<JE, JA extends Iterable<JE>, JO extends JE
     protected Object fromJsonElement(JE definition, ParameterResolver resolver, boolean allowReturningStreams) {
         if (adapter.isNull(definition))
             return adapter.jsonNull();
-        if (adapter.ARRAY.is(definition)) {
-            var result = adapter.ARRAY.create();
-            adapter.ARRAY.stream((JA)definition)
+        if (adapter.jArray.is(definition)) {
+            var result = adapter.jArray.create();
+            adapter.jArray.stream((JA)definition)
                     .map(d -> (JE)fromJsonElement(d, resolver, false))
-                    .forEachOrdered(item -> adapter.ARRAY.add(result, item));
+                    .forEachOrdered(item -> adapter.jArray.add(result, item));
             return result;
         }
-        if (adapter.OBJECT.is(definition)) {
+        if (adapter.jObject.is(definition)) {
             return fromJsonObject((JO)definition, resolver, allowReturningStreams);
         }
         return fromJsonPrimitive(definition, resolver, allowReturningStreams);

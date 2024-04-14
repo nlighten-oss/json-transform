@@ -35,20 +35,20 @@ public class JsonPatchTest extends BaseTest {
 
     private static Stream tests() throws FileNotFoundException {
         String json = read("JsonPatchTests.json");
-        return adapter.ARRAY.stream(adapter.ARRAY.cast(adapter.parse(json)), true);
+        return adapter.jArray.stream(adapter.jArray.type.cast(adapter.parse(json)), true);
     }
 
     @MethodSource("tests")
     @ParameterizedTest
     void test(final Object testEl) {
-        var test = adapter.OBJECT.convert(testEl);
+        var test = adapter.jObject.convert(testEl);
         if (test.has("disabled") && adapter.getBoolean(test.get("disabled"))) {
             // skip
             return;
         }
 
         var doc = test.get("doc");
-        var patch = adapter.ARRAY.cast(test.get("patch"));
+        var patch = adapter.jArray.type.cast(test.get("patch"));
         var hasError = test.has("error");
         if (hasError) {
             Assertions.assertThrows(Exception.class, () -> {

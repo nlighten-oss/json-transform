@@ -36,6 +36,6 @@ public class TransformerFunctionAt<JE, JA extends Iterable<JE>, JO extends JE> e
         }
         // negative
         var arr = value.toJsonArray();
-        return ARRAY.get(arr, ARRAY.size(arr) + index);
+        return jArray.get(arr, jArray.size(arr) + index);
     }
 }

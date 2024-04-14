@@ -43,9 +43,9 @@ public class TransformerFunctionGroup<JE, JA extends Iterable<JE>, JO extends JE
             var byKey = byby.get(i);
             // when adding a grouping key, fallback on empty string if null
             var key = adapter.isNull(byKey) ? "" : adapter.getAsString(byKey);
-            elem.set(Objects.requireNonNullElseGet(adapter.OBJECT.convert(adapter.OBJECT.get(root, key)), () -> {
-                var jo = adapter.OBJECT.create();
-                adapter.OBJECT.add(elem.get(), key, jo);
+            elem.set(Objects.requireNonNullElseGet(adapter.jObject.convert(adapter.jObject.get(root, key)), () -> {
+                var jo = adapter.jObject.create();
+                adapter.jObject.add(elem.get(), key, jo);
                 return jo;
             }));
         }
@@ -53,10 +53,10 @@ public class TransformerFunctionGroup<JE, JA extends Iterable<JE>, JO extends JE
         // when adding a grouping key, fallback on empty string if null
         var key = adapter.isNull(byKey) ? "" : adapter.getAsString(byKey);
         var jArr = Objects.requireNonNullElseGet(
-                (JA)adapter.OBJECT.get(elem.get(), key),
-                adapter.ARRAY::create);
-        adapter.ARRAY.add(jArr, by.value);
-        adapter.OBJECT.add(elem.get(), key, jArr);
+                (JA)adapter.jObject.get(elem.get(), key),
+                adapter.jArray::create);
+        adapter.jArray.add(jArr, by.value);
+        adapter.jObject.add(elem.get(), key, jArr);
         return root;
     }
 
@@ -64,13 +64,13 @@ public class TransformerFunctionGroup<JE, JA extends Iterable<JE>, JO extends JE
     public Object apply(FunctionContext<JE, JA, JO> context) {
         var value = context.getJsonElementStreamer(null);
         if (value == null) {
-            return OBJECT.create();
+            return jObject.create();
         }
         var type = context.getEnum("type");
         var order = context.getEnum("order");
         var by = context.getJsonElement("by", false);
         if (adapter.isNull(by)) {
-            return OBJECT.create();
+            return jObject.create();
         }
 
         var chain = new ArrayList<JE>();
@@ -83,22 +83,22 @@ public class TransformerFunctionGroup<JE, JA extends Iterable<JE>, JO extends JE
 
         var thenArr = context.has("then") ? context.getJsonArray("then", false) : null;
         if (thenArr != null) {
-            var thenArrSize = ARRAY.size(thenArr);
+            var thenArrSize = jArray.size(thenArr);
             for (var i = 0; i < thenArrSize; i++) {
-                var thenObj = OBJECT.convert(ARRAY.get(thenArr, i));
-                var thenType = OBJECT.has(thenObj, "type") ? context.getAsString(OBJECT.get(thenObj, "type")).trim() : null;
-                var thenOrder = OBJECT.get(thenObj,"order");
+                var thenObj = jObject.convert(jArray.get(thenArr, i));
+                var thenType = jObject.has(thenObj, "type") ? context.getAsString(jObject.get(thenObj, "type")).trim() : null;
+                var thenOrder = jObject.get(thenObj,"order");
                 var thenComparator = CompareBy.createByComparator(adapter,i + 1, thenType);
                 var thenDescending = !adapter.isNull(thenOrder) && context.getAsString(thenOrder).equalsIgnoreCase("DESC");
                 if (thenDescending) {
                     thenComparator = thenComparator.reversed();
                 }
                 comparator = comparator.thenComparing(thenComparator);
-                chain.add(OBJECT.get(thenObj,"by"));
+                chain.add(jObject.get(thenObj,"by"));
             }
         }
 
-        var result = OBJECT.create();
+        var result = jObject.create();
         value.stream()
                 .map(item -> {
                     var cb = new CompareBy<>(item);

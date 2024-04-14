@@ -14,13 +14,13 @@ Maven
 <dependency>
     <groupId>co.nlighten</groupId>
     <artifactId>json-transform</artifactId>
-    <version>0.1.1</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
 Gradle
 ```groovy
-implementation 'co.nlighten:json-transform:0.1.1'
+implementation 'co.nlighten:json-transform:0.2.0'
 ```
 
 ## License

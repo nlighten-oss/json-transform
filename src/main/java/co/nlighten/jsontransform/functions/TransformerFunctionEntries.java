@@ -28,25 +28,25 @@ public class TransformerFunctionEntries<JE, JA extends Iterable<JE>, JO extends 
     @Override
     public Object apply(FunctionContext<JE, JA, JO> context) {
         var input = context.getJsonElement(null);
-        if (ARRAY.is(input)) {
+        if (jArray.is(input)) {
             var ja = (JA) input;
             var i = new AtomicInteger(0);
-            return JsonElementStreamer.fromTransformedStream(context, ARRAY.stream(ja)
+            return JsonElementStreamer.fromTransformedStream(context, jArray.stream(ja)
                     .map(a -> {
-                        var entry = ARRAY.create(2);
-                        ARRAY.add(entry, i.getAndIncrement());
-                        ARRAY.add(entry, a);
+                        var entry = jArray.create(2);
+                        jArray.add(entry, i.getAndIncrement());
+                        jArray.add(entry, a);
                         return (JE)entry;
                     }));
         }
-        if (OBJECT.is(input)) {
+        if (jObject.is(input)) {
             var jo = (JO) input;
-            return JsonElementStreamer.fromTransformedStream(context, OBJECT.entrySet(jo)
+            return JsonElementStreamer.fromTransformedStream(context, jObject.entrySet(jo)
                     .stream()
                     .map(e -> {
-                        var entry = ARRAY.create(2);
-                        ARRAY.add(entry, e.getKey());
-                        ARRAY.add(entry, e.getValue());
+                        var entry = jArray.create(2);
+                        jArray.add(entry, e.getKey());
+                        jArray.add(entry, e.getValue());
                         return (JE)entry;
                     }));
         }

@@ -105,7 +105,7 @@ public class JsonPointerTest extends BaseTest {
         var source = getEl();
         var value = new JsonPrimitive("TWO");
         jsonPointer.set(source, "/a/", value);
-        assertEquals(value, adapter.OBJECT.convert(adapter.OBJECT.convert(source).get("a")).get(""));
+        assertEquals(value, adapter.jObject.convert(adapter.jObject.convert(source).get("a")).get(""));
         assertEquals(value, jsonPointer.get(source, "/a/"));
     }
 
@@ -124,9 +124,9 @@ public class JsonPointerTest extends BaseTest {
         assertEquals(new JsonPrimitive("Hello"), res);
 
         var expected = getEl();
-        adapter.OBJECT.convert(
-        adapter.ARRAY.cast(
-        adapter.OBJECT.convert(expected)
+        adapter.jObject.convert(
+        adapter.jArray.type.cast(
+        adapter.jObject.convert(expected)
                 .get("b"))
                 .get(2))
                 .remove("e");
@@ -138,9 +138,9 @@ public class JsonPointerTest extends BaseTest {
         var source = getEl();
         var res = jsonPointer.remove(source, "/b/2/e");
         var expected = getEl();
-        adapter.OBJECT.convert(
-        adapter.ARRAY.cast(
-        adapter.OBJECT.convert(expected)
+        adapter.jObject.convert(
+        adapter.jArray.type.cast(
+        adapter.jObject.convert(expected)
                 .get("b"))
                 .get(2))
                 .remove("e");

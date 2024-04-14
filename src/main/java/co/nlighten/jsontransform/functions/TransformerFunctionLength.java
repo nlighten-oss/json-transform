@@ -39,15 +39,15 @@ public class TransformerFunctionLength<JE, JA extends Iterable<JE>, JO extends J
                 }
                 if (obj != null) {
                     var el = context.wrap(obj);
-                    if (ARRAY.is(el)) {
-                        return ARRAY.size((JA)el);
+                    if (jArray.is(el)) {
+                        return jArray.size((JA)el);
                     }
                 }
             }
             case "OBJECT" -> {
                 var obj = context.getJsonElement(null);
-                if (OBJECT.is(obj)) {
-                    return OBJECT.size((JO)obj);
+                if (jObject.is(obj)) {
+                    return jObject.size((JO)obj);
                 }
             }
             default -> {
@@ -57,11 +57,11 @@ public class TransformerFunctionLength<JE, JA extends Iterable<JE>, JO extends J
                     return jes.stream().count();
                 }
                 var je = adapter.is(obj) ? (JE)obj : context.wrap(obj);
-                if (OBJECT.is(je)) {
-                    return OBJECT.size((JO)je);
+                if (jObject.is(je)) {
+                    return jObject.size((JO)je);
                 }
-                if (ARRAY.is(je)) {
-                    return ARRAY.size((JA)je);
+                if (jArray.is(je)) {
+                    return jArray.size((JA)je);
                 }
                 if (adapter.isJsonString(obj)) {
                     return context.getAsString(obj).length();

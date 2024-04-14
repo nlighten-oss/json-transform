@@ -31,16 +31,16 @@ public class TransformerFunctionPartition<JE, JA extends Iterable<JE>, JO extend
         }
         var size = context.getInteger("size");
 
-        var list = ARRAY.create();
-        IntStream.range(0, ARRAY.size(value))
+        var list = jArray.create();
+        IntStream.range(0, jArray.size(value))
                 .boxed()
                 .collect(Collectors.groupingBy(e -> e / size, Collectors.mapping(
-                        i -> ARRAY.get(value, i),
+                        i -> jArray.get(value, i),
                         Collectors.toList())))
                 .values().forEach(x -> {
-                    var subList = ARRAY.create();
-                    x.forEach(item -> ARRAY.add(subList, item));
-                    ARRAY.add(list, subList);
+                    var subList = jArray.create();
+                    x.forEach(item -> jArray.add(subList, item));
+                    jArray.add(list, subList);
                 });
         return list;
     }
