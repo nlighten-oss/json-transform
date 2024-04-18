@@ -61,7 +61,7 @@ jobs:
       uses: dorny/test-reporter@v1
       if: success() || failure()                    # run this step even if previous step failed
       with:
-          name: Test Results                        # Name of the check run which will be created
+          name: Java json-transform Test Results    # Name of the check run which will be created
           path: '**/build/test-results/test/*.xml'  # Path to test results
           reporter: java-junit                      # Format of test results
           list-suites: 'failed'                     # Limits which test suites are listed: (*all/failed) *default
