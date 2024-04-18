@@ -1,14 +1,14 @@
-name: Test Java CI
+name: Java json-transform Test
 
 on:
   push:
     branches: [ "main" ]
     paths:
-      - '!packages/**'
+      - java/json-transform/**
   pull_request:
     branches: [ "main" ]
     paths:
-      - '!packages/**'
+      - java/json-transform/**
 
 # cancel previous tests if new commit is pushed to PR branch
 concurrency:
@@ -43,7 +43,16 @@ jobs:
       with:
         # build includes tests
         arguments: |
-          build
+          :java:json-transform:build
+          --console=plain
+          --parallel
+          -Dorg.gradle.parallel.intra=true
+
+    - name: Run benchmarking tests with Gradle
+      uses: gradle/gradle-build-action@v2.4.2
+      with:
+        arguments: |
+          :java:json-transform:jmh
           --console=plain
           --parallel
           -Dorg.gradle.parallel.intra=true

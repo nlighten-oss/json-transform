@@ -1,11 +1,11 @@
-name: Run Tests
+name: JavaScript json-transform-core Test
 
 on:
   pull_request:
     branches:
       - main
     paths:
-      - packages/json-transform-core/**
+      - javascript/json-transform-core/**
 # cancel previous tests if new commit is pushed to PR branch
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}

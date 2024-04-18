@@ -1,4 +1,4 @@
-# json-transform-core
+# @nlighten/json-transform-core
 
 ![](https://img.shields.io/npm/v/@nlighten/json-transform-core.svg)
 

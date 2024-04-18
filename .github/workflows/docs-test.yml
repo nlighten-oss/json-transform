@@ -1,11 +1,11 @@
-name: Test Docs deployment
+name: Docs Test
 
 on:
   pull_request:
     branches:
       - main
     paths:
-      - packages/docs/**
+      - docs/**
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
