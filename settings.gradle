@@ -1,1 +1,3 @@
 rootProject.name = 'co.nlighten.json-transform'
+
+include ':java:json-transform'
