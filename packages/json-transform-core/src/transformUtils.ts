@@ -82,7 +82,7 @@ class TransformUtils {
   }
 
   public matchesAnyOfContextVariables(variableName: string) {
-    for (const key in this.allContextVariables) {
+    for (const key of this.allContextVariables) {
       if (variableName === key || variableName.startsWith(key + ".") || variableName.startsWith(key + "[")) {
         return true;
       }
