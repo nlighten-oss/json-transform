@@ -109,8 +109,11 @@ class TransformUtils {
   }
 
   private variableDetectionRegExpFactory(flags = "g") {
-    const altPrefixes =
-      this.additionalContext.size > 0 ? `(${[...this.additionalContext].map(x => x.substring(2)).join("|")})?` : "";
+    const altNames: string[] = [];
+    for (const key of this.additionalContext) {
+      altNames.push(key.substring(1));
+    }
+    const altPrefixes = altNames.length ? `(${altNames.join("|")})?` : "";
 
     return new RegExp(
       `(?<![\\])}?!@#$%^&*+\\\\\\w])(#[a-z_]+[a-z_\\d]*|\\$(?!\\$)${altPrefixes})(((\\.(?![-\\w$]+\\()[-\\w$]+)|(\\[[^\\]\\n]+]))+|(?=[^\\w.]|$))`,

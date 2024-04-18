@@ -1,7 +1,7 @@
 {
   "name": "@nlighten/json-transform-core",
   "description": "Core types and utilities for handling JSON transformers",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "main": "dist/json-transform-core.js",
   "umd:main": "dist/json-transform-core.umd.js",
   "module": "dist/json-transform-core.module.js",
