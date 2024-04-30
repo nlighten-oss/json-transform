@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import MonacoEditor from "../components/monaco/MonacoEditor";
 import useJSONString from "../components/hooks/useJSONString";
 
@@ -28,28 +28,6 @@ const DEFAULT_INPUT_VALUE = `{
 }`;
 
 const TransformerTester = () => {
-
-    if (process.env.NODE_ENV !== 'production') {
-        useEffect(() => {
-            window.addEventListener('error', e => {
-                if (e.message.includes('ResizeObserver loop')) {
-                    const resizeObserverErrDiv = document.getElementById(
-                        'webpack-dev-server-client-overlay-div'
-                    );
-                    const resizeObserverErr = document.getElementById(
-                        'webpack-dev-server-client-overlay'
-                    );
-                    if (resizeObserverErr) {
-                        resizeObserverErr.setAttribute('style', 'display: none');
-                    }
-                    if (resizeObserverErrDiv) {
-                        resizeObserverErrDiv.setAttribute('style', 'display: none');
-                    }
-                }
-            });
-        }, []);
-    }
-
     const [inputString, setInputString, parsedInput, inputError] = useJSONString(DEFAULT_INPUT_VALUE);
     const [transformerString, setTransformerString, parsedTransformer, transformerError] =
         useJSONString(DEFAULT_DEFINITION_VALUE);
