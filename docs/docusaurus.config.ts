@@ -1,5 +1,7 @@
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
+
 import darkCodeTheme from "./code_theme"
 
 const icon = "💡";
@@ -32,7 +34,19 @@ const config: Config = {
     locales: ["en"],
   },
 
-  plugins: ["docusaurus-lunr-search"],
+  plugins: ["docusaurus-lunr-search", context => {
+    return {
+      name: "monaco-webpack-plugin-patch",
+      configureWebpack(config, isServer, utils) {
+        return {
+          plugins: [new MonacoWebpackPlugin({
+            publicPath: '/json-transform'
+          })]
+        };
+      },
+    };
+
+  }],
 
   presets: [
     [

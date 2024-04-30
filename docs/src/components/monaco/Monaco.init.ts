@@ -1,4 +1,5 @@
 import { loader, type Monaco } from "@monaco-editor/react";
+import * as monaco from 'monaco-editor';
 import type { IRange, languages } from "monaco-editor";
 import { functions, getFunctionInlineSignature, getFunctionObjectSignature } from "@nlighten/json-transform-core";
 import {formatSchemaType} from "@nlighten/json-schema-utils";
@@ -142,6 +143,8 @@ const initMonaco = (monaco: Monaco) => {
     ],
   });
 };
+
+loader.config({ monaco })
 
 loader.init().then(monaco => {
   glob.monaco = monaco;

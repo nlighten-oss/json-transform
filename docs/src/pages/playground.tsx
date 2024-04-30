@@ -21,7 +21,7 @@ const playground = () => {
                 <br/>
                 <h1>Playground</h1>
                 <p>Here you can test transformers yourself...</p>
-                <BrowserOnly fallback={<div>Client-Only</div>}>
+                <BrowserOnly fallback={<div>Loading... <div data-loader /></div>}>
                     {() => <LazyBrowserLayout />}
                 </BrowserOnly>
             </div>
