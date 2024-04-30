@@ -31,6 +31,9 @@
   --aa-selected-color-rgb: #64b5f6 !important;
   --aa-icon-color-rgb: #1976d2 !important;
 }
+.navbar-button {
+  color: var(--ifm-button-color);
+}
 
 .examples_grid {
   display: grid;

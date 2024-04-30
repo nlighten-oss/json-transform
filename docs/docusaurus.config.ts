@@ -55,6 +55,11 @@ const config: Config = {
 
   themeConfig:
     {
+      docs: {
+        sidebar: {
+          hideable: true
+        }
+      },
       navbar: {
         title: "JSON Transform",
         logo: {
@@ -62,18 +67,12 @@ const config: Config = {
           src: LOGO,
         },
         items: [
-          // {
-          //   type: 'docSidebar',
-          //   sidebarId: 'referenceSidebar',
-          //   position: 'left',
-          //   label: 'Docs',
-          // },
-          // {
-          //   type: "doc",
-          //   docId: "reference/index",
-          //   position: "left",
-          //   label: "Reference",
-          // },
+          {
+            to: "playground",
+            position: "right",
+            label: "Playground",
+            className: "button button--primary navbar-button"
+          },
           {
             href: "https://github.com/nlighten-oss/json-transform",
             label: "GitHub",
@@ -88,8 +87,12 @@ const config: Config = {
             title: 'Docs',
             items: [
               {
-                label: 'Tutorial',
-                to: '/docs/intro',
+                label: 'Documentation',
+                to: '/json-transform',
+              },
+              {
+                label: 'Playground',
+                to: '/json-transform/playground',
               },
             ],
           },
