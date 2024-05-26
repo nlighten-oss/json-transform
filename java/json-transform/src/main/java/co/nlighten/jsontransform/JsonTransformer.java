@@ -10,6 +10,8 @@ import java.util.Map;
  */
 public abstract class JsonTransformer<JE, JA extends Iterable<JE>, JO extends JE> implements Transformer {
 
+    static final String OBJ_DESTRUCT_KEY = "*";
+
     private final JsonAdapter<JE, JA, JO> adapter;
     protected final JE definition;
 
@@ -68,8 +70,8 @@ public abstract class JsonTransformer<JE, JA extends Iterable<JE>, JO extends JE
         }
 
         var result = adapter.jObject.create();
-        if (adapter.jObject.has(definition, "*")) {
-            var val = adapter.jObject.get(definition, "*");
+        if (adapter.jObject.has(definition, OBJ_DESTRUCT_KEY)) {
+            var val = adapter.jObject.get(definition, OBJ_DESTRUCT_KEY);
             var res = (JE) fromJsonElement(val, resolver, false);
             if (res != null) {
                 var isArray = adapter.jArray.is(val);
@@ -86,13 +88,13 @@ public abstract class JsonTransformer<JE, JA extends Iterable<JE>, JO extends JE
                     // override the base object with resolved one
                     result = (JO)res;
                 } else {
-                    adapter.jObject.add(result, "*", res);
+                    adapter.jObject.add(result, OBJ_DESTRUCT_KEY, res);
                 }
             }
         }
 
         for (Map.Entry<String, JE> kv : adapter.jObject.entrySet(definition)) {
-            if (kv.getKey().equals("*")) continue;
+            if (kv.getKey().equals(OBJ_DESTRUCT_KEY)) continue;
             var localKey = kv.getKey();
             var value = (JE) fromJsonElement(kv.getValue(), resolver, false);
             if (!adapter.isNull(value) || adapter.jObject.has(result, localKey) /* we allow overriding with null*/) {
