@@ -4,7 +4,7 @@ Returns the length of a value
 
 ### Usage
 ```transformers
-"$$lengh([type],[default_zero]):{input}"
+"$$length([type],[default_zero]):{input}"
 ```
 ### Returns
 `integer`
