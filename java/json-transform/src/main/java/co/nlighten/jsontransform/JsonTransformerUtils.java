@@ -26,7 +26,6 @@ public class JsonTransformerUtils {
             var matcher = variableDetectionRegExp.matcher(string);
             while (matcher.find()) {
                 var v = matcher.group();
-                if (v.endsWith("$$")) v = v.substring(0, v.length() - 2);
                 if (!result.containsKey(v)) result.put(v, path);
             }
         } else if (adapter.jArray.is(element)) {
@@ -37,9 +36,14 @@ public class JsonTransformerUtils {
             }
         } else if (adapter.jObject.is(element)) {
             var coll = adapter.jObject.type.cast(element);
+            var isObjectFunction = adapter.jObject.keySet(coll).stream().anyMatch(x -> x.startsWith("$$"));
             adapter.jObject.keySet(coll).forEach(x -> {
                 var value = adapter.jObject.get(coll, x);
-                findAllVariableUses(adapter, value, result, JsonTransformer.OBJ_DESTRUCT_KEY.equals(x) ? path : path + "." + x);
+                findAllVariableUses(adapter, value, result,
+                        JsonTransformer.OBJ_DESTRUCT_KEY.equals(x) || isObjectFunction
+                                ? path
+                                : path + "." + x
+                );
             });
         }
     }

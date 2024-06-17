@@ -110,5 +110,21 @@ public class JsonTransformerUtilsTest extends BaseTest {
                 "$.input2", "$",
                 "#now", "$"
         ), result);
+
+        result = JsonTransformerUtils.findAllVariableUses(adapter, adapter.parse("""
+                {
+                  "filters": {
+                    "locked": {
+                      "$$map": "$.parameters.locked$$",
+                      "to": "$$boolean:##current",
+                      "x_target": "$.parameters.x_source"
+                    }
+                  }
+                }
+"""));
+        Assertions.assertEquals(Map.of(
+                "$.parameters.locked$$", "$.filters.locked",
+                "$.parameters.x_source", "$.filters.locked"
+        ), result);
     }
 }

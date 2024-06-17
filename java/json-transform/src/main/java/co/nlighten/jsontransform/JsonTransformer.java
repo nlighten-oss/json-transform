@@ -11,6 +11,7 @@ import java.util.Map;
 public abstract class JsonTransformer<JE, JA extends Iterable<JE>, JO extends JE> implements Transformer {
 
     static final String OBJ_DESTRUCT_KEY = "*";
+    static final String FUNCTION_PREFIX = "$$";
 
     private final JsonAdapter<JE, JA, JO> adapter;
     protected final JE definition;
