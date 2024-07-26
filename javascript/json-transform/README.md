@@ -2,7 +2,7 @@
 
 ![](https://img.shields.io/npm/v/@nlighten/json-transform.svg)
 
-JSON transformers Javascript implementation
+[JSON transformers](https://nlighten-oss.github.io/json-transform/) JavaScript implementation
 
 # Installation
 
