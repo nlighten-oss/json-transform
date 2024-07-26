@@ -1,5 +1,5 @@
-import jp from 'jsonpath';
 import { v4 as uuidv4 } from 'uuid';
+import DocumentContext from "./DocumentContext";
 
 const JSONPATH_ROOT = "$",
   JSONPATH_ROOT_ESC = "\\$",
@@ -47,18 +47,6 @@ const compareTo = (a: any, b: any) => {
   }
   // incomparable
   return null;
-}
-
-class DocumentContext {
-  private value: any;
-  constructor(value: any) {
-    this.value = value;
-  }
-  read(expression: string) {
-    if (expression === "$") return this.value;
-    const result = jp.query(this.value, expression);
-    return result?.length === 1 ? result[0] : result;
-  }
 }
 
 const getDocumentContext = (value: any) : DocumentContext => {
