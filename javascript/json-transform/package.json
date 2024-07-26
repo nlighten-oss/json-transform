@@ -1,0 +1,58 @@
+{
+  "name": "@nlighten/json-transform",
+  "description": "JSON transformers implementation",
+  "version": "0.1.0",
+  "main": "dist/json-transform.js",
+  "umd:main": "dist/json-transform.umd.js",
+  "module": "dist/json-transform.module.js",
+  "typings": "dist/index.d.ts",
+  "source": "src/index.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/json-transform.js",
+      "import": "./dist/json-transform.module.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "microbundle",
+    "test": "vitest --no-watch",
+    "test:watch": "vitest"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nlighten-oss/json-transform.git"
+  },
+  "files": [
+    "dist/"
+  ],
+  "keywords": [
+    "json-transform"
+  ],
+  "author": "Eli Sherer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nlighten-oss/json-transform/issues"
+  },
+  "homepage": "https://github.com/nlighten-oss/json-transform#readme",
+  "peerDependencies": {
+    "@nlighten/json-schema-utils": "^1.0.0",
+    "jsonpath": "^1.1.1",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@nlighten/json-schema-utils": "^1.0.0",
+    "@types/jsonpath": "^0.2.4",
+    "@types/uuid": "^10.0.0",
+    "jsonpath": "^1.1.1",
+    "microbundle": "^0.15.1",
+    "prettier": "3.1.1",
+    "typescript": "^5.3.3",
+    "uuid": "^10.0.0",
+    "vitest": "1.2.2"
+  }
+}
