@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @ArgumentType(value = "default", type = ArgType.BigDecimal, position = 0, defaultBigDecimal = 0,
               description = "The default value to use for empty values")
-@ArgumentType(value = "by", type = ArgType.Transformer, position = 1, required = false,
+@ArgumentType(value = "by", type = ArgType.Transformer, position = 1,
               defaultString = "##current",
               description = "A transformer to extract a property to sum by (using ##current to refer to the current item)")
 

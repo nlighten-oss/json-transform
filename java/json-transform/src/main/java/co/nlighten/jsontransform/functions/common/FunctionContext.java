@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE> {
 
+    protected final String CONTEXT_KEY = "context";
     protected final String DOUBLE_HASH_CURRENT = "##current";
     protected final String DOUBLE_HASH_INDEX = "##index";
     protected final String DOLLAR = "$";
@@ -53,8 +54,8 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
     }
 
     private ParameterResolver recalcResolver(JO definition, ParameterResolver resolver, JsonTransformerFunction<JE> extractor) {
-        if (adapter.jObject.has(definition, "context")) {
-            var contextElement = adapter.jObject.get(definition, "context");
+        if (adapter.jObject.has(definition, CONTEXT_KEY)) {
+            var contextElement = adapter.jObject.get(definition, CONTEXT_KEY);
             if (adapter.jObject.is(contextElement)) {
                 var ctx = adapter.jObject.convert(contextElement);
                 var addCtx = adapter.jObject.entrySet(ctx).stream().collect(
@@ -66,7 +67,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
                 return name -> {
                     for (var key : addCtx.keySet()) {
                         if (pathOfVar(key, name)) {
-                            return addCtx.get(key).read("$" + name.substring(key.length()));
+                            return addCtx.get(key).read(DOLLAR + name.substring(key.length()));
                         }
                     }
                     return resolver.get(name);
