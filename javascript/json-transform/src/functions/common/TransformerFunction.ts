@@ -3,6 +3,7 @@ import {ArgType} from "./ArgType";
 import FunctionContext from "./FunctionContext";
 import {isNullOrUndefined} from "../../JsonHelpers";
 import {FunctionDescription} from "./FunctionDescription";
+import {BigDecimal} from "./FunctionHelpers";
 
 /**
  * Base class for all transformer functions.
@@ -30,12 +31,12 @@ class TransformerFunction {
   private static getDefaultValue(a: ArgumentType) {
     if (a == null || a.defaultIsNull) return null;
     switch (a.type) {
-      case ArgType.Boolean: return a.defaultBoolean;
-      case ArgType.String: return a.defaultString;
-      case ArgType.Enum: return a.defaultEnum;
-      case ArgType.Integer: return a.defaultInteger;
-      case ArgType.Long: return a.defaultLong;
-      case ArgType.BigDecimal: return a.defaultBigDecimal;
+      case ArgType.Boolean: return a.defaultBoolean ?? null;
+      case ArgType.String: return a.defaultString ?? null;
+      case ArgType.Enum: return a.defaultEnum ?? null;
+      case ArgType.Integer: return a.defaultInteger ?? null;
+      case ArgType.Long: return a.defaultLong ?? null;
+      case ArgType.BigDecimal: return a.defaultBigDecimal ? new BigDecimal(a.defaultBigDecimal) : null;
     }
     return null;
   }

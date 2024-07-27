@@ -2,6 +2,8 @@ import TransformerFunction from "./TransformerFunction";
 import {ParameterResolver} from "../../ParameterResolver";
 import {JsonTransformerFunction} from "../../JsonTransformerFunction";
 import {compareTo, isNullOrUndefined, getAsString, getDocumentContext} from "../../JsonHelpers";
+import {BigDecimal} from "./FunctionHelpers";
+import JsonElementStreamer from "../../JsonElementStreamer";
 
 class FunctionContext {
   protected static readonly CONTEXT_KEY= "context";
@@ -66,11 +68,11 @@ class FunctionContext {
     return this.resolver;
   }
 
-  protected has(name: string): boolean {
+  public has(name: string): boolean {
     return false
   };
 
-  protected get(name: string | null, transform: boolean = true): any {
+  public get(name: string | null, transform: boolean = true): any {
     return null;
   }
 
@@ -86,13 +88,23 @@ class FunctionContext {
     return typeof value === 'boolean';
   }
 
+  public getUnwrapped(name: string | null, reduceBigDecimals?: boolean) {
+    const value = this.get(name, true);
+    if (value instanceof JsonElementStreamer) {
+      return value.toJsonArray();
+    }
+    return value;
+  }
+
   public compareTo(a: any, b: any) {
     return compareTo(a, b);
   }
 
   public getJsonElement(name: string | null, transform: boolean = true) {
     const value = this.get(name, transform);
-    // TODO: add stream support
+    if (value instanceof JsonElementStreamer) {
+      return value.toJsonArray();
+    }
     return value;
   }
 
@@ -126,13 +138,19 @@ class FunctionContext {
     return value.trim().toUpperCase();
   }
 
-  private getNumber(name: string | null, transform: boolean = true) {
+  public getInteger(name: string | null, transform: boolean = true) {
     const value = this.get(name, transform);
     if (value == null) {
       return null;
     }
+    if (value instanceof BigDecimal) {
+      return Math.floor(value.toNumber());
+    }
     if (typeof value === 'number') {
       return Math.floor(value);
+    }
+    if (typeof value === 'bigint') {
+      return Number(value);
     }
     let str = getAsString(value);
     if (str == null) return null;
@@ -141,26 +159,80 @@ class FunctionContext {
     return parseInt(value);
   }
 
-  public getInteger(name: string | null, transform: boolean = true) {
-    return this.getNumber(name, transform)
-  }
-
   public getLong(name: string | null, transform: boolean = true) {
-    return this.getNumber(name, transform);
+    const value = this.get(name, transform);
+    if (value == null) {
+      return null;
+    }
+    if (typeof value === 'bigint') {
+      return value;
+    }
+    if (typeof value === 'number') {
+      return BigInt(value);
+    }
+    if (value instanceof BigDecimal) {
+      return BigInt(value.toFixed(0));
+    }
+    let str = getAsString(value);
+    if (str == null) return null;
+    str = str.trim();
+    if (str === "") return null;
+    return BigInt(value);
   }
 
   public getBigDecimal(name: string | null, transform: boolean = true) {
-    return this.getNumber(name, transform);
+    const value = this.get(name, transform);
+    if (value == null) {
+      return null;
+    }
+    if (value instanceof BigDecimal) {
+      return value;
+    }
+    if (typeof value === 'number') {
+      return new BigDecimal(value);
+    }
+    let str = getAsString(value);
+    if (str == null) return null;
+    str = str.trim();
+    if (str === "") return null;
+    return new BigDecimal(value);
   }
 
   public getJsonArray(name: string | null, transform: boolean = true) {
     const value = this.get(name, transform);
-    // TODO: add stream support
+    if (value instanceof JsonElementStreamer) {
+      return value.toJsonArray();
+    }
     return Array.isArray(value) ? value : null;
   }
 
+  /**
+   * Use this method instead of getJsonArray if you plan on iterating over the array
+   * The pros of using this method are
+   * - That it will not transform all the array to a single (possibly huge) array in memory
+   * - It lazy transforms the array elements, so if there is short-circuiting, some transformations might be prevented
+   * @return JsonElementStreamer
+   */
   public getJsonElementStreamer(name: string | null) {
-    // TODO: add stream support
+    let transformed = false;
+    let value = this.get(name, false);
+    if (value instanceof JsonElementStreamer) {
+      return value;
+    }
+    // in case val is already an array we don't transform it to prevent evaluation of its result values
+    // so if is not an array, we must transform it and check after-wards (not lazy anymore)
+    if (!Array.isArray(value)) {
+      value = this.extractor.transform(value, this.resolver, true);
+      if (value instanceof JsonElementStreamer) {
+        return value;
+      }
+      transformed = true;
+    }
+    // check if initially or after transformation we got an array
+    if (Array.isArray(value)) {
+      return JsonElementStreamer.fromJsonArray(this, value, transformed);
+    }
+    return null;
   }
 
   public transform(definition: any, allowReturningStreams: boolean = false) {
