@@ -19,7 +19,7 @@ public class TransformerFunctionEvalTest extends BaseTest {
   "\\\\$","$avg:",'\\\\$','..value']
   }
 }
-"""), fromJson("4.86"));
+"""), fromJson("4.8625"));
 
         assertTransformation(arr, fromJson("""
 {
@@ -33,7 +33,7 @@ public class TransformerFunctionEvalTest extends BaseTest {
     ]
   }
 }}
-"""), fromJson("4.86"));
+"""), fromJson("4.8625"));
 
 
 
