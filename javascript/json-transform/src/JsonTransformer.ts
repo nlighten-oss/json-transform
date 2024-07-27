@@ -3,6 +3,7 @@ import {JsonTransformerFunction} from "./JsonTransformerFunction";
 import {ParameterResolver} from "./ParameterResolver";
 import {createPayloadResolver, isNullOrUndefined} from "./JsonHelpers";
 import transformerFunctions, { TransformerFunctions } from "./transformerFunctions";
+import JsonElementStreamer from "./JsonElementStreamer";
 
 class JsonTransformer implements Transformer {
 
@@ -32,13 +33,16 @@ class JsonTransformer implements Transformer {
 
   fromJsonPrimitive(definition: any, resolver: ParameterResolver, allowReturningStreams: boolean) : any {
     if (typeof definition !== 'string') {
-      return definition;
+      return definition ?? null;
     }
     try {
       // test for inline function (e.g. $$function:...)
       const match = this.transformerFunctions.matchInline(definition, resolver, this.JSON_TRANSFORMER);
       if (match != null) {
-        // TODO: add streams support
+        const matchResult = match.getResult();
+        if (matchResult instanceof JsonElementStreamer) {
+          return allowReturningStreams ? matchResult : matchResult.toJsonArray();
+        }
         return match.getResult();
       }
       // jsonpath / context
@@ -52,7 +56,10 @@ class JsonTransformer implements Transformer {
   fromJsonObject(definition: any, resolver: ParameterResolver, allowReturningStreams: boolean) : any {
     const match = this.transformerFunctions.matchObject(definition, resolver, this.JSON_TRANSFORMER);
     if (match != null) {
-      // TODO: add streams support
+      const res = match.getResult();
+      if (res instanceof JsonElementStreamer) {
+        return allowReturningStreams ? res : res.toJsonArray();
+      }
       return match.getResult();
     }
 

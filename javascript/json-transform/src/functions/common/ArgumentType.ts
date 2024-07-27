@@ -1,4 +1,5 @@
 import {ArgType} from "./ArgType";
+import {BigDecimal} from "./FunctionHelpers";
 
 export type ArgumentType = {
   description: string;
@@ -13,7 +14,7 @@ export type ArgumentType = {
   defaultEnum?: string // default ""
   defaultInteger?: number; // default -1
   defaultLong?: number; // default -1L
-  defaultBigDecimal?: number; // default -1
+  defaultBigDecimal?: number | string; // default -1
 
   aliases?: string[]; // default {};
 }
