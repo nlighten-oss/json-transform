@@ -22,7 +22,7 @@ class TransformerFunctionAt extends TransformerFunction {
   }
 
   override apply(context: FunctionContext): any {
-    const value = context.getJsonArray(null);
+    const value = context.getJsonElementStreamer(null);
     if (value == null) {
       return null;
     }
@@ -30,7 +30,15 @@ class TransformerFunctionAt extends TransformerFunction {
     if (index == null) {
       return null;
     }
-    return value.at(index);
+    if (index == 0) {
+      return value.stream().firstOrNull();
+    }
+    if (index > 0) {
+      return value.stream(index).firstOrNull();
+    }
+    // negative
+    const arr = value.toJsonArray();
+    return arr.at(index) ?? null;
   }
 }
 

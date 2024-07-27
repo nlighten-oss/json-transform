@@ -1,0 +1,33 @@
+name: JavaScript json-transform Test
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - javascript/json-transform/**
+
+# cancel previous tests if new commit is pushed to PR branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: ./javascript/json-transform/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./javascript/json-transform
+        run: npm ci
+
+      - name: Run tests
+        working-directory: ./javascript/json-transform
+        run: npm test

@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import DocumentContext from "./DocumentContext";
+import {BigDecimal} from "./functions/common/FunctionHelpers";
+import {areSimilar} from "@nlighten/json-schema-utils";
 
 const JSONPATH_ROOT = "$",
   JSONPATH_ROOT_ESC = "\\$",
@@ -29,6 +31,8 @@ const numberCompare = (a: number, b: number) => {
   return a < b ? -1 : (a === b ? 0 : 1);
 }
 
+const numberType = (a: any) => typeof a === 'number' || typeof a === 'bigint' || a instanceof BigDecimal;
+
 const compareTo = (a: any, b: any) => {
   if (Array.isArray(a) && Array.isArray(b)) {
     return numberCompare(a.length, b.length);
@@ -36,8 +40,8 @@ const compareTo = (a: any, b: any) => {
     return numberCompare(Object.keys(a).length, Object.keys(b).length);
   } else if (typeof a === 'string' && typeof b === 'string') {
     return a.localeCompare(b);
-  } else if (typeof a === 'number' && typeof b === 'number') {
-    return numberCompare(a, b);
+  } else if (numberType(a) && numberType(b)) {
+    return BigDecimal(a).comparedTo(BigDecimal(b));
   } else if (typeof a === 'boolean' && typeof b === 'boolean') {
     return a === b ? 0 : (a ? 1 : -1);
   } else if (isNullOrUndefined(a) && !isNullOrUndefined(b)) {
@@ -143,22 +147,34 @@ const lenientJsonParse = (input: string) => {
 
 const BIGINT_ZERO = BigInt(0);
 const isTruthy = (value: any, javascriptStyle?: boolean) => {
-  if (Array.isArray(value)) {
-    return value.length > 0;
-  } else if (value && typeof value === 'object') {
-    return Object.keys(value).length > 0;
-  }
   if (typeof value === 'boolean') {
     return value;
   } else if (typeof value === 'number') {
     return value != 0;
   } else if (typeof value === 'bigint') {
     return value !== BIGINT_ZERO;
+  } else if (value instanceof BigDecimal) {
+    return !value.isZero();
   } else if (typeof value === 'string') {
-    return javascriptStyle ? value !== '' : value === 'true';
+    return javascriptStyle ? Boolean(value) : value.toLowerCase() === 'true';
+  } else if (Array.isArray(value)) {
+    return value.length > 0;
+  } else if (value && typeof value === 'object') {
+    return Object.keys(value).length > 0;
   }
   return !isNullOrUndefined(value);
 }
+
+const isEqual = (value: any, other: any): boolean => {
+  if (value === other) {
+    return true;
+  }
+  if (numberType(value) && numberType(other)) {
+    return BigDecimal(value).eq(BigDecimal(other));
+  }
+  return areSimilar(value, other);
+}
+
 
 export {
   isNullOrUndefined,
@@ -167,5 +183,6 @@ export {
   compareTo,
   getDocumentContext,
   lenientJsonParse,
-  isTruthy
+  isTruthy,
+  isEqual
 };

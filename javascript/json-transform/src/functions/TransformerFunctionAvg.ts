@@ -1,8 +1,10 @@
+import BigNumber from "bignumber.js";
 import TransformerFunction from "./common/TransformerFunction";
 import {ArgType} from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
 import {FunctionDescription} from "./common/FunctionDescription";
 import {isNullOrUndefined} from "../JsonHelpers";
+import {BigDecimal} from "./common/FunctionHelpers";
 
 const DESCRIPTION : FunctionDescription = {
   alias: "avg",
@@ -26,17 +28,22 @@ class TransformerFunctionAvg extends TransformerFunction {
   }
 
   override apply(context: FunctionContext): any {
-    const value = context.getJsonArray(null);
-    if (value == null) {
+    const value = context.getJsonElementStreamer(null);
+    if (value == null || value.knownAsEmpty()) {
       return null;
     }
     const by = context.getJsonElement( "by", false);
-    const def = context.getBigDecimal("default") ?? 0;
-    let size = value.length; // TODO: when streams will be used, needs to count during reduce
-    return Math.round(value.reduce((a, c) => {
-      let val = !isNullOrUndefined(by) ? context.transformItem(by, c) : c;
-        return a + (isNullOrUndefined(val) ? def : val);
-    }, 0) / size);
+    const _default = context.getBigDecimal("default") ?? BigDecimal(0);
+    let size = 0;
+    const result = value.stream()
+      .map(t => {
+        size++;
+        let res = !isNullOrUndefined(by) ? context.transformItem(by, t) : t;
+        return isNullOrUndefined(res) ? _default : BigDecimal(res);
+      })
+      .reduce((a: BigNumber, c) => a.plus(c))
+      .dividedBy(size);
+    return result;
   }
 }
 

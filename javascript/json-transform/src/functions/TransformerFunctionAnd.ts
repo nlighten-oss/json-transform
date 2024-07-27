@@ -16,11 +16,11 @@ class TransformerFunctionAnd extends TransformerFunction {
   }
 
   override apply(context: FunctionContext): any {
-    const arr = context.getJsonArray(null);
+    const arr = context.getJsonElementStreamer(null);
     if (arr == null) {
-      return null;
+      return false;
     }
-    return arr.every(item => isTruthy(item));
+    return arr.stream().all(item => isTruthy(item));
   }
 }
 

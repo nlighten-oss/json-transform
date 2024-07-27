@@ -40,12 +40,12 @@
   },
   "homepage": "https://github.com/nlighten-oss/json-transform#readme",
   "peerDependencies": {
-    "@nlighten/json-schema-utils": "^1.0.0",
+    "@nlighten/json-schema-utils": "^1.0.2",
     "jsonpath": "^1.1.1",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "@nlighten/json-schema-utils": "^1.0.0",
+    "@nlighten/json-schema-utils": "^1.0.2",
     "@types/jsonpath": "^0.2.4",
     "@types/uuid": "^10.0.0",
     "jsonpath": "^1.1.1",
@@ -54,5 +54,9 @@
     "typescript": "^5.3.3",
     "uuid": "^10.0.0",
     "vitest": "1.2.2"
+  },
+  "dependencies": {
+    "bignumber.js": "^9.1.2",
+    "sequency": "^0.20.0"
   }
 }

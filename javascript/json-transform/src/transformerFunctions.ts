@@ -8,8 +8,11 @@ import TransformerFunctionAnd from "./functions/TransformerFunctionAnd";
 import TransformerFunctionAt from "./functions/TransformerFunctionAt";
 import TransformerFunctionAvg from "./functions/TransformerFunctionAvg";
 import TransformerFunctionBase64 from "./functions/TransformerFunctionBase64";
+import TransformerFunctionBoolean from "./functions/TransformerFunctionBoolean";
+
 import TransformerFunctionLower from "./functions/TransformerFunctionLower";
 import TransformerFunctionUpper from "./functions/TransformerFunctionUpper";
+import TransformerFunctionIs from "./functions/TransformerFunctionIs";
 
 class FunctionMatchResult {
   private result;
@@ -43,7 +46,7 @@ export class TransformerFunctions {
       "at": new TransformerFunctionAt(),
       "avg": new TransformerFunctionAvg(),
       "base64": new TransformerFunctionBase64(),
-      "boolean": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionBoolean(),
+      "boolean": new TransformerFunctionBoolean(),
       "coalesce": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionCoalesce(),
       "concat": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionConcat(),
       "contains": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionContains(),
@@ -64,7 +67,7 @@ export class TransformerFunctions {
       "formparse": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionFormParse(),
       "group": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionGroup(),
       "if": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionIf(),
-      "is": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionIs(),
+      "is": new TransformerFunctionIs(),
       "isnull": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionIsNull(),
       "join": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionJoin(),
       "json": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionJsonParse(),
