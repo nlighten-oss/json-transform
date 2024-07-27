@@ -10,33 +10,33 @@ public class TransformerFunctionAvgTest extends BaseTest {
     @Test
     void inline() {
         var arr = new Object[] {4,2,13.45, JsonNull.INSTANCE};
-        assertTransformation(arr, "$$avg():$", fromJson("4.86"));
-        assertTransformation(arr, "$$avg(1):$", fromJson("5.11"));
+        assertTransformation(arr, "$$avg():$", fromJson("4.8625"));
+        assertTransformation(arr, "$$avg(1):$", fromJson("5.1125"));
     }
 
-    static class holder{
+    static class Holder {
         final BigDecimal value;
 
-        holder(BigDecimal value) {
+        Holder(BigDecimal value) {
             this.value = value;
         }
     }
     @Test
     void object() {
-        var arr = new holder[] {new holder(new BigDecimal(4)),new holder( new BigDecimal(2)),new holder( new BigDecimal("13.45")), new holder(null)};
+        var arr = new Holder[] {new Holder(new BigDecimal(4)),new Holder( new BigDecimal(2)),new Holder( new BigDecimal("13.45")), new Holder(null)};
 
 
         assertTransformation(arr, fromJson("""
 {
   "$$avg":"$","by":"##current.value"
 }
-"""), fromJson("4.86"));
+"""), fromJson("4.8625"));
 
         assertTransformation(arr, fromJson("""
 {
   "$$avg":"$","by":"##current.value","default":1
 }
-"""), fromJson("5.11"));
+"""), fromJson("5.1125"));
 
     }
 

@@ -8,7 +8,6 @@ import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import co.nlighten.jsontransform.functions.annotations.*;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -35,21 +34,17 @@ public class TransformerFunctionAvg<JE, JA extends Iterable<JE>, JO extends JE> 
         if (streamer == null || streamer.knownAsEmpty())
             return null;
         var by = context.getJsonElement( "by", false);
-        var def = Objects.requireNonNullElse(context.getBigDecimal("default"), BigDecimal.ZERO);
+        var _default = Objects.requireNonNullElse(context.getBigDecimal("default"), BigDecimal.ZERO);
         var size = new AtomicInteger(0);
+        var identity = BigDecimal.valueOf(0, FunctionHelpers.MAX_SCALE);
         var result = streamer.stream()
                 .map(t -> {
                     size.getAndIncrement();
                     var res = !adapter.isNull(by) ? context.transformItem(by, t) : t;
-                    return adapter.isNull(res) ? def : adapter.getNumberAsBigDecimal(res);
+                    return adapter.isNull(res) ? _default : adapter.getNumberAsBigDecimal(res);
                 })
-                .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .divide(BigDecimal.valueOf(size.get()), RoundingMode.HALF_UP);
-
-        // cap scale at max
-        if (result.scale() > FunctionHelpers.MAX_SCALE) {
-            result = result.setScale(FunctionHelpers.MAX_SCALE, FunctionHelpers.MAX_SCALE_ROUNDING);
-        }
+                .reduce(identity, BigDecimal::add)
+                .divide(BigDecimal.valueOf(size.get()), FunctionHelpers.MAX_SCALE_ROUNDING);
         return result;
     }
 }

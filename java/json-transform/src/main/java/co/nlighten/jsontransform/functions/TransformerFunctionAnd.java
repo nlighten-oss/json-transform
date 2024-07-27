@@ -25,6 +25,9 @@ public class TransformerFunctionAnd<JE, JA extends Iterable<JE>, JO extends JE> 
     @Override
     public Object apply(FunctionContext<JE, JA, JO> context) {
         var value = context.getJsonElementStreamer(null);
+        if (value == null) {
+            return false;
+        }
         return value.stream().allMatch(adapter::isTruthy);
     }
 }
