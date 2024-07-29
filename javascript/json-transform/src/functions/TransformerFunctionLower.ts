@@ -4,7 +4,7 @@ import FunctionContext from "./common/FunctionContext";
 import {FunctionDescription} from "./common/FunctionDescription";
 
 const DESCRIPTION : FunctionDescription = {
-  alias: "lower",
+  aliases: ["lower"],
   description: "",
   inputType: ArgType.String,
   outputType: ArgType.String
