@@ -2,7 +2,7 @@ import {ArgumentType} from "./ArgumentType";
 import {ArgType} from "./ArgType";
 
 export type FunctionDescription = {
-  alias: string;
+  aliases: string[];
   deprecatedAlias?: string;
   description?: string;
   notes?: string;

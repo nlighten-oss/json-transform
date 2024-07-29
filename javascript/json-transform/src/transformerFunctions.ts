@@ -13,6 +13,8 @@ import TransformerFunctionBoolean from "./functions/TransformerFunctionBoolean";
 import TransformerFunctionLower from "./functions/TransformerFunctionLower";
 import TransformerFunctionUpper from "./functions/TransformerFunctionUpper";
 import TransformerFunctionIs from "./functions/TransformerFunctionIs";
+import TransformerFunctionCoalesce from "./functions/TransformerFunctionCoalesce";
+import TransformerFunctionConcat from "./functions/TransformerFunctionConcat";
 
 class FunctionMatchResult {
   private result;
@@ -27,7 +29,7 @@ class FunctionMatchResult {
 }
 
 const UNIMPLEMENTED = {
-  alias: "unimplemented",
+  aliases: ["unimplemented"],
 }
 
 export class TransformerFunctions {
@@ -47,8 +49,8 @@ export class TransformerFunctions {
       "avg": new TransformerFunctionAvg(),
       "base64": new TransformerFunctionBase64(),
       "boolean": new TransformerFunctionBoolean(),
-      "coalesce": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionCoalesce(),
-      "concat": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionConcat(),
+      "coalesce": new TransformerFunctionCoalesce(),
+      "concat": new TransformerFunctionConcat(),
       "contains": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionContains(),
       "csv": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionCsv(),
       "csvparse": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionCsvParse(),
@@ -60,7 +62,7 @@ export class TransformerFunctions {
       "eval": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionEval(),
       "filter": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionFilter(),
       "find": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionFind(),
-      "first": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionCoalesce(), // * alias for coalesce
+      "first": new TransformerFunctionCoalesce(), // * alias for coalesce
       "flat": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionFlat(),
       "flatten": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionFlatten(),
       "form": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionForm(),

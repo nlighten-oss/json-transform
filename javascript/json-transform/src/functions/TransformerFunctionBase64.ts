@@ -6,7 +6,7 @@ import FunctionContext from "./common/FunctionContext";
 import {FunctionDescription} from "./common/FunctionDescription";
 
 const DESCRIPTION : FunctionDescription = {
-  alias: "base64",
+  aliases: ["base64"],
   inputType: ArgType.String,
   description: "",
   arguments: {

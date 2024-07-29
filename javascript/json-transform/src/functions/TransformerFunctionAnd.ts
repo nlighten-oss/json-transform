@@ -5,7 +5,7 @@ import FunctionContext from "./common/FunctionContext";
 import {isTruthy} from "../JsonHelpers";
 
 const DESCRIPTION : FunctionDescription = {
-  alias: "and",
+  aliases: ["and"],
   inputType: ArgType.Array,
   description: "",
   outputType: ArgType.Boolean

@@ -7,7 +7,7 @@ import {isNullOrUndefined} from "../JsonHelpers";
 import {BigDecimal} from "./common/FunctionHelpers";
 
 const DESCRIPTION : FunctionDescription = {
-  alias: "avg",
+  aliases: ["avg"],
   description: "",
   inputType: ArgType.Array,
   arguments: {

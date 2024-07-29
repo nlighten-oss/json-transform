@@ -5,7 +5,7 @@ import {FunctionDescription} from "./common/FunctionDescription";
 import {isNullOrUndefined, isTruthy} from "../JsonHelpers";
 
 const DESCRIPTION : FunctionDescription = {
-  alias: "boolean",
+  aliases: ["boolean"],
   description: "",
   inputType: ArgType.Any,
   arguments: {

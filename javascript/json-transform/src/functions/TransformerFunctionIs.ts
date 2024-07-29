@@ -6,7 +6,7 @@ import {isEqual, isNullOrUndefined} from "../JsonHelpers";
 import {BigDecimal} from "./common/FunctionHelpers";
 
 const DESCRIPTION : FunctionDescription = {
-  alias: "is",
+  aliases: ["is"],
   description: "",
   inputType: ArgType.Any,
   arguments: {

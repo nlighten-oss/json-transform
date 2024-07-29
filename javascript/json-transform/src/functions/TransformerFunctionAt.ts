@@ -6,7 +6,7 @@ import FunctionContext from "./common/FunctionContext";
 import {FunctionDescription} from "./common/FunctionDescription";
 
 const DESCRIPTION : FunctionDescription = {
-  alias: "at",
+  aliases: ["at"],
   description: "",
   inputType: ArgType.Array,
   arguments: {
