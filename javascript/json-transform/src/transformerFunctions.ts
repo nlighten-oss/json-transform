@@ -15,6 +15,9 @@ import TransformerFunctionUpper from "./functions/TransformerFunctionUpper";
 import TransformerFunctionIs from "./functions/TransformerFunctionIs";
 import TransformerFunctionCoalesce from "./functions/TransformerFunctionCoalesce";
 import TransformerFunctionConcat from "./functions/TransformerFunctionConcat";
+import TransformerFunctionContains from "./functions/TransformerFunctionContains";
+import TransformerFunctionCsv from "./functions/TransformerFunctionCsv";
+import TransformerFunctionCsvParse from "./functions/TransformerFunctionCsvParse";
 
 class FunctionMatchResult {
   private result;
@@ -51,9 +54,9 @@ export class TransformerFunctions {
       "boolean": new TransformerFunctionBoolean(),
       "coalesce": new TransformerFunctionCoalesce(),
       "concat": new TransformerFunctionConcat(),
-      "contains": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionContains(),
-      "csv": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionCsv(),
-      "csvparse": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionCsvParse(),
+      "contains": new TransformerFunctionContains(),
+      "csv": new TransformerFunctionCsv(),
+      "csvparse": new TransformerFunctionCsvParse(),
       "date": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionDate(),
       "decimal": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionDecimal(),
       "digest": new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionDigest(),
