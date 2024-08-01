@@ -9,7 +9,7 @@ const JSONPATH_ROOT = "$",
   JSONPATH_ALT_PREFIX = "#",
   JSONPATH_ALT_PREFIX_ESC = "\\#";
 
-const isNullOrUndefined = (value: any) => value == null || typeof value === 'undefined';
+const isNullOrUndefined = (value: any) : value is null | undefined => value == null || typeof value === 'undefined';
 
 const getAsString = (value: any) : null | string => {
   if (isNullOrUndefined(value)) {
