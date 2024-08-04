@@ -1,15 +1,15 @@
 import { describe, test } from "vitest";
-import { assertTransformation} from "../BaseTransformationTest";
+import { assertTransformation } from "../BaseTransformationTest";
 
 describe("TransformerFunctionCoalesce", () => {
-  test("object", () => {
-    const arr = [ null, null, "c"];
-    assertTransformation(arr, { "$$coalesce": "$" }, arr[2]);
-    assertTransformation(arr, { "$$coalesce": ["$[0]", "b", "c"] }, "b");
+  test("object", async () => {
+    const arr = [null, null, "c"];
+    await assertTransformation(arr, { $$coalesce: "$" }, arr[2]);
+    await assertTransformation(arr, { $$coalesce: ["$[0]", "b", "c"] }, "b");
   });
 
-  test("aliasFirst", () => {
-    const arr = [ null, null, "c"];
-    assertTransformation(arr, { "$$first": "$" }, arr[2]);
+  test("aliasFirst", async () => {
+    const arr = [null, null, "c"];
+    await assertTransformation(arr, { $$first: "$" }, arr[2]);
   });
 });

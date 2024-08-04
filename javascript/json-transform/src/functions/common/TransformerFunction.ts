@@ -46,7 +46,9 @@ class TransformerFunction {
    * @param context the context
    * @return the result of the function
    */
-  public apply(context: FunctionContext): any {}
+  public apply(context: FunctionContext): Promise<any> {
+    return Promise.reject();
+  }
 
   /**
    * Get the argument type for the given name.

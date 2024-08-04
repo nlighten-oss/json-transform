@@ -1,22 +1,22 @@
 import TransformerFunction from "./common/TransformerFunction";
-import {ArgType} from "./common/ArgType";
-import {FunctionDescription} from "./common/FunctionDescription";
+import { ArgType } from "./common/ArgType";
+import { FunctionDescription } from "./common/FunctionDescription";
 import FunctionContext from "./common/FunctionContext";
-import {isTruthy} from "../JsonHelpers";
+import { isTruthy } from "../JsonHelpers";
 
-const DESCRIPTION : FunctionDescription = {
+const DESCRIPTION: FunctionDescription = {
   aliases: ["and"],
   inputType: ArgType.Array,
   description: "",
-  outputType: ArgType.Boolean
+  outputType: ArgType.Boolean,
 };
 class TransformerFunctionAnd extends TransformerFunction {
   constructor() {
     super(DESCRIPTION);
   }
 
-  override apply(context: FunctionContext): any {
-    const arr = context.getJsonElementStreamer(null);
+  override async apply(context: FunctionContext): Promise<any> {
+    const arr = await context.getJsonElementStreamer(null);
     if (arr == null) {
       return false;
     }

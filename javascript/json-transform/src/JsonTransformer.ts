@@ -1,12 +1,11 @@
-import {Transformer} from "./Transformer";
-import {JsonTransformerFunction} from "./JsonTransformerFunction";
-import {ParameterResolver} from "./ParameterResolver";
-import {createPayloadResolver, isNullOrUndefined} from "./JsonHelpers";
+import { Transformer } from "./Transformer";
+import { JsonTransformerFunction } from "./JsonTransformerFunction";
+import { ParameterResolver } from "./ParameterResolver";
+import { createPayloadResolver, isNullOrUndefined } from "./JsonHelpers";
 import transformerFunctions, { TransformerFunctions } from "./transformerFunctions";
 import JsonElementStreamer from "./JsonElementStreamer";
 
 class JsonTransformer implements Transformer {
-
   static readonly OBJ_DESTRUCT_KEY = "*";
   static readonly FUNCTION_PREFIX = "$$";
 
@@ -18,30 +17,29 @@ class JsonTransformer implements Transformer {
     this.transformerFunctions = transformerFunctions;
     this.definition = definition;
     this.JSON_TRANSFORMER = {
-      transform: this.fromJsonElement.bind(this)
+      transform: this.fromJsonElement.bind(this),
     };
   }
 
-
-  transform(payload: any = null, additionalContext: Record<string, any> = {}) {
+  async transform(payload: any = null, additionalContext: Record<string, any> = {}) {
     if (isNullOrUndefined(this.definition)) {
       return null;
     }
-    const resolver : ParameterResolver = createPayloadResolver(payload, additionalContext)
+    const resolver: ParameterResolver = createPayloadResolver(payload, additionalContext);
     return this.fromJsonElement(this.definition, resolver, false);
   }
 
-  fromJsonPrimitive(definition: any, resolver: ParameterResolver, allowReturningStreams: boolean) : any {
-    if (typeof definition !== 'string') {
+  async fromJsonPrimitive(definition: any, resolver: ParameterResolver, allowReturningStreams: boolean): Promise<any> {
+    if (typeof definition !== "string") {
       return definition ?? null;
     }
     try {
       // test for inline function (e.g. $$function:...)
-      const match = this.transformerFunctions.matchInline(definition, resolver, this.JSON_TRANSFORMER);
+      const match = await this.transformerFunctions.matchInline(definition, resolver, this.JSON_TRANSFORMER);
       if (match != null) {
         const matchResult = match.getResult();
         if (matchResult instanceof JsonElementStreamer) {
-          return allowReturningStreams ? matchResult : matchResult.toJsonArray();
+          return allowReturningStreams ? matchResult : await matchResult.toJsonArray();
         }
         return match.getResult();
       }
@@ -53,12 +51,12 @@ class JsonTransformer implements Transformer {
     }
   }
 
-  fromJsonObject(definition: any, resolver: ParameterResolver, allowReturningStreams: boolean) : any {
-    const match = this.transformerFunctions.matchObject(definition, resolver, this.JSON_TRANSFORMER);
+  async fromJsonObject(definition: any, resolver: ParameterResolver, allowReturningStreams: boolean): Promise<any> {
+    const match = await this.transformerFunctions.matchObject(definition, resolver, this.JSON_TRANSFORMER);
     if (match != null) {
       const res = match.getResult();
       if (res instanceof JsonElementStreamer) {
-        return allowReturningStreams ? res : res.toJsonArray();
+        return allowReturningStreams ? res : await res.toJsonArray();
       }
       return match.getResult();
     }
@@ -66,16 +64,16 @@ class JsonTransformer implements Transformer {
     let result: Record<string, any> = {};
     if (Object.prototype.hasOwnProperty.call(definition, JsonTransformer.OBJ_DESTRUCT_KEY)) {
       const val = definition[JsonTransformer.OBJ_DESTRUCT_KEY];
-      const res = this.fromJsonElement(val, resolver, false);
+      const res = await this.fromJsonElement(val, resolver, false);
       if (res != null) {
         const isArray = Array.isArray(val);
         if (isArray && Array.isArray(res)) {
           for (let i = 0; i < res.length; i++) {
-            if (typeof res[i] === 'object') {
+            if (typeof res[i] === "object") {
               Object.assign(result, res[i]);
             }
           }
-        } else if (typeof res === 'object') {
+        } else if (typeof res === "object") {
           result = res;
         } else {
           result[JsonTransformer.OBJ_DESTRUCT_KEY] = res;
@@ -85,8 +83,11 @@ class JsonTransformer implements Transformer {
 
     for (const key in definition) {
       if (key === JsonTransformer.OBJ_DESTRUCT_KEY) continue;
-      const value = this.fromJsonElement(definition[key], resolver, false);
-      if (!isNullOrUndefined(value) || Object.prototype.hasOwnProperty.call(result, key) /* we allow overriding with null*/) {
+      const value = await this.fromJsonElement(definition[key], resolver, false);
+      if (
+        !isNullOrUndefined(value) ||
+        Object.prototype.hasOwnProperty.call(result, key) /* we allow overriding with null*/
+      ) {
         result[key] = value;
       }
     }
@@ -94,14 +95,14 @@ class JsonTransformer implements Transformer {
     return result;
   }
 
-  fromJsonElement(definition: any, resolver: ParameterResolver, allowReturningStreams: boolean) : any {
+  async fromJsonElement(definition: any, resolver: ParameterResolver, allowReturningStreams: boolean): Promise<any> {
     if (isNullOrUndefined(definition)) {
       return null;
     }
     if (Array.isArray(definition)) {
-      return definition.map((d: any) => this.fromJsonElement(d, resolver, false));
+      return Promise.all(definition.map((d: any) => this.fromJsonElement(d, resolver, false)));
     }
-    if (typeof definition === 'object') {
+    if (typeof definition === "object") {
       return this.fromJsonObject(definition, resolver, allowReturningStreams);
     }
     return this.fromJsonPrimitive(definition, resolver, allowReturningStreams);

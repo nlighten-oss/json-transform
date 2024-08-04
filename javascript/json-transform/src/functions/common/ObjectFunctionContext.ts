@@ -1,5 +1,5 @@
 import FunctionContext from "./FunctionContext";
-import {isNullOrUndefined} from "../../JsonHelpers";
+import { isNullOrUndefined } from "../../JsonHelpers";
 
 class ObjectFunctionContext extends FunctionContext {
   private definition: any;
@@ -12,12 +12,12 @@ class ObjectFunctionContext extends FunctionContext {
     return Object.prototype.hasOwnProperty.call(this.definition, name);
   }
 
-  override get(name: string, transform: boolean = true): any {
-    var el = this.definition[name == null ? this.alias : name];
+  override async get(name: string, transform: boolean = true): Promise<any> {
+    const el = this.definition[name == null ? this.alias : name];
     if (isNullOrUndefined(el)) {
       return this.function.getDefaultValue(name);
     }
-    return transform ? this.extractor.transform(el, this.resolver, true) : el;
+    return !transform ? el : await this.extractor.transform(el, this.resolver, true);
   }
 }
 

@@ -1,18 +1,27 @@
-import { asAsyncSequence, asyncSequenceOf, emptyAsyncSequence } from "@wortise/sequency";
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import { FunctionDescription } from "./common/FunctionDescription";
 import FunctionContext from "./common/FunctionContext";
 import { isNullOrUndefined } from "../JsonHelpers";
 import JsonElementStreamer from "../JsonElementStreamer";
+import stableStringify from "fast-json-stable-stringify";
 
 const DESCRIPTION: FunctionDescription = {
-  aliases: ["concat"],
+  aliases: ["distinct"],
   inputType: ArgType.Array,
   description: "",
+  arguments: {
+    by: {
+      type: ArgType.Transformer,
+      position: 0,
+      defaultIsNull: true,
+      description:
+        "A mapping for each element to distinct by (instead of the whole element, using ##current to refer to the current item)",
+    },
+  },
   outputType: ArgType.Array,
 };
-class TransformerFunctionConcat extends TransformerFunction {
+class TransformerFunctionDistinct extends TransformerFunction {
   constructor() {
     super(DESCRIPTION);
   }
@@ -21,18 +30,15 @@ class TransformerFunctionConcat extends TransformerFunction {
     const streamer = await context.getJsonElementStreamer(null);
     if (streamer == null) return null;
 
+    const by = await context.getJsonElement("by", false);
+    const stream = streamer.stream();
     return JsonElementStreamer.fromTransformedStream(
       context,
-      streamer.stream().flatMap(itm => {
-        if (isNullOrUndefined(itm)) {
-          return emptyAsyncSequence();
-        } else if (Array.isArray(itm)) {
-          return asAsyncSequence(itm);
-        }
-        return asyncSequenceOf(itm);
-      }),
+      isNullOrUndefined(by)
+        ? stream.distinctBy(stableStringify)
+        : stream.distinctBy(async item => stableStringify(await context.transformItem(by, item))),
     );
   }
 }
 
-export default TransformerFunctionConcat;
+export default TransformerFunctionDistinct;
