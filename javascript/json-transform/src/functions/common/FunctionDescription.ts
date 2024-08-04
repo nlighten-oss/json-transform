@@ -1,5 +1,5 @@
-import {ArgumentType} from "./ArgumentType";
-import {ArgType} from "./ArgType";
+import { ArgumentType } from "./ArgumentType";
+import { ArgType } from "./ArgType";
 
 export type FunctionDescription = {
   aliases: string[];
@@ -8,8 +8,8 @@ export type FunctionDescription = {
   notes?: string;
   inputType?: ArgType;
   arguments?: Record<string, ArgumentType>;
-  outputType?: ArgType;
+  outputType?: ArgType | ArgType[];
   pipedType?: boolean;
   // should be internally set to `true` if registered by client
   custom?: boolean;
-}
+};

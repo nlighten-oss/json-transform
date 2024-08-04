@@ -1,12 +1,12 @@
 import TransformerFunction from "./TransformerFunction";
-import {ParameterResolver} from "../../ParameterResolver";
-import {JsonTransformerFunction} from "../../JsonTransformerFunction";
-import {compareTo, isNullOrUndefined, getAsString, getDocumentContext} from "../../JsonHelpers";
-import {BigDecimal} from "./FunctionHelpers";
+import { ParameterResolver } from "../../ParameterResolver";
+import { JsonTransformerFunction } from "../../JsonTransformerFunction";
+import { compareTo, isNullOrUndefined, getAsString, getDocumentContext } from "../../JsonHelpers";
+import { BigDecimal } from "./FunctionHelpers";
 import JsonElementStreamer from "../../JsonElementStreamer";
 
 class FunctionContext {
-  protected static readonly CONTEXT_KEY= "context";
+  protected static readonly CONTEXT_KEY = "context";
   protected static readonly DOUBLE_HASH_CURRENT = "##current";
   protected static readonly DOUBLE_HASH_INDEX = "##index";
   protected static readonly DOLLAR = "$";
@@ -16,7 +16,13 @@ class FunctionContext {
   protected readonly resolver: ParameterResolver;
   protected readonly extractor: JsonTransformerFunction;
 
-  constructor(alias: string, func: TransformerFunction, resolver: ParameterResolver, extractor: JsonTransformerFunction, definition: any = null) {
+  constructor(
+    alias: string,
+    func: TransformerFunction,
+    resolver: ParameterResolver,
+    extractor: JsonTransformerFunction,
+    definition: any = null,
+  ) {
     this.alias = alias;
     this.function = func;
     this.extractor = extractor;
@@ -27,14 +33,21 @@ class FunctionContext {
     }
   }
 
-  private recalcResolver(definition: any, resolver: ParameterResolver, extractor: JsonTransformerFunction): ParameterResolver {
+  private recalcResolver(
+    definition: any,
+    resolver: ParameterResolver,
+    extractor: JsonTransformerFunction,
+  ): ParameterResolver {
     if (definition?.[FunctionContext.CONTEXT_KEY]) {
       const contextElement = definition[FunctionContext.CONTEXT_KEY];
-      if (typeof contextElement === 'object') {
-        const addCtx = Object.entries(contextElement).reduce((a, [key, value]) => {
-          a[key] = getDocumentContext(extractor.transform(value, resolver, false));
-          return a;
-        }, {} as Record<string, any>);
+      if (typeof contextElement === "object") {
+        const addCtx = Object.entries(contextElement).reduce(
+          (a, [key, value]) => {
+            a[key] = getDocumentContext(extractor.transform(value, resolver, false));
+            return a;
+          },
+          {} as Record<string, any>,
+        );
         return {
           get: name => {
             for (const key in addCtx) {
@@ -43,8 +56,8 @@ class FunctionContext {
               }
             }
             return resolver.get(name);
-          }
-        }
+          },
+        };
       }
     }
     return resolver;
@@ -69,10 +82,10 @@ class FunctionContext {
   }
 
   public has(name: string): boolean {
-    return false
-  };
+    return false;
+  }
 
-  public get(name: string | null, transform: boolean = true): any {
+  public async get(name: string | null, transform: boolean = true): Promise<any> {
     return null;
   }
 
@@ -81,17 +94,17 @@ class FunctionContext {
   }
 
   public isJsonNumber(value: any) {
-    return typeof value === 'number';
+    return typeof value === "number";
   }
 
   public isJsonBoolean(value: any) {
-    return typeof value === 'boolean';
+    return typeof value === "boolean";
   }
 
-  public getUnwrapped(name: string | null, reduceBigDecimals?: boolean) {
-    const value = this.get(name, true);
+  public async getUnwrapped(name: string | null, reduceBigDecimals?: boolean) {
+    const value = await this.get(name, true);
     if (value instanceof JsonElementStreamer) {
-      return value.toJsonArray();
+      return await value.toJsonArray();
     }
     return value;
   }
@@ -100,20 +113,20 @@ class FunctionContext {
     return compareTo(a, b);
   }
 
-  public getJsonElement(name: string | null, transform: boolean = true) {
-    const value = this.get(name, transform);
+  public async getJsonElement(name: string | null, transform: boolean = true) {
+    const value = await this.get(name, transform);
     if (value instanceof JsonElementStreamer) {
-      return value.toJsonArray();
+      return await value.toJsonArray();
     }
     return value;
   }
 
-  public getBoolean(name: string | null, transform: boolean = true) {
-    const value = this.get(name, transform);
+  public async getBoolean(name: string | null, transform: boolean = true) {
+    const value = await this.get(name, transform);
     if (value == null) {
       return null;
     }
-    if (typeof value === 'boolean') {
+    if (typeof value === "boolean") {
       return value;
     }
     const str = getAsString(value);
@@ -121,8 +134,8 @@ class FunctionContext {
     return str.trim().toLowerCase() === "true";
   }
 
-  public getString(name: string | null, transform: boolean = true) : string | null {
-    const value = this.get(name, transform);
+  public async getString(name: string | null, transform: boolean = true): Promise<string | null> {
+    const value = await this.get(name, transform);
     if (value == null) {
       return null;
     }
@@ -130,26 +143,26 @@ class FunctionContext {
     return getAsString(value);
   }
 
-  public getEnum(name: string | null, transform: boolean = true) {
-    const value = this.getString(name, transform);
+  public async getEnum(name: string | null, transform: boolean = true) {
+    const value = await this.getString(name, transform);
     if (value == null) {
       return null;
     }
     return value.trim().toUpperCase();
   }
 
-  public getInteger(name: string | null, transform: boolean = true) {
-    const value = this.get(name, transform);
+  public async getInteger(name: string | null, transform: boolean = true) {
+    const value = await this.get(name, transform);
     if (value == null) {
       return null;
     }
     if (value instanceof BigDecimal) {
       return Math.floor(value.toNumber());
     }
-    if (typeof value === 'number') {
+    if (typeof value === "number") {
       return Math.floor(value);
     }
-    if (typeof value === 'bigint') {
+    if (typeof value === "bigint") {
       return Number(value);
     }
     let str = getAsString(value);
@@ -159,15 +172,15 @@ class FunctionContext {
     return parseInt(value);
   }
 
-  public getLong(name: string | null, transform: boolean = true) {
-    const value = this.get(name, transform);
+  public async getLong(name: string | null, transform: boolean = true) {
+    const value = await this.get(name, transform);
     if (value == null) {
       return null;
     }
-    if (typeof value === 'bigint') {
+    if (typeof value === "bigint") {
       return value;
     }
-    if (typeof value === 'number') {
+    if (typeof value === "number") {
       return BigInt(value);
     }
     if (value instanceof BigDecimal) {
@@ -180,15 +193,15 @@ class FunctionContext {
     return BigInt(value);
   }
 
-  public getBigDecimal(name: string | null, transform: boolean = true) {
-    const value = this.get(name, transform);
+  public async getBigDecimal(name: string | null, transform: boolean = true) {
+    const value = await this.get(name, transform);
     if (value == null) {
       return null;
     }
     if (value instanceof BigDecimal) {
       return value;
     }
-    if (typeof value === 'number') {
+    if (typeof value === "number") {
       return new BigDecimal(value);
     }
     let str = getAsString(value);
@@ -198,10 +211,10 @@ class FunctionContext {
     return new BigDecimal(value);
   }
 
-  public getJsonArray(name: string | null, transform: boolean = true) {
-    const value = this.get(name, transform);
+  public async getJsonArray(name: string | null, transform: boolean = true) {
+    const value = await this.get(name, transform);
     if (value instanceof JsonElementStreamer) {
-      return value.toJsonArray();
+      return await value.toJsonArray();
     }
     return Array.isArray(value) ? value : null;
   }
@@ -213,16 +226,16 @@ class FunctionContext {
    * - It lazy transforms the array elements, so if there is short-circuiting, some transformations might be prevented
    * @return JsonElementStreamer
    */
-  public getJsonElementStreamer(name: string | null) {
+  public async getJsonElementStreamer(name: string | null) {
     let transformed = false;
-    let value = this.get(name, false);
+    let value = await this.get(name, false);
     if (value instanceof JsonElementStreamer) {
       return value;
     }
     // in case val is already an array we don't transform it to prevent evaluation of its result values
     // so if is not an array, we must transform it and check after-wards (not lazy anymore)
     if (!Array.isArray(value)) {
-      value = this.extractor.transform(value, this.resolver, true);
+      value = await this.extractor.transform(value, this.resolver, true);
       if (value instanceof JsonElementStreamer) {
         return value;
       }
@@ -235,19 +248,19 @@ class FunctionContext {
     return null;
   }
 
-  public transform(definition: any, allowReturningStreams: boolean = false) {
-    return this.extractor.transform(definition, this.resolver, allowReturningStreams);
+  public async transform(definition: any, allowReturningStreams: boolean = false) {
+    return await this.extractor.transform(definition, this.resolver, allowReturningStreams);
   }
 
-  public transformItem(definition: any, current: any, index?: number, additionalName?: string, additional?: any) {
+  public async transformItem(definition: any, current: any, index?: number, additionalName?: string, additional?: any) {
     const currentContext = getDocumentContext(current);
     let itemResolver: ParameterResolver;
-    if (typeof index !== 'number') {
+    if (typeof index !== "number") {
       itemResolver = {
         get: name =>
           FunctionContext.pathOfVar(FunctionContext.DOUBLE_HASH_CURRENT, name)
             ? currentContext.read(FunctionContext.DOLLAR + name.substring(9))
-            : this.resolver.get(name)
+            : this.resolver.get(name),
       };
     } else if (!additionalName) {
       itemResolver = {
@@ -256,8 +269,8 @@ class FunctionContext {
             ? index
             : FunctionContext.pathOfVar(FunctionContext.DOUBLE_HASH_CURRENT, name)
               ? currentContext.read(FunctionContext.DOLLAR + name.substring(9))
-              : this.resolver.get(name)
-      }
+              : this.resolver.get(name),
+      };
     } else {
       const additionalContext = getDocumentContext(additional);
       itemResolver = {
@@ -265,11 +278,11 @@ class FunctionContext {
           name === FunctionContext.DOUBLE_HASH_INDEX
             ? index
             : FunctionContext.pathOfVar(FunctionContext.DOUBLE_HASH_CURRENT, name)
-                ? currentContext.read(FunctionContext.DOLLAR + name.substring(9))
-                : FunctionContext.pathOfVar(additionalName, name)
-                  ? additionalContext.read(FunctionContext.DOLLAR + name.substring(additionalName.length))
-                  : this.resolver.get(name)
-      }
+              ? currentContext.read(FunctionContext.DOLLAR + name.substring(9))
+              : FunctionContext.pathOfVar(additionalName, name)
+                ? additionalContext.read(FunctionContext.DOLLAR + name.substring(additionalName.length))
+                : this.resolver.get(name),
+      };
     }
     return this.extractor.transform(definition, itemResolver, false);
   }

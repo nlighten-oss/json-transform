@@ -11,10 +11,14 @@
 # Usage
 
 ```typescript
-    const transformer = new JsonTransformer("$$lower:$.x")
-    expect(
-        transformer.transform({ x: "HELLO" })
-    ).toEqual("hello");
+(async() => { // in an async context
+  
+  const transformer = new JsonTransformer("$$lower:$.x")
+  expect(
+    await transformer.transform({x: "HELLO"})
+  ).toEqual("hello");
+  
+})();
 ```
 
 # License

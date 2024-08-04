@@ -1,13 +1,13 @@
 import FunctionContext from "./functions/common/FunctionContext";
-import Sequence, { asSequence, emptySequence } from "sequency";
+import { asAsyncSequence, AsyncSequence, emptyAsyncSequence } from "@wortise/sequency";
 
 class JsonElementStreamer {
   private readonly context: FunctionContext;
   private readonly transformed: boolean;
   private readonly value?: any[];
-  private readonly _stream?: Sequence<any>;
+  private readonly _stream?: AsyncSequence<any>;
 
-  private constructor(context: FunctionContext, value: any[] | Sequence<any>, transformed: boolean) {
+  private constructor(context: FunctionContext, value: any[] | AsyncSequence<any>, transformed: boolean) {
     this.context = context;
     this.transformed = transformed;
     if (Array.isArray(value)) {
@@ -29,9 +29,9 @@ class JsonElementStreamer {
       return limit > -1 ? skipped.take(limit) : skipped;
     }
     if (this.value == null) {
-      return emptySequence();
+      return emptyAsyncSequence();
     }
-    let valueStream = asSequence(this.value);
+    let valueStream = asAsyncSequence(this.value);
     if (skip > 0) {
       valueStream = valueStream.drop(skip);
     }
@@ -48,19 +48,18 @@ class JsonElementStreamer {
     return new JsonElementStreamer(context, value, transformed);
   }
 
-  public static fromTransformedStream(context: FunctionContext, stream: Sequence<any>) {
+  public static fromTransformedStream(context: FunctionContext, stream: AsyncSequence<any>) {
     return new JsonElementStreamer(context, stream, true);
   }
 
-  public toJsonArray() {
+  public async toJsonArray() {
     if (this.value) {
       return this.value;
     }
-    const ja: any[] = [];
     if (this._stream) {
-      this._stream.forEach(item => ja.push(item));
+      return this._stream.toArray();
     }
-    return ja;
+    return [];
   }
 }
 
