@@ -23,6 +23,9 @@ import TransformerFunctionDate from "./functions/TransformerFunctionDate";
 import TransformerFunctionDigest from "./functions/TransformerFunctionDigest";
 import TransformerFunctionDistinct from "./functions/TransformerFunctionDistinct";
 import TransformerFunctionEntries from "./functions/TransformerFunctionEntries";
+import TransformerFunctionEval from "./functions/TransformerFunctionEval";
+import TransformerFunctionFilter from "./functions/TransformerFunctionFilter";
+import TransformerFunctionTest from "./functions/TransformerFunctionTest";
 
 class FunctionMatchResult {
   private result;
@@ -67,8 +70,8 @@ export class TransformerFunctions {
       digest: new TransformerFunctionDigest(),
       distinct: new TransformerFunctionDistinct(),
       entries: new TransformerFunctionEntries(),
-      eval: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionEval(),
-      filter: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionFilter(),
+      eval: new TransformerFunctionEval(), // TODO: add tests
+      filter: new TransformerFunctionFilter(),
       find: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionFind(),
       first: new TransformerFunctionCoalesce(), // * alias for coalesce
       flat: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionFlat(),
@@ -116,7 +119,7 @@ export class TransformerFunctions {
       substring: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionSubstring(),
       sum: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionSum(),
       switch: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionSwitch(),
-      test: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionTest(),
+      test: new TransformerFunctionTest(), // TODO: add tests
       transform: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionTransform(),
       trim: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionTrim(),
       unflatten: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionUnflatten(),
