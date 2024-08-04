@@ -1,204 +1,220 @@
 import { describe, expect, test } from "vitest";
 import JsonTransformer from "../JsonTransformer";
-import {assertFailTransformation, assertTransformation} from "./BaseTransformationTest";
+import { assertFailTransformation, assertTransformation } from "./BaseTransformationTest";
 
 describe("JsonTransformer", () => {
-  test("lower", () => {
-    const x = new JsonTransformer("$$lower:$.x")
-    expect(x.transform({ x: "HELLO" })).toEqual("hello");
+  test("lower", async () => {
+    const x = new JsonTransformer("$$lower:$.x");
+    const result = await x.transform({ x: "HELLO" });
+    expect(result).toEqual("hello");
   });
 
-  test("DontCopyEscaped", () => {
-    var text = "text";
-    assertTransformation(text, "\\$", "$");
-    assertTransformation(text, "\\#uuid", "#uuid");
+  test("DontCopyEscaped", async () => {
+    const text = "text";
+    await assertTransformation(text, "\\$", "$");
+    await assertTransformation(text, "\\#uuid", "#uuid");
     // regex matches
-    assertTransformation(text, "$0", "$0");
-    assertTransformation(text, "$1", "$1");
+    await assertTransformation(text, "$0", "$0");
+    await assertTransformation(text, "$1", "$1");
   });
 
-  test("DontCopyUnrecognized", () => {
-    assertTransformation(null, "#unknown", "#unknown");
-    assertTransformation(null, "$$testunknown:#now", "$$testunknown:#now");
+  test("DontCopyUnrecognized", async () => {
+    await assertTransformation(null, "#unknown", "#unknown");
+    await assertTransformation(null, "$$testunknown:#now", "$$testunknown:#now");
   });
 
-  test("JsonPathCopy", () => {
+  test("JsonPathCopy", async () => {
     var val = "test";
-    assertTransformation(val, "$", val);
-    assertTransformation(JSON.parse("{\"a\":\"" + val + "\"}"), "$.a", val);
-    assertTransformation(JSON.parse("[\"" + val + "\"]"), "$[0]", val);
+    await assertTransformation(val, "$", val);
+    await assertTransformation(JSON.parse('{"a":"' + val + '"}'), "$.a", val);
+    await assertTransformation(JSON.parse('["' + val + '"]'), "$[0]", val);
   });
 
-  test("JsonPathCopyInteger", () => {
+  test("JsonPathCopyInteger", async () => {
     var val = 123;
-    assertTransformation(val, "$", val);
+    await assertTransformation(val, "$", val);
   });
 
-  test("JsonPathCopyBoolean", () => {
+  test("JsonPathCopyBoolean", async () => {
     var val = true;
-    assertTransformation(val, "$", val);
+    await assertTransformation(val, "$", val);
   });
 
-  test("JsonPathCopyString", () => {
+  test("JsonPathCopyString", async () => {
     var text = "text";
-    assertTransformation(text, "$", text);
+    await assertTransformation(text, "$", text);
   });
 
-  test("JsonPathCopyNull", () => {
+  test("JsonPathCopyNull", async () => {
     const val = null;
-    assertTransformation(val, "$", val);
+    await assertTransformation(val, "$", val);
   });
 
-  test("JsonPathCopyFromAdditionalRoot", () => {
+  test("JsonPathCopyFromAdditionalRoot", async () => {
     var additionalContext = {
-      $extra: { y: "text" }
+      $extra: { y: "text" },
     };
-    assertTransformation(null, "$extra.y", additionalContext.$extra.y, additionalContext);
+    await assertTransformation(null, "$extra.y", additionalContext.$extra.y, additionalContext);
 
     // array
     var additionalContext2 = {
-      $extra: [1, 2]
+      $extra: [1, 2],
     };
-    assertTransformation(null, "$extra[0]", additionalContext2.$extra[0], additionalContext2);
+    await assertTransformation(null, "$extra[0]", additionalContext2.$extra[0], additionalContext2);
 
     // unrecognized root
-    assertTransformation(null, "$extra2.y", "$extra2.y", additionalContext);
+    await assertTransformation(null, "$extra2.y", "$extra2.y", additionalContext);
   });
 
-  test("MacroUUID", () => {
-    var result = new JsonTransformer("#uuid").transform();
+  test("MacroUUID", async () => {
+    var result = await new JsonTransformer("#uuid").transform();
     expect(result).toHaveLength(36);
   });
 
-  test("MacroNow", () => {
-    var result = new JsonTransformer("#now").transform();
+  test("MacroNow", async () => {
+    var result = await new JsonTransformer("#now").transform();
     expect(isNaN(new Date(result).getDate())).not.toBeTruthy();
   });
 
-  test("InputExtractorSpread", () => {
-    var m1 ={
-      "a": "A",
-      "b": "B"
+  test("InputExtractorSpread", async () => {
+    var m1 = {
+      a: "A",
+      b: "B",
     };
     var t1 = {
       "*": "$",
-      "a": "AA"
+      a: "AA",
     };
     var e1 = {
-      "a": "AA",
-      "b": "B"
+      a: "AA",
+      b: "B",
     };
-    assertTransformation(m1, t1, e1);
+    await assertTransformation(m1, t1, e1);
 
     // check bad case
-    assertFailTransformation(m1, t1, t1);
+    await assertFailTransformation(m1, t1, t1);
   });
 
-  test("InputExtractorSpreadRemoveByHashNull", () => {
-    assertTransformation({
-      "a": "A",
-      "b": "B"
-    }, {
-      "*": "$",
-      "a": "#null"
-    },
-    {
-      "a": null,
-      "b": "B"
-    });
+  test("InputExtractorSpreadRemoveByHashNull", async () => {
+    await assertTransformation(
+      {
+        a: "A",
+        b: "B",
+      },
+      {
+        "*": "$",
+        a: "#null",
+      },
+      {
+        a: null,
+        b: "B",
+      },
+    );
   });
 
   // skipped since it doesn't work the same in javascript (null are being treated as values)
-  test.skip("InputExtractorSpreadDontRemoveByNull", () => {
-    assertTransformation({
-      "a": "A",
-      "b": "B"
-    }, {
-      "*": "$",
-      "a": null
-    }, {
-      "a": "A",
-      "b": "B"
-    });
-  });
-
-  test("InputExtractorSpreadArray", () => {
-    var m1 = {
-      "X": {
-        "a": "A",
-          "b": "B"
+  test.skip("InputExtractorSpreadDontRemoveByNull", async () => {
+    await assertTransformation(
+      {
+        a: "A",
+        b: "B",
       },
-        "Y": {
-        "c": "C",
-          "d": "D"
-      }
-    };
-    var t1 = {
-      "*": [ "$.X", "$.Y" ],
-      "a": "AA",
-      "c": "CC"
-    };
-    var e1 = {
-      "a": "AA",
-      "b": "B",
-      "c": "CC",
-      "d": "D"
-    };
-    assertTransformation(m1, t1, e1);
-
-    // check bad case
-    assertFailTransformation(m1, t1, t1);
+      {
+        "*": "$",
+        a: null,
+      },
+      {
+        a: "A",
+        b: "B",
+      },
+    );
   });
 
-  test("InputExtractorSpreadArray2", () => {
+  test("InputExtractorSpreadArray", async () => {
     var m1 = {
-      "X": {
-      "a": "A",
-        "b": "B",
-        "c": "C"
-    },
-      "Y": {
-      "a": 1,
-        "b": 2
-    }
+      X: {
+        a: "A",
+        b: "B",
+      },
+      Y: {
+        c: "C",
+        d: "D",
+      },
     };
     var t1 = {
-      "*": [ "$.X", "$.Y" ],
-      "a": true
+      "*": ["$.X", "$.Y"],
+      a: "AA",
+      c: "CC",
     };
     var e1 = {
-      "a": true,
-      "b": 2,
-      "c": "C"
+      a: "AA",
+      b: "B",
+      c: "CC",
+      d: "D",
     };
-    assertTransformation(m1, t1, e1);
+    await assertTransformation(m1, t1, e1);
 
     // check bad case
     assertFailTransformation(m1, t1, t1);
   });
 
-  test("InputExtractorTransformObjectInput", () => {
-    assertTransformation({
-      "x": "foo"
-    }, "$", {
-      "x": "foo"
-    });
+  test("InputExtractorSpreadArray2", async () => {
+    var m1 = {
+      X: {
+        a: "A",
+        b: "B",
+        c: "C",
+      },
+      Y: {
+        a: 1,
+        b: 2,
+      },
+    };
+    var t1 = {
+      "*": ["$.X", "$.Y"],
+      a: true,
+    };
+    var e1 = {
+      a: true,
+      b: 2,
+      c: "C",
+    };
+    await assertTransformation(m1, t1, e1);
+
+    // check bad case
+    assertFailTransformation(m1, t1, t1);
   });
 
-  test("InputExtractorTransformDefinitionJsonArray", () => {
+  test("InputExtractorTransformObjectInput", async () => {
+    await assertTransformation(
+      {
+        x: "foo",
+      },
+      "$",
+      {
+        x: "foo",
+      },
+    );
+  });
+
+  test("InputExtractorTransformDefinitionJsonArray", async () => {
     // Given input is an object and InputExtractor definition is an array
-    var definition : any[] = [];
+    var definition: any[] = [];
     definition.push("element1");
     definition.push(1.23);
     definition.push(false);
-    definition.push('c');
+    definition.push("c");
     definition.push(null);
     definition.push({
       nested: "*",
     });
 
-    assertTransformation({
-      "x": "foo"
-    }, definition, definition);
+    await assertTransformation(
+      {
+        x: "foo",
+      },
+      definition,
+      definition,
+    );
   });
 });

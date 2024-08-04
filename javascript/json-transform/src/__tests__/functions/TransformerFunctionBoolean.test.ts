@@ -1,46 +1,46 @@
 import { describe, test } from "vitest";
-import { assertTransformation} from "../BaseTransformationTest";
+import { assertTransformation } from "../BaseTransformationTest";
 
 describe("TransformerFunctionBoolean", () => {
-  test("truthy", () => {
-      assertTransformation(true, "$$boolean:$", true);
-      // string
-      assertTransformation("0", "$$boolean(js):$", true);
-      assertTransformation("false", "$$boolean(js):$", true);
-      assertTransformation("true", "$$boolean:$", true);
-      assertTransformation("True", "$$boolean:$", true);
-      assertTransformation("true", "$$boolean(JS):$", true);
-      // number
-      assertTransformation(1, "$$boolean:$", true);
-      assertTransformation(-1, "$$boolean:$", true);
-      assertTransformation(BigInt("1"), "$$boolean:$", true);
-      // object
-      assertTransformation({"":0}, "$$boolean:$", true);
-      // arrays
-      assertTransformation([0], "$$boolean:$", true);
-    });
-
-  test("falsy", () => {
-      assertTransformation(false, "$$boolean:$", false);
-      // string
-      assertTransformation("", "$$boolean:$", false);
-      assertTransformation("", "$$boolean(js):$", false);
-      assertTransformation("0", "$$boolean:$", false);
-      assertTransformation("false", "$$boolean:$", false);
-      assertTransformation("False", "$$boolean:$", false);
-      // number
-      assertTransformation(0, "$$boolean:$", false);
-      assertTransformation(BigInt(0), "$$boolean:$", false);
-      // object
-      assertTransformation(null, "$$boolean:$", false);
-      assertTransformation({}, "$$boolean:$", false);
-      // arrays
-      assertTransformation([], "$$boolean:$", false);
+  test("truthy", async () => {
+    await assertTransformation(true, "$$boolean:$", true);
+    // string
+    await assertTransformation("0", "$$boolean(js):$", true);
+    await assertTransformation("false", "$$boolean(js):$", true);
+    await assertTransformation("true", "$$boolean:$", true);
+    await assertTransformation("True", "$$boolean:$", true);
+    await assertTransformation("true", "$$boolean(JS):$", true);
+    // number
+    await assertTransformation(1, "$$boolean:$", true);
+    await assertTransformation(-1, "$$boolean:$", true);
+    await assertTransformation(BigInt("1"), "$$boolean:$", true);
+    // object
+    await assertTransformation({ "": 0 }, "$$boolean:$", true);
+    // arrays
+    await assertTransformation([0], "$$boolean:$", true);
   });
 
-  test("object", () => {
-      assertTransformation("true", JSON.parse("{\"$$boolean\":\"$\",\"style\":\"JS\"}"), true);
-      assertTransformation("false", JSON.parse("{\"$$boolean\":\"$\",\"style\":\"js\"}"), true);
-      assertTransformation("false", JSON.parse("{\"$$boolean\":\"$\"}"), false);
+  test("falsy", async () => {
+    await assertTransformation(false, "$$boolean:$", false);
+    // string
+    await assertTransformation("", "$$boolean:$", false);
+    await assertTransformation("", "$$boolean(js):$", false);
+    await assertTransformation("0", "$$boolean:$", false);
+    await assertTransformation("false", "$$boolean:$", false);
+    await assertTransformation("False", "$$boolean:$", false);
+    // number
+    await assertTransformation(0, "$$boolean:$", false);
+    await assertTransformation(BigInt(0), "$$boolean:$", false);
+    // object
+    await assertTransformation(null, "$$boolean:$", false);
+    await assertTransformation({}, "$$boolean:$", false);
+    // arrays
+    await assertTransformation([], "$$boolean:$", false);
+  });
+
+  test("object", async () => {
+    await assertTransformation("true", JSON.parse('{"$$boolean":"$","style":"JS"}'), true);
+    await assertTransformation("false", JSON.parse('{"$$boolean":"$","style":"js"}'), true);
+    await assertTransformation("false", JSON.parse('{"$$boolean":"$"}'), false);
   });
 });
