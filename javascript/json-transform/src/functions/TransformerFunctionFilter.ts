@@ -1,20 +1,13 @@
+import { asAsyncSequence, asyncSequenceOf, emptyAsyncSequence } from "@wortise/sequency";
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import { FunctionDescription } from "./common/FunctionDescription";
 import FunctionContext from "./common/FunctionContext";
-import { isNullOrUndefined } from "../JsonHelpers";
+import { isNullOrUndefined, isTruthy } from "../JsonHelpers";
 import JsonElementStreamer from "../JsonElementStreamer";
-import stableStringify from "fast-json-stable-stringify";
-
-const getUnique = (value: any) => {
-  if (value && typeof value === "object") {
-    return stableStringify(value);
-  }
-  return value;
-};
 
 const DESCRIPTION: FunctionDescription = {
-  aliases: ["distinct"],
+  aliases: ["filter"],
   inputType: ArgType.Array,
   description: "",
   arguments: {
@@ -23,12 +16,12 @@ const DESCRIPTION: FunctionDescription = {
       position: 0,
       defaultIsNull: true,
       description:
-        "A mapping for each element to distinct by (instead of the whole element, using ##current to refer to the current item)",
+        "A predicate transformer for an element (##current to refer to the current item and ##index to its index)",
     },
   },
   outputType: ArgType.Array,
 };
-class TransformerFunctionDistinct extends TransformerFunction {
+class TransformerFunctionFilter extends TransformerFunction {
   constructor() {
     super(DESCRIPTION);
   }
@@ -38,14 +31,15 @@ class TransformerFunctionDistinct extends TransformerFunction {
     if (streamer == null) return null;
 
     const by = await context.getJsonElement("by", false);
-    const stream = streamer.stream();
+    let index = 0;
     return JsonElementStreamer.fromTransformedStream(
       context,
-      isNullOrUndefined(by)
-        ? stream.distinctBy(getUnique)
-        : stream.distinctBy(async item => getUnique(await context.transformItem(by, item))),
+      streamer.stream().filter(async item => {
+        const condition = await context.transformItem(by, item, index++);
+        return isTruthy(condition);
+      }),
     );
   }
 }
 
-export default TransformerFunctionDistinct;
+export default TransformerFunctionFilter;
