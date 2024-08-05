@@ -4,7 +4,7 @@ import { FunctionDescription } from "./common/FunctionDescription";
 import FunctionContext from "./common/FunctionContext";
 
 const DESCRIPTION: FunctionDescription = {
-  aliases: ["jsonparse", "json"],
+  aliases: ["jsonparse"],
   inputType: ArgType.String,
   description: "",
   outputType: ArgType.Any,
