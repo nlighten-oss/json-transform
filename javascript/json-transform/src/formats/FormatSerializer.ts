@@ -1,3 +1,3 @@
 export interface FormatSerializer {
-  serialize(payload: any): string;
+  serialize(payload: any): string | null;
 }

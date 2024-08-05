@@ -1,3 +1,3 @@
 export interface FormatDeserializer {
-  deserialize(input: string): Record<string, any>;
+  deserialize(input: string | null): any;
 }

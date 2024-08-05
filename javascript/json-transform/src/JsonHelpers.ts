@@ -10,6 +10,7 @@ const JSONPATH_ROOT = "$",
   JSONPATH_ALT_PREFIX_ESC = "\\#";
 
 const isNullOrUndefined = (value: any): value is null | undefined => value == null || typeof value === "undefined";
+const isMap = (value: any): value is Record<string, any> => value && typeof value === "object" && !Array.isArray(value);
 
 const getAsString = (value: any): null | string => {
   if (isNullOrUndefined(value)) {
@@ -189,6 +190,7 @@ const isEqual = (value: any, other: any): boolean => {
 
 export {
   isNullOrUndefined,
+  isMap,
   createPayloadResolver,
   getAsString,
   compareTo,

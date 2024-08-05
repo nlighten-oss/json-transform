@@ -9,10 +9,6 @@ import TransformerFunctionAt from "./functions/TransformerFunctionAt";
 import TransformerFunctionAvg from "./functions/TransformerFunctionAvg";
 import TransformerFunctionBase64 from "./functions/TransformerFunctionBase64";
 import TransformerFunctionBoolean from "./functions/TransformerFunctionBoolean";
-
-import TransformerFunctionLower from "./functions/TransformerFunctionLower";
-import TransformerFunctionUpper from "./functions/TransformerFunctionUpper";
-import TransformerFunctionIs from "./functions/TransformerFunctionIs";
 import TransformerFunctionCoalesce from "./functions/TransformerFunctionCoalesce";
 import TransformerFunctionConcat from "./functions/TransformerFunctionConcat";
 import TransformerFunctionContains from "./functions/TransformerFunctionContains";
@@ -25,13 +21,21 @@ import TransformerFunctionDistinct from "./functions/TransformerFunctionDistinct
 import TransformerFunctionEntries from "./functions/TransformerFunctionEntries";
 import TransformerFunctionEval from "./functions/TransformerFunctionEval";
 import TransformerFunctionFilter from "./functions/TransformerFunctionFilter";
-import TransformerFunctionTest from "./functions/TransformerFunctionTest";
 import TransformerFunctionFind from "./functions/TransformerFunctionFind";
+import TransformerFunctionIs from "./functions/TransformerFunctionIs";
+import TransformerFunctionIsNull from "./functions/TransformerFunctionIsNull";
+import TransformerFunctionFlat from "./functions/TransformerFunctionFlat";
+import TransformerFunctionForm from "./functions/TransformerFunctionForm";
+import TransformerFunctionFormParse from "./functions/TransformerFunctionFormParse";
 import TransformerFunctionJoin from "./functions/TransformerFunctionJoin";
 import TransformerFunctionJsonParse from "./functions/TransformerFunctionJsonParse";
+import TransformerFunctionTest from "./functions/TransformerFunctionTest";
+import TransformerFunctionLower from "./functions/TransformerFunctionLower";
+import TransformerFunctionUpper from "./functions/TransformerFunctionUpper";
+import TransformerFunctionFlatten from "./functions/TransformerFunctionFlatten";
 
 class FunctionMatchResult {
-  private result;
+  private readonly result;
 
   constructor(result: any) {
     this.result = result;
@@ -73,20 +77,19 @@ export class TransformerFunctions {
       digest: new TransformerFunctionDigest(),
       distinct: new TransformerFunctionDistinct(),
       entries: new TransformerFunctionEntries(),
-      eval: new TransformerFunctionEval(), // TODO: run tests
+      eval: new TransformerFunctionEval(),
       filter: new TransformerFunctionFilter(),
       find: new TransformerFunctionFind(),
       first: new TransformerFunctionCoalesce(), // * alias for coalesce
-      flat: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionFlat(),
-      flatten: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionFlatten(),
-      form: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionForm(),
-      formparse: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionFormParse(),
+      flat: new TransformerFunctionFlat(),
+      flatten: new TransformerFunctionFlatten(),
+      form: new TransformerFunctionForm(),
+      formparse: new TransformerFunctionFormParse(),
       group: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionGroup(),
       if: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionIf(),
       is: new TransformerFunctionIs(),
-      isnull: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionIsNull(),
+      isnull: new TransformerFunctionIsNull(),
       join: new TransformerFunctionJoin(),
-      json: new TransformerFunctionJsonParse(), // * alias for jsonparse
       jsonparse: new TransformerFunctionJsonParse(),
       jsonpatch: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionJsonPatch(),
       jsonpath: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionJsonPath(),

@@ -1,7 +1,7 @@
 import TransformerFunction from "./TransformerFunction";
 import { ParameterResolver } from "../../ParameterResolver";
 import { JsonTransformerFunction } from "../../JsonTransformerFunction";
-import { compareTo, isNullOrUndefined, getAsString, getDocumentContext } from "../../JsonHelpers";
+import { compareTo, isNullOrUndefined, getAsString, getDocumentContext, isMap } from "../../JsonHelpers";
 import { BigDecimal } from "./FunctionHelpers";
 import JsonElementStreamer from "../../JsonElementStreamer";
 
@@ -40,7 +40,7 @@ class FunctionContext {
   ): ParameterResolver {
     if (definition?.[FunctionContext.CONTEXT_KEY]) {
       const contextElement = definition[FunctionContext.CONTEXT_KEY];
-      if (typeof contextElement === "object") {
+      if (isMap(contextElement)) {
         const addCtx = Object.entries(contextElement).reduce(
           (a, [key, value]) => {
             a[key] = getDocumentContext(extractor.transform(value, resolver, false));
