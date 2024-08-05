@@ -1,7 +1,7 @@
 import { describe, test } from "vitest";
 import { assertTransformation } from "../BaseTransformationTest";
 
-describe("TransformerFunctionCoalesce", () => {
+describe("TransformerFunctionFilter", () => {
   test("truthyValuesOnly", async () => {
     await assertTransformation(
       ["a", true, "false", 0, 1, [], [0]],
