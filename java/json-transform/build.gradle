@@ -9,7 +9,7 @@ plugins {
 }
 
 group 'co.nlighten'
-version = '0.2.3'
+version = '0.2.4'
 
 ext {
     gsonVersion = "2.10.1"

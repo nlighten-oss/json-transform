@@ -59,7 +59,7 @@ public class TransformerFunctionFlatten<JE, JA extends Iterable<JE>, JO extends 
                 for (var i = 0; i < size; i++) {
                     flatten(adapter.jArray.get(ja, i), target, (prefix == null ? "" : (prefix + ".")) + arrayPrefix + i, arrayPrefix);
                 }
-            } else {
+            } else if (prefix != null) {
                 adapter.jObject.add(target, prefix, ja);
             }
         } else {
