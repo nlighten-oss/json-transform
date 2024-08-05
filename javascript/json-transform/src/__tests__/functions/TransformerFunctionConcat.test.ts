@@ -1,7 +1,7 @@
 import { describe, test } from "vitest";
 import { assertTransformation } from "../BaseTransformationTest";
 
-describe("TransformerFunctionCoalesce", () => {
+describe("TransformerFunctionConcat", () => {
   test("object", async () => {
     const arr = ["a", "b", "c"];
     const arr2 = ["d", "e", "f"];

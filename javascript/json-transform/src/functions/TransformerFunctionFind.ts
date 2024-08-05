@@ -3,10 +3,9 @@ import { ArgType } from "./common/ArgType";
 import { FunctionDescription } from "./common/FunctionDescription";
 import FunctionContext from "./common/FunctionContext";
 import { isTruthy } from "../JsonHelpers";
-import JsonElementStreamer from "../JsonElementStreamer";
 
 const DESCRIPTION: FunctionDescription = {
-  aliases: ["filter"],
+  aliases: ["find"],
   inputType: ArgType.Array,
   description: "",
   arguments: {
@@ -18,9 +17,9 @@ const DESCRIPTION: FunctionDescription = {
         "A predicate transformer for an element (##current to refer to the current item and ##index to its index)",
     },
   },
-  outputType: ArgType.Array,
+  outputType: ArgType.Any,
 };
-class TransformerFunctionFilter extends TransformerFunction {
+class TransformerFunctionFind extends TransformerFunction {
   constructor() {
     super(DESCRIPTION);
   }
@@ -31,14 +30,11 @@ class TransformerFunctionFilter extends TransformerFunction {
 
     const by = await context.getJsonElement("by", false);
     let index = 0;
-    return JsonElementStreamer.fromTransformedStream(
-      context,
-      streamer.stream().filter(async item => {
-        const condition = await context.transformItem(by, item, index++);
-        return isTruthy(condition);
-      }),
-    );
+    return await streamer.stream().find(async item => {
+      const condition = await context.transformItem(by, item, index++);
+      return isTruthy(condition);
+    });
   }
 }
 
-export default TransformerFunctionFilter;
+export default TransformerFunctionFind;

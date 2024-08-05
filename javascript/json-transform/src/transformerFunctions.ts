@@ -26,6 +26,9 @@ import TransformerFunctionEntries from "./functions/TransformerFunctionEntries";
 import TransformerFunctionEval from "./functions/TransformerFunctionEval";
 import TransformerFunctionFilter from "./functions/TransformerFunctionFilter";
 import TransformerFunctionTest from "./functions/TransformerFunctionTest";
+import TransformerFunctionFind from "./functions/TransformerFunctionFind";
+import TransformerFunctionJoin from "./functions/TransformerFunctionJoin";
+import TransformerFunctionJsonParse from "./functions/TransformerFunctionJsonParse";
 
 class FunctionMatchResult {
   private result;
@@ -70,9 +73,9 @@ export class TransformerFunctions {
       digest: new TransformerFunctionDigest(),
       distinct: new TransformerFunctionDistinct(),
       entries: new TransformerFunctionEntries(),
-      eval: new TransformerFunctionEval(), // TODO: add tests
+      eval: new TransformerFunctionEval(), // TODO: run tests
       filter: new TransformerFunctionFilter(),
-      find: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionFind(),
+      find: new TransformerFunctionFind(),
       first: new TransformerFunctionCoalesce(), // * alias for coalesce
       flat: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionFlat(),
       flatten: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionFlatten(),
@@ -82,9 +85,9 @@ export class TransformerFunctions {
       if: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionIf(),
       is: new TransformerFunctionIs(),
       isnull: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionIsNull(),
-      join: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionJoin(),
-      json: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionJsonParse(),
-      jsonparse: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionJsonParse(),
+      join: new TransformerFunctionJoin(),
+      json: new TransformerFunctionJsonParse(), // * alias for jsonparse
+      jsonparse: new TransformerFunctionJsonParse(),
       jsonpatch: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionJsonPatch(),
       jsonpath: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionJsonPath(),
       jsonpointer: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionJsonPointer(),
