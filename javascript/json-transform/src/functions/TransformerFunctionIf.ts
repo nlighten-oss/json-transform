@@ -34,8 +34,8 @@ class TransformerFunctionIf extends TransformerFunction {
       const cje = arr[0];
       if (isNullOrUndefined(cje)) {
         condition = false;
-      } else if (context.isJsonBoolean(cje)) {
-        condition = Boolean(cje);
+      } else if (typeof cje === "boolean") {
+        condition = cje;
       } else {
         condition = isTruthy(await context.transform(cje));
       }
