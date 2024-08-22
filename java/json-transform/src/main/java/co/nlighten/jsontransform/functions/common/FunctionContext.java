@@ -107,12 +107,6 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
     public boolean isNull(JE value) {
         return adapter.isNull(value);
     }
-    public boolean isJsonNumber(JE value) {
-        return adapter.isJsonNumber(value);
-    }
-    public boolean isJsonBoolean(JE value) {
-        return adapter.isJsonBoolean(value);
-    }
     public JE wrap(Object value) {
         return adapter.wrap(value);
     }

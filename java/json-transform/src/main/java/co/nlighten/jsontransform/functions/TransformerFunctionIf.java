@@ -39,7 +39,7 @@ public class TransformerFunctionIf<JE, JA extends Iterable<JE>, JO extends JE> e
             var cje = jArray.get(arr, 0);
             if (adapter.isNull(cje)) {
                 condition = false;
-            } else if (context.isJsonBoolean(cje)) {
+            } else if (adapter.isJsonBoolean(cje)) {
                 condition = adapter.getBoolean(cje);
             } else {
                 condition = adapter.isTruthy(context.transform(cje));

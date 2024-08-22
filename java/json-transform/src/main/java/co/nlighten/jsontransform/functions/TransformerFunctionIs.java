@@ -56,7 +56,7 @@ public class TransformerFunctionIs<JE, JA extends Iterable<JE>, JO extends JE> e
             JE that = null;
             // if operator is not in/nin then prepare the "that" argument which is a JsonElement
             if (!Objects.equals(op, "IN") && !Objects.equals(op, "NIN")) {
-                that = context.isJsonNumber(value)
+                that = adapter.isJsonNumber(value)
                        ? nullableBigDecimalJsonPrimitive(context, context.getBigDecimal("that"))
                        : context.getJsonElement("that");
             }

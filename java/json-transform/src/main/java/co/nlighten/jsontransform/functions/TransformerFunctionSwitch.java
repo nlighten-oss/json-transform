@@ -30,14 +30,21 @@ public class TransformerFunctionSwitch<JE, JA extends Iterable<JE>, JO extends J
     public Object apply(FunctionContext<JE, JA, JO> context) {
         var alias = context.getAlias();
         var value = context.getString(null);
-        var caseMapEl = context.getJsonElement("cases");
+        var transformed = false;
+        var caseMapEl = context.getJsonElement("cases", false);
+        if (adapter.isJsonString(caseMapEl)) {
+            caseMapEl = context.transform(caseMapEl);
+            transformed = true;
+        }
         if (!jObject.is(caseMapEl)) {
             logger.warn("{}.cases was not specified with an object as case map", alias);
             return null;
         }
         var caseMap = jObject.convert(caseMapEl);
-        return jObject.has(caseMap, value)
-               ? jObject.get(caseMap, value)
-               : context.getJsonElement("default");
+        if (!jObject.has(caseMap, value)) {
+            return context.getJsonElement("default");
+        }
+        var caseValue = jObject.get(caseMap, value);
+        return transformed ? caseValue : context.transform(caseValue);
     }
 }
