@@ -12,7 +12,9 @@ const JSONPATH_ROOT = "$",
 const isNullOrUndefined = (value: any): value is null | undefined => value == null || typeof value === "undefined";
 const isMap = (value: any): value is Record<string, any> => value && typeof value === "object" && !Array.isArray(value);
 
-const getAsString = (value: any): null | string => {
+function getAsString<T extends string | number | boolean | object>(value: T): string;
+function getAsString<T extends null | undefined>(value: T): null;
+function getAsString(value: any): string | null {
   if (isNullOrUndefined(value)) {
     return null;
   }
@@ -26,7 +28,7 @@ const getAsString = (value: any): null | string => {
     return value ? "true" : "false";
   }
   return JSON.stringify(value);
-};
+}
 
 const numberCompare = (a: number, b: number) => {
   return a < b ? -1 : a === b ? 0 : 1;
@@ -191,8 +193,8 @@ const isEqual = (value: any, other: any): boolean => {
 export {
   isNullOrUndefined,
   isMap,
-  createPayloadResolver,
   getAsString,
+  createPayloadResolver,
   compareTo,
   getDocumentContext,
   lenientJsonParse,

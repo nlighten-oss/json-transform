@@ -33,6 +33,8 @@ import TransformerFunctionTest from "./functions/TransformerFunctionTest";
 import TransformerFunctionLower from "./functions/TransformerFunctionLower";
 import TransformerFunctionUpper from "./functions/TransformerFunctionUpper";
 import TransformerFunctionFlatten from "./functions/TransformerFunctionFlatten";
+import TransformerFunctionGroup from "./functions/TransformerFunctionGroup";
+import TransformerFunctionIf from "./functions/TransformerFunctionIf";
 
 class FunctionMatchResult {
   private readonly result;
@@ -85,8 +87,8 @@ export class TransformerFunctions {
       flatten: new TransformerFunctionFlatten(),
       form: new TransformerFunctionForm(),
       formparse: new TransformerFunctionFormParse(),
-      group: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionGroup(),
-      if: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionIf(),
+      group: new TransformerFunctionGroup(),
+      if: new TransformerFunctionIf(),
       is: new TransformerFunctionIs(),
       isnull: new TransformerFunctionIsNull(),
       join: new TransformerFunctionJoin(),
