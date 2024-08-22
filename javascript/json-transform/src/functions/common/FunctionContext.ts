@@ -93,14 +93,6 @@ class FunctionContext {
     return isNullOrUndefined(value);
   }
 
-  public isJsonNumber(value: any) {
-    return typeof value === "number";
-  }
-
-  public isJsonBoolean(value: any) {
-    return typeof value === "boolean";
-  }
-
   public async getUnwrapped(name: string | null, reduceBigDecimals?: boolean) {
     const value = await this.get(name, true);
     if (value instanceof JsonElementStreamer) {
