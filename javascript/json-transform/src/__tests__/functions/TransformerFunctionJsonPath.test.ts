@@ -1,6 +1,5 @@
 import { describe, test } from "vitest";
 import { assertTransformation } from "../BaseTransformationTest";
-import { BigDecimal } from "../../functions/common/FunctionHelpers";
 
 describe("TransformerFunctionJsonPath", () => {
   test("yoDawg", async () => {
