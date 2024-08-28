@@ -35,6 +35,7 @@ import TransformerFunctionJsonParse from "./functions/TransformerFunctionJsonPar
 import TransformerFunctionJsonPatch from "./functions/TransformerFunctionJsonPatch";
 import TransformerFunctionJsonPath from "./functions/TransformerFunctionJsonPath";
 import TransformerFunctionJsonPointer from "./functions/TransformerFunctionJsonPointer";
+import TransformerFunctionJwtParse from "./functions/TransformerFunctionJwtParse";
 import TransformerFunctionLower from "./functions/TransformerFunctionLower";
 import TransformerFunctionTest from "./functions/TransformerFunctionTest";
 import TransformerFunctionUpper from "./functions/TransformerFunctionUpper";
@@ -99,7 +100,7 @@ export class TransformerFunctions {
       jsonpatch: new TransformerFunctionJsonPatch(),
       jsonpath: new TransformerFunctionJsonPath(),
       jsonpointer: new TransformerFunctionJsonPointer(),
-      jwtparse: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionJwtParse(),
+      jwtparse: new TransformerFunctionJwtParse(),
       length: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionLength(),
       long: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionLong(),
       lookup: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionLookup(),
