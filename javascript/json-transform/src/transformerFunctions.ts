@@ -22,19 +22,22 @@ import TransformerFunctionEntries from "./functions/TransformerFunctionEntries";
 import TransformerFunctionEval from "./functions/TransformerFunctionEval";
 import TransformerFunctionFilter from "./functions/TransformerFunctionFilter";
 import TransformerFunctionFind from "./functions/TransformerFunctionFind";
-import TransformerFunctionIs from "./functions/TransformerFunctionIs";
-import TransformerFunctionIsNull from "./functions/TransformerFunctionIsNull";
 import TransformerFunctionFlat from "./functions/TransformerFunctionFlat";
+import TransformerFunctionFlatten from "./functions/TransformerFunctionFlatten";
 import TransformerFunctionForm from "./functions/TransformerFunctionForm";
 import TransformerFunctionFormParse from "./functions/TransformerFunctionFormParse";
-import TransformerFunctionJoin from "./functions/TransformerFunctionJoin";
-import TransformerFunctionJsonParse from "./functions/TransformerFunctionJsonParse";
-import TransformerFunctionTest from "./functions/TransformerFunctionTest";
-import TransformerFunctionLower from "./functions/TransformerFunctionLower";
-import TransformerFunctionUpper from "./functions/TransformerFunctionUpper";
-import TransformerFunctionFlatten from "./functions/TransformerFunctionFlatten";
 import TransformerFunctionGroup from "./functions/TransformerFunctionGroup";
 import TransformerFunctionIf from "./functions/TransformerFunctionIf";
+import TransformerFunctionIs from "./functions/TransformerFunctionIs";
+import TransformerFunctionIsNull from "./functions/TransformerFunctionIsNull";
+import TransformerFunctionJoin from "./functions/TransformerFunctionJoin";
+import TransformerFunctionJsonParse from "./functions/TransformerFunctionJsonParse";
+import TransformerFunctionJsonPatch from "./functions/TransformerFunctionJsonPatch";
+import TransformerFunctionJsonPath from "./functions/TransformerFunctionJsonPath";
+import TransformerFunctionJsonPointer from "./functions/TransformerFunctionJsonPointer";
+import TransformerFunctionLower from "./functions/TransformerFunctionLower";
+import TransformerFunctionTest from "./functions/TransformerFunctionTest";
+import TransformerFunctionUpper from "./functions/TransformerFunctionUpper";
 
 class FunctionMatchResult {
   private readonly result;
@@ -93,9 +96,9 @@ export class TransformerFunctions {
       isnull: new TransformerFunctionIsNull(),
       join: new TransformerFunctionJoin(),
       jsonparse: new TransformerFunctionJsonParse(),
-      jsonpatch: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionJsonPatch(),
-      jsonpath: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionJsonPath(),
-      jsonpointer: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionJsonPointer(),
+      jsonpatch: new TransformerFunctionJsonPatch(),
+      jsonpath: new TransformerFunctionJsonPath(),
+      jsonpointer: new TransformerFunctionJsonPointer(),
       jwtparse: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionJwtParse(),
       length: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionLength(),
       long: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionLong(),

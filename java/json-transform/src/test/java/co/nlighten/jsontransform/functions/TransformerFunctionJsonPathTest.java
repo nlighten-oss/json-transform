@@ -32,7 +32,7 @@ public class TransformerFunctionJsonPathTest extends BaseTest {
             { "id": 3, "active": false },
             { "id": 4, "active": true },
             { "id": 5, "active": false }
-        ]"""), "$$jsonpath('\\\\$[*][?(@.active == true)]'):$", fromJson("""
+        ]"""), "$$jsonpath('\\\\$[?(@.active == true)]'):$", fromJson("""
         [
             { "id": 1, "active": true },
             { "id": 4, "active": true }
