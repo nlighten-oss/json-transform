@@ -190,6 +190,117 @@ const isEqual = (value: any, other: any): boolean => {
   return areSimilar(value, other);
 };
 
+/**
+ * Builds a missing paths parent elements. e.g for a path of a.b.c the result would be {@code {a:{b:{c:value}}}}
+ *
+ * @param value    the value to add at the end of the path
+ * @param location the location to build
+ * @return a wrapping element containing the value in it's path
+ */
+const wrapElement = (value: any, location: string[]) => {
+  let point: string | undefined;
+  let elm = value;
+
+  while ((point = location.pop()) != null) {
+    elm = { point: elm };
+  }
+  return elm;
+};
+
+/**
+ * Builds a deque list of paths from a jsonPath string value (including map keys selectors)
+ *
+ * @param jsonPath the json path to build from
+ * @return a dequeue with a list of element keys
+ */
+const extractPath = (jsonPath?: string | null) => {
+  let paths: string[] = [];
+  if (isNullOrUndefined(jsonPath) || jsonPath.trim() === "") {
+    return paths;
+  }
+  let sb = "";
+  const expecting: string[] = [];
+
+  for (let i = 0; i < jsonPath.length; i++) {
+    const c = jsonPath.charAt(i);
+    if (c == "." && expecting.length == 0 && sb.length > 0) {
+      paths.push(sb);
+      sb = "";
+    } else if (c == "[" && expecting.length == 0) {
+      expecting.push("]");
+    } else if (expecting.length > 0 && expecting[0] == c) {
+      expecting.shift();
+    } else if (c == "'" || c == '"') {
+      expecting.push(c);
+    } else {
+      sb += c;
+    }
+  }
+  if (sb.length > 0) {
+    paths.push(sb);
+  }
+
+  return paths;
+};
+
+/**
+ * Merges the given value object deep into the given root object at the path specified creating any missing path elements
+ *
+ * @param rootEl  Object to merge values into
+ * @param value the value to merge into the root
+ * @param path  the json path to merge the value at
+ * @return the updated root object
+ */
+function mergeInto(rootEl: Record<string, any>, value: any, path: string | null) {
+  let root = rootEl;
+  if (value == null || root == null) {
+    return root;
+  }
+  const location = extractPath(path);
+  let point: string | undefined;
+  let object = root;
+  while ((point = location.shift()) != null) {
+    if (point === "$") {
+      continue;
+    }
+    if (location.length == 0 && !isMap(value)) {
+      if (!isNullOrUndefined(value)) {
+        object[point] = value;
+      }
+      return root;
+    }
+    if (Object.prototype.hasOwnProperty.call(object, point)) {
+      const current = object[point];
+      if (isMap(current)) {
+        object = current;
+      } else if (Array.isArray(current)) {
+        current.push(wrapElement(value, location));
+        return root;
+      } else {
+        //we create an array and add ourselves
+        const arr: any[] = [];
+        arr.push(current);
+        arr.push(wrapElement(value, location));
+        object[point] = arr;
+      }
+    } else {
+      const elm = wrapElement(value, location);
+      if (!isNullOrUndefined(elm)) {
+        object[point] = elm;
+      }
+      return root;
+    }
+  }
+  //we merge
+  if (isMap(value)) {
+    Object.assign(object, value);
+    //const obj = value;
+    //const finalObject = object;
+    //Object.entries(obj).forEach(kv => finalObject[kv[0]] = kv[1]);
+  }
+  return root;
+}
+
 export {
   isNullOrUndefined,
   isMap,
@@ -200,4 +311,5 @@ export {
   lenientJsonParse,
   isTruthy,
   isEqual,
+  mergeInto,
 };

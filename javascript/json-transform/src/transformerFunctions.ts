@@ -39,6 +39,9 @@ import TransformerFunctionJwtParse from "./functions/TransformerFunctionJwtParse
 import TransformerFunctionLower from "./functions/TransformerFunctionLower";
 import TransformerFunctionTest from "./functions/TransformerFunctionTest";
 import TransformerFunctionUpper from "./functions/TransformerFunctionUpper";
+import TransformerFunctionLength from "./functions/TransformerFunctionLength";
+import TransformerFunctionLong from "./functions/TransformerFunctionLong";
+import TransformerFunctionLookup from "./functions/TransformerFunctionLookup";
 
 class FunctionMatchResult {
   private readonly result;
@@ -101,9 +104,9 @@ export class TransformerFunctions {
       jsonpath: new TransformerFunctionJsonPath(),
       jsonpointer: new TransformerFunctionJsonPointer(),
       jwtparse: new TransformerFunctionJwtParse(),
-      length: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionLength(),
-      long: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionLong(),
-      lookup: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionLookup(),
+      length: new TransformerFunctionLength(),
+      long: new TransformerFunctionLong(),
+      lookup: new TransformerFunctionLookup(),
       lower: new TransformerFunctionLower(),
       map: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionMap(),
       match: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionMatch(),

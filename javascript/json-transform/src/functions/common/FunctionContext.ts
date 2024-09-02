@@ -2,8 +2,10 @@ import TransformerFunction from "./TransformerFunction";
 import { ParameterResolver } from "../../ParameterResolver";
 import { JsonTransformerFunction } from "../../JsonTransformerFunction";
 import { compareTo, isNullOrUndefined, getAsString, getDocumentContext, isMap } from "../../JsonHelpers";
-import { BigDecimal } from "./FunctionHelpers";
+import { BigDecimal, MAX_SCALE_ROUNDING, RoundingModes } from "./FunctionHelpers";
 import JsonElementStreamer from "../../JsonElementStreamer";
+import BigNumber from "bignumber.js";
+import DocumentContext from "../../DocumentContext";
 
 class FunctionContext {
   protected static readonly CONTEXT_KEY = "context";
@@ -172,17 +174,16 @@ class FunctionContext {
     if (typeof value === "bigint") {
       return value;
     }
-    if (typeof value === "number") {
-      return BigInt(value);
-    }
-    if (value instanceof BigDecimal) {
-      return BigInt(value.toFixed(0));
+    if (typeof value === "number" || value instanceof BigDecimal) {
+      const fixed = BigDecimal(value).toFixed(0, BigNumber.ROUND_DOWN);
+      return BigInt(fixed);
     }
     let str = getAsString(value);
     if (str == null) return null;
     str = str.trim();
     if (str === "") return null;
-    return BigInt(value);
+    const fixed = BigDecimal(value).toFixed(0, BigNumber.ROUND_DOWN);
+    return BigInt(fixed);
   }
 
   public async getBigDecimal(name: string | null, transform: boolean = true) {
@@ -244,7 +245,13 @@ class FunctionContext {
     return await this.extractor.transform(definition, this.resolver, allowReturningStreams);
   }
 
-  public async transformItem(definition: any, current: any, index?: number, additionalName?: string, additional?: any) {
+  public async transformItem(
+    definition: any,
+    current: any,
+    index?: number,
+    additionalNameOrContext?: string | Record<string, any>,
+    additional?: any,
+  ) {
     const currentContext = getDocumentContext(current);
     let itemResolver: ParameterResolver;
     if (typeof index !== "number") {
@@ -254,7 +261,7 @@ class FunctionContext {
             ? currentContext.read(FunctionContext.DOLLAR + name.substring(9))
             : this.resolver.get(name),
       };
-    } else if (!additionalName) {
+    } else if (!additionalNameOrContext) {
       itemResolver = {
         get: name =>
           name === FunctionContext.DOUBLE_HASH_INDEX
@@ -263,7 +270,7 @@ class FunctionContext {
               ? currentContext.read(FunctionContext.DOLLAR + name.substring(9))
               : this.resolver.get(name),
       };
-    } else {
+    } else if (typeof additionalNameOrContext === "string") {
       const additionalContext = getDocumentContext(additional);
       itemResolver = {
         get: name =>
@@ -271,9 +278,30 @@ class FunctionContext {
             ? index
             : FunctionContext.pathOfVar(FunctionContext.DOUBLE_HASH_CURRENT, name)
               ? currentContext.read(FunctionContext.DOLLAR + name.substring(9))
-              : FunctionContext.pathOfVar(additionalName, name)
-                ? additionalContext.read(FunctionContext.DOLLAR + name.substring(additionalName.length))
+              : FunctionContext.pathOfVar(additionalNameOrContext, name)
+                ? additionalContext.read(FunctionContext.DOLLAR + name.substring(additionalNameOrContext.length))
                 : this.resolver.get(name),
+      };
+    } else {
+      const addCtx = Object.keys(additionalNameOrContext).reduce(
+        (a, c) => {
+          a[c] = getDocumentContext(additionalNameOrContext[c]);
+          return a;
+        },
+        {} as Record<string, DocumentContext>,
+      );
+      itemResolver = {
+        get: name => {
+          if (name === FunctionContext.DOUBLE_HASH_INDEX) return index;
+          if (FunctionContext.pathOfVar(FunctionContext.DOUBLE_HASH_CURRENT, name))
+            return currentContext.read("$" + name.substring(9));
+          for (let key in additionalNameOrContext) {
+            if (FunctionContext.pathOfVar(key, name)) {
+              return addCtx[key].read(FunctionContext.DOLLAR + name.substring(key.length));
+            }
+          }
+          return this.resolver.get(name);
+        },
       };
     }
     return this.extractor.transform(definition, itemResolver, false);
