@@ -2,9 +2,7 @@ import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import { FunctionDescription } from "./common/FunctionDescription";
 import FunctionContext from "./common/FunctionContext";
-import Base64 from "./utils/Base64";
-import TextEncoding from "./common/TextEncoding";
-import { getAsString, isMap } from "../JsonHelpers";
+import { isMap } from "../JsonHelpers";
 import JsonElementStreamer from "../JsonElementStreamer";
 
 const DESCRIPTION: FunctionDescription = {

@@ -42,6 +42,12 @@ import TransformerFunctionUpper from "./functions/TransformerFunctionUpper";
 import TransformerFunctionLength from "./functions/TransformerFunctionLength";
 import TransformerFunctionLong from "./functions/TransformerFunctionLong";
 import TransformerFunctionLookup from "./functions/TransformerFunctionLookup";
+import TransformerFunctionMap from "./functions/TransformerFunctionMap";
+import TransformerFunctionMatch from "./functions/TransformerFunctionMatch";
+import TransformerFunctionMatchAll from "./functions/TransformerFunctionMatchAll";
+import TransformerFunctionMax from "./functions/TransformerFunctionMax";
+import TransformerFunctionMin from "./functions/TransformerFunctionMin";
+import TransformerFunctionMath from "./functions/TransformerFunctionMath";
 
 class FunctionMatchResult {
   private readonly result;
@@ -108,12 +114,12 @@ export class TransformerFunctions {
       long: new TransformerFunctionLong(),
       lookup: new TransformerFunctionLookup(),
       lower: new TransformerFunctionLower(),
-      map: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionMap(),
-      match: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionMatch(),
-      matchall: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionMatchAll(),
-      math: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionMath(),
-      max: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionMax(),
-      min: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionMin(),
+      map: new TransformerFunctionMap(),
+      match: new TransformerFunctionMatch(),
+      matchall: new TransformerFunctionMatchAll(),
+      math: new TransformerFunctionMath(),
+      max: new TransformerFunctionMax(),
+      min: new TransformerFunctionMin(),
       normalize: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionNormalize(),
       not: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionNot(),
       numberformat: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionNumberFormat(),
