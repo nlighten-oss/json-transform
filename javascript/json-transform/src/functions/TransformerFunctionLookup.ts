@@ -14,8 +14,22 @@ type UsingEntry = {
 const DESCRIPTION: FunctionDescription = {
   aliases: ["lookup"],
   description: "",
-  inputType: ArgType.Any,
-  outputType: ArgType.Long,
+  inputType: ArgType.Array,
+  arguments: {
+    using: {
+      type: ArgType.Array,
+      position: 0,
+      required: true,
+      description: "Array of definitions of how to match other arrays to the main one",
+    },
+    to: {
+      type: ArgType.Transformer,
+      position: 1,
+      defaultIsNull: true,
+      description: "Transformer to map each pair of elements to its value in the result array",
+    },
+  },
+  outputType: ArgType.Array,
 };
 class TransformerFunctionLookup extends TransformerFunction {
   constructor() {

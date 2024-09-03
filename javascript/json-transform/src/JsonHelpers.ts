@@ -2,6 +2,8 @@ import { v4 as uuidv4 } from "uuid";
 import DocumentContext from "./DocumentContext";
 import { BigDecimal } from "./functions/common/FunctionHelpers";
 import { areSimilar } from "@nlighten/json-schema-utils";
+import { Comparator, ComparatorFactory } from "@wortise/sequency";
+import CompareBy from "./functions/common/CompareBy";
 
 const JSONPATH_ROOT = "$",
   JSONPATH_ROOT_ESC = "\\$",
@@ -34,17 +36,17 @@ const numberCompare = (a: number, b: number) => {
   return a < b ? -1 : a === b ? 0 : 1;
 };
 
-const numberType = (a: any) => typeof a === "number" || typeof a === "bigint" || a instanceof BigDecimal;
+const isNumberType = (a: any) => typeof a === "number" || typeof a === "bigint" || a instanceof BigDecimal;
 
 const compareTo = (a: any, b: any) => {
   if (Array.isArray(a) && Array.isArray(b)) {
     return numberCompare(a.length, b.length);
+  } else if (isNumberType(a) && isNumberType(b)) {
+    return BigDecimal(a).comparedTo(BigDecimal(b));
   } else if (a && b && typeof a === "object" && typeof b === "object") {
     return numberCompare(Object.keys(a).length, Object.keys(b).length);
   } else if (typeof a === "string" && typeof b === "string") {
     return a.localeCompare(b);
-  } else if (numberType(a) && numberType(b)) {
-    return BigDecimal(a).comparedTo(BigDecimal(b));
   } else if (typeof a === "boolean" && typeof b === "boolean") {
     return a === b ? 0 : a ? 1 : -1;
   } else if (isNullOrUndefined(a) && !isNullOrUndefined(b)) {
@@ -184,7 +186,7 @@ const isEqual = (value: any, other: any): boolean => {
   if (value === other) {
     return true;
   }
-  if (numberType(value) && numberType(other)) {
+  if (isNumberType(value) && isNumberType(other)) {
     return BigDecimal(value).eq(BigDecimal(other));
   }
   return areSimilar(value, other);
@@ -301,12 +303,58 @@ function mergeInto(rootEl: Record<string, any>, value: any, path: string | null)
   return root;
 }
 
+const factory = new ComparatorFactory<any>();
+
+function createComparator(type: string | null) {
+  let comparator: Comparator<any>;
+  if (isNullOrUndefined(type) || "AUTO" === type.toUpperCase()) {
+    comparator = factory.compare((a, b) => compareTo(a, b) ?? 0);
+  } else {
+    switch (type.toUpperCase()) {
+      case "NUMBER": {
+        comparator = factory.compare((a, b) => {
+          if ((isNumberType(a) || typeof a === "string") && (isNumberType(b) || typeof b === "string")) {
+            return BigDecimal(a).comparedTo(BigDecimal(b));
+          } else if (isNullOrUndefined(a) && !isNullOrUndefined(b)) {
+            return -1;
+          } else if (!isNullOrUndefined(a) && isNullOrUndefined(b)) {
+            return 1;
+          }
+          return 0;
+        });
+        break;
+      }
+      case "BOOLEAN": {
+        comparator = factory.compare((a, b) => {
+          if (typeof a === "boolean" && typeof b === "boolean") {
+            return a === b ? 0 : a ? 1 : -1;
+          } else if (isNullOrUndefined(a) && !isNullOrUndefined(b)) {
+            return -1;
+          } else if (!isNullOrUndefined(a) && isNullOrUndefined(b)) {
+            return 1;
+          }
+          return 0;
+        });
+        break;
+      }
+      //case "STRING"
+      default: {
+        comparator = factory.compareBy(getAsString);
+        break;
+      }
+    }
+  }
+  return comparator;
+}
+
 export {
   isNullOrUndefined,
   isMap,
   getAsString,
   createPayloadResolver,
+  isNumberType,
   compareTo,
+  createComparator,
   getDocumentContext,
   lenientJsonParse,
   isTruthy,
