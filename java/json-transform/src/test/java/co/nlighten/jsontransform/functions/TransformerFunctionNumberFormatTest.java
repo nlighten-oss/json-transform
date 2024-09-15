@@ -28,14 +28,14 @@ public class TransformerFunctionNumberFormatTest extends BaseTest {
 
         //
         assertTransformation(val, "$$numberformat(CURRENCY):$", NumberFormat.getCurrencyInstance(FunctionHelpers.DEFAULT_LOCALE).format(val));
-        assertTransformation(val, "$$numberformat(CURRENCY,en-GB):$", NumberFormat.getCurrencyInstance(Locale.UK).format(val));
+        assertTransformation(val, "$$numberformat(CURRENCY,en-GB,GBP):$", NumberFormat.getCurrencyInstance(Locale.UK).format(val));
         assertTransformation(val,"$$numberformat(PERCENT):$", NumberFormat.getPercentInstance(FunctionHelpers.DEFAULT_LOCALE).format(val));
         assertTransformation(val,"$$numberformat(INTEGER):$", NumberFormat.getIntegerInstance(FunctionHelpers.DEFAULT_LOCALE).format(val));
         assertTransformation(val,"$$numberformat(COMPACT):$", NumberFormat.getCompactNumberInstance(FunctionHelpers.DEFAULT_LOCALE, NumberFormat.Style.SHORT).format(val));
         assertTransformation(val,"$$numberformat(COMPACT,en-US,LONG):$", NumberFormat.getCompactNumberInstance(Locale.forLanguageTag("en-US"), NumberFormat.Style.LONG).format(val));
         //    literal
         assertTransformation(val, "$$numberformat(CURRENCY):$", "$123,456,789.88");
-        assertTransformation(val, "$$numberformat(CURRENCY,en-GB):$", "£123,456,789.88");
+        assertTransformation(val, "$$numberformat(CURRENCY,en-GB,GBP):$", "£123,456,789.88");
         assertTransformation(val,"$$numberformat(PERCENT):$", "12,345,678,988%");
         assertTransformation(val,"$$numberformat(INTEGER):$", "123,456,790");
         assertTransformation(val,"$$numberformat(COMPACT):$", "123M");

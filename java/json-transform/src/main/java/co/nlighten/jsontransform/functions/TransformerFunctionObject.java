@@ -16,7 +16,7 @@ import co.nlighten.jsontransform.functions.common.TransformerFunction;
 @Aliases("object")
 @Documentation(value = "Reduces an array of entries into an object",
                notes = "- Entry is in the form of [ key, value ]")
-@InputType(ArgType.Array)
+@InputType(ArgType.ArrayOfArray)
 @OutputType(ArgType.Object)
 public class TransformerFunctionObject<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public TransformerFunctionObject(JsonAdapter<JE, JA, JO> adapter) {

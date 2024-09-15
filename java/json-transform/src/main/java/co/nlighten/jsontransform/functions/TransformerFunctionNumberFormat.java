@@ -8,6 +8,7 @@ import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import co.nlighten.jsontransform.functions.annotations.*;
 
 import java.text.NumberFormat;
+import java.util.Currency;
 import java.util.Locale;
 
 /*
@@ -33,6 +34,8 @@ import java.util.Locale;
               description = "(DECIMAL) A custom character to be used for decimal point (default is .)")
 @ArgumentType(value = "radix", type = ArgType.Integer, position = 1, defaultInteger = 10,
               description = "(BASE) Radix to be used for formatting input")
+@ArgumentType(value = "currency", type = ArgType.String, position = 2, defaultIsNull = true,
+        description = "(CURRENCY) Currency to use in format")
 @OutputType(ArgType.String)
 public class TransformerFunctionNumberFormat<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public TransformerFunctionNumberFormat(JsonAdapter<JE, JA, JO> adapter) {
@@ -59,7 +62,10 @@ public class TransformerFunctionNumberFormat<JE, JA extends Iterable<JE>, JO ext
                     context.getString("grouping"),
                     context.getString("decimal")
                 );
-            case "CURRENCY" -> NumberFormat.getCurrencyInstance(resolvedLocale);
+            case "CURRENCY" -> getCurrencyFormatter(
+                    resolvedLocale,
+                    context.getString("currency")
+                );
             case "PERCENT" -> NumberFormat.getPercentInstance(resolvedLocale);
             case "INTEGER" -> NumberFormat.getIntegerInstance(resolvedLocale);
             case "COMPACT" -> NumberFormat.getCompactNumberInstance(
@@ -69,5 +75,13 @@ public class TransformerFunctionNumberFormat<JE, JA extends Iterable<JE>, JO ext
             default -> NumberFormat.getNumberInstance();
         };
         return formatter.format(input);
+    }
+
+    private NumberFormat getCurrencyFormatter(Locale resolvedLocale, String currency) {
+        var nf = NumberFormat.getCurrencyInstance(resolvedLocale);
+        if (!FunctionHelpers.isNullOrEmpty(currency)) {
+            nf.setCurrency(Currency.getInstance(currency));
+        }
+        return nf;
     }
 }

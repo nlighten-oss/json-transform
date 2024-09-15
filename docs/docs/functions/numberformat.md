@@ -23,6 +23,7 @@ Formats a number
 | `grouping`      | `String`  | Single character string                                            | `,`                           | A custom character to be used for grouping                                             |
 | `decimal`       | `String`  | Single character string                                            | `.`                           | A custom character to be used for decimal point                                        |
 | `radix`         | `Integer` |                                                                    | `10`                          | Radix to be used for formatting input                                                  |
+| `currency`      | `String`  | [ISO-4217 currency code](https://www.iso.org/iso-4217-currency-codes.html)                                         | Yes (when `type == CURRENCY`) | Currency to use in format                                                  |
 
 
 ## Examples
@@ -86,7 +87,7 @@ Formats a number
 123456789.87654321
 ```
 ```transformers
-"$$numberformat(CURRENCY,en-GB):$"
+"$$numberformat(CURRENCY,en-GB,GBP):$"
 ```
 ```json
 "£123,456,789.88"

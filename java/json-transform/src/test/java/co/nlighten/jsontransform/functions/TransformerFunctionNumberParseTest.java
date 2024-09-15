@@ -20,6 +20,7 @@ public class TransformerFunctionNumberParseTest extends BaseTest {
         assertTransformation(FunctionHelpers.getDecimalFormatter(Locale.forLanguageTag("en-US"), "#,##0.00", ".", ",").format(val),"$$numberparse('#,##0.00',en-US,'.',','):$", val);
         // literal
         assertTransformation("123,456,789.88","$$numberparse('#,##0.00'):$", val);
+        assertTransformation("123.456.789,88","$$numberparse('#,##0.00',de):$", val);
         assertTransformation("123.456.789,88","$$numberparse('#,##0.00',en-US,'.',','):$", val);
 
         // HEX
