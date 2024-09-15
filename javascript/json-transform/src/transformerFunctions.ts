@@ -36,18 +36,26 @@ import TransformerFunctionJsonPatch from "./functions/TransformerFunctionJsonPat
 import TransformerFunctionJsonPath from "./functions/TransformerFunctionJsonPath";
 import TransformerFunctionJsonPointer from "./functions/TransformerFunctionJsonPointer";
 import TransformerFunctionJwtParse from "./functions/TransformerFunctionJwtParse";
-import TransformerFunctionLower from "./functions/TransformerFunctionLower";
-import TransformerFunctionTest from "./functions/TransformerFunctionTest";
-import TransformerFunctionUpper from "./functions/TransformerFunctionUpper";
 import TransformerFunctionLength from "./functions/TransformerFunctionLength";
 import TransformerFunctionLong from "./functions/TransformerFunctionLong";
 import TransformerFunctionLookup from "./functions/TransformerFunctionLookup";
+import TransformerFunctionLower from "./functions/TransformerFunctionLower";
 import TransformerFunctionMap from "./functions/TransformerFunctionMap";
 import TransformerFunctionMatch from "./functions/TransformerFunctionMatch";
 import TransformerFunctionMatchAll from "./functions/TransformerFunctionMatchAll";
 import TransformerFunctionMax from "./functions/TransformerFunctionMax";
 import TransformerFunctionMin from "./functions/TransformerFunctionMin";
 import TransformerFunctionMath from "./functions/TransformerFunctionMath";
+import TransformerFunctionNormalize from "./functions/TransformerFunctionNormalize";
+import TransformerFunctionNot from "./functions/TransformerFunctionNot";
+import TransformerFunctionTest from "./functions/TransformerFunctionTest";
+import TransformerFunctionUpper from "./functions/TransformerFunctionUpper";
+import TransformerFunctionNumberFormat from "./functions/TransformerFunctionNumberFormat";
+import TransformerFunctionNumberParse from "./functions/TransformerFunctionNumberParse";
+import TransformerFunctionObject from "./functions/TransformerFunctionObject";
+import TransformerFunctionOr from "./functions/TransformerFunctionOr";
+import TransformerFunctionPad from "./functions/TransformerFunctionPad";
+import TransformerFunctionPartition from "./functions/TransformerFunctionPartition";
 
 class FunctionMatchResult {
   private readonly result;
@@ -120,14 +128,14 @@ export class TransformerFunctions {
       math: new TransformerFunctionMath(),
       max: new TransformerFunctionMax(),
       min: new TransformerFunctionMin(),
-      normalize: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionNormalize(),
-      not: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionNot(),
-      numberformat: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionNumberFormat(),
-      numberparse: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionNumberParse(),
-      object: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionObject(),
-      or: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionOr(),
-      pad: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionPad(),
-      partition: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionPartition(),
+      normalize: new TransformerFunctionNormalize(),
+      not: new TransformerFunctionNot(),
+      numberformat: new TransformerFunctionNumberFormat(),
+      numberparse: new TransformerFunctionNumberParse(),
+      object: new TransformerFunctionObject(),
+      or: new TransformerFunctionOr(),
+      pad: new TransformerFunctionPad(),
+      partition: new TransformerFunctionPartition(),
       range: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionRange(),
       raw: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionRaw(),
       reduce: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionReduce(),
@@ -140,7 +148,7 @@ export class TransformerFunctions {
       substring: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionSubstring(),
       sum: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionSum(),
       switch: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionSwitch(),
-      test: new TransformerFunctionTest(), // TODO: add tests
+      test: new TransformerFunctionTest(),
       transform: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionTransform(),
       trim: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionTrim(),
       unflatten: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionUnflatten(),

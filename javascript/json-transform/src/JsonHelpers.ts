@@ -12,6 +12,8 @@ const JSONPATH_ROOT = "$",
   JSONPATH_ALT_PREFIX_ESC = "\\#";
 
 const isNullOrUndefined = (value: any): value is null | undefined => value == null || typeof value === "undefined";
+const isNullOrEmpty = (value?: string | null): value is null | undefined =>
+  value == null || typeof value === "undefined" || value === "";
 const isMap = (value: any): value is Record<string, any> => value && typeof value === "object" && !Array.isArray(value);
 
 function getAsString<T extends string | number | boolean | object>(value: T): string;
@@ -349,6 +351,7 @@ function createComparator(type: string | null) {
 
 export {
   isNullOrUndefined,
+  isNullOrEmpty,
   isMap,
   getAsString,
   createPayloadResolver,

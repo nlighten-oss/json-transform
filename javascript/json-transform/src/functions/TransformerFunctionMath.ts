@@ -1,10 +1,10 @@
+import BigNumber from "bignumber.js";
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
 import { FunctionDescription } from "./common/FunctionDescription";
 import { getAsString, isNullOrUndefined } from "../JsonHelpers";
 import { BigDecimal, MAX_SCALE, MAX_SCALE_ROUNDING } from "./common/FunctionHelpers";
-import BigNumber from "bignumber.js";
 
 enum MathOp {
   ADDITION = 1,
