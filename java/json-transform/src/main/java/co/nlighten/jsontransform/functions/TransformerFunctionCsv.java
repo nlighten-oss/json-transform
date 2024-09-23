@@ -5,7 +5,7 @@ import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import co.nlighten.jsontransform.formats.csv.CsvFormat;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,18 +18,10 @@ import java.util.stream.Stream;
  * For tests
  * @see TransformerFunctionCsvTest
  */
-@Aliases("csv")
-@Documentation("Converts an array of objects/arrays to a CSV string")
-@InputType(ArgType.Array)
-@ArgumentType(value = "no_headers", type = ArgType.Boolean, position = 0, defaultBoolean = false,
-              description = "Whether to include object keys as headers (taken from first object if no `names`)")
-@ArgumentType(value = "force_quote", type = ArgType.Boolean, position = 1, defaultBoolean = false,
-              description = "Whether to quote all the values")
-@ArgumentType(value = "separator", type = ArgType.String, position = 2, defaultString = ",",
-              description = "Use an alternative field separator")
-@ArgumentType(value = "names", type = ArgType.Array, position = 3, defaultIsNull = true,
-              description = "Names of fields to extract into csv if objects (will be used as the header row, unless `no_headers`)")
-@OutputType(ArgType.String)
+@ArgumentType(value = "no_headers", type = ArgType.Boolean, position = 0, defaultBoolean = false)
+@ArgumentType(value = "force_quote", type = ArgType.Boolean, position = 1, defaultBoolean = false)
+@ArgumentType(value = "separator", type = ArgType.String, position = 2, defaultString = ",")
+@ArgumentType(value = "names", type = ArgType.Array, position = 3, defaultIsNull = true)
 public class TransformerFunctionCsv<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionCsv.class);
 

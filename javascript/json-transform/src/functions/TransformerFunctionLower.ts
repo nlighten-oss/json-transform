@@ -1,17 +1,9 @@
 import TransformerFunction from "./common/TransformerFunction";
-import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["lower"],
-  description: "",
-  inputType: ArgType.String,
-  outputType: ArgType.String,
-};
 class TransformerFunctionLower extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({});
   }
 
   override async apply(context: FunctionContext): Promise<any> {

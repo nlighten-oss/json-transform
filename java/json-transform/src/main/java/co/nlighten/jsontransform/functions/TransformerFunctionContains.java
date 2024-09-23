@@ -4,18 +4,13 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 /*
  * For tests
  * @see TransformerFunctionContainsTest
  */
-@Aliases("contains")
-@Documentation("Checks whether an array contains a certain value")
-@InputType(ArgType.Array)
-@ArgumentType(value = "that", type = ArgType.Any, position = 0, defaultIsNull = true,
-              description = "The value to look for")
-@OutputType(ArgType.Boolean)
+@ArgumentType(value = "that", type = ArgType.Any, position = 0, defaultIsNull = true)
 public class TransformerFunctionContains<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public TransformerFunctionContains(JsonAdapter<JE, JA, JO> adapter) {
         super(adapter);

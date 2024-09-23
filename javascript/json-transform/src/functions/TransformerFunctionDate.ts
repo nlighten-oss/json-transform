@@ -1,11 +1,10 @@
 import { add, addMilliseconds, format, fromUnixTime, sub, subMilliseconds, parseJSON } from "date-fns";
-import { formatInTimeZone, format as formatEx } from "date-fns-tz";
+import { formatInTimeZone } from "date-fns-tz";
+import BigNumber from "bignumber.js";
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
-import { BigDecimal, MAX_SCALE_ROUNDING, RoundingModes } from "./common/FunctionHelpers";
-import BigNumber from "bignumber.js";
+import { BigDecimal } from "./common/FunctionHelpers";
 
 const ChronoUnitToDuration: Record<string, string> = {
   SECONDS: "seconds",
@@ -16,59 +15,21 @@ const ChronoUnitToDuration: Record<string, string> = {
   YEARS: "years",
 };
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["date"],
-  description: "",
-  inputType: ArgType.String,
-  arguments: {
-    scale: {
-      type: ArgType.Integer,
-      position: 0,
-      defaultInteger: -1,
-      description: "Scale of BigDecimal to set (default is 10 max)",
-    },
-    format: {
-      type: ArgType.Enum,
-      position: 0,
-      defaultEnum: "ISO",
-      enumValues: ["ISO", "GMT", "DATE", "ADD", "SUB", "EPOCH", "FORMAT", "ZONE"],
-      description: "Formatter to use",
-    },
-    digits: {
-      type: ArgType.Integer,
-      position: 1,
-      defaultInteger: -1,
-      description: "(ISO) precision for time part (scale) 0|3|6|9|-1",
-    },
-    units: {
-      type: ArgType.Enum,
-      position: 1,
-      required: true,
-      enumValues: ["NANOS", "MICROS", "MILLIS", "SECONDS", "MINUTES", "HOURS", "HALF_DAYS", "DAYS", "MONTHS", "YEARS"],
-      description: "(ADD/SUB) Units to use (ChronoUnit)",
-    },
-    amount: {
-      type: ArgType.Long,
-      position: 2,
-      defaultLong: 0,
-      description: "(ADD/SUB) Amount of units to add or subtract (can be negative)",
-    },
-    resolution: {
-      type: ArgType.Enum,
-      position: 1,
-      defaultEnum: "UNIX",
-      enumValues: ["UNIX", "MS"],
-      description: "(EPOCH) Resolution of epoch (Seconds or Milliseconds)",
-    },
-    pattern: { type: ArgType.String, position: 1, required: true, description: "(FORMAT) Pattern to use" },
-    timezone: { type: ArgType.String, position: 2, defaultString: "UTC", description: "(FORMAT)" },
-    zone: { type: ArgType.String, position: 1, defaultString: "UTC", description: "(ZONE)" },
-  },
-  outputType: [ArgType.String, ArgType.Integer],
-};
 class TransformerFunctionDate extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        scale: { type: ArgType.Integer, position: 0, defaultInteger: -1 },
+        format: { type: ArgType.Enum, position: 0, defaultEnum: "ISO" },
+        digits: { type: ArgType.Integer, position: 1, defaultInteger: -1 },
+        units: { type: ArgType.Enum, position: 1 },
+        amount: { type: ArgType.Long, position: 2, defaultLong: 0 },
+        resolution: { type: ArgType.Enum, position: 1, defaultEnum: "UNIX" },
+        pattern: { type: ArgType.String, position: 1 },
+        timezone: { type: ArgType.String, position: 2, defaultString: "UTC" },
+        zone: { type: ArgType.String, position: 1, defaultString: "UTC" },
+      },
+    });
   }
 
   private static parseInstant(value: any): Date {

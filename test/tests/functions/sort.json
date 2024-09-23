@@ -1,0 +1,353 @@
+[
+  {
+    "name": "object - strings (no args) - auto detect type",
+    "given": {
+      "input": ["c", "a", "b"],
+      "definition": {
+        "$$sort": "$"
+      }
+    },
+    "expect": {
+      "equal": ["a", "b", "c"]
+    }
+  },
+  {
+    "name": "object - numbers (no args) - auto detect type",
+    "given": {
+      "input": [3, 1, 2],
+      "definition": {
+        "$$sort": "$"
+      }
+    },
+    "expect": {
+      "equal": [1, 2, 3]
+    }
+  },
+  {
+    "name": "object - strings (order=desc) - auto detect type",
+    "given": {
+      "input": ["c", "a", "b"],
+      "definition": {
+        "$$sort": "$",
+        "order": "desc"
+      }
+    },
+    "expect": {
+      "equal": ["c", "b", "a"]
+    }
+  },
+  {
+    "name": "object - strings (order*=desc) - auto detect type",
+    "given": {
+      "input": [["c", "a", "b"], null, "desc"],
+      "definition": {
+        "$$sort": "$[0]",
+        "order": "$[2]"
+      }
+    },
+    "expect": {
+      "equal": ["c", "b", "a"]
+    }
+  },
+  {
+    "name": "object - numbers (type=number)",
+    "given": {
+      "input": [4, 2, 1, 3],
+      "definition": {
+        "$$sort": "$",
+        "type": "number"
+      }
+    },
+    "expect": {
+      "equal": [1, 2, 3, 4]
+    }
+  },
+  {
+    "name": "object - numbers (type=number,order=desc)",
+    "given": {
+      "input": [4, 2, 1, 3],
+      "definition": {
+        "$$sort": "$",
+        "type": "number",
+        "order": "desc"
+      }
+    },
+    "expect": {
+      "equal": [4, 3, 2, 1]
+    }
+  },
+  {
+    "name": "object - booleans (type=boolean)",
+    "given": {
+      "input": [false, false, true],
+      "definition": {
+        "$$sort": "$",
+        "type": "boolean"
+      }
+    },
+    "expect": {
+      "equal": [false, false, true]
+    }
+  },
+  {
+    "name": "object - booleans (type=boolean,order=desc)",
+    "given": {
+      "input": [false, false, true],
+      "definition": {
+        "$$sort": "$",
+        "type": "boolean",
+        "order": "desc"
+      }
+    },
+    "expect": {
+      "equal": [true, false, false]
+    }
+  },
+  {
+    "name": "object - objects (by=##current.name)",
+    "given": {
+      "input": [
+        { "name": "Dan" },
+        { "name": "Alice" },
+        { "name": "Carl" },
+        { "name": "Bob" }
+      ],
+      "definition": {
+        "$$sort": "$",
+        "by": "##current.name"
+      }
+    },
+    "expect": {
+      "equal": [
+        { "name": "Alice" },
+        { "name": "Bob" },
+        { "name": "Carl" },
+        { "name": "Dan" }
+      ]
+    }
+  },
+  {
+    "name": "object - objects (type=string,by=##current.name,order=desc)",
+    "given": {
+      "input": [
+        { "name": "Dan" },
+        { "name": "Alice" },
+        { "name": "Carl" },
+        { "name": "Bob" }
+      ],
+      "definition": {
+        "$$sort": "$",
+        "type": "string",
+        "order": "desc",
+        "by": "##current.name"
+      }
+    },
+    "expect": {
+      "equal": [
+        { "name": "Dan" },
+        { "name": "Carl" },
+        { "name": "Bob" },
+        { "name": "Alice" }
+      ]
+    }
+  },
+  {
+    "name": "inline - strings (no args) - auto detect type",
+    "given": {
+      "input": ["c", "a", "b"],
+      "definition": "$$sort:$"
+    },
+    "expect": {
+      "equal": ["a", "b", "c"]
+    }
+  },
+  {
+    "name": "inline - numbers (no args) - auto detect type",
+    "given": {
+      "input": [3, 1, 2],
+      "definition": "$$sort:$"
+    },
+    "expect": {
+      "equal": [1, 2, 3]
+    }
+  },
+  {
+    "name": "inline - strings (##current,DESC) - auto detect type",
+    "given": {
+      "input": ["c", "a", "b"],
+      "definition": "$$sort(##current,DESC):$"
+    },
+    "expect": {
+      "equal": ["c", "b", "a"]
+    }
+  },
+  {
+    "name": "inline - strings (##current,$[2]) - auto detect type",
+    "given": {
+      "input": [["c", "a", "b"], null, "desc"],
+      "definition": "$$sort(##current,$[2]):$[0]"
+    },
+    "expect": {
+      "equal": ["c", "b", "a"]
+    }
+  },
+  {
+    "name": "inline - numbers (##current,ASC,NUMBER)",
+    "given": {
+      "input": [4, 2, 1, 3],
+      "definition": "$$sort(##current,ASC,NUMBER):$"
+    },
+    "expect": {
+      "equal": [1, 2, 3, 4]
+    }
+  },
+  {
+    "name": "inline - numbers (##current,DESC,NUMBER)",
+    "given": {
+      "input": [4, 2, 1, 3],
+      "definition": "$$sort(##current,DESC,NUMBER):$"
+    },
+    "expect": {
+      "equal": [4, 3, 2, 1]
+    }
+  },
+  {
+    "name": "inline - booleans (##current,ASC,BOOLEAN)",
+    "given": {
+      "input": [false, false, true],
+      "definition": "$$sort(##current,ASC,BOOLEAN):$"
+    },
+    "expect": {
+      "equal": [false, false, true]
+    }
+  },
+  {
+    "name": "inline - booleans (##current,DESC,BOOLEAN)",
+    "given": {
+      "input": [false, false, true],
+      "definition": "$$sort(##current,DESC,BOOLEAN):$"
+    },
+    "expect": {
+      "equal": [true, false, false]
+    }
+  },
+  {
+    "name": "inline - objects (##current.name)",
+    "given": {
+      "input": [
+        { "name": "Dan" },
+        { "name": "Alice" },
+        { "name": "Carl" },
+        { "name": "Bob" }
+      ],
+      "definition": "$$sort(##current.name):$"
+    },
+    "expect": {
+      "equal": [
+        { "name": "Alice" },
+        { "name": "Bob" },
+        { "name": "Carl" },
+        { "name": "Dan" }
+      ]
+    }
+  },
+  {
+    "name": "inline - objects (##current.name,DESC,STRING)",
+    "given": {
+      "input": [
+        { "name": "Dan" },
+        { "name": "Alice" },
+        { "name": "Carl" },
+        { "name": "Bob" }
+      ],
+      "definition": "$$sort(##current.name,DESC,STRING):$"
+    },
+    "expect": {
+      "equal": [
+        { "name": "Dan" },
+        { "name": "Carl" },
+        { "name": "Bob" },
+        { "name": "Alice" }
+      ]
+    }
+  },
+  {
+    "name": "object - strings (by=func())",
+    "given": {
+      "input": ["A2", "B3", "C2", "D4", "B1", "B2", "D1"],
+      "definition": {
+        "$$sort": "$",
+        "by": "$$substring(0,1):##current"
+      }
+    },
+    "expect": {
+      "equal": ["A2", "B3", "B1", "B2", "C2", "D4", "D1"]
+    }
+  },
+  {
+    "name": "object - strings (by=func(),then=by...)",
+    "given": {
+      "input": ["A2", "B3", "C2", "D4", "B1", "B2", "D1"],
+      "definition": {
+        "$$sort": "$",
+        "by": "$$substring(0,1):##current",
+        "then": [
+          { "by": "$$long:$$substring(-1):##current" }
+        ]
+      }
+    },
+    "expect": {
+      "equal": ["A2", "B1", "B2", "B3", "C2", "D1", "D4"]
+    }
+  },
+  {
+    "name": "object - strings (by=func(),then=by(desc)...)",
+    "given": {
+      "input": ["A2", "B3", "C2", "D4", "B1", "B2", "D1"],
+      "definition": {
+        "$$sort": "$",
+        "by": "$$substring(0,1):##current",
+        "then": [
+          { "by": "$$long:$$substring(-1):##current", "order": "DESC" }
+        ]
+      }
+    },
+    "expect": {
+      "equal": ["A2", "B3", "B2", "B1", "C2", "D4", "D1"]
+    }
+  },
+  {
+    "name": "object - strings (by=func(),order=desc,then=by(asc)...)",
+    "given": {
+      "input": ["A2", "B3", "C2", "D4", "B1", "B2", "D1"],
+      "definition": {
+        "$$sort": "$",
+        "by": "$$substring(0,1):##current",
+        "order": "DESC",
+        "then": [
+          { "by": "$$long:$$substring(-1):##current", "order": "ASC" }
+        ]
+      }
+    },
+    "expect": {
+      "equal": ["D1", "D4", "C2", "B1", "B2", "B3", "A2"]
+    }
+  },
+  {
+    "name": "object - strings (by=func(),order=desc,then=by(desc)..)",
+    "given": {
+      "input": ["A2", "B3", "C2", "D4", "B1", "B2", "D1"],
+      "definition": {
+        "$$sort": "$",
+        "by": "$$substring(0,1):##current",
+        "order": "DESC",
+        "then": [
+          { "by": "$$long:$$substring(-1):##current", "order": "DESC" }
+        ]
+      }
+    },
+    "expect": {
+      "equal": ["D4", "D1", "C2", "B3", "B2", "B1", "A2"]
+    }
+  }
+]

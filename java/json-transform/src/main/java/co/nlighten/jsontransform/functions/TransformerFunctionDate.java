@@ -4,7 +4,7 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -21,37 +21,14 @@ import java.util.Date;
  * For tests
  * @see TransformerFunctionDateTest
  */
-@Aliases("date")
-@Documentation(value = "Date formatting utility", notes = """
-    $$date(ISO,[digits]) - ISO-8601 with specified precision, default is max
-    $$date(GMT) - rfc-1123 date format
-    $$date(DATE) - only the date part of ISO-8601
-    $$date(ADD,{units},{amount}) - add an amount by chronological unit
-    $$date(SUB,{units},{amount}) - subtract an amount by chronological unit
-    $$date(EPOCH,[resolution])
-    $$date(FORMAT,{pattern},[timezone])
-    $$date(ZONE,{zone}) - ISO-8601 with offset by specifying a timezone""")
-@InputType(ArgType.String)
-@ArgumentType(value = "format", type = ArgType.Enum, position = 0, defaultEnum = "ISO",
-              enumValues = {"ISO","GMT","DATE","ADD","SUB","EPOCH","FORMAT","ZONE"},
-              description = "Formatter to use")
-@ArgumentType(value = "digits", type = ArgType.Integer, position = 1, defaultInteger = -1,
-              description = "(ISO) precision for time part (scale) 0|3|6|9|-1")
-@ArgumentType(value = "units", type = ArgType.Enum, position = 1, required = true,
-              enumValues = {"NANOS", "MICROS", "MILLIS", "SECONDS", "MINUTES", "HOURS", "HALF_DAYS", "DAYS", "MONTHS", "YEARS"},
-              description = "(ADD/SUB) Units to use (ChronoUnit)")
-@ArgumentType(value = "amount", type = ArgType.Long, position = 2, defaultLong = 0L,
-              description = "(ADD/SUB) Amount of units to add or subtract (can be negative)")
-@ArgumentType(value = "resolution", type = ArgType.Enum, position = 1, defaultEnum = "UNIX",
-              enumValues = { "UNIX", "MS"},
-              description = "(EPOCH) Resolution of epoch (Seconds or Milliseconds)")
-@ArgumentType(value = "pattern", type = ArgType.String, position = 1, required = true,
-              description = "(FORMAT) Pattern to use")
-@ArgumentType(value = "timezone", type = ArgType.String, position = 2, defaultString = "UTC",
-              description = "(FORMAT)")
-@ArgumentType(value = "zone", type = ArgType.String, position = 1, defaultString = "UTC",
-              description = "(ZONE)")
-@OutputType(value = {ArgType.String, ArgType.Integer})
+@ArgumentType(value = "format", type = ArgType.Enum, position = 0, defaultEnum = "ISO")
+@ArgumentType(value = "digits", type = ArgType.Integer, position = 1, defaultInteger = -1)
+@ArgumentType(value = "units", type = ArgType.Enum, position = 1)
+@ArgumentType(value = "amount", type = ArgType.Long, position = 2, defaultLong = 0L)
+@ArgumentType(value = "resolution", type = ArgType.Enum, position = 1, defaultEnum = "UNIX")
+@ArgumentType(value = "pattern", type = ArgType.String, position = 1)
+@ArgumentType(value = "timezone", type = ArgType.String, position = 2, defaultString = "UTC")
+@ArgumentType(value = "zone", type = ArgType.String, position = 1, defaultString = "UTC")
 public class TransformerFunctionDate<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public static final DateTimeFormatter ISO_INSTANT_0 = new DateTimeFormatterBuilder().appendInstant(0).toFormatter();
     public static final DateTimeFormatter ISO_INSTANT_3 = new DateTimeFormatterBuilder().appendInstant(3).toFormatter();

@@ -1,18 +1,10 @@
 import TransformerFunction from "./common/TransformerFunction";
-import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
 import { getAsString, isNullOrUndefined } from "../JsonHelpers";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["object"],
-  description: "",
-  inputType: ArgType.ArrayOfArray,
-  outputType: ArgType.Object,
-};
 class TransformerFunctionObject extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({});
   }
 
   override async apply(context: FunctionContext): Promise<any> {

@@ -1,35 +1,17 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
-import { FunctionDescription } from "./common/FunctionDescription";
 import FunctionContext from "./common/FunctionContext";
 import { isMap } from "../JsonHelpers";
 import JsonElementStreamer from "../JsonElementStreamer";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["length"],
-  inputType: ArgType.Any,
-  description: "",
-  arguments: {
-    type: {
-      type: ArgType.Enum,
-      position: 0,
-      defaultEnum: "AUTO",
-      enumValues: ["AUTO", "STRING", "ARRAY", "OBJECT"],
-      description:
-        "Restrict the type of value to check length of (if specified type no detected the result will be null)",
-    },
-    default_zero: {
-      type: ArgType.Boolean,
-      position: 1,
-      defaultBoolean: false,
-      description: "Whether to return 0 instead of null (on any kind of issue)",
-    },
-  },
-  outputType: ArgType.Integer,
-};
 class TransformerFunctionLength extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        type: { type: ArgType.Enum, position: 0, defaultEnum: "AUTO" },
+        default_zero: { type: ArgType.Boolean, position: 1, defaultBoolean: false },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

@@ -1,26 +1,15 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["match"],
-  description: "",
-  inputType: ArgType.Object,
-  arguments: {
-    pattern: {
-      type: ArgType.String,
-      position: 0,
-      required: true,
-      description: "Regular expression to match and extract from input string",
-    },
-    group: { type: ArgType.Integer, position: 1, defaultInteger: 0, description: "The group id to get" },
-  },
-  outputType: ArgType.String,
-};
 class TransformerFunctionMatch extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        pattern: { type: ArgType.String, position: 0 },
+        group: { type: ArgType.Integer, position: 1, defaultInteger: 0 },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

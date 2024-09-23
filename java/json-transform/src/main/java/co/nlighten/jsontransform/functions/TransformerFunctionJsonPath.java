@@ -5,7 +5,7 @@ import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import co.nlighten.jsontransform.adapters.gson.GsonJsonPathConfigurator;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
@@ -14,14 +14,8 @@ import com.jayway.jsonpath.Option;
  * For tests
  * @see TransformerFunctionJsonPathTest
  */
-@Aliases({"jsonpath"})
-@Documentation("Query a JSON document using JSONPath")
-@InputType(ArgType.Any)
-@ArgumentType(value = "path", type = ArgType.String, position = 0, required = true,
-              description = "JSONPath expression")
-@ArgumentType(value = "options", type = ArgType.ArrayOfString, position = 1, defaultIsNull = true,
-              description = "A list of options [by jayway](https://github.com/json-path/JsonPath?tab=readme-ov-file#tweaking-configuration)")
-@OutputType(ArgType.Any)
+@ArgumentType(value = "path", type = ArgType.String, position = 0)
+@ArgumentType(value = "options", type = ArgType.ArrayOfString, position = 1, defaultIsNull = true)
 public class TransformerFunctionJsonPath<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public TransformerFunctionJsonPath(JsonAdapter<JE, JA, JO> adapter) {
         super(adapter);

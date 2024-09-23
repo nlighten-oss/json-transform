@@ -1,0 +1,220 @@
+[
+  {
+    "name": "Escaping - dollar sign",
+    "given": {
+      "input": "text",
+      "definition": "\\$"
+    },
+    "expect": {
+      "equal": "$"
+    }
+  },
+  {
+    "name": "Escaping - macro",
+    "given": {
+      "input": "text",
+      "definition": "\\#uuid"
+    },
+    "expect": {
+      "equal": "#uuid"
+    }
+  },
+  {
+    "name": "Escaping - dollar sign next to a number",
+    "given": {
+      "input": "text",
+      "definition": "$0"
+    },
+    "expect": {
+      "equal": "$0"
+    }
+  },
+  {
+    "name": "Escaping - dollar sign next to a number (2)",
+    "given": {
+      "input": "text",
+      "definition": "$1"
+    },
+    "expect": {
+      "equal": "$1"
+    }
+  },
+  {
+    "name": "Unrecognized macro",
+    "given": {
+      "input": null,
+      "definition": "#unknown"
+    },
+    "expect": {
+      "equal": "#unknown"
+    }
+  },
+  {
+    "name": "Unrecognized function",
+    "given": {
+      "input": null,
+      "definition": "$$testunknown:#now"
+    },
+    "expect": {
+      "equal": "$$testunknown:#now"
+    }
+  },
+  {
+    "name": "Macro - uuid",
+    "given": {
+      "input": null,
+      "definition": "#uuid"
+    },
+    "expect": {
+      "length": 36
+    }
+  },
+  {
+    "name": "Macro - now",
+    "given": {
+      "input": null,
+      "definition": "#now"
+    },
+    "expect": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  {
+    "name": "Macro - null",
+    "given": {
+      "input": null,
+      "definition": { "a": "#null" }
+    },
+    "expect": { "a": null }
+  },
+  {
+    "name": "Spread - overwrite",
+    "given": {
+      "input": {
+        "a": "A",
+        "b": "B"
+      },
+      "definition": {
+        "*": "$",
+        "a": "AA"
+      }
+    },
+    "expect": {
+      "equal": {
+        "a": "AA",
+        "b": "B"
+      }
+    }
+  },
+  {
+    "name": "Spread - Not copied",
+    "given": {
+      "input": {
+        "a": "A",
+        "b": "B"
+      },
+      "definition": {
+        "*": "$",
+        "a": "AA"
+      }
+    },
+    "expect": {
+      "notEqual": {
+        "*": "A",
+        "a": "AA"
+      }
+    }
+  },
+  {
+    "name": "Spread - remove by hash null",
+    "given": {
+      "input": {
+        "a": "A",
+        "b": "B"
+      },
+      "definition": {
+        "*": "$",
+        "a": "#null"
+      }
+    },
+    "expect": {
+      "equal": {
+        "b": "B"
+      }
+    }
+  },
+  {
+    "name": "Spread - remove by null",
+    "given": {
+      "input": {
+        "a": "A",
+        "b": "B"
+      },
+      "definition": {
+        "*": "$",
+        "a": null
+      }
+    },
+    "expect": {
+      "equal": {
+        "b": "B"
+      }
+    }
+  },
+  {
+    "name": "Spread - as array",
+    "given": {
+      "input": {
+        "X": {
+          "a": "A",
+          "b": "B"
+        },
+        "Y": {
+          "c": "C",
+          "d": "D"
+        }
+      },
+      "definition": {
+        "*": ["$.X", "$.Y"],
+        "a": "AA",
+        "c": "CC"
+      }
+    },
+    "expect": {
+      "equal": {
+        "a": "AA",
+        "b": "B",
+        "c": "CC",
+        "d": "D"
+      }
+    }
+  },
+  {
+    "name": "Spread - as array 2",
+    "given": {
+      "input": {
+        "X": {
+          "a": "A",
+          "b": "B",
+          "c": "C"
+        },
+        "Y": {
+          "a": 1,
+          "b": 2
+        }
+      },
+      "definition": {
+        "*": ["$.X", "$.Y"],
+        "a": true
+      }
+    },
+    "expect": {
+      "equal": {
+        "a": true,
+        "b": 2,
+        "c": "C"
+      }
+    }
+  }
+]

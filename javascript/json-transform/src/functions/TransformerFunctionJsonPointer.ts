@@ -1,34 +1,17 @@
 import jsonPointer from "json-pointer";
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
-import { FunctionDescription } from "./common/FunctionDescription";
 import FunctionContext from "./common/FunctionContext";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["jsonpointer"],
-  inputType: ArgType.Any,
-  description: "",
-  arguments: {
-    op: {
-      type: ArgType.Enum,
-      position: 0,
-      defaultString: "GET",
-      description: "Operation",
-      enumValues: ["GET", "SET", "REMOVE"],
-    },
-    pointer: {
-      type: ArgType.String,
-      position: 1,
-      defaultIsNull: true,
-      description: "JSON Pointer to apply operation on",
-    },
-    value: { type: ArgType.Any, position: 2, defaultIsNull: true, description: "Value to use" },
-  },
-  outputType: ArgType.Any,
-};
 class TransformerFunctionJsonPointer extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        op: { type: ArgType.Enum, position: 0, defaultString: "GET" },
+        pointer: { type: ArgType.String, position: 1, defaultIsNull: true },
+        value: { type: ArgType.Any, position: 2, defaultIsNull: true },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

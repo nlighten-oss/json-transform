@@ -1,18 +1,10 @@
 import TransformerFunction from "./common/TransformerFunction";
-import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
 import { isTruthy } from "../JsonHelpers";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["or"],
-  description: "",
-  inputType: ArgType.Array,
-  outputType: ArgType.Boolean,
-};
 class TransformerFunctionOr extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({});
   }
 
   override async apply(context: FunctionContext): Promise<any> {

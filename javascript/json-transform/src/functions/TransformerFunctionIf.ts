@@ -1,22 +1,16 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
 import { isNullOrUndefined, isTruthy } from "../JsonHelpers";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["if"],
-  description: "",
-  inputType: ArgType.Any,
-  arguments: {
-    then: { type: ArgType.Any, position: 0, defaultIsNull: true, description: "Value to return if condition is true" },
-    else: { type: ArgType.Any, position: 1, defaultIsNull: true, description: "Value to return if condition is false" },
-  },
-  outputType: ArgType.Any,
-};
 class TransformerFunctionIf extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        then: { type: ArgType.Any, position: 0, defaultIsNull: true },
+        else: { type: ArgType.Any, position: 1, defaultIsNull: true },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

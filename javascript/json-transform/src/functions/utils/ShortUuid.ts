@@ -1,5 +1,4 @@
 import { v4 as uuidv4, parse } from "uuid";
-import { BigDecimal } from "../common/FunctionHelpers";
 import Base36Or62 from "./Base36Or62";
 
 const UUID_REGEX = /^(.{8})(.{4})(.{4})(.{4})(.{12})$/;
@@ -28,7 +27,7 @@ class ShortUuid {
    * @return ShortUuid encoded UUID
    */
   public static toShortUuid(uuid: string, caseSensitive: boolean) {
-    const num = BigDecimal(uuid.replace(/-/g, ""), 16);
+    const num = BigInt("0x" + uuid.replace(/-/g, ""));
     return Base36Or62.encode(num, caseSensitive);
   }
 

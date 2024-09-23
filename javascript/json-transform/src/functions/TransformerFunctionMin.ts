@@ -1,34 +1,17 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
 import { createComparator, isNullOrUndefined } from "../JsonHelpers";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["min"],
-  description: "",
-  inputType: ArgType.Array,
-  arguments: {
-    default: { type: ArgType.Object, position: 0, description: "The default value to use for empty values" },
-    by: {
-      type: ArgType.Transformer,
-      position: 2,
-      defaultString: "##current",
-      description: "A transformer to extract a property to min by (using ##current to refer to the current item)",
-    },
-    type: {
-      type: ArgType.Enum,
-      position: 1,
-      defaultEnum: "AUTO",
-      enumValues: ["AUTO", "STRING", "NUMBER", "BOOLEAN"],
-      description: "Type of values to expect when ordering the input array",
-    },
-  },
-  outputType: ArgType.BigDecimal,
-};
 class TransformerFunctionMin extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        default: { type: ArgType.Object, position: 0 },
+        by: { type: ArgType.Transformer, position: 2, defaultString: "##current" },
+        type: { type: ArgType.Enum, position: 1, defaultEnum: "AUTO" },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

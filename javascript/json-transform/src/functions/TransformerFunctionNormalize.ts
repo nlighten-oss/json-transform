@@ -1,7 +1,6 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
 
 type NormalizerForm = "NFC" | "NFD" | "NFKC" | "NFKD";
 
@@ -9,29 +8,6 @@ const Z_Separators = new RegExp("[ \u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u
 const InCombiningDiacriticalMarks = /[̀-ͯ]+/g;
 const LetterModifier_Partial = /[·ʰ-ˁˆ-ˑˠ-ˤˬˮʹͺᴬ-ᵪⸯ々ꙿꚜ-ꚝꜗ-ꜟꝰꞈꟲ-ꟴꟸ-ꟹꭜ-ꭟꭩ]+/g;
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["normalize"],
-  description: "",
-  inputType: ArgType.String,
-  arguments: {
-    form: {
-      type: ArgType.Enum,
-      position: 0,
-      defaultEnum: "NFKD",
-      enumValues: ["NFD", "NFC", "NFKD", "NFKC"],
-      description:
-        "Normalizer Form (as described in Java's documentation. Default is NFKD; Decompose for compatibility)",
-    },
-    post_operation: {
-      type: ArgType.Enum,
-      position: 1,
-      defaultEnum: "ROBUST",
-      enumValues: ["ROBUST", "NONE"],
-      description: "Post operation to run on result to remove/replace more letters",
-    },
-  },
-  outputType: ArgType.String,
-};
 class TransformerFunctionNormalize extends TransformerFunction {
   // * source strings (ends with _S) are after decomposition and removal of marks
   // ** if target character is more than one letter,
@@ -89,7 +65,12 @@ class TransformerFunctionNormalize extends TransformerFunction {
   }
 
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        form: { type: ArgType.Enum, position: 0, defaultEnum: "NFKD" },
+        post_operation: { type: ArgType.Enum, position: 1, defaultEnum: "ROBUST" },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

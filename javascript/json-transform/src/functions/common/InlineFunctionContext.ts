@@ -4,10 +4,28 @@ class InlineFunctionContext extends FunctionContext {
   private stringInput: string | null;
   private args: any[];
 
-  constructor(input: string | null, args: any[], functionKey: string, func: any, resolver: any, extractor: any) {
-    super(functionKey, func, resolver, extractor, null);
+  private constructor(
+    input: string | null,
+    args: any[],
+    functionKey: string,
+    func: any,
+    resolver: any,
+    extractor: any,
+  ) {
+    super(functionKey, func, resolver, extractor);
     this.stringInput = input;
     this.args = args;
+  }
+
+  public static create(
+    input: string | null,
+    args: any[],
+    functionKey: string,
+    func: any,
+    resolver: any,
+    extractor: any,
+  ) {
+    return new InlineFunctionContext(input, args, functionKey, func, resolver, extractor);
   }
 
   override has(name: string): boolean {

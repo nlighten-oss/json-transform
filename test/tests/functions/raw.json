@@ -1,0 +1,58 @@
+[
+  {
+    "name": "return string as-is",
+    "given": {
+      "input": "true",
+      "definition": {
+        "$$raw": "$$boolean:$"
+      }
+    },
+    "expect": {
+      "equal": "$$boolean:$"
+    }
+  },
+  {
+    "name": "return object as-is",
+    "given": {
+      "input": "true",
+      "definition": {
+        "$$raw": {"$$first":["$",1]}
+      }
+    },
+    "expect": {
+      "equal": {"$$first":["$",1]}
+    }
+  },
+  {
+    "name": "return array as-is",
+    "given": {
+      "input": "true",
+      "definition": {
+        "$$raw": ["$","$$boolean:$",{"$$first":["$",1]}]
+      }
+    },
+    "expect": {
+      "equal": ["$","$$boolean:$",{"$$first":["$",1]}]
+    }
+  },
+  {
+    "name": "inline - return string as-is",
+    "given": {
+      "input": "true",
+      "definition": "$$raw:$$boolean:$"
+    },
+    "expect": {
+      "equal": "$$boolean:$"
+    }
+  },
+  {
+    "name": "inline - return string as-is (2)",
+    "given": {
+      "input": null,
+      "definition": "$$raw:$.x"
+    },
+    "expect": {
+      "equal": "$.x"
+    }
+  }
+]

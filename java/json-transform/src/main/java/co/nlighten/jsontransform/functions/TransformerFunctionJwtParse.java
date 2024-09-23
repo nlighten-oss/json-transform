@@ -1,13 +1,8 @@
 package co.nlighten.jsontransform.functions;
 
 import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.Aliases;
-import co.nlighten.jsontransform.functions.annotations.Documentation;
-import co.nlighten.jsontransform.functions.annotations.InputType;
-import co.nlighten.jsontransform.functions.annotations.OutputType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,11 +14,6 @@ import java.util.Base64;
  * For tests
  * @see TransformerFunctionJwtParseTest
  */
-@Aliases("jwtparse")
-@Documentation(value = "Parses JWT tokens and returns their payload",
-               notes = "This function does not validate the token. Only returns its payload (claims)")
-@InputType(ArgType.String)
-@OutputType(ArgType.Any)
 public class TransformerFunctionJwtParse<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
 
     private static final Logger logger = LoggerFactory.getLogger(TransformerFunctionJwtParse.class);

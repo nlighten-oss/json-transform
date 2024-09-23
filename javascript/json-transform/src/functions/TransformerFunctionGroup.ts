@@ -1,49 +1,19 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
 import { getAsString, isNullOrUndefined } from "../JsonHelpers";
 import CompareBy from "./common/CompareBy";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["group"],
-  description: "",
-  inputType: ArgType.Array,
-  arguments: {
-    by: {
-      type: ArgType.Transformer,
-      position: 0,
-      required: true,
-      description: "A transformer to extract a property to group by (using ##current to refer to the current item)",
-    },
-    order: {
-      type: ArgType.Enum,
-      position: 1,
-      defaultEnum: "ASC",
-      enumValues: ["ASC", "DESC"],
-      description: "Direction of ordering (ascending / descending)",
-    },
-    type: {
-      type: ArgType.Enum,
-      position: 2,
-      defaultEnum: "AUTO",
-      enumValues: ["AUTO", "STRING", "NUMBER", "BOOLEAN"],
-      description: "Type of values to expect when ordering the input array",
-    },
-    then: {
-      type: ArgType.Array,
-      position: 3,
-      defaultIsNull: true,
-      description:
-        "An array of subsequent grouping. When previous sort had no difference (only when `by` specified)\n" +
-        '{ "by": ..., "order": ..., "type": ...} // same 3 fields as above (`by` is required)',
-    },
-  },
-  outputType: ArgType.Object,
-};
 class TransformerFunctionGroup extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        by: { type: ArgType.Transformer, position: 0 },
+        order: { type: ArgType.Enum, position: 1, defaultEnum: "ASC" },
+        type: { type: ArgType.Enum, position: 2, defaultEnum: "AUTO" },
+        then: { type: ArgType.Array, position: 3, defaultIsNull: true },
+      },
+    });
   }
 
   add(root: Record<string, any>, by: CompareBy) {
@@ -83,14 +53,12 @@ class TransformerFunctionGroup extends TransformerFunction {
       return {};
     }
 
-    const chain: any[] = [];
-
     let comparator = CompareBy.createByComparator(0, type);
     if ("DESC" === order?.toUpperCase()) {
       comparator = comparator.reversed();
     }
-    chain.push(by);
 
+    const chain: any[] = [by];
     const thenArr = context.has("then") ? await context.getJsonArray("then", false) : null;
     if (thenArr != null) {
       const thenArrSize = thenArr.length;

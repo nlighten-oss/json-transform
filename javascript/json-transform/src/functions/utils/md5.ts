@@ -1,3 +1,5 @@
+import TextEncoding from "../common/TextEncoding";
+
 function add32(a: number, b: number): number {
   return (a + b) & 0xffffffff;
 }
@@ -94,12 +96,12 @@ const md5cycle = (x: number[], k: number[]) => {
   x[3] = add32(d, x[3]);
 };
 
-function md5(input: string | number[]) {
+function md5(input: string | Uint8Array) {
   const n = input.length,
     state = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476];
-  let s: number[];
+  let s: Uint8Array;
   if (typeof input === "string") {
-    s = input.split("").map(c => c.charCodeAt(0));
+    s = TextEncoding.encode(input, "ISO-8859-1");
   } else {
     s = input;
   }

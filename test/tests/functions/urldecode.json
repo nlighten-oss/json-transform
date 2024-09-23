@@ -1,0 +1,52 @@
+[
+  {
+    "name": "decode (no args)",
+    "given": {
+      "input": "not+url%2Bsafe%3F%3Dx%26b%3Dpath%2Fpath",
+      "definition": "$$urldecode:$"
+    },
+    "expect": {
+      "equal": "not url+safe?=x&b=path/path"
+    }
+  },
+  {
+    "name": "decode (no args, with parenthesis)",
+    "given": {
+      "input": "not+url%2Bsafe%3F%3Dx%26b%3Dpath%2Fpath",
+      "definition": "$$urldecode():$"
+    },
+    "expect": {
+      "equal": "not url+safe?=x&b=path/path"
+    }
+  },
+  {
+    "name": "decode (inline text)",
+    "given": {
+      "input": null,
+      "definition": "$$urldecode:not+url%2Bsafe%3F%3Dx%26b%3Dpath%2Fpath"
+    },
+    "expect": {
+      "equal": "not url+safe?=x&b=path/path"
+    }
+  },
+  {
+    "name": "decode (utf-8)",
+    "given": {
+      "input": "hello%2Bunicode%2B%F0%9F%98%80%F0%9F%91%A8%E2%80%8D%F0%9F%91%A9%E2%80%8D%F0%9F%91%A7%E2%80%8D%F0%9F%91%A6%F0%9F%AA%AC",
+      "definition": "$$urldecode(UTF-8):$"
+    },
+    "expect": {
+      "equal": "hello+unicode+😀👨‍👩‍👧‍👦🪬"
+    }
+  },
+  {
+    "name": "decode (utf-16)",
+    "given": {
+      "input": "hello%FE%FF%00%2Bunicode%FE%FF%00%2B%D8%3D%DE%00%D8%3D%DC%68%20%0D%D8%3D%DC%69%20%0D%D8%3D%DC%67%20%0D%D8%3D%DC%66%D8%3E%DE%AC",
+      "definition": "$$urldecode(UTF-16):$"
+    },
+    "expect": {
+      "equal": "hello+unicode+😀👨‍👩‍👧‍👦🪬"
+    }
+  }
+]

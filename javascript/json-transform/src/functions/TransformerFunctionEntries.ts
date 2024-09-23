@@ -1,19 +1,11 @@
 import TransformerFunction from "./common/TransformerFunction";
-import { ArgType } from "./common/ArgType";
-import { FunctionDescription } from "./common/FunctionDescription";
 import FunctionContext from "./common/FunctionContext";
 import JsonElementStreamer from "../JsonElementStreamer";
 import { asAsyncSequence } from "@wortise/sequency";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["entries"],
-  inputType: ArgType.Any,
-  description: "",
-  outputType: ArgType.Array,
-};
 class TransformerFunctionEntries extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({});
   }
 
   override async apply(context: FunctionContext): Promise<any> {

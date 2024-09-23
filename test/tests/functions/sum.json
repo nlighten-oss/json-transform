@@ -1,0 +1,108 @@
+[
+  {
+    "name": "inline (no args)",
+    "given": {
+      "input": [
+        4,
+        2,
+        13.45,
+        null
+      ],
+      "definition": "$$sum():$"
+    },
+    "expect": {
+      "equal": 19.45
+    }
+  },
+  {
+    "name": "inline (default=1)",
+    "given": {
+      "input": [
+        4,
+        2,
+        13.45,
+        null
+      ],
+      "definition": "$$sum(1):$"
+    },
+    "expect": {
+      "equal": 20.45
+    }
+  },
+  {
+    "name": "inline (1,##current.value)",
+    "given": {
+      "input": [
+        {
+          "value": 4
+        },
+        {
+          "value": 2
+        },
+        {
+          "value": 13.45
+        },
+        {
+          "value": null
+        }
+      ],
+      "definition": "$$sum(1,##current.value):$"
+    },
+    "expect": {
+      "equal": 20.45
+    }
+  },
+  {
+    "name": "object (by=##current.value)",
+    "given": {
+      "input": [
+        {
+          "value": 4
+        },
+        {
+          "value": 2
+        },
+        {
+          "value": 13.45
+        },
+        {
+          "value": null
+        }
+      ],
+      "definition": {
+        "$$sum": "$",
+        "by": "##current.value"
+      }
+    },
+    "expect": {
+      "equal": 19.45
+    }
+  },
+  {
+    "name": "object (by=##current.value,default=1)",
+    "given": {
+      "input": [
+        {
+          "value": 4
+        },
+        {
+          "value": 2
+        },
+        {
+          "value": 13.45
+        },
+        {
+          "value": null
+        }
+      ],
+      "definition": {
+        "$$sum": "$",
+        "by": "##current.value",
+        "default": 1
+      }
+    },
+    "expect": {
+      "equal": 20.45
+    }
+  }
+]

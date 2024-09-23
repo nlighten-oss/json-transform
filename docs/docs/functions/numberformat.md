@@ -14,16 +14,16 @@ Formats a number
 ### Returns
 `string`
 ### Arguments
-| Argument        | Type      | Values                                                             | Required / Default&nbsp;Value | Description                                                                            |
-|-----------------|-----------|--------------------------------------------------------------------|-------------------------------|----------------------------------------------------------------------------------------|
-| `type`          | `Enum`    | `NUMBER`/`DECIMAL`/`CURRENCY`/`PERCENT`/`INTEGER`/`COMPACT`/`BASE` | Yes                           | Type of output format                                                                  |
-| `locale`        | `Enum`    | A language tag (e.g. `en-US`)                                      | `en-US`                       | Locale to use (language and country specific formatting; set by Java)                  |
-| `compact_style` | `Enum`    | `SHORT`/`LONG`                                                     | `SHORT`                       | Effective when `type == COMPACT`, choose which type of compact                         |
-| `pattern`       | `String`  | `DecimalFormat` pattern                                            | `#0.00`                       | See [tutorial](https://docs.oracle.com/javase/tutorial/i18n/format/decimalFormat.html) |
-| `grouping`      | `String`  | Single character string                                            | `,`                           | A custom character to be used for grouping                                             |
-| `decimal`       | `String`  | Single character string                                            | `.`                           | A custom character to be used for decimal point                                        |
-| `radix`         | `Integer` |                                                                    | `10`                          | Radix to be used for formatting input                                                  |
-| `currency`      | `String`  | [ISO-4217 currency code](https://www.iso.org/iso-4217-currency-codes.html)                                         | Yes (when `type == CURRENCY`) | Currency to use in format                                                  |
+| Argument        | Type      | Values                                                                     | Required / Default&nbsp;Value | Description                                                                            |
+|-----------------|-----------|----------------------------------------------------------------------------|-------------------------------|----------------------------------------------------------------------------------------|
+| `type`          | `Enum`    | `NUMBER`/`DECIMAL`/`CURRENCY`/`PERCENT`/`INTEGER`/`COMPACT`/`BASE`         | Yes                           | Type of output format                                                                  |
+| `locale`        | `Enum`    | A language tag (e.g. `en-US`)                                              | `en-US`                       | Locale to use (language and country specific formatting; set by Java)                  |
+| `compact_style` | `Enum`    | `SHORT`/`LONG`                                                             | `SHORT`                       | Effective when `type == COMPACT`, choose which type of compact                         |
+| `pattern`       | `String`  | `DecimalFormat` pattern                                                    | `#0.00`                       | See [tutorial](https://docs.oracle.com/javase/tutorial/i18n/format/decimalFormat.html) |
+| `grouping`      | `String`  | Single character string                                                    | `,`                           | A custom character to be used for grouping                                             |
+| `decimal`       | `String`  | Single character string                                                    | `.`                           | A custom character to be used for decimal point                                        |
+| `radix`         | `Integer` |                                                                            | `10`                          | Radix to be used for formatting input                                                  |
+| `currency`      | `String`  | [ISO-4217 currency code](https://www.iso.org/iso-4217-currency-codes.html) | Yes (when `type == CURRENCY`) | Currency to use in format                                                              |
 
 
 ## Examples

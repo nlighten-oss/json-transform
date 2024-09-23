@@ -1,4 +1,31 @@
 import BigNumber from "bignumber.js";
+//import * as JSONBigInt from "json-bigint";
+import { parse, stringify } from "lossless-json";
+
+// export const JSONBig = (JSONBigInt as any).default({
+//   alwaysParseAsBig: true,
+// });
+
+const BigDecimalStringifiers = [
+  {
+    test: (value: any) => {
+      return (
+        value instanceof BigDecimal ||
+        value instanceof BigNumber ||
+        typeof value === "number" ||
+        typeof value === "bigint"
+      );
+    },
+    stringify: (number: any) => {
+      return (number as BigNumber).toString();
+    },
+  },
+];
+export const JSONBig = {
+  parse: (text: string): any => parse(text, null, BigDecimal),
+  stringify: (value: any, replacer: any = null): string =>
+    stringify(value, replacer, undefined, BigDecimalStringifiers) ?? "undefined",
+};
 
 export const BigDecimal = BigNumber.clone({
   // We try to fit into Decimal128 which supports 34 decimal digits of precision

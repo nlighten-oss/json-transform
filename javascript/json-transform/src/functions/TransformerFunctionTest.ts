@@ -1,25 +1,14 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["test"],
-  description: "",
-  inputType: ArgType.String,
-  arguments: {
-    pattern: {
-      type: ArgType.String,
-      position: 0,
-      required: true,
-      description: "Regular expression to match against input string",
-    },
-  },
-  outputType: ArgType.Boolean,
-};
 class TransformerFunctionTest extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        pattern: { type: ArgType.String, position: 0 },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

@@ -1,0 +1,82 @@
+[
+  {
+    "name": "test - pattern [le] match",
+    "given": {
+      "input": "hello",
+      "definition": "$$test([le]):$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "test - pattern 'hell' match",
+    "given": {
+      "input": "hello",
+      "definition": "$$test(hell):$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "test - pattern 'hello$' match",
+    "given": {
+      "input": "hello",
+      "definition": "$$test(hello$):$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "test - pattern 'hell$' no match",
+    "given": {
+      "input": "hello",
+      "definition": "$$test(hell$):$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "test - exact pattern '^hello$' match",
+    "given": {
+      "input": "hello",
+      "definition": "$$test('^hello$'):$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "test - pattern '^(hello|world)$' match",
+    "given": {
+      "input": "hello",
+      "definition": "$$test('^(hello|world)$'):$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "test - pattern '^hello$' case-sensitive no match",
+    "given": {
+      "input": "HELLO",
+      "definition": "$$test('^hello$'):$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "test - pattern '(?i)^hello$' case-insensitive match",
+    "given": {
+      "input": "HELLO",
+      "definition": "$$test('(?i)^hello$'):$"
+    },
+    "expect": {
+      "equal": true
+    }
+  }
+]

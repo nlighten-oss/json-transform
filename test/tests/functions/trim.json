@@ -1,0 +1,42 @@
+[
+  {
+    "name": "inline - remove leading and trailing spaces",
+    "given": {
+      "input": "  hello  ",
+      "definition": "$$trim:$"
+    },
+    "expect": {
+      "equal": "hello"
+    }
+  },
+  {
+    "name": "inline - remove leading spaces",
+    "given": {
+      "input": "  hello  ",
+      "definition": "$$trim(start):$"
+    },
+    "expect": {
+      "equal": "hello  "
+    }
+  },
+  {
+    "name": "inline - remove trailing spaces",
+    "given": {
+      "input": "  hello  ",
+      "definition": "$$trim(END):$"
+    },
+    "expect": {
+      "equal": "  hello"
+    }
+  },
+  {
+    "name": "inline - remove indentation",
+    "given": {
+      "input": "             <html> \n                 <body> \n                     <p>Hello, world</ p> \n                 </ body> \n             </ html>",
+      "definition": "$$trim(INDENT):$"
+    },
+    "expect": {
+      "equal": "<html>\n    <body>\n        <p>Hello, world</ p>\n    </ body>\n</ html>"
+    }
+  }
+]

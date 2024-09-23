@@ -1,20 +1,12 @@
 import { asAsyncSequence, asyncSequenceOf, emptyAsyncSequence } from "@wortise/sequency";
 import TransformerFunction from "./common/TransformerFunction";
-import { ArgType } from "./common/ArgType";
-import { FunctionDescription } from "./common/FunctionDescription";
 import FunctionContext from "./common/FunctionContext";
 import { isNullOrUndefined } from "../JsonHelpers";
 import JsonElementStreamer from "../JsonElementStreamer";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["concat"],
-  inputType: ArgType.Array,
-  description: "",
-  outputType: ArgType.Array,
-};
 class TransformerFunctionConcat extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({});
   }
 
   override async apply(context: FunctionContext): Promise<any> {

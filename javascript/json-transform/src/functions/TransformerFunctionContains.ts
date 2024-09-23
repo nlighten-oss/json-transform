@@ -1,26 +1,15 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
 import { isEqual } from "../JsonHelpers";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["contains"],
-  description: "",
-  inputType: ArgType.Array,
-  arguments: {
-    that: {
-      type: ArgType.Any,
-      position: 0,
-      defaultIsNull: true,
-      description: "The value to look for",
-    },
-  },
-  outputType: ArgType.Boolean,
-};
 class TransformerFunctionContains extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        that: { type: ArgType.Any, position: 0, defaultIsNull: true },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

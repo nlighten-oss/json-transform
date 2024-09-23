@@ -1,7 +1,6 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
 import { DEFAULT_LOCALE } from "./common/FunctionHelpers";
 import { isNullOrEmpty } from "../JsonHelpers";
 import BigNumber from "bignumber.js";
@@ -99,61 +98,19 @@ export const parsePattern = function (
   return [format, decimalPlaces, integerPlaces];
 };
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["numberformat"],
-  description: "",
-  inputType: ArgType.BigDecimal,
-  arguments: {
-    type: {
-      type: ArgType.Enum,
-      position: 0,
-      defaultEnum: "NUMBER",
-      enumValues: ["NUMBER", "DECIMAL", "CURRENCY", "PERCENT", "INTEGER", "COMPACT", "BASE"],
-      description: "Type of output format",
-    },
-    locale: {
-      type: ArgType.String,
-      position: 1,
-      defaultIsNull: true,
-      description: "Locale to use (language and country specific formatting; set by Java, default is en-US)",
-    },
-    compact_style: {
-      type: ArgType.Enum,
-      position: 2,
-      defaultEnum: "SHORT",
-      enumValues: ["SHORT", "LONG"],
-      description: "(COMPACT) Type of compacting format",
-    },
-    pattern: {
-      type: ArgType.String,
-      position: 2,
-      defaultString: "#0.00",
-      description: "(DECIMAL) See [tutorial](https://docs.oracle.com/javase/tutorial/i18n/format/decimalFormat.html)",
-    },
-    grouping: {
-      type: ArgType.String,
-      position: 3,
-      defaultIsNull: true,
-      description: "(DECIMAL) A custom character to be used for grouping (default is ,)",
-    },
-    decimal: {
-      type: ArgType.String,
-      position: 4,
-      defaultIsNull: true,
-      description: "(DECIMAL) A custom character to be used for decimal point (default is .)",
-    },
-    radix: {
-      type: ArgType.Integer,
-      position: 1,
-      defaultInteger: 10,
-      description: "(BASE) Radix to be used for formatting input",
-    },
-  },
-  outputType: ArgType.String,
-};
 class TransformerFunctionNumberFormat extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        type: { type: ArgType.Enum, position: 0, defaultEnum: "NUMBER" },
+        locale: { type: ArgType.String, position: 1, defaultIsNull: true },
+        compact_style: { type: ArgType.Enum, position: 2, defaultEnum: "SHORT" },
+        pattern: { type: ArgType.String, position: 2, defaultString: "#0.00" },
+        grouping: { type: ArgType.String, position: 3, defaultIsNull: true },
+        decimal: { type: ArgType.String, position: 4, defaultIsNull: true },
+        radix: { type: ArgType.Integer, position: 1, defaultInteger: 10 },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

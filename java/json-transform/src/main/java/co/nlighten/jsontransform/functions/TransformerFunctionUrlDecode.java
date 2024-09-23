@@ -4,7 +4,7 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,12 +15,7 @@ import java.net.URLDecoder;
  * For tests
  * @see TransformerFunctionUrlDecodeTest
  */
-@Aliases("urldecode")
-@Documentation("URL decodes as string")
-@InputType(ArgType.String)
-@ArgumentType(value = "charset", type = ArgType.Enum, position = 0, defaultEnum = "UTF-8",
-              description = "Character set to use when decoding to string")
-@OutputType(ArgType.String)
+@ArgumentType(value = "charset", type = ArgType.Enum, position = 0, defaultEnum = "UTF-8")
 public class TransformerFunctionUrlDecode<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     static final Logger log = LoggerFactory.getLogger(TransformerFunctionUrlDecode.class);
 

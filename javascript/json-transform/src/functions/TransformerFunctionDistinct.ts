@@ -1,6 +1,5 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
-import { FunctionDescription } from "./common/FunctionDescription";
 import FunctionContext from "./common/FunctionContext";
 import { isNullOrUndefined } from "../JsonHelpers";
 import JsonElementStreamer from "../JsonElementStreamer";
@@ -13,24 +12,13 @@ const getUnique = (value: any) => {
   return value;
 };
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["distinct"],
-  inputType: ArgType.Array,
-  description: "",
-  arguments: {
-    by: {
-      type: ArgType.Transformer,
-      position: 0,
-      defaultIsNull: true,
-      description:
-        "A mapping for each element to distinct by (instead of the whole element, using ##current to refer to the current item)",
-    },
-  },
-  outputType: ArgType.Array,
-};
 class TransformerFunctionDistinct extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        by: { type: ArgType.Transformer, position: 0, defaultIsNull: true },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

@@ -1,40 +1,18 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
 import { getAsString } from "../JsonHelpers";
 import CsvFormat from "../formats/csv/CsvFormat";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["csvparse"],
-  description: "",
-  inputType: ArgType.String,
-  arguments: {
-    no_headers: {
-      type: ArgType.Boolean,
-      position: 0,
-      defaultBoolean: false,
-      description: "Whether to treat the first row as object keys",
-    },
-    separator: {
-      type: ArgType.String,
-      position: 1,
-      defaultString: ",",
-      description: "Use an alternative field separator",
-    },
-    names: {
-      type: ArgType.Array,
-      position: 2,
-      defaultIsNull: true,
-      description:
-        "Names of fields of input arrays (by indices) or objects (can sift if provided less names than there are in the objects provided)",
-    },
-  },
-  outputType: ArgType.Array,
-};
 class TransformerFunctionCsvParse extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        no_headers: { type: ArgType.Boolean, position: 0, defaultBoolean: false },
+        separator: { type: ArgType.String, position: 1, defaultString: "," },
+        names: { type: ArgType.Array, position: 2, defaultIsNull: true },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

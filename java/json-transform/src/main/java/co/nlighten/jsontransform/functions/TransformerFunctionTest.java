@@ -4,7 +4,7 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 import java.util.regex.Pattern;
 
@@ -12,12 +12,7 @@ import java.util.regex.Pattern;
  * For tests
  * @see TransformerFunctionTestTest
  */
-@Aliases("test")
-@Documentation("Checks if a string matches a certain pattern")
-@InputType(ArgType.String)
-@ArgumentType(value = "pattern", type = ArgType.String, position = 0, required = true,
-              description = "Regular expression to match against input string")
-@OutputType(ArgType.Boolean)
+@ArgumentType(value = "pattern", type = ArgType.String, position = 0)
 public class TransformerFunctionTest<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public TransformerFunctionTest(JsonAdapter<JE, JA, JO> adapter) {
         super(adapter);

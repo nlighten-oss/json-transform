@@ -1,11 +1,22 @@
 import FunctionContext from "./FunctionContext";
-import { isNullOrUndefined } from "../../JsonHelpers";
+import { isMap, isNullOrUndefined } from "../../JsonHelpers";
 
 class ObjectFunctionContext extends FunctionContext {
   private definition: any;
-  constructor(definition: any, functionKey: string, func: any, resolver: any, extractor: any) {
-    super(functionKey, func, resolver, extractor, definition);
+  private constructor(definition: any, functionKey: string, func: any, resolver: any, extractor: any) {
+    super(functionKey, func, resolver, extractor);
     this.definition = definition;
+  }
+
+  public static async createAsync(definition: any, functionKey: string, func: any, resolver: any, extractor: any) {
+    let objResolver = resolver;
+    if (definition?.[FunctionContext.CONTEXT_KEY]) {
+      const contextElement = definition[FunctionContext.CONTEXT_KEY];
+      if (isMap(contextElement)) {
+        objResolver = await FunctionContext.recalcResolver(contextElement, resolver, extractor);
+      }
+    }
+    return new ObjectFunctionContext(definition, functionKey, func, objResolver, extractor);
   }
 
   override has(name: string): boolean {

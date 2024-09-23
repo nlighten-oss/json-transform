@@ -1,0 +1,40 @@
+[
+  {
+    "name": "example",
+    "given": {
+      "input": {
+        "value": "bbb"
+      },
+      "definition": {
+        "$$unflatten": {
+          "a.a1": 123,
+          "a.a2": [
+            1,
+            2,
+            3,
+            {
+              "c": true
+            }
+          ],
+          "b": "$.value"
+        }
+      }
+    },
+    "expect": {
+      "equal": {
+        "a": {
+          "a1": 123,
+          "a2": [
+            1,
+            2,
+            3,
+            {
+              "c": true
+            }
+          ]
+        },
+        "b": "bbb"
+      }
+    }
+  }
+]

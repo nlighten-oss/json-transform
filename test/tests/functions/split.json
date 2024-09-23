@@ -1,0 +1,72 @@
+[
+  {
+    "name": "testInlineFunctionSplit - basic split with no delimiter",
+    "given": {
+      "input": "hello world",
+      "definition": "$$split:$"
+    },
+    "expect": {
+      "equal": ["h", "e", "l", "l", "o", " ", "w", "o", "r", "l", "d"]
+    }
+  },
+  {
+    "name": "testInlineFunctionSplit - split with empty delimiter",
+    "given": {
+      "input": "hello world",
+      "definition": "$$split():$"
+    },
+    "expect": {
+      "equal": ["h", "e", "l", "l", "o", " ", "w", "o", "r", "l", "d"]
+    }
+  },
+  {
+    "name": "testInlineFunctionSplit - split by space",
+    "given": {
+      "input": "hello world",
+      "definition": "$$split( ):$"
+    },
+    "expect": {
+      "equal": ["hello", "world"]
+    }
+  },
+  {
+    "name": "testInlineFunctionSplit - split by single space character",
+    "given": {
+      "input": "hello world",
+      "definition": "$$split(' '):$"
+    },
+    "expect": {
+      "equal": ["hello", "world"]
+    }
+  },
+  {
+    "name": "testInlineFunctionSplit - split by 'll'",
+    "given": {
+      "input": "hello world",
+      "definition": "$$split(ll):$"
+    },
+    "expect": {
+      "equal": ["he", "o world"]
+    }
+  },
+  {
+    "name": "testInlineFunctionSplit - split by 'll?' (regex pattern)",
+    "given": {
+      "input": "hello world",
+      "definition": "$$split(ll?):$"
+    },
+    "expect": {
+      "equal": ["he", "o wor", "d"]
+    }
+  },
+  {
+    "name": "testInlineFunctionSplit - split by 'o' with limit of 2",
+    "given": {
+      "input": "hello world",
+      "definition": "$$split(o,2):$"
+    },
+    "expect": {
+      "equal": ["hell", " world"]
+    }
+  }
+]

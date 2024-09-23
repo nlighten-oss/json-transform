@@ -1,0 +1,82 @@
+[
+  {
+    "name": "inline (no args)",
+    "given": {
+      "input": "hello-world",
+      "definition": "$$substring:$"
+    },
+    "expect": {
+      "equal": "hello-world"
+    }
+  },
+  {
+    "name": "inline (no args, parenthesis)",
+    "given": {
+      "input": "hello-world",
+      "definition": "$$substring():$"
+    },
+    "expect": {
+      "equal": "hello-world"
+    }
+  },
+  {
+    "name": "inline (5)",
+    "given": {
+      "input": "hello-world",
+      "definition": "$$substring(5):$"
+    },
+    "expect": {
+      "equal": "-world"
+    }
+  },
+  {
+    "name": "inline (5,8)",
+    "given": {
+      "input": "hello-world",
+      "definition": "$$substring(5,8):$"
+    },
+    "expect": {
+      "equal": "-wo"
+    }
+  },
+  {
+    "name": "inline (-5)",
+    "given": {
+      "input": "hello-world",
+      "definition": "$$substring(-5):$"
+    },
+    "expect": {
+      "equal": "world"
+    }
+  },
+  {
+    "name": "inline (5,-5)",
+    "given": {
+      "input": "hello-world",
+      "definition": "$$substring(5,-5):$"
+    },
+    "expect": {
+      "equal": "-"
+    }
+  },
+  {
+    "name": "inline (-5,-1)",
+    "given": {
+      "input": "hello-world",
+      "definition": "$$substring(-5,-1):$"
+    },
+    "expect": {
+      "equal": "worl"
+    }
+  },
+  {
+    "name": "inline (coercion from number)",
+    "given": {
+      "input": 12345678,
+      "definition": "$$substring(-5,-1):$"
+    },
+    "expect": {
+      "equal": "4567"
+    }
+  }
+]
