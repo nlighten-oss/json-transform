@@ -5,7 +5,7 @@ import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import co.nlighten.jsontransform.formats.csv.CsvFormat;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,16 +16,9 @@ import java.util.stream.Collectors;
  * For tests
  * @see TransformerFunctionCsvParseTest
  */
-@Aliases("csvparse")
-@Documentation("Converts a CSV string into an array of objects/arrays")
-@InputType(ArgType.String)
-@ArgumentType(value = "no_headers", type = ArgType.Boolean, position = 0, defaultBoolean = false,
-              description = "Whether to treat the first row as object keys")
-@ArgumentType(value = "separator", type = ArgType.String, position = 1, defaultString = ",",
-              description = "Use an alternative field separator")
-@ArgumentType(value = "names", type = ArgType.Array, position = 2, defaultIsNull = true,
-              description = "Names of fields of input arrays (by indices) or objects (can sift if provided less names than there are in the objects provided)")
-@OutputType(ArgType.Array)
+@ArgumentType(value = "no_headers", type = ArgType.Boolean, position = 0, defaultBoolean = false)
+@ArgumentType(value = "separator", type = ArgType.String, position = 1, defaultString = ",")
+@ArgumentType(value = "names", type = ArgType.Array, position = 2, defaultIsNull = true)
 public class TransformerFunctionCsvParse<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionCsvParse.class);
 

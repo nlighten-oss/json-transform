@@ -2,26 +2,15 @@ import { AsyncSequence, asAsyncSequence } from "@wortise/sequency";
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
 import JsonElementStreamer from "../JsonElementStreamer";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["map"],
-  description: "",
-  inputType: ArgType.Array,
-  arguments: {
-    to: {
-      type: ArgType.Transformer,
-      position: 0,
-      defaultIsNull: true,
-      description: "Transformer to map each element to its value in the result array (inputs: ##current, ##index)",
-    },
-  },
-  outputType: ArgType.Array,
-};
 class TransformerFunctionMap extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        to: { type: ArgType.Transformer, position: 0, defaultIsNull: true },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {
@@ -44,10 +33,9 @@ class TransformerFunctionMap extends TransformerFunction {
       inputStream = asAsyncSequence(inputEl);
       to = arr[1];
     }
-    let i = 0;
     return JsonElementStreamer.fromTransformedStream(
       context,
-      inputStream.map(x => context.transformItem(to, x, i++)),
+      inputStream.mapIndexed((i, x) => context.transformItem(to, x, i)),
     );
   }
 }

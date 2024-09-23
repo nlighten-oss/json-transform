@@ -4,7 +4,7 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -13,32 +13,16 @@ import java.util.Objects;
  * For tests
  * @see TransformerFunctionIsTest
  */
-@Aliases("is")
-@Documentation(value = "Checks value for one or more predicates (all predicates must be satisfied)",
-               notes = "Inline form supports only `that`+`op` arguments. `gt`/`gte`/`lt`/`lte` - Uses the [Comparison logic]")
-@InputType(ArgType.Any)
-@ArgumentType(value = "op", type = ArgType.Enum, position = 0, defaultIsNull = true,
-              enumValues = { "IN", "NIN", "EQ", "=", "==", "NEQ", "!=", "<>", "GT", ">", "GTE", ">=", "LT", "<", "LTE", "<=" },
-              description = "A type of check to do exclusively (goes together with `that`)")
-@ArgumentType(value = "that", type = ArgType.Any, position = 1, defaultIsNull = true,
-              description = "")
-@ArgumentType(value = "in", type = ArgType.Array, defaultIsNull = true,
-              description = "Array of values the input should be part of")
-@ArgumentType(value = "nin", type = ArgType.Array, defaultIsNull = true,
-              description = "Array of values the input should **NOT** be part of")
-@ArgumentType(value = "eq", type = ArgType.Any, defaultIsNull = true,
-              description = "A Value the input should be equal to")
-@ArgumentType(value = "neq", type = ArgType.Any, defaultIsNull = true,
-              description = "A Value the input should **NOT** be equal to")
-@ArgumentType(value = "gt", type = ArgType.Any, defaultIsNull = true,
-              description = "A Value the input should be greater than (input > value)")
-@ArgumentType(value = "gte", type = ArgType.Any, defaultIsNull = true,
-              description = "A Value the input should be greater than or equal (input >= value)")
-@ArgumentType(value = "lt", type = ArgType.Any, defaultIsNull = true,
-              description = "A Value the input should be lower than (input < value)")
-@ArgumentType(value = "lte", type = ArgType.Any, defaultIsNull = true,
-              description = "A Value the input should be lower than or equal (input <= value)")
-@OutputType(ArgType.Boolean)
+@ArgumentType(value = "op", type = ArgType.Enum, position = 0, defaultIsNull = true)
+@ArgumentType(value = "that", type = ArgType.Any, position = 1, defaultIsNull = true)
+@ArgumentType(value = "in", type = ArgType.Array, defaultIsNull = true)
+@ArgumentType(value = "nin", type = ArgType.Array, defaultIsNull = true)
+@ArgumentType(value = "eq", type = ArgType.Any, defaultIsNull = true)
+@ArgumentType(value = "neq", type = ArgType.Any, defaultIsNull = true)
+@ArgumentType(value = "gt", type = ArgType.Any, defaultIsNull = true)
+@ArgumentType(value = "gte", type = ArgType.Any, defaultIsNull = true)
+@ArgumentType(value = "lt", type = ArgType.Any, defaultIsNull = true)
+@ArgumentType(value = "lte", type = ArgType.Any, defaultIsNull = true)
 public class TransformerFunctionIs<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
 
     public TransformerFunctionIs(JsonAdapter<JE, JA, JO> adapter) {

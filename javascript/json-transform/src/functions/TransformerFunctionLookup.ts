@@ -1,7 +1,6 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
 import { getAsString, isMap, isNullOrUndefined, isTruthy, mergeInto } from "../JsonHelpers";
 import JsonElementStreamer from "../JsonElementStreamer";
 
@@ -11,29 +10,14 @@ type UsingEntry = {
   on: any;
 };
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["lookup"],
-  description: "",
-  inputType: ArgType.Array,
-  arguments: {
-    using: {
-      type: ArgType.Array,
-      position: 0,
-      required: true,
-      description: "Array of definitions of how to match other arrays to the main one",
-    },
-    to: {
-      type: ArgType.Transformer,
-      position: 1,
-      defaultIsNull: true,
-      description: "Transformer to map each pair of elements to its value in the result array",
-    },
-  },
-  outputType: ArgType.Array,
-};
 class TransformerFunctionLookup extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        using: { type: ArgType.Array, position: 0 },
+        to: { type: ArgType.Transformer, position: 1, defaultIsNull: true },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

@@ -1,0 +1,77 @@
+[
+  {
+    "name": "Multiple inline functions (1)",
+    "given": {
+      "input": "text",
+      "definition": "$$substring(1,3):$$wrap(>):$"
+    },
+    "expect": {
+      "equal": "te"
+    }
+  },
+  {
+    "name": "Multiple inline functions (2)",
+    "given": {
+      "input": "text",
+      "definition": "$$wrap(>):$$substring(1,3):$"
+    },
+    "expect": {
+      "equal": ">ex"
+    }
+  },
+  {
+    "name": "Multiple inline functions (3)",
+    "given": {
+      "input": "text",
+      "definition": "$$join(s):$$split(x):$"
+    },
+    "expect": {
+      "equal": "test"
+    }
+  },
+  {
+    "name": "Multiple object functions",
+    "given": {
+      "input": null,
+      "definition": {
+        "$$distinct": { "$$flat": [ "$$split:abcd", "$$split:def" ] }
+      }
+    },
+    "expect": {
+      "equal": [ "a", "b", "c", "d", "e", "f"]
+    }
+  },
+  {
+    "name": "inline inner failure (even though $$partition fails, $$string picks up the null and transforms it)",
+    "given": {
+      "input": [1],
+      "definition": "$$string(true):$$partition(0):$"
+    },
+    "expect": {
+      "equal": "null"
+    }
+  },
+  {
+    "name": "Function context nesting",
+    "given": {
+      "input": null,
+      "definition": {
+        "$$map": [ [true, "a"], [true, "b"], [false, "c"] ],
+        "to": {
+          "$$map": "##current",
+          "context": {
+            "##map":"##current"
+          },
+          "to": {
+            "$$if": "##map[0]",
+            "then": "$$upper:##map[1]",
+            "else": "$$upper:##current"
+          }
+        }
+      }
+    },
+    "expect": {
+      "equal": [["A", "A"], ["B", "B"], ["FALSE", "C"]]
+    }
+  }
+]

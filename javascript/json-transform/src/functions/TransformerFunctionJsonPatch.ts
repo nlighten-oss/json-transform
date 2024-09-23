@@ -1,21 +1,15 @@
 import JsonPatch from "fast-json-patch";
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
-import { FunctionDescription } from "./common/FunctionDescription";
 import FunctionContext from "./common/FunctionContext";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["jsonpatch"],
-  inputType: ArgType.Any,
-  description: "",
-  arguments: {
-    ops: { type: ArgType.Array, position: 0, required: true, description: "A list of operations" },
-  },
-  outputType: ArgType.Any,
-};
 class TransformerFunctionJsonPatch extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        ops: { type: ArgType.Array, position: 0 },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

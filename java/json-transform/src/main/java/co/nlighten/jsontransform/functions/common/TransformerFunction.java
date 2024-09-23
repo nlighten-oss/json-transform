@@ -4,7 +4,6 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.adapters.JsonArrayAdapter;
 import co.nlighten.jsontransform.adapters.JsonObjectAdapter;
 import co.nlighten.jsontransform.functions.annotations.ArgumentType;
-import co.nlighten.jsontransform.functions.annotations.InputType;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,7 +16,6 @@ import java.util.Map;
  * @param <JO> Json Object type
  */
 public abstract class TransformerFunction<JE, JA extends Iterable<JE>, JO extends JE> {
-    protected final InputType inputType;
     protected final Map<String, ArgumentType> arguments;
     protected final Map<String, Object> defaultValues;
     protected final JsonAdapter<JE, JA, JO> adapter;
@@ -29,13 +27,6 @@ public abstract class TransformerFunction<JE, JA extends Iterable<JE>, JO extend
         this.adapter = adapter;
         this.jArray = adapter.jArray;
         this.jObject = adapter.jObject;
-
-        var annArr = this.getClass().getAnnotationsByType(InputType.class);
-        if (annArr.length > 0) {
-            this.inputType = Arrays.stream(annArr).findFirst().get();
-        } else {
-            this.inputType = null;
-        }
 
         var argArr = this.getClass().getAnnotationsByType(ArgumentType.class);
         if (argArr.length > 0) {
@@ -94,14 +85,6 @@ public abstract class TransformerFunction<JE, JA extends Iterable<JE>, JO extend
      */
     public Map<String, ArgumentType> getArguments() {
         return arguments;
-    }
-
-    /**
-     * Get the input type for this function.
-     * @return the input type
-     */
-    public InputType getInputType() {
-        return inputType;
     }
 
     /**

@@ -1,17 +1,10 @@
 import TransformerFunction from "./common/TransformerFunction";
-import { ArgType } from "./common/ArgType";
-import { FunctionDescription } from "./common/FunctionDescription";
 import FunctionContext from "./common/FunctionContext";
+import { JSONBig } from "./common/FunctionHelpers";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["jsonparse"],
-  inputType: ArgType.String,
-  description: "",
-  outputType: ArgType.Any,
-};
 class TransformerFunctionJsonParse extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({});
   }
 
   override async apply(context: FunctionContext): Promise<any> {
@@ -19,7 +12,7 @@ class TransformerFunctionJsonParse extends TransformerFunction {
     if (str == null) {
       return null;
     }
-    return JSON.parse(str);
+    return JSONBig.parse(str);
   }
 }
 

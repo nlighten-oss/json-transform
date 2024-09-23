@@ -1,6 +1,6 @@
 import { describe, test } from "vitest";
 import { assertTransformation } from "../BaseTransformationTest";
-import { BigDecimal } from "../../functions/common/FunctionHelpers";
+import { BigDecimal, JSONBig } from "../../functions/common/FunctionHelpers";
 
 describe("TransformerFunctionJsonParse", () => {
   test("fromString", async () => {
@@ -14,17 +14,17 @@ describe("TransformerFunctionJsonParse", () => {
   });
   test("fromNumber", async () => {
     const numVal = 123;
-    const str = JSON.stringify(numVal);
-    await assertTransformation(str, "$$jsonparse:$", JSON.parse(str));
+    const str = JSONBig.stringify(numVal);
+    await assertTransformation(str, "$$jsonparse:$", JSONBig.parse(str));
   });
 
   test("fromBigDecimal", async () => {
     const numVal = BigDecimal("1234567890.098765432123456789");
-    const numStr = JSON.stringify(numVal);
-    await assertTransformation(numStr, "$$jsonparse:$", JSON.parse(numStr));
+    const numStr = JSONBig.stringify(numVal);
+    await assertTransformation(numStr, "$$jsonparse:$", JSONBig.parse(numStr));
     const bigVal = BigDecimal("123456789123456789123456789123456789");
-    const bigStr = JSON.stringify(bigVal);
-    await assertTransformation(bigStr, "$$jsonparse:$", JSON.parse(bigStr));
+    const bigStr = JSONBig.stringify(bigVal);
+    await assertTransformation(bigStr, "$$jsonparse:$", JSONBig.parse(bigStr));
   });
 
   test("fromObject", async () => {

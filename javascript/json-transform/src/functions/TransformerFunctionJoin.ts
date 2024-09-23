@@ -1,35 +1,18 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
-import { FunctionDescription } from "./common/FunctionDescription";
 import FunctionContext from "./common/FunctionContext";
 import { getAsString, isNullOrUndefined } from "../JsonHelpers";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["join"],
-  inputType: ArgType.Array,
-  description: "",
-  arguments: {
-    delimiter: {
-      type: ArgType.String,
-      position: 0,
-      defaultString: "",
-      aliases: ["$$delimiter "],
-      description: "Delimiter to join any 2 adjacent elements",
-    },
-    prefix: { type: ArgType.String, position: 1, defaultString: "", description: "A string to prefix the result" },
-    suffix: { type: ArgType.String, position: 2, defaultString: "", description: "A string to suffix the result" },
-    keep_nulls: {
-      type: ArgType.Boolean,
-      position: 3,
-      defaultBoolean: false,
-      description: "Whether to keep null values when joining",
-    },
-  },
-  outputType: ArgType.String,
-};
 class TransformerFunctionJoin extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        delimiter: { type: ArgType.String, position: 0, defaultString: "", aliases: ["$$delimiter"] },
+        prefix: { type: ArgType.String, position: 1, defaultString: "" },
+        suffix: { type: ArgType.String, position: 2, defaultString: "" },
+        keep_nulls: { type: ArgType.Boolean, position: 3, defaultBoolean: false },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

@@ -2,7 +2,6 @@ import BigNumber from "bignumber.js";
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
 import { getAsString, isNullOrUndefined } from "../JsonHelpers";
 import { BigDecimal, MAX_SCALE, MAX_SCALE_ROUNDING } from "./common/FunctionHelpers";
 
@@ -35,60 +34,15 @@ const BigZero = BigDecimal(0);
 
 const toBigInt = (value: BigNumber) => BigInt(BigDecimal(value).toFixed(0, BigNumber.ROUND_DOWN));
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["math"],
-  description: "",
-  inputType: ArgType.Any,
-  arguments: {
-    op1: {
-      type: ArgType.BigDecimal,
-      position: 0 /* or 1 */,
-      defaultBigDecimal: 0,
-      required: true,
-      description: "First operand",
-    },
-    op: {
-      type: ArgType.Enum,
-      position: 1 /* or 0 */,
-      defaultEnum: "0",
-      required: true,
-      enumValues: [
-        "+",
-        "-",
-        "*",
-        "/",
-        "//",
-        "%",
-        "^",
-        "&",
-        "|",
-        "~",
-        "<<",
-        ">>",
-        "MIN",
-        "MAX",
-        "SQRT",
-        "ROUND",
-        "FLOOR",
-        "CEIL",
-        "ABS",
-        "NEG",
-        "SIG",
-      ],
-      description: "",
-    },
-    op2: {
-      type: ArgType.BigDecimal,
-      position: 2,
-      defaultBigDecimal: 0,
-      description: "Second operand or scale for ROUND/FLOOR/CEIL",
-    },
-  },
-  outputType: ArgType.BigDecimal,
-};
 class TransformerFunctionMath extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        op1: { type: ArgType.BigDecimal, position: 0 /* or 1 */, defaultBigDecimal: 0 },
+        op: { type: ArgType.Enum, position: 1 /* or 0 */, defaultEnum: "0" },
+        op2: { type: ArgType.BigDecimal, position: 2, defaultBigDecimal: 0 },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

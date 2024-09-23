@@ -1,6 +1,12 @@
 import { describe, expect, test } from "vitest";
 import JsonTransformer from "../JsonTransformer";
 import { assertFailTransformation, assertTransformation } from "./BaseTransformationTest";
+import transformerFunctions from "../transformerFunctions";
+import TransformerFunction from "../functions/common/TransformerFunction";
+import FunctionContext from "../functions/common/FunctionContext";
+import { ArgType } from "../functions/common/ArgType";
+import { getAsString, isNullOrUndefined } from "../JsonHelpers";
+import { BigDecimal } from "../functions/common/FunctionHelpers";
 
 describe("JsonTransformer", () => {
   test("lower", async () => {
@@ -216,5 +222,199 @@ describe("JsonTransformer", () => {
       definition,
       definition,
     );
+  });
+
+  test("testJsonElementStreamsImmediateEvaluation", async () => {
+    let callCount = { value: 0 };
+    class ImmediateEvaluationTest extends TransformerFunction {
+      constructor() {
+        super({});
+      }
+
+      override async apply(context: FunctionContext) {
+        callCount.value++;
+        return context.get(null);
+      }
+    }
+    transformerFunctions.registerFunctions({ c: new ImmediateEvaluationTest() });
+
+    callCount.value = 0;
+    await assertTransformation(
+      null,
+      {
+        $$find: {
+          $$map: ["$$c:a", "$$c:b", "$$c:c", "$$c:d", "$$c:e"],
+          to: "$$upper:##current",
+        },
+        by: "$$is(=,B):##current",
+      },
+      "B",
+    );
+    // assert that "c" was called twice (check A, check B, break)
+    expect(callCount.value).toBe(2);
+
+    callCount.value = 0;
+    await assertTransformation(
+      null,
+      {
+        $$is: "b",
+        in: ["$$c:a", "$$c:b", "$$c:c", "$$c:d"],
+      },
+      true,
+    );
+    // assert that "c" was called twice (check a, check b, break)
+    expect(callCount.value).toBe(2);
+
+    callCount.value = 0;
+    await assertTransformation(
+      false,
+      {
+        $$and: ["$$c:$", "$$c:a", "$$c:b"],
+      },
+      false,
+    );
+    // assert that "c" was called once (check false, break)
+    expect(callCount.value).toBe(1);
+
+    callCount.value = 0;
+    await assertTransformation(
+      false,
+      {
+        $$or: ["$$c:true", "$$c:$"],
+      },
+      true,
+    );
+    // assert that "c" was called once (check true, break)
+    expect(callCount.value).toBe(1);
+
+    callCount.value = 0;
+    await assertTransformation(
+      false,
+      {
+        $$first: {
+          $$map: [1, 2, 3],
+          to: "$$c:##current",
+        },
+      },
+      1,
+    );
+    // assert that "c" was called once (mapped first, break)
+    expect(callCount.value).toBe(1);
+
+    callCount.value = 0;
+    await assertTransformation(
+      null,
+      {
+        $$at: ["$$c:a", "$$c:b", "$$c:c", "$$c:d"],
+        index: 2,
+      },
+      "c",
+    );
+    // assert that "c" was called once (skipped 2, break)
+    expect(callCount.value).toBe(1);
+
+    callCount.value = 0;
+    await assertTransformation(
+      null,
+      {
+        $$slice: ["$$c:a", "$$c:b", "$$c:c", "$$c:d"],
+        begin: 1,
+        end: 3,
+      },
+      ["b", "c"],
+    );
+    // assert that "c" was called twice (skipped 1, eval 2, break)
+    expect(callCount.value).toBe(2);
+  });
+
+  class TransformerFunctionArgsTest extends TransformerFunction {
+    constructor() {
+      super({
+        arguments: {
+          a: { type: ArgType.Any, position: 0, defaultIsNull: true },
+          b: { type: ArgType.Any, position: 1, defaultIsNull: true },
+          c: { type: ArgType.Any, position: 2, defaultIsNull: true },
+        },
+      });
+    }
+    override async apply(context: FunctionContext) {
+      if (!context.has("a")) return "N/A";
+      const lst = [];
+      lst.push(await context.get("a"));
+      if (context.has("b")) {
+        lst.push(await context.get("b"));
+      }
+      if (context.has("c")) {
+        lst.push(await context.get("c"));
+      }
+      if (lst.length == 1) {
+        return isNullOrUndefined(lst[0]) ? "[NULL]" : lst[0];
+      }
+      return lst.map(arg => "[" + (isNullOrUndefined(arg) ? "NULL" : getAsString(arg)) + "]").toString();
+    }
+  }
+
+  test("inlineArgsParsingTest", async () => {
+    transformerFunctions.registerFunctions({ argstest: new TransformerFunctionArgsTest() });
+    await assertTransformation(null, "$$argstest(,):", "[],[]");
+
+    await assertTransformation(null, "$$argstest", "N/A");
+    await assertTransformation(null, "$$argstest:", "N/A");
+    await assertTransformation(null, "$$argstest()", "N/A");
+    await assertTransformation(null, "$$argstest():", "N/A");
+    await assertTransformation(null, "$$argstest(,):", "[],[]");
+    await assertTransformation(null, "$$argstest(#null):", "[NULL]");
+    await assertTransformation(null, "$$argstest(null,#null):", "[null],[NULL]");
+    await assertTransformation(null, "$$argstest(a):", "a");
+    await assertTransformation("A", "$$argstest($):", "A");
+    await assertTransformation("A", "$$argstest(\\$):", "$");
+    await assertTransformation("A", "$$argstest(\\$,\\$):", "[$],[$]");
+    await assertTransformation("A", "$$argstest('\\\\$'):", "$");
+    await assertTransformation("A", "$$argstest('\\\\$','\\\\$'):", "[$],[$]");
+    await assertTransformation("A", "$$argstest(\\\\$):", "\\\\$");
+    await assertTransformation(true, "$$argstest($):", true);
+    await assertTransformation(true, "$$argstest('$'):", true);
+    await assertTransformation(BigDecimal(123.4), "$$argstest($):", BigDecimal(123.4));
+    await assertTransformation([1, 2], "$$argstest($):", [1, 2]);
+    await assertTransformation(null, "$$argstest( ):", " ");
+    await assertTransformation(null, "$$argstest(' '):", " ");
+    await assertTransformation(null, "$$argstest(  '  a' ):", "  a");
+    await assertTransformation(null, "$$argstest('a',b):", "[a],[b]");
+    await assertTransformation(null, "$$argstest('a','b'):", "[a],[b]");
+    await assertTransformation(null, "$$argstest('\\'','\\''):", "['],[']");
+    await assertTransformation(null, "$$argstest(  '\\'',  '\\''):", "['],[']");
+    await assertTransformation(null, "$$argstest(a, b):", "[a],[ b]");
+    await assertTransformation(null, "$$argstest( a):", " a");
+    await assertTransformation(null, "$$argstest( a ):", " a ");
+    await assertTransformation(null, "$$argstest( a, b):", "[ a],[ b]");
+    await assertTransformation(null, "$$argstest( a , b):", "[ a ],[ b]");
+    await assertTransformation(null, "$$argstest( a , b  , 'c  ' ):", "[ a ],[ b  ],[c  ]");
+    await assertTransformation(null, "$$argstest(a,' b'):", "[a],[ b]");
+    await assertTransformation(null, "$$argstest('\\n\\r\\t\\u0f0f'):", "\n\r\t\u0f0f");
+    // not detected
+    await assertTransformation(null, "$$argstest(\n\r\t\u0f0f)", "$$argstest(\n\r\t\u0f0f)");
+  });
+
+  class TransformerFunctionValTest extends TransformerFunction {
+    constructor() {
+      super({});
+    }
+    override async apply(context: FunctionContext) {
+      const value = await context.getUnwrapped(null);
+      if (value == null) return "NULL";
+      return value;
+    }
+  }
+
+  test("inlineValueParsingTest", async () => {
+    transformerFunctions.registerFunctions({ valtest: new TransformerFunctionValTest() });
+
+    await assertTransformation(null, "$$valtest", "NULL");
+    await assertTransformation(null, "$$valtest:", "");
+    await assertTransformation(null, "$$valtest:A", "A");
+    await assertTransformation("IN", "$$valtest:$", "IN");
+    await assertTransformation("IN", "$$valtest:\\$", "$");
+    // regex replacements
+    await assertTransformation("IN", "$$valtest:$1", "$1");
   });
 });

@@ -1,73 +1,24 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
 import { isEqual } from "../JsonHelpers";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["is"],
-  description: "",
-  inputType: ArgType.Any,
-  arguments: {
-    op: {
-      type: ArgType.Enum,
-      position: 0,
-      defaultIsNull: true,
-      enumValues: ["IN", "NIN", "EQ", "=", "==", "NEQ", "!=", "<>", "GT", ">", "GTE", ">=", "LT", "<", "LTE", "<="],
-      description: "A type of check to do exclusively (goes together with `that`)",
-    },
-    that: {
-      type: ArgType.Any,
-      position: 1,
-      defaultIsNull: true,
-      description: "A transformer to extract a property to sum by (using ##current to refer to the current item)",
-    },
-    in: {
-      type: ArgType.Array,
-      defaultIsNull: true,
-      description: "Array of values the input should be part of",
-    },
-    nin: {
-      type: ArgType.Array,
-      defaultIsNull: true,
-      description: "Array of values the input should **NOT** be part of",
-    },
-    eq: {
-      type: ArgType.Any,
-      defaultIsNull: true,
-      description: "A Value the input should be equal to",
-    },
-    neq: {
-      type: ArgType.Any,
-      defaultIsNull: true,
-      description: "A Value the input should **NOT** be equal to",
-    },
-    gt: {
-      type: ArgType.Any,
-      defaultIsNull: true,
-      description: "A Value the input should be greater than (input > value)",
-    },
-    gte: {
-      type: ArgType.Any,
-      defaultIsNull: true,
-      description: "A Value the input should be greater than or equal (input >= value)",
-    },
-    lt: {
-      type: ArgType.Any,
-      defaultIsNull: true,
-      description: "A Value the input should be lower than (input < value)",
-    },
-    lte: {
-      type: ArgType.Any,
-      defaultIsNull: true,
-      description: "A Value the input should be lower than or equal (input <= value)",
-    },
-  },
-  outputType: ArgType.Boolean,
-};
 class TransformerFunctionIs extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        op: { type: ArgType.Enum, position: 0, defaultIsNull: true },
+        that: { type: ArgType.Any, position: 1, defaultIsNull: true },
+        in: { type: ArgType.Array, defaultIsNull: true },
+        nin: { type: ArgType.Array, defaultIsNull: true },
+        eq: { type: ArgType.Any, defaultIsNull: true },
+        neq: { type: ArgType.Any, defaultIsNull: true },
+        gt: { type: ArgType.Any, defaultIsNull: true },
+        gte: { type: ArgType.Any, defaultIsNull: true },
+        lt: { type: ArgType.Any, defaultIsNull: true },
+        lte: { type: ArgType.Any, defaultIsNull: true },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {
@@ -111,12 +62,12 @@ class TransformerFunctionIs extends TransformerFunction {
         case "EQ":
         case "=":
         case "==": {
-          return value === that;
+          return isEqual(value, that);
         }
         case "NEQ":
         case "!=":
         case "<>": {
-          return value !== that;
+          return !isEqual(value, that);
         }
         default: {
           return false;
@@ -154,11 +105,11 @@ class TransformerFunctionIs extends TransformerFunction {
     }
     if (result && context.has("eq")) {
       const eq = await context.getJsonElement("eq");
-      result = value === eq;
+      result = isEqual(value, eq);
     }
     if (result && context.has("neq")) {
       const neq = await context.getJsonElement("neq");
-      result = value !== neq;
+      result = !isEqual(value, neq);
     }
     return result;
   }

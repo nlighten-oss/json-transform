@@ -1,52 +1,21 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
 import { BigDecimal, DEFAULT_LOCALE } from "./common/FunctionHelpers";
 import { isNullOrEmpty } from "../JsonHelpers";
 import { parsePattern } from "./TransformerFunctionNumberFormat";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["numberparse"],
-  description: "",
-  inputType: ArgType.String,
-  arguments: {
-    pattern: {
-      type: ArgType.String,
-      position: 0,
-      defaultString: "#0.00",
-      description: "See [tutorial](https://docs.oracle.com/javase/tutorial/i18n/format/decimalFormat.html)",
-    },
-    locale: {
-      type: ArgType.String,
-      position: 1,
-      defaultIsNull: true,
-      description: "Locale to use (language and country specific formatting; set by Java, default is en-US)",
-    },
-    grouping: {
-      type: ArgType.String,
-      position: 2,
-      defaultIsNull: true,
-      description: "A custom character to be used for grouping (default is ,)",
-    },
-    decimal: {
-      type: ArgType.String,
-      position: 3,
-      defaultIsNull: true,
-      description: "A custom character to be used for decimal point (default is .)",
-    },
-    radix: {
-      type: ArgType.Integer,
-      position: 1,
-      defaultInteger: 10,
-      description: "(BASE) Radix to be used in interpreting input",
-    },
-  },
-  outputType: ArgType.BigDecimal,
-};
 class TransformerFunctionNumberParse extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        pattern: { type: ArgType.String, position: 0, defaultString: "#0.00" },
+        locale: { type: ArgType.String, position: 1, defaultIsNull: true },
+        grouping: { type: ArgType.String, position: 2, defaultIsNull: true },
+        decimal: { type: ArgType.String, position: 3, defaultIsNull: true },
+        radix: { type: ArgType.Integer, position: 1, defaultInteger: 10 },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

@@ -20,8 +20,7 @@ class JsonOrgJsonPathConfigurator {
 
         private static final JsonProvider jsonProvider = new JsonOrgJsonProvider();
         private static final Set<Option> options = Set.of(
-                Option.SUPPRESS_EXCEPTIONS,
-                Option.DEFAULT_PATH_LEAF_TO_NULL
+                Option.SUPPRESS_EXCEPTIONS
         );
         private static final MappingProvider mappingProvider = new JsonOrgMappingProvider();
 

@@ -1,0 +1,87 @@
+[
+  {
+    "name": "Object - simple value extraction",
+    "given": {
+      "input": {
+        "value": "bbb"
+      },
+      "definition": {
+        "a": "$$value:$.value",
+        "b": "$$value:$.b",
+        "c": {
+          "$$value": []
+        },
+        "d": {
+          "$$value": {}
+        }
+      }
+    },
+    "expect": {
+      "equal": {
+        "a": "bbb"
+      }
+    }
+  },
+  {
+    "name": "ObjectStreams - non-empty array",
+    "given": {
+      "input": [1, 2, 3],
+      "definition": {
+        "a": "$$value:$"
+      }
+    },
+    "expect": {
+      "equal": {
+        "a": [1, 2, 3]
+      }
+    }
+  },
+  {
+    "name": "ObjectStreams - empty array",
+    "given": {
+      "input": [],
+      "definition": {
+        "a": "$$value:$"
+      }
+    },
+    "expect": {
+      "equal": {}
+    }
+  },
+  {
+    "name": "ObjectStreams - mapping over non-empty array",
+    "given": {
+      "input": [1, 2, 3],
+      "definition": {
+        "a": {
+          "$$value": {
+            "$$map": "$",
+            "to": "##current"
+          }
+        }
+      }
+    },
+    "expect": {
+      "equal": {
+        "a": [1, 2, 3]
+      }
+    }
+  },
+  {
+    "name": "ObjectStreams - mapping over empty array",
+    "given": {
+      "input": [],
+      "definition": {
+        "a": {
+          "$$value": {
+            "$$map": "$",
+            "to": "##current"
+          }
+        }
+      }
+    },
+    "expect": {
+      "equal": {}
+    }
+  }
+]

@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
 import DocumentContext from "./DocumentContext";
-import { BigDecimal } from "./functions/common/FunctionHelpers";
+import { BigDecimal, JSONBig } from "./functions/common/FunctionHelpers";
 import { areSimilar } from "@nlighten/json-schema-utils";
 import { Comparator, ComparatorFactory } from "@wortise/sequency";
-import CompareBy from "./functions/common/CompareBy";
+import BigNumber from "bignumber.js";
 
 const JSONPATH_ROOT = "$",
   JSONPATH_ROOT_ESC = "\\$",
@@ -25,13 +25,18 @@ function getAsString(value: any): string | null {
   if (typeof value === "string") {
     return value;
   }
-  if (typeof value === "number") {
+  if (
+    typeof value === "number" ||
+    typeof value === "bigint" ||
+    value instanceof BigDecimal ||
+    value instanceof BigNumber
+  ) {
     return value.toString();
   }
   if (typeof value === "boolean") {
     return value ? "true" : "false";
   }
-  return JSON.stringify(value);
+  return JSONBig.stringify(value);
 }
 
 const numberCompare = (a: number, b: number) => {
@@ -206,7 +211,7 @@ const wrapElement = (value: any, location: string[]) => {
   let elm = value;
 
   while ((point = location.pop()) != null) {
-    elm = { point: elm };
+    elm = { [point]: elm };
   }
   return elm;
 };

@@ -5,7 +5,7 @@ import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.FunctionHelpers;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 import java.text.NumberFormat;
 import java.util.Currency;
@@ -15,28 +15,14 @@ import java.util.Locale;
  * For tests
  * @see TransformerFunctionNumberFormatTest
  */
-@Aliases("numberformat")
-@Documentation("Formats a number")
-@InputType(ArgType.BigDecimal)
-@ArgumentType(value = "type", type = ArgType.Enum, position = 0, defaultEnum = "NUMBER",
-              enumValues = { "NUMBER", "DECIMAL", "CURRENCY", "PERCENT", "INTEGER", "COMPACT", "BASE" },
-              description = "Type of output format")
-@ArgumentType(value = "locale", type = ArgType.String, position = 1, defaultIsNull = true,
-              description = "Locale to use (language and country specific formatting; set by Java, default is en-US)")
-@ArgumentType(value = "compact_style", type = ArgType.Enum, position = 2, defaultEnum = "SHORT",
-              enumValues = { "SHORT", "LONG" },
-              description = "(COMPACT) Type of compacting format")
-@ArgumentType(value = "pattern", type = ArgType.String, position = 2, defaultString = "#0.00",
-              description = "(DECIMAL) See [tutorial](https://docs.oracle.com/javase/tutorial/i18n/format/decimalFormat.html)")
-@ArgumentType(value = "grouping", type = ArgType.String, position = 3, defaultIsNull = true,
-              description = "(DECIMAL) A custom character to be used for grouping (default is ,)")
-@ArgumentType(value = "decimal", type = ArgType.String, position = 4, defaultIsNull = true,
-              description = "(DECIMAL) A custom character to be used for decimal point (default is .)")
-@ArgumentType(value = "radix", type = ArgType.Integer, position = 1, defaultInteger = 10,
-              description = "(BASE) Radix to be used for formatting input")
-@ArgumentType(value = "currency", type = ArgType.String, position = 2, defaultIsNull = true,
-        description = "(CURRENCY) Currency to use in format")
-@OutputType(ArgType.String)
+@ArgumentType(value = "type", type = ArgType.Enum, position = 0, defaultEnum = "NUMBER")
+@ArgumentType(value = "locale", type = ArgType.String, position = 1, defaultIsNull = true)
+@ArgumentType(value = "compact_style", type = ArgType.Enum, position = 2, defaultEnum = "SHORT")
+@ArgumentType(value = "pattern", type = ArgType.String, position = 2, defaultString = "#0.00")
+@ArgumentType(value = "grouping", type = ArgType.String, position = 3, defaultIsNull = true)
+@ArgumentType(value = "decimal", type = ArgType.String, position = 4, defaultIsNull = true)
+@ArgumentType(value = "radix", type = ArgType.Integer, position = 1, defaultInteger = 10)
+@ArgumentType(value = "currency", type = ArgType.String, position = 2, defaultIsNull = true)
 public class TransformerFunctionNumberFormat<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public TransformerFunctionNumberFormat(JsonAdapter<JE, JA, JO> adapter) {
         super(adapter);

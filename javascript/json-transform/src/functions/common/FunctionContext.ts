@@ -15,54 +15,40 @@ class FunctionContext {
 
   protected readonly alias: string;
   protected readonly function: TransformerFunction;
-  protected readonly resolver: ParameterResolver;
   protected readonly extractor: JsonTransformerFunction;
+  protected resolver: ParameterResolver;
 
-  constructor(
+  protected constructor(
     alias: string,
     func: TransformerFunction,
     resolver: ParameterResolver,
     extractor: JsonTransformerFunction,
-    definition: any = null,
   ) {
     this.alias = alias;
     this.function = func;
     this.extractor = extractor;
-    if (definition == null) {
-      this.resolver = resolver;
-    } else {
-      this.resolver = this.recalcResolver(definition, resolver, extractor);
-    }
+    this.resolver = resolver;
   }
 
-  private recalcResolver(
-    definition: any,
+  protected static async recalcResolver(
+    contextElement: any,
     resolver: ParameterResolver,
     extractor: JsonTransformerFunction,
-  ): ParameterResolver {
-    if (definition?.[FunctionContext.CONTEXT_KEY]) {
-      const contextElement = definition[FunctionContext.CONTEXT_KEY];
-      if (isMap(contextElement)) {
-        const addCtx = Object.entries(contextElement).reduce(
-          (a, [key, value]) => {
-            a[key] = getDocumentContext(extractor.transform(value, resolver, false));
-            return a;
-          },
-          {} as Record<string, any>,
-        );
-        return {
-          get: name => {
-            for (const key in addCtx) {
-              if (FunctionContext.pathOfVar(key, name)) {
-                return addCtx[key].read(FunctionContext.DOLLAR + name.substring(key.length));
-              }
-            }
-            return resolver.get(name);
-          },
-        };
-      }
+  ): Promise<ParameterResolver> {
+    const addCtx: Record<string, DocumentContext> = {};
+    for (const key in contextElement) {
+      addCtx[key] = getDocumentContext(await extractor.transform(contextElement[key], resolver, false));
     }
-    return resolver;
+    return {
+      get: name => {
+        for (const key in addCtx) {
+          if (FunctionContext.pathOfVar(key, name)) {
+            return addCtx[key].read(FunctionContext.DOLLAR + name.substring(key.length));
+          }
+        }
+        return resolver.get(name);
+      },
+    };
   }
 
   /**
@@ -129,11 +115,13 @@ class FunctionContext {
   }
 
   public async getString(name: string | null, transform: boolean = true): Promise<string | null> {
-    const value = await this.get(name, transform);
+    let value = await this.get(name, transform);
     if (value == null) {
       return null;
     }
-    // TODO: add stream support
+    if (value instanceof JsonElementStreamer) {
+      value = await value.toJsonArray();
+    }
     return getAsString(value);
   }
 

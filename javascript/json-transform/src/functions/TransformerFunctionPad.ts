@@ -1,36 +1,16 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
-import { isTruthy } from "../JsonHelpers";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["pad"],
-  description: "",
-  inputType: ArgType.Array,
-  arguments: {
-    direction: {
-      type: ArgType.Enum,
-      position: 0,
-      defaultIsNull: true,
-      required: true,
-      enumValues: ["LEFT", "START", "RIGHT", "END"],
-      description: "On which side of the input to pad",
-    },
-    width: {
-      type: ArgType.Integer,
-      position: 1,
-      defaultIsNull: true,
-      required: true,
-      description: "What is the maximum length of the output string",
-    },
-    pad_string: { type: ArgType.String, position: 2, defaultString: "0", description: "The character(s) to pad with" },
-  },
-  outputType: ArgType.Boolean,
-};
 class TransformerFunctionPad extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        direction: { type: ArgType.Enum, position: 0, defaultIsNull: true },
+        width: { type: ArgType.Integer, position: 1, defaultIsNull: true },
+        pad_string: { type: ArgType.String, position: 2, defaultString: "0" },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

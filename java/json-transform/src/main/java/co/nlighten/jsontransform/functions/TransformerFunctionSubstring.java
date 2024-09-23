@@ -4,20 +4,14 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 /*
  * For tests
  * @see TransformerFunctionSubstringTest
  */
-@Aliases("substring")
-@Documentation("Gets a slice of a string by indices (negative begin index will slice from the end)")
-@InputType(ArgType.String)
-@ArgumentType(value = "begin", type = ArgType.Integer, position = 0, defaultInteger = 0, required = true,
-              description = "Index of first character to slice from (if negative, counts from the end of the string)")
-@ArgumentType(value = "end", type = ArgType.Integer, position = 1, defaultIsNull = true,
-              description = "Index of last character to slice to (if negative, counts from the end of the string)")
-@OutputType(ArgType.String)
+@ArgumentType(value = "begin", type = ArgType.Integer, position = 0, defaultInteger = 0)
+@ArgumentType(value = "end", type = ArgType.Integer, position = 1, defaultIsNull = true)
 public class TransformerFunctionSubstring<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public TransformerFunctionSubstring(JsonAdapter<JE, JA, JO> adapter) {
         super(adapter);

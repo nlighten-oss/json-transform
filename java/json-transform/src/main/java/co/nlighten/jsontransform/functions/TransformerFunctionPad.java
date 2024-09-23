@@ -4,24 +4,15 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 /*
  * For tests
  * @see TransformerFunctionPadTest
  */
-@Aliases("pad")
-@Documentation(value = "Pad a provided string with a certain character repeated until a certain width of output string",
-               notes = "(Strings longer than `width` will be returned as-is)")
-@InputType(ArgType.Any)
-@ArgumentType(value = "direction", type = ArgType.Enum, position = 0, defaultIsNull = true, required = true,
-              enumValues = { "LEFT", "START", "RIGHT", "END" },
-              description = "On which side of the input to pad")
-@ArgumentType(value = "width", type = ArgType.Integer, position = 1, defaultIsNull = true, required = true,
-              description = "What is the maximum length of the output string")
-@ArgumentType(value = "pad_string", type = ArgType.String, position = 2, defaultString = "0",
-              description = "The character(s) to pad with")
-@OutputType(ArgType.String)
+@ArgumentType(value = "direction", type = ArgType.Enum, position = 0, defaultIsNull = true)
+@ArgumentType(value = "width", type = ArgType.Integer, position = 1, defaultIsNull = true)
+@ArgumentType(value = "pad_string", type = ArgType.String, position = 2, defaultString = "0")
 public class TransformerFunctionPad<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public TransformerFunctionPad(JsonAdapter<JE, JA, JO> adapter) {
         super(adapter);

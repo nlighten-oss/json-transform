@@ -1,7 +1,5 @@
 import { describe, test } from "vitest";
 import { assertTransformation } from "../BaseTransformationTest";
-import BigNumber from "bignumber.js";
-import { BigDecimal } from "../../functions/common/FunctionHelpers";
 
 describe("TransformerFunctionDigest", () => {
   test("convert", async () => {

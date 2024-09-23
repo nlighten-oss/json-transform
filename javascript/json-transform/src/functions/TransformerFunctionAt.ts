@@ -1,25 +1,14 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { FunctionDescription } from "./common/FunctionDescription";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["at"],
-  description: "",
-  inputType: ArgType.Array,
-  arguments: {
-    index: {
-      type: ArgType.Integer,
-      position: 0,
-      required: true,
-      defaultIsNull: true,
-      description: "Index of element to fetch (negative values will be fetch from the end)",
-    },
-  },
-};
 class TransformerFunctionAt extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        index: { type: ArgType.Integer, position: 0, defaultIsNull: true },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

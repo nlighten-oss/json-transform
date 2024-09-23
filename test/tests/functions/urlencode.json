@@ -1,0 +1,53 @@
+[
+  {
+    "name": "encode (no args)",
+    "given": {
+      "input": "not url+safe?=x&b=path/path",
+      "definition": "$$urlencode:$"
+    },
+    "expect": {
+      "equal": "not+url%2Bsafe%3F%3Dx%26b%3Dpath%2Fpath"
+    }
+  },
+  {
+    "name": "encode (no args, with parenthesis)",
+    "given": {
+      "input": "not url+safe?=x&b=path/path",
+      "definition": "$$urlencode():$"
+    },
+    "expect": {
+      "equal": "not+url%2Bsafe%3F%3Dx%26b%3Dpath%2Fpath"
+    }
+  },
+  {
+    "name": "encode (inline text)",
+    "given": {
+      "input": null,
+      "definition": "$$urlencode:not url+safe?=x&b=path/path"
+    },
+    "expect": {
+      "equal": "not+url%2Bsafe%3F%3Dx%26b%3Dpath%2Fpath"
+    }
+  },
+  {
+    "name": "encode (utf-8)",
+    "given": {
+      "input": "hello+unicode+😀👨‍👩‍👧‍👦🪬",
+      "definition": "$$urlencode(UTF-8):$"
+    },
+    "expect": {
+      "equal": "hello%2Bunicode%2B%F0%9F%98%80%F0%9F%91%A8%E2%80%8D%F0%9F%91%A9%E2%80%8D%F0%9F%91%A7%E2%80%8D%F0%9F%91%A6%F0%9F%AA%AC"
+    }
+  },
+  {
+    "name": "encode (utf-16)",
+    "skip": true,
+    "given": {
+      "input": "hello+unicode+😀👨‍👩‍👧‍👦🪬",
+      "definition": "$$urlencode(UTF-16):$"
+    },
+    "expect": {
+      "equal": "hello%FE%FF%00%2Bunicode%FE%FF%00%2B%D8%3D%DE%00%D8%3D%DC%68%20%0D%D8%3D%DC%69%20%0D%D8%3D%DC%67%20%0D%D8%3D%DC%66%D8%3E%DE%AC"
+    }
+  }
+]

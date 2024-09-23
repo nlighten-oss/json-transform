@@ -4,6 +4,8 @@ import { ParameterResolver } from "./ParameterResolver";
 import { createPayloadResolver, isNullOrUndefined } from "./JsonHelpers";
 import transformerFunctions, { TransformerFunctions } from "./transformerFunctions";
 import JsonElementStreamer from "./JsonElementStreamer";
+import BigNumber from "bignumber.js";
+import { BigDecimal } from "./functions/common/FunctionHelpers";
 
 class JsonTransformer implements Transformer {
   static readonly OBJ_DESTRUCT_KEY = "*";
@@ -102,7 +104,7 @@ class JsonTransformer implements Transformer {
     if (Array.isArray(definition)) {
       return Promise.all(definition.map((d: any) => this.fromJsonElement(d, resolver, false)));
     }
-    if (typeof definition === "object") {
+    if (typeof definition === "object" && !(definition instanceof BigNumber || definition instanceof BigDecimal)) {
       return this.fromJsonObject(definition, resolver, allowReturningStreams);
     }
     return this.fromJsonPrimitive(definition, resolver, allowReturningStreams);

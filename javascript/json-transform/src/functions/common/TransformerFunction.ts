@@ -1,9 +1,9 @@
-import {ArgumentType} from "./ArgumentType";
-import {ArgType} from "./ArgType";
+import { ArgumentType } from "./ArgumentType";
+import { ArgType } from "./ArgType";
 import FunctionContext from "./FunctionContext";
-import {isNullOrUndefined} from "../../JsonHelpers";
-import {FunctionDescription} from "./FunctionDescription";
-import {BigDecimal} from "./FunctionHelpers";
+import { isNullOrUndefined } from "../../JsonHelpers";
+import { FunctionDescription } from "./FunctionDescription";
+import { BigDecimal } from "./FunctionHelpers";
 
 /**
  * Base class for all transformer functions.
@@ -21,7 +21,7 @@ class TransformerFunction {
         if (args[arg].aliases?.length) {
           args[arg].aliases?.forEach(alias => {
             args[alias] = args[arg];
-          })
+          });
         }
         this.defaultValues[arg] = TransformerFunction.getDefaultValue(args[arg]);
       }
@@ -31,12 +31,18 @@ class TransformerFunction {
   private static getDefaultValue(a: ArgumentType) {
     if (a == null || a.defaultIsNull) return null;
     switch (a.type) {
-      case ArgType.Boolean: return a.defaultBoolean ?? null;
-      case ArgType.String: return a.defaultString ?? null;
-      case ArgType.Enum: return a.defaultEnum ?? null;
-      case ArgType.Integer: return a.defaultInteger ?? null;
-      case ArgType.Long: return a.defaultLong ?? null;
-      case ArgType.BigDecimal: return a.defaultBigDecimal ? new BigDecimal(a.defaultBigDecimal) : null;
+      case ArgType.Boolean:
+        return a.defaultBoolean ?? null;
+      case ArgType.String:
+        return a.defaultString ?? null;
+      case ArgType.Enum:
+        return a.defaultEnum ?? null;
+      case ArgType.Integer:
+        return a.defaultInteger ?? null;
+      case ArgType.Long:
+        return a.defaultLong ?? null;
+      case ArgType.BigDecimal:
+        return a.defaultBigDecimal ? new BigDecimal(a.defaultBigDecimal) : null;
     }
     return null;
   }
@@ -55,7 +61,7 @@ class TransformerFunction {
    * @param name the name of the argument (null will return the primary argument)
    * @return the argument type or null if not found
    */
-  public getArgument(name: string) : ArgumentType | null {
+  public getArgument(name: string): ArgumentType | null {
     if (isNullOrUndefined(name)) return null;
     return this.description.arguments?.[name] ?? null;
   }
@@ -66,22 +72,6 @@ class TransformerFunction {
    */
   public getArguments() {
     return this.description.arguments;
-  }
-
-  /**
-   * Get the input type for this function.
-   * @return the input type
-   */
-  public getInputType() {
-    return this.description.inputType;
-  }
-
-  /**
-   * Get the entire function description.
-   * @return the function description
-   */
-  public getFunctionDescription() {
-    return this.description;
   }
 
   /**

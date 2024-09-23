@@ -1,29 +1,17 @@
 import jp from "jsonpath";
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
-import { FunctionDescription } from "./common/FunctionDescription";
 import FunctionContext from "./common/FunctionContext";
 import DocumentContext from "../DocumentContext";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["jsonpath"],
-  inputType: ArgType.Any,
-  description: "",
-  arguments: {
-    path: { type: ArgType.String, position: 0, required: true, description: "JSONPath expression" },
-    options: {
-      type: ArgType.ArrayOfString,
-      position: 1,
-      defaultIsNull: true,
-      description:
-        "A list of options [by jayway](https://github.com/json-path/JsonPath?tab=readme-ov-file#tweaking-configuration)",
-    },
-  },
-  outputType: ArgType.Any,
-};
 class TransformerFunctionJsonPath extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        path: { type: ArgType.String, position: 0 },
+        options: { type: ArgType.ArrayOfString, position: 1, defaultIsNull: true },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

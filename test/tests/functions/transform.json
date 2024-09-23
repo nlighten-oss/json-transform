@@ -1,0 +1,39 @@
+[
+  {
+    "name": "object - transformation with item lookup",
+    "given": {
+      "input": {
+        "value": 5,
+        "item": {
+          "foo": "aaa",
+          "id": "bbb"
+        }
+      },
+      "definition": {
+        "$$transform": "$.item",
+        "to": {
+          "id": "##current.id",
+          "map_foo": "##current.foo",
+          "value": "$.value"
+        }
+      }
+    },
+    "expect": {
+      "equal": {
+        "id": "bbb",
+        "map_foo": "aaa",
+        "value": 5
+      }
+    }
+  },
+  {
+    "name": "inline - transformation with split function",
+    "given": {
+      "input": "ab",
+      "definition": "$$transform(##current[0]):$$split:$"
+    },
+    "expect": {
+      "equal": "a"
+    }
+  }
+]

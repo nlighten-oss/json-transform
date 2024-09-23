@@ -4,25 +4,16 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 /*
  * For tests
  * @see TransformerFunctionReplaceTest
  */
-@Aliases("replace")
-@Documentation("Search and replaces a substring in the given input")
-@InputType(ArgType.String)
-@ArgumentType(value = "find", type = ArgType.String, position = 0, defaultString = "", required = true,
-              description = "Value to search in input string (depends on `type`, if set to `REGEX`, should be a regular expression)")
-@ArgumentType(value = "replacement", type = ArgType.String, position = 1, defaultString = "",
-              description = "Value to replace each match (or only first if `type = REGEX-FIRST`), when using regular expression can use group matches (e.g. `$1`) (Note: to escape `$` if starting with it)")
-@ArgumentType(value = "type", type = ArgType.Enum, position = 2, defaultEnum = "STRING",
-              enumValues = {"STRING", "FIRST", "REGEX", "REGEX-FIRST"},
-              description = "Matching type")
-@ArgumentType(value = "from", type = ArgType.Integer, position = 3, defaultInteger = 0,
-              description = "At what index in the string the search should start from")
-@OutputType(ArgType.String)
+@ArgumentType(value = "find", type = ArgType.String, position = 0, defaultString = "")
+@ArgumentType(value = "replacement", type = ArgType.String, position = 1, defaultString = "")
+@ArgumentType(value = "type", type = ArgType.Enum, position = 2, defaultEnum = "STRING")
+@ArgumentType(value = "from", type = ArgType.Integer, position = 3, defaultInteger = 0)
 public class TransformerFunctionReplace<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public TransformerFunctionReplace(JsonAdapter<JE, JA, JO> adapter) {
         super(adapter);

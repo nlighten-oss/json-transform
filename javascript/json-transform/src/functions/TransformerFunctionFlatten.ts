@@ -1,38 +1,17 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
-import { FunctionDescription } from "./common/FunctionDescription";
 import FunctionContext from "./common/FunctionContext";
 import { isMap, isNullOrUndefined } from "../JsonHelpers";
 
-const DESCRIPTION: FunctionDescription = {
-  aliases: ["flatten"],
-  inputType: ArgType.Object,
-  description: "",
-  arguments: {
-    target: {
-      type: ArgType.Object,
-      position: 0,
-      description: "A target to merge into",
-      defaultIsNull: true,
-    },
-    prefix: {
-      type: ArgType.String,
-      position: 1,
-      description: "A prefix to add to the base",
-      defaultIsNull: true,
-    },
-    array_prefix: {
-      type: ArgType.String,
-      position: 2,
-      description: "Sets how array elements should be prefixed, leave null to not flatten arrays",
-      defaultString: "$",
-    },
-  },
-  outputType: ArgType.Any,
-};
 class TransformerFunctionFlatten extends TransformerFunction {
   constructor() {
-    super(DESCRIPTION);
+    super({
+      arguments: {
+        target: { type: ArgType.Object, position: 0, defaultIsNull: true },
+        prefix: { type: ArgType.String, position: 1, defaultIsNull: true },
+        array_prefix: { type: ArgType.String, position: 2, defaultString: "$" },
+      },
+    });
   }
 
   override async apply(context: FunctionContext): Promise<any> {

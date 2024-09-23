@@ -4,58 +4,7 @@ import { JsonTransformerFunction } from "./JsonTransformerFunction";
 import { isNullOrUndefined, lenientJsonParse } from "./JsonHelpers";
 import ObjectFunctionContext from "./functions/common/ObjectFunctionContext";
 import InlineFunctionContext from "./functions/common/InlineFunctionContext";
-import TransformerFunctionAnd from "./functions/TransformerFunctionAnd";
-import TransformerFunctionAt from "./functions/TransformerFunctionAt";
-import TransformerFunctionAvg from "./functions/TransformerFunctionAvg";
-import TransformerFunctionBase64 from "./functions/TransformerFunctionBase64";
-import TransformerFunctionBoolean from "./functions/TransformerFunctionBoolean";
-import TransformerFunctionCoalesce from "./functions/TransformerFunctionCoalesce";
-import TransformerFunctionConcat from "./functions/TransformerFunctionConcat";
-import TransformerFunctionContains from "./functions/TransformerFunctionContains";
-import TransformerFunctionCsv from "./functions/TransformerFunctionCsv";
-import TransformerFunctionCsvParse from "./functions/TransformerFunctionCsvParse";
-import TransformerFunctionDecimal from "./functions/TransformerFunctionDecimal";
-import TransformerFunctionDate from "./functions/TransformerFunctionDate";
-import TransformerFunctionDigest from "./functions/TransformerFunctionDigest";
-import TransformerFunctionDistinct from "./functions/TransformerFunctionDistinct";
-import TransformerFunctionEntries from "./functions/TransformerFunctionEntries";
-import TransformerFunctionEval from "./functions/TransformerFunctionEval";
-import TransformerFunctionFilter from "./functions/TransformerFunctionFilter";
-import TransformerFunctionFind from "./functions/TransformerFunctionFind";
-import TransformerFunctionFlat from "./functions/TransformerFunctionFlat";
-import TransformerFunctionFlatten from "./functions/TransformerFunctionFlatten";
-import TransformerFunctionForm from "./functions/TransformerFunctionForm";
-import TransformerFunctionFormParse from "./functions/TransformerFunctionFormParse";
-import TransformerFunctionGroup from "./functions/TransformerFunctionGroup";
-import TransformerFunctionIf from "./functions/TransformerFunctionIf";
-import TransformerFunctionIs from "./functions/TransformerFunctionIs";
-import TransformerFunctionIsNull from "./functions/TransformerFunctionIsNull";
-import TransformerFunctionJoin from "./functions/TransformerFunctionJoin";
-import TransformerFunctionJsonParse from "./functions/TransformerFunctionJsonParse";
-import TransformerFunctionJsonPatch from "./functions/TransformerFunctionJsonPatch";
-import TransformerFunctionJsonPath from "./functions/TransformerFunctionJsonPath";
-import TransformerFunctionJsonPointer from "./functions/TransformerFunctionJsonPointer";
-import TransformerFunctionJwtParse from "./functions/TransformerFunctionJwtParse";
-import TransformerFunctionLength from "./functions/TransformerFunctionLength";
-import TransformerFunctionLong from "./functions/TransformerFunctionLong";
-import TransformerFunctionLookup from "./functions/TransformerFunctionLookup";
-import TransformerFunctionLower from "./functions/TransformerFunctionLower";
-import TransformerFunctionMap from "./functions/TransformerFunctionMap";
-import TransformerFunctionMatch from "./functions/TransformerFunctionMatch";
-import TransformerFunctionMatchAll from "./functions/TransformerFunctionMatchAll";
-import TransformerFunctionMax from "./functions/TransformerFunctionMax";
-import TransformerFunctionMin from "./functions/TransformerFunctionMin";
-import TransformerFunctionMath from "./functions/TransformerFunctionMath";
-import TransformerFunctionNormalize from "./functions/TransformerFunctionNormalize";
-import TransformerFunctionNot from "./functions/TransformerFunctionNot";
-import TransformerFunctionTest from "./functions/TransformerFunctionTest";
-import TransformerFunctionUpper from "./functions/TransformerFunctionUpper";
-import TransformerFunctionNumberFormat from "./functions/TransformerFunctionNumberFormat";
-import TransformerFunctionNumberParse from "./functions/TransformerFunctionNumberParse";
-import TransformerFunctionObject from "./functions/TransformerFunctionObject";
-import TransformerFunctionOr from "./functions/TransformerFunctionOr";
-import TransformerFunctionPad from "./functions/TransformerFunctionPad";
-import TransformerFunctionPartition from "./functions/TransformerFunctionPartition";
+import embeddedFunctions from "./functions";
 
 class FunctionMatchResult {
   private readonly result;
@@ -69,10 +18,6 @@ class FunctionMatchResult {
   }
 }
 
-const UNIMPLEMENTED = {
-  aliases: ["unimplemented"],
-};
-
 export class TransformerFunctions {
   private static readonly inlineFunctionRegex = /^\$\$(\w+)(\((.*?)\))?(:|$)/;
   private static readonly inlineFunctionArgsRegex = /('(\\'|[^'])*'|[^,]*)(?:,|$)/g;
@@ -84,87 +29,7 @@ export class TransformerFunctions {
   private functions: Record<string, TransformerFunction> = {};
 
   constructor() {
-    this.registerFunctions({
-      and: new TransformerFunctionAnd(),
-      at: new TransformerFunctionAt(),
-      avg: new TransformerFunctionAvg(),
-      base64: new TransformerFunctionBase64(),
-      boolean: new TransformerFunctionBoolean(),
-      coalesce: new TransformerFunctionCoalesce(),
-      concat: new TransformerFunctionConcat(),
-      contains: new TransformerFunctionContains(),
-      csv: new TransformerFunctionCsv(),
-      csvparse: new TransformerFunctionCsvParse(),
-      date: new TransformerFunctionDate(),
-      decimal: new TransformerFunctionDecimal(),
-      digest: new TransformerFunctionDigest(),
-      distinct: new TransformerFunctionDistinct(),
-      entries: new TransformerFunctionEntries(),
-      eval: new TransformerFunctionEval(),
-      filter: new TransformerFunctionFilter(),
-      find: new TransformerFunctionFind(),
-      first: new TransformerFunctionCoalesce(), // * alias for coalesce
-      flat: new TransformerFunctionFlat(),
-      flatten: new TransformerFunctionFlatten(),
-      form: new TransformerFunctionForm(),
-      formparse: new TransformerFunctionFormParse(),
-      group: new TransformerFunctionGroup(),
-      if: new TransformerFunctionIf(),
-      is: new TransformerFunctionIs(),
-      isnull: new TransformerFunctionIsNull(),
-      join: new TransformerFunctionJoin(),
-      jsonparse: new TransformerFunctionJsonParse(),
-      jsonpatch: new TransformerFunctionJsonPatch(),
-      jsonpath: new TransformerFunctionJsonPath(),
-      jsonpointer: new TransformerFunctionJsonPointer(),
-      jwtparse: new TransformerFunctionJwtParse(),
-      length: new TransformerFunctionLength(),
-      long: new TransformerFunctionLong(),
-      lookup: new TransformerFunctionLookup(),
-      lower: new TransformerFunctionLower(),
-      map: new TransformerFunctionMap(),
-      match: new TransformerFunctionMatch(),
-      matchall: new TransformerFunctionMatchAll(),
-      math: new TransformerFunctionMath(),
-      max: new TransformerFunctionMax(),
-      min: new TransformerFunctionMin(),
-      normalize: new TransformerFunctionNormalize(),
-      not: new TransformerFunctionNot(),
-      numberformat: new TransformerFunctionNumberFormat(),
-      numberparse: new TransformerFunctionNumberParse(),
-      object: new TransformerFunctionObject(),
-      or: new TransformerFunctionOr(),
-      pad: new TransformerFunctionPad(),
-      partition: new TransformerFunctionPartition(),
-      range: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionRange(),
-      raw: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionRaw(),
-      reduce: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionReduce(),
-      replace: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionReplace(),
-      reverse: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionReverse(),
-      slice: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionSlice(),
-      sort: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionSort(),
-      split: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionSplit(),
-      string: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionString(),
-      substring: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionSubstring(),
-      sum: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionSum(),
-      switch: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionSwitch(),
-      test: new TransformerFunctionTest(),
-      transform: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionTransform(),
-      trim: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionTrim(),
-      unflatten: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionUnflatten(),
-      upper: new TransformerFunctionUpper(),
-      uriparse: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionUriParse(),
-      urldecode: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionUrlDecode(),
-      urlencode: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionUrlEncode(),
-      uuid: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionUuid(),
-      value: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionValue(),
-      wrap: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionWrap(),
-      xml: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionXml(),
-      xmlparse: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionXmlParse(),
-      xor: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionXor(),
-      yaml: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionYaml(),
-      yamlparse: new TransformerFunction(UNIMPLEMENTED), // TODO: new TransformerFunctionYamlParse()
-    });
+    this.registerFunctions(embeddedFunctions);
   }
 
   public registerFunctions(moreFunctions: Record<string, TransformerFunction>) {
@@ -192,7 +57,7 @@ export class TransformerFunctions {
     for (const key in this.functions) {
       if (Object.prototype.hasOwnProperty.call(definition, TransformerFunctions.FUNCTION_KEY_PREFIX + key)) {
         const func = this.functions[key];
-        const context = new ObjectFunctionContext(
+        const context = await ObjectFunctionContext.createAsync(
           definition,
           TransformerFunctions.FUNCTION_KEY_PREFIX + key,
           func,
@@ -252,7 +117,7 @@ export class TransformerFunctions {
         } else {
           input = value.substring(matchEndIndex);
         }
-        return new InlineFunctionContext(input, args, functionKey, _function, resolver, transformer);
+        return InlineFunctionContext.create(input, args, functionKey, _function, resolver, transformer);
       }
     }
     return null;

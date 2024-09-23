@@ -1,0 +1,78 @@
+[
+  {
+    "name": "inline (1)",
+    "given": {
+      "input": [
+        4,
+        2,
+        13.45,
+        null
+      ],
+      "definition": "$$avg():$"
+    },
+    "expect": {
+      "equal": 4.8625
+    }
+  },
+  {
+    "name": "inline (2)",
+    "given": {
+      "input": [
+        4,
+        2,
+        13.45,
+        null
+      ],
+      "definition": "$$avg(1):$"
+    },
+    "expect": {
+      "equal": 5.1125
+    }
+  },
+  {
+    "name": "object (1)",
+    "given": {
+      "input": [
+        {
+          "value": 4
+        },
+        {
+          "value": 2
+        },
+        {
+          "value": 13.45
+        },
+        {
+          "value": null
+        }
+      ],
+      "definition": { "$$avg": "$", "by": "##current.value" }
+    },
+    "expect": {
+      "equal": 4.8625
+    }
+  },
+  {
+    "name": "object (2)",
+    "given": {
+      "input": [
+        {
+          "value": 4
+        },
+        {
+          "value": 2
+        },
+        {
+          "value": 13.45
+        },
+        {
+          "value": null
+        }
+      ],
+      "definition": { "$$avg": "$", "by": "##current.value", "default": 1 }
+    },
+    "expect": {
+      "equal": 5.1125
+    }
+  }
+]
