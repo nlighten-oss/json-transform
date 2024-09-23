@@ -5,7 +5,7 @@ import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import co.nlighten.jsontransform.formats.xml.XmlFormat;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,18 +15,10 @@ import java.util.stream.Collectors;
  * For tests
  * @see TransformerFunctionXmlParseTest
  */
-@Aliases("xmlparse")
-@Documentation("Parses XML String to Object (powered by `org.json.XML`)")
-@InputType(ArgType.String)
-@ArgumentType(value = "keep_strings", type = ArgType.Boolean, position = 0, defaultBoolean = false,
-              description = "Do not try to detect primitive types (e.g. numbers, boolean, etc)")
-@ArgumentType(value = "cdata_tag_name", type = ArgType.String, position = 1, defaultString = "$content",
-              description = "A key for the CDATA section")
-@ArgumentType(value = "convert_nil_to_null", type = ArgType.Boolean, position = 2, defaultBoolean = false,
-              description = "If values with attribute `xsi:nil=\"true\"` will be converted to `null`")
-@ArgumentType(value = "force_list", type = ArgType.ArrayOfString, position = 3, defaultIsNull = true,
-              description = "Tag names that will always be parsed as arrays")
-@OutputType(ArgType.Object)
+@ArgumentType(value = "keep_strings", type = ArgType.Boolean, position = 0, defaultBoolean = false)
+@ArgumentType(value = "cdata_tag_name", type = ArgType.String, position = 1, defaultString = "$content")
+@ArgumentType(value = "convert_nil_to_null", type = ArgType.Boolean, position = 2, defaultBoolean = false)
+@ArgumentType(value = "force_list", type = ArgType.ArrayOfString, position = 3, defaultIsNull = true)
 public class TransformerFunctionXmlParse<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionXmlParse.class);
     public TransformerFunctionXmlParse(JsonAdapter<JE, JA, JO> adapter) {

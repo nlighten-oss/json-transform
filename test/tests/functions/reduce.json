@@ -1,0 +1,79 @@
+[
+  {
+    "name": "object - reduce",
+    "given": {
+      "input": {
+        "items": [
+          {
+            "id": "aaa",
+            "amount": 10
+          },
+          {
+            "id": "bbb",
+            "amount": 20
+          }
+        ]
+      },
+      "definition": {
+        "$$reduce": "$.items",
+        "identity": 0,
+        "to": {
+          "$$math": [
+            "##accumulator",
+            "+",
+            "##current.amount"
+          ]
+        }
+      }
+    },
+    "expect": {
+      "equal": 30
+    }
+  },
+  {
+    "name": "object - value lookup",
+    "given": {
+      "input": {
+        "items": [
+          {
+            "id": "aaa",
+            "amount": 10
+          },
+          {
+            "id": "bbb",
+            "amount": 20
+          }
+        ]
+      },
+      "definition": {
+        "$$reduce": "aaa",
+        "identity": "bbb",
+        "to": "##current"
+      }
+    },
+    "expect": {
+      "isNull": true
+    }
+  },
+  {
+    "name": "inline",
+    "given": {
+      "input": {
+        "items": [
+          {
+            "id": "aaa",
+            "amount": 10
+          },
+          {
+            "id": "bbb",
+            "amount": 20
+          }
+        ]
+      },
+      "definition": "$$reduce('$$math(##accumulator,+,##current.amount)',0):$.items"
+    },
+    "expect": {
+      "equal": 30
+    }
+  }
+]

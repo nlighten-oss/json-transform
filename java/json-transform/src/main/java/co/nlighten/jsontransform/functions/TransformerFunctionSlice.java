@@ -4,21 +4,15 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 import co.nlighten.jsontransform.JsonElementStreamer;
 
 /*
  * For tests
  * @see TransformerFunctionSliceTest
  */
-@Aliases("slice")
-@Documentation("Gets a slice of an array by indices (negative begin index will slice from the end)")
-@InputType(value = ArgType.Array, description = "Array to fetch from")
-@ArgumentType(value = "begin", type = ArgType.Integer, position = 0, defaultInteger = 0, required = true,
-              description = "Index of element to start slice from (if negative, counts from the end of the array)")
-@ArgumentType(value = "end", type = ArgType.Integer, position = 1, defaultIsNull = true,
-              description = "Index of last element to slice to (if negative, counts from the end of the array)")
-@OutputType(value = ArgType.Any, description = "Element at index, or null if undefined")
+@ArgumentType(value = "begin", type = ArgType.Integer, position = 0, defaultInteger = 0)
+@ArgumentType(value = "end", type = ArgType.Integer, position = 1, defaultIsNull = true)
 public class TransformerFunctionSlice<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public TransformerFunctionSlice(JsonAdapter<JE, JA, JO> adapter) {
         super(adapter);

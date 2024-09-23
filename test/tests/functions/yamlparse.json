@@ -1,0 +1,122 @@
+[
+  {
+    "name": "inline - sanity",
+    "given": {
+      "input": "title: TITLE\n",
+      "definition": "$$yamlparse:$"
+    },
+    "expect": {
+      "equal": {
+        "title": "TITLE"
+      }
+    }
+  },
+  {
+    "name": "inline - sanity (2)",
+    "given": {
+      "input": "root:\n  title: TITLE\n",
+      "definition": "$$yamlparse:$"
+    },
+    "expect": {
+      "equal": {
+        "root": {
+          "title": "TITLE"
+        }
+      }
+    }
+  },
+  {
+    "name": "inline",
+    "given": {
+      "input": "title: Mr.\nfirstName: Sam\nlastName: Anton\naddress:\n  flatNumber: BV-1025\n  buildingName: Shivaji\n  plotNumber: '1093'\n  sector: Sector 19\n  city: Bengaluru\n  state: Karnataka\n  country: India\n  nodeName: South Bengaluru\nitems:\n- itemName: Television\n  itemBoughtYear: '2014'\n- itemName: Washing Machine\n  itemBoughtYear: '2020'\n- itemName: Refrigerator\n  itemBoughtYear: '2011'\n- itemName: Grinder\n  itemBoughtYear: '2012'\n- itemName: Computer\n  itemBoughtYear: '2010'\n",
+      "definition": "$$yamlparse:$"
+    },
+    "expect": {
+      "equal": {
+        "title": "Mr.",
+        "firstName": "Sam",
+        "lastName": "Anton",
+        "address": {
+          "flatNumber": "BV-1025",
+          "buildingName": "Shivaji",
+          "plotNumber": "1093",
+          "sector": "Sector 19",
+          "city": "Bengaluru",
+          "state": "Karnataka",
+          "country": "India",
+          "nodeName": "South Bengaluru"
+        },
+        "items": [
+          {
+            "itemName": "Television",
+            "itemBoughtYear": "2014"
+          },
+          {
+            "itemName": "Washing Machine",
+            "itemBoughtYear": "2020"
+          },
+          {
+            "itemName": "Refrigerator",
+            "itemBoughtYear": "2011"
+          },
+          {
+            "itemName": "Grinder",
+            "itemBoughtYear": "2012"
+          },
+          {
+            "itemName": "Computer",
+            "itemBoughtYear": "2010"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "inline",
+    "given": {
+      "input": "title: Mr.\nfirstName: Sam\nlastName: Anton\naddress:\n  flatNumber: BV-1025\n  buildingName: Shivaji\n  plotNumber: '1093'\n  sector: Sector 19\n  city: Bengaluru\n  state: Karnataka\n  country: India\n  nodeName: South Bengaluru\nitems:\n- itemName: Television\n  itemBoughtYear: '2014'\n- itemName: Washing Machine\n  itemBoughtYear: '2020'\n- itemName: Refrigerator\n  itemBoughtYear: '2011'\n- itemName: Grinder\n  itemBoughtYear: '2012'\n- itemName: Computer\n  itemBoughtYear: '2010'\n",
+      "definition": {
+        "$$yamlparse": "$"
+      }
+    },
+    "expect": {
+      "equal": {
+        "title": "Mr.",
+        "firstName": "Sam",
+        "lastName": "Anton",
+        "address": {
+          "flatNumber": "BV-1025",
+          "buildingName": "Shivaji",
+          "plotNumber": "1093",
+          "sector": "Sector 19",
+          "city": "Bengaluru",
+          "state": "Karnataka",
+          "country": "India",
+          "nodeName": "South Bengaluru"
+        },
+        "items": [
+          {
+            "itemName": "Television",
+            "itemBoughtYear": "2014"
+          },
+          {
+            "itemName": "Washing Machine",
+            "itemBoughtYear": "2020"
+          },
+          {
+            "itemName": "Refrigerator",
+            "itemBoughtYear": "2011"
+          },
+          {
+            "itemName": "Grinder",
+            "itemBoughtYear": "2012"
+          },
+          {
+            "itemName": "Computer",
+            "itemBoughtYear": "2010"
+          }
+        ]
+      }
+    }
+  }
+]

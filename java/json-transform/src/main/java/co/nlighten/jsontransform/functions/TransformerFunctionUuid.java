@@ -4,7 +4,7 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 import co.nlighten.shortuuid.ShortUuid;
 import co.nlighten.shortuuid.UuidConverter;
 
@@ -14,23 +14,8 @@ import java.util.UUID;
  * For tests
  * @see TransformerFunctionUuidTest
  */
-@Aliases("uuid")
-@Documentation(value = "Format and transform UUID",
-               notes = """
-- `NO_HYPHENS` (can also be specified as `N`) - Same as `CANONICAL` with hyphens removed
-- `BASE36` (can also be specified as `B36`) - alphanumeric alphabet
-- `BASE62` (can also be specified as `B62`) - alphanumeric alphabet, case sensitive
-- `BASE64` (can also be specified as `B64`) - "URL and Filename safe Base64 Alphabet"
-- `V3` - Consider input as name and generate a UUIDv3 (name-based, RFC 4122) (namespace optionally used)
-- `V5` - Consider input as name and generate a UUIDv5 (name-based, RFC 4122) (namespace optionally used)
-""")
-@InputType(value = ArgType.String, description = "Input must be a UUID in standard string format (RFC 4122; with hyphens), can be used in conjunction with `#uuid`")
-@ArgumentType(value = "format", type = ArgType.Enum, position = 0, defaultEnum = "CANONICAL",
-              enumValues = {"CANONICAL", "NO_HYPHENS", "BASE62", "BASE64", "BASE36", "V3", "V5" },
-              description = "Formatting (or generation in case of v3/v5)")
-@ArgumentType(value = "namespace", type = ArgType.String, position = 1, defaultIsNull = true,
-              description = "UUID to be used as salt (for V3/V5)")
-@OutputType(ArgType.String)
+@ArgumentType(value = "format", type = ArgType.Enum, position = 0, defaultEnum = "CANONICAL")
+@ArgumentType(value = "namespace", type = ArgType.String, position = 1, defaultIsNull = true)
 public class TransformerFunctionUuid<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public TransformerFunctionUuid(JsonAdapter<JE, JA, JO> adapter) {
         super(adapter);

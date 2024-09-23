@@ -1,0 +1,58 @@
+[
+  {
+    "name": "object - [null, null, 2] passed by variable -> 2",
+    "given": {
+      "input": [
+        null,
+        null,
+        2
+      ],
+      "definition": {
+        "$$coalesce": "$"
+      }
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "object - [$[0]->null, \"b\", \"c\"] -> \"b\"",
+    "given": {
+      "input": [
+        null,
+        null,
+        2
+      ],
+      "definition": {
+        "$$coalesce": [
+          "$[0]",
+          "b",
+          "c"
+        ]
+      }
+    },
+    "expect": {
+      "equal": "b"
+    }
+  },
+  {
+    "name": "alias - \"$$first\"",
+    "given": {
+      "input": [
+        null,
+        null,
+        2
+      ],
+      "definition": {
+        "$$first": [
+          null,
+          null,
+          "c"
+        ]
+      }
+    },
+    "expect": {
+      "equal": "c"
+    }
+  }
+]

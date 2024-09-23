@@ -1,0 +1,156 @@
+[
+  {
+    "name": "inline (at 0)",
+    "given": {
+      "input": [
+        4,
+        2,
+        13
+      ],
+      "definition": "$$at(0):$"
+    },
+    "expect": {
+      "equal": 4
+    }
+  },
+  {
+    "name": "inline (at 1)",
+    "given": {
+      "input": [
+        4,
+        2,
+        13
+      ],
+      "definition": "$$at(1):$"
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "inline (at -1)",
+    "given": {
+      "input": [
+        4,
+        2,
+        13
+      ],
+      "definition": "$$at(-1):$"
+    },
+    "expect": {
+      "equal": 13
+    }
+  },
+  {
+    "name": "inline (at 3 - out of bounds)",
+    "given": {
+      "input": [
+        4,
+        2,
+        13
+      ],
+      "definition": "$$at(3):$"
+    },
+    "expect": {
+      "isNull": true
+    }
+  },
+  {
+    "name": "inline (no args)",
+    "given": {
+      "input": [
+        4,
+        2,
+        13
+      ],
+      "definition": "$$at:$"
+    },
+    "expect": {
+      "isNull": true
+    }
+  },
+  {
+    "name": "object (index=0)",
+    "given": {
+      "input": [
+        4,
+        2,
+        13
+      ],
+      "definition": {
+        "$$at": "$",
+        "index": 0
+      }
+    },
+    "expect": {
+      "equal": 4
+    }
+  },
+  {
+    "name": "object (index=1)",
+    "given": {
+      "input": [
+        4,
+        2,
+        13
+      ],
+      "definition": {
+        "$$at": "$",
+        "index": 1
+      }
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "object (index=-1)",
+    "given": {
+      "input": [
+        4,
+        2,
+        13
+      ],
+      "definition": {
+        "$$at": "$",
+        "index": -1
+      }
+    },
+    "expect": {
+      "equal": 13
+    }
+  },
+  {
+    "name": "object (index=3, out of bounds)",
+    "given": {
+      "input": [
+        4,
+        2,
+        13
+      ],
+      "definition": {
+        "$$at": "$",
+        "index": 3
+      }
+    },
+    "expect": {
+      "isNull": true
+    }
+  },
+  {
+    "name": "object (no index)",
+    "given": {
+      "input": [
+        4,
+        2,
+        13
+      ],
+      "definition": {
+        "$$at": "$"
+      }
+    },
+    "expect": {
+      "isNull": true
+    }
+  }
+]

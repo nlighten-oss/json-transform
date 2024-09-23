@@ -1,0 +1,61 @@
+[
+  {
+    "name": "object - positive",
+    "given": {
+      "input": [0, [], "a"],
+      "definition": {
+        "$$contains": "$",
+        "that": "a"
+      }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "object - positive (with transformation)",
+    "given": {
+      "input": "a",
+      "definition": {
+        "$$contains": ["b", "$"],
+        "that": "a"
+      }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "object - negative",
+    "given": {
+      "input": [0, [], "a"],
+      "definition": {
+        "$$contains": "$",
+        "that": "b"
+      }
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "inline - positive",
+    "given": {
+      "input": [0, [], "a"],
+      "definition": "$$contains(a):$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "inline - negative",
+    "given": {
+      "input": [0, [], "a"],
+      "definition": "$$contains(b):$"
+    },
+    "expect": {
+      "equal": false
+    }
+  }
+]
