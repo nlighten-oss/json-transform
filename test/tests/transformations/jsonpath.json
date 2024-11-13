@@ -48,6 +48,32 @@
     }
   },
   {
+    "name": "Query indefinite path (descendent; 2)",
+    "given": {
+      "input": {
+        "x": [
+          {
+            "a": 1
+          },
+          {
+            "a": 2
+          },
+          {
+            "a": null
+          }
+        ]
+      },
+      "definition": "$..a"
+    },
+    "expect": {
+      "equal": [
+        1,
+        2,
+        null
+      ]
+    }
+  },
+  {
     "name": "Query indefinite path (wildcard)",
     "given": {
       "input": {

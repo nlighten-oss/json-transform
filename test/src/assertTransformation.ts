@@ -28,7 +28,7 @@ export const JSONBig = {
 const hasOwn = Object.prototype.hasOwnProperty;
 
 const PODS = {
-  javascript: "http://localhost:10001/api/v1/transform",
+  javascript: "http://localhost:10002/api/v1/transform",
   java: "http://localhost:10000/api/v1/transform"
 }
 

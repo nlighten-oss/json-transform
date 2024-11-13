@@ -4,7 +4,7 @@ import { createServer, type IncomingMessage, type ServerResponse } from "http";
 import JsonTransformer from "../src/JsonTransformer";
 import { HTMLHeaders, JSONHeaders, parseBody, send, JSONBig } from "./serverUtils";
 
-const PORT = 10001;
+const PORT = 10002;
 
 process.on("uncaughtException", function (err) {
   console.info("Some unhandled error occurred");
