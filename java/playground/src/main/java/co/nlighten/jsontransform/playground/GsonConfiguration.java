@@ -17,6 +17,7 @@ public class GsonConfiguration {
         return builder -> {
             builder
                     .setDateFormat(dateTime)
+                    .serializeNulls()
                     .registerTypeAdapter(BigDecimal.class, new BigDecimalTypeAdapter())
                     .setNumberToNumberStrategy(ToNumberPolicy.BIG_DECIMAL)
                     .setObjectToNumberStrategy(ToNumberPolicy.BIG_DECIMAL);
