@@ -40,10 +40,10 @@
   },
   "homepage": "https://github.com/nlighten-oss/json-transform#readme",
   "peerDependencies": {
-    "@nlighten/json-schema-utils": "^1.0.0"
+    "@nlighten/json-schema-utils": "^1.0.2"
   },
   "devDependencies": {
-    "@nlighten/json-schema-utils": "^1.0.0",
+    "@nlighten/json-schema-utils": "^1.0.2",
     "microbundle": "^0.15.1",
     "prettier": "3.1.1",
     "typescript": "^5.3.3",

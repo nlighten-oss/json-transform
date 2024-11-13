@@ -4,7 +4,7 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 import co.nlighten.jsontransform.JsonElementStreamer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +16,7 @@ import java.util.stream.Stream;
  * For tests
  * @see TransformerFunctionMapTest
  */
-@Aliases("map")
-@Documentation("Returns a mapped array applying the transformer on each of the elements")
-@InputType(ArgType.Array)
-@ArgumentType(value = "to", type = ArgType.Transformer, position = 0, defaultIsNull = true,
-              description = "Transformer to map each element to its value in the result array (inputs: ##current, ##index)")
-@OutputType(ArgType.Array)
+@ArgumentType(value = "to", type = ArgType.Transformer, position = 0, defaultIsNull = true)
 public class TransformerFunctionMap<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionMap.class);
 

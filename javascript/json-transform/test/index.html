@@ -1,0 +1,48 @@
+<html lang="en">
+<head>
+  <title>Transform Test Server</title>
+</head>
+<h1>Transform Test Server</h1>
+<form name="main" method="POST" action="/api/v1/transform" onsubmit="submit(this)">
+  <div>
+    <label>
+      <div>Input</div>
+      <textarea name="input" cols="50" rows="10"></textarea>
+    </label>
+  </div>
+  <div>
+    <label>
+      <div>Definition</div>
+      <textarea name="definition" cols="50" rows="10"></textarea>
+    </label>
+  </div>
+  <input type="submit" value="Transform" />
+  <label>
+    <div>Output</div>
+    <textarea name="output" cols="50" rows="10"></textarea>
+  </label>
+</form>
+<script>
+  const form = document.forms.main;
+  form.onsubmit = (e) => {
+    e.preventDefault();
+    const definition = form.elements.definition.value;
+    const input = form.elements.input.value;
+    fetch(form.action, {
+      method: form.method,
+      headers: { "Content-Type": "application/json" },
+      body: `{
+        "definition": ${definition || "null"},
+        "input": ${input || "null"}
+      }`
+    })
+      .then(res => res.text())
+      .then(data => {
+        form.elements.output.value = data;
+      })
+      .catch(error => {
+        form.elements.output.value = JSON.stringify({ error: error.message }, null, 2);
+      });
+  }
+</script>
+</html>

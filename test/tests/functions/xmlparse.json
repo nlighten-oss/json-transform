@@ -1,0 +1,153 @@
+[
+  {
+    "name": "Inline - empty root element",
+    "given": {
+      "input": "<root></root>",
+      "definition": "$$xmlparse:$"
+    },
+    "expect": {
+      "equal": {
+        "root": ""
+      }
+    }
+  },
+  {
+    "name": "Inline - nested elements with attributes",
+    "skip": ["javascript"],
+    "given": {
+      "input": "<root><hello to=\"world\"><hi /><hi /></hello></root>",
+      "definition": "$$xmlparse:$"
+    },
+    "expect": {
+      "equal": {
+        "root": {
+          "hello": {
+            "hi": ["", ""],
+            "to": "world"
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "Object - empty root element",
+    "given": {
+      "input": "<root></root>",
+      "definition": {
+        "$$xmlparse": "$"
+      }
+    },
+    "expect": {
+      "equal": {
+        "root": ""
+      }
+    }
+  },
+  {
+    "name": "Object - nested elements with attributes",
+    "skip": ["javascript"],
+    "given": {
+      "input": "<root><hello to=\"world\"><hi /><hi /></hello></root>",
+      "definition": {
+        "$$xmlparse": "$"
+      }
+    },
+    "expect": {
+      "equal": {
+        "root": {
+          "hello": {
+            "hi": ["", ""],
+            "to": "world"
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "TestObject - force list on nested elements",
+    "skip": ["javascript"],
+    "given": {
+      "input": "<root><hello to=\"world\"><hi><test>X</test></hi></hello></root>",
+      "definition": {
+        "$$xmlparse": "$",
+        "force_list": ["hi"]
+      }
+    },
+    "expect": {
+      "equal": {
+        "root": {
+          "hello": {
+            "hi": [
+              {
+                "test": "X"
+              }
+            ],
+            "to": "world"
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "TestObject - force list empty",
+    "skip": ["javascript"],
+    "given": {
+      "input": "<root><hello to=\"world\"><hi /><hi /></hello></root>",
+      "definition": {
+        "$$xmlparse": "$",
+        "force_list": ["hi"]
+      }
+    },
+    "expect": {
+      "equal": {
+        "root": {
+          "hello": {
+            "hi": [],
+            "to": "world"
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "TestObject - keep strings as is",
+    "skip": ["javascript"],
+    "given": {
+      "input": "<root><hello to=\"2\"><hi>true</hi></hello></root>",
+      "definition": {
+        "$$xmlparse": "$",
+        "keep_strings": true
+      }
+    },
+    "expect": {
+      "equal": {
+        "root": {
+          "hello": {
+            "hi": "true",
+            "to": "2"
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "TestObject - automatic type parsing",
+    "skip": ["javascript"],
+    "given": {
+      "input": "<root><hello to=\"2\"><hi>true</hi></hello></root>",
+      "definition": {
+        "$$xmlparse": "$"
+      }
+    },
+    "expect": {
+      "equal": {
+        "root": {
+          "hello": {
+            "hi": true,
+            "to": 2
+          }
+        }
+      }
+    }
+  }
+]

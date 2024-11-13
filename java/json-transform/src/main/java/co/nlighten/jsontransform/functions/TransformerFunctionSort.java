@@ -6,7 +6,7 @@ import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import co.nlighten.jsontransform.functions.common.CompareBy;
 import co.nlighten.jsontransform.JsonElementStreamer;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -15,22 +15,10 @@ import java.util.Comparator;
  * For tests
  * @see TransformerFunctionSortTest
  */
-@Aliases("sort")
-@Documentation("Sorts elements of an array")
-@InputType(ArgType.Array)
-@ArgumentType(value = "by", type = ArgType.Transformer, position = 0, required = true,
-              description = "A transformer to extract a property to sort by (using ##current to refer to the current item)")
-@ArgumentType(value = "order", type = ArgType.Enum, position = 1, defaultEnum = "ASC",
-              enumValues = { "ASC", "DESC" },
-              description = "Direction of ordering (ascending / descending)")
-@ArgumentType(value = "type", type = ArgType.Enum, position = 2, defaultEnum = "AUTO",
-              enumValues = { "AUTO", "STRING", "NUMBER", "BOOLEAN" },
-              description = "Type of values to expect when ordering the input array")
-@ArgumentType(value = "then", type = ArgType.Array, position = 3, defaultIsNull = true,
-              description = "An array of secondary sorting in case previous sorting returned equal, first being the root fields (Every item require the `by` field while other fields are optional)\n" +
-                      "{ \"by\": ..., \"order\": ..., \"type\": ...} // same 3 fields as above (`by` is required)")
-@OutputType(ArgType.Array)
-@TypeIsPiped
+@ArgumentType(value = "by", type = ArgType.Transformer, position = 0)
+@ArgumentType(value = "order", type = ArgType.Enum, position = 1, defaultEnum = "ASC")
+@ArgumentType(value = "type", type = ArgType.Enum, position = 2, defaultEnum = "AUTO")
+@ArgumentType(value = "then", type = ArgType.Array, position = 3, defaultIsNull = true)
 public class TransformerFunctionSort<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public TransformerFunctionSort(JsonAdapter<JE, JA, JO> adapter) {
         super(adapter);

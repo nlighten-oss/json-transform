@@ -1,0 +1,103 @@
+[
+  {
+    "name": "inline - simple",
+    "given": {
+      "input": {
+        "root": ""
+      },
+      "definition": "$$xml:$"
+    },
+    "expect": {
+      "equal": "<root/>"
+    }
+  },
+  {
+    "name": "inline - 2 elements",
+    "given": {
+      "input": {
+        "root": "",
+        "root_b": ""
+      },
+      "definition":"$$xml:$"
+    },
+    "expect": {
+      "equal": "<root/><root_b/>"
+    }
+  },
+  {
+    "name": "inline - 2 elements inside a container",
+    "given": {
+      "input": {
+        "root": "",
+        "root_b": ""
+      },
+      "definition":"$$xml(container):$"
+    },
+    "expect": {
+      "equal": "<container><root/><root_b/></container>"
+    }
+  },
+  {
+    "name": "inline - indent",
+    "given": {
+      "input": {
+        "root": "",
+        "root_b": ""
+      },
+      "definition":"$$xml(container,,true):$"
+    },
+    "expect": {
+      "equal": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><container>\n  <root/>\n  <root_b/>\n</container>\n"
+    }
+  },
+  {
+    "name": "object - simple",
+    "given": {
+      "input": {
+        "root": ""
+      },
+      "definition":{
+        "$$xml": "$",
+        "root": "container"
+      }
+    },
+    "expect": {
+      "equal": "<container><root/></container>"
+    }
+  },
+  {
+    "name": "object - array",
+    "given": {
+      "input": null,
+      "definition":{
+        "$$xml": {
+          "hello": {
+            "hi": ["", ""],
+            "to": "world"
+          }
+        }
+      }
+    },
+    "expect": {
+      "equal": "<hello><hi/><hi/><to>world</to></hello>"
+    }
+  },
+  {
+    "name": "object - xslt",
+    "skip": true,
+    "given": {
+      "input": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n         <xsl:stylesheet version=\"1.0\"\n         xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">\n         \n         <xsl:template match=\"/container\">\n         <my_record>\n           <first><xsl:value-of select=\"a\" /></first>\n           <second><xsl:value-of select=\"b\" /></second>\n         </my_record>\n         </xsl:template>\n               \n     </xsl:stylesheet>",
+      "definition":{
+        "$$xml": {
+          "a": "AAA",
+          "b": "BBB"
+        },
+        "root": "container",
+        "xslt": "$"
+      }
+    },
+    "expect": {
+      "equal": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><my_record><first>AAA</first><second>BBB</second></my_record>"
+    }
+  }
+]

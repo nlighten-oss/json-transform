@@ -1,0 +1,73 @@
+[
+  {
+    "name": "inline",
+    "given": {
+      "input": {
+        "a": 42,
+        "b": "$.a"
+      },
+      "definition": "$$eval:$.b"
+    },
+    "expect": {
+      "equal": 42
+    }
+  },
+  {
+    "name": "object - 1",
+    "given": {
+      "input": [
+        {
+          "value": 4
+        },
+        {
+          "value": 2
+        },
+        {
+          "value": 13.45
+        },
+        {
+        }
+      ],
+      "definition": {
+        "$$eval": {
+          "$$join": [
+            "\\$",
+            "$avg:",
+            "\\$",
+            "..value"
+          ]
+        }
+      }
+    },
+    "expect": {
+      "equal": 6.483333333333333
+    }
+  },
+  {
+    "name": "object - 2",
+    "given": {
+      "input": [
+        {
+          "value": 4
+        },
+        {
+          "value": 2
+        },
+        {
+          "value": 13.45
+        },
+        {
+          "value": null
+        }
+      ],
+      "definition": {
+        "$$eval": {
+          "$$jsonparse": "{\"$$avg\":\"$\", \"by\":\"##current.value\"}"
+        }
+      }
+    },
+    "expect": {
+      "equal": 4.8625
+    }
+  }
+]

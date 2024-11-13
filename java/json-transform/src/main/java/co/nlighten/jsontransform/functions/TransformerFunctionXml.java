@@ -5,7 +5,7 @@ import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import co.nlighten.jsontransform.formats.xml.XmlFormat;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,16 +13,9 @@ import org.slf4j.LoggerFactory;
  * For tests
  * @see TransformerFunctionXmlTest
  */
-@Aliases("xml")
-@Documentation("Converts an object to XML string (a wrapper element can be added by specifying the field `root` with the element name)")
-@InputType(ArgType.Object)
-@ArgumentType(value = "root", type = ArgType.String, position = 0, defaultIsNull = true,
-              description = "Name for a wrapper element (e.g. an array was passed and a container is needed)")
-@ArgumentType(value = "xslt", type = ArgType.String, position = 1, defaultIsNull = true,
-              description = "XSLT document to transform xml created from input")
-@ArgumentType(value = "indent", type = ArgType.Boolean, position = 2,
-              description = "Whether to output an indented xml")
-@OutputType(ArgType.String)
+@ArgumentType(value = "root", type = ArgType.String, position = 0, defaultIsNull = true)
+@ArgumentType(value = "xslt", type = ArgType.String, position = 1, defaultIsNull = true)
+@ArgumentType(value = "indent", type = ArgType.Boolean, position = 2, defaultBoolean = false)
 public class TransformerFunctionXml<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionXml.class);
     private final XmlFormat<JE, JA, JO> xmlFormat;

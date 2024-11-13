@@ -4,27 +4,11 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
-@Aliases("flatten")
-@Documentation("Flattens a JsonObject into a flat dot seperated list of entries")
-@InputType(ArgType.Object)
-@OutputType(ArgType.Any)
-@ArgumentType(value = "target",
-              type = ArgType.Object,
-              position = 0,
-              description = "A target to merge into",
-              defaultIsNull = true)
-@ArgumentType(value = "prefix",
-              type = ArgType.String,
-              position = 1,
-              description = "A prefix to add to the base",
-              defaultIsNull = true)
-@ArgumentType(value = "array_prefix",
-              type = ArgType.String,
-              position = 2,
-              description = "Sets how array elements should be prefixed, leave null to not flatten arrays",
-              defaultString = "$")
+@ArgumentType(value = "target", type = ArgType.Object, position = 0, defaultIsNull = true)
+@ArgumentType(value = "prefix", type = ArgType.String, position = 1, defaultIsNull = true)
+@ArgumentType(value = "array_prefix", type = ArgType.String, position = 2, defaultString = "$")
 public class TransformerFunctionFlatten<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
 
     public TransformerFunctionFlatten(JsonAdapter<JE, JA, JO> adapter) {

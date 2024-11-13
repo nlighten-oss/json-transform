@@ -4,7 +4,7 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,14 +12,8 @@ import org.slf4j.LoggerFactory;
  * For tests
  * @see TransformerFunctionSwitchTest
  */
-@Aliases("switch")
-@Documentation("Switch-case expression. Value is compared to each of the keys in cases and a matching **key** will result with its **value**, otherwise `default` value or `null` will be returned.")
-@InputType(value = ArgType.Any, description = "Value to test")
-@ArgumentType(value = "cases", type = ArgType.Object, position = 0, defaultIsNull = true, required = true,
-              description = "A map of cases (string to value)")
-@ArgumentType(value = "default", type = ArgType.Any, position = 1, defaultIsNull = true,
-              description = "Fallback value in case no match to any key in cases")
-@OutputType(value = ArgType.Any, description = "Same as `default` value or one of the `cases` values")
+@ArgumentType(value = "cases", type = ArgType.Object, position = 0, defaultIsNull = true)
+@ArgumentType(value = "default", type = ArgType.Any, position = 1, defaultIsNull = true)
 public class TransformerFunctionSwitch<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionSwitch.class);
 

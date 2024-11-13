@@ -2,6 +2,10 @@
 
 Converts an object to YAML format
 
+:::info
+Structure of output may very depending on platform.
+:::
+
 ### Usage
 ```transformers
 { 

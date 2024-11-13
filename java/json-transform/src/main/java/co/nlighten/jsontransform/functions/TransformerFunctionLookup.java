@@ -5,7 +5,7 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -14,25 +14,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * For tests
  * @see TransformerFunctionLookupTest
  */
-@Aliases("lookup")
-@Documentation(value = "Joins multiple arrays of objects by a dynamic condition (transformer) on each pair of matches",
-               notes = "```\n" +
-                       "{\n" +
-                       "  \"$$lookup\": {items1},\n" +
-                       "  \"using\": [\n" +
-                       "    { \"with\": {items2}, \"as\": \"name\", \"on\": {callback transformer (##current, ##index, ##{as})} }\n" +
-                       "    { \"with\": {items2}, \"as\": \"name\", \"on\": {callback transformer (##current, ##index, ##{as})} }\n" +
-                       "    ...\n" +
-                       "  ],\n" +
-                       "  \"to\": {callback transformer} // optional - default is (item1 <- item2 <- item3 ...; appends and overwrites)\n" +
-                       "}\n" +
-                       "```")
-@InputType(ArgType.Array)
-@ArgumentType(value = "using", type = ArgType.Array, position = 0, required = true,
-              description = "Array of definitions of how to match other arrays to the main one")
-@ArgumentType(value = "to", type = ArgType.Transformer, position = 1, defaultIsNull = true,
-              description = "Transformer to map each pair of elements to its value in the result array")
-@OutputType(ArgType.Array)
+@ArgumentType(value = "using", type = ArgType.Array, position = 0)
+@ArgumentType(value = "to", type = ArgType.Transformer, position = 1, defaultIsNull = true)
 public class TransformerFunctionLookup<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     private class UsingEntry {
         public JA with;

@@ -1092,6 +1092,13 @@ export const embeddedFunctions: Record<EmbeddedTransformerFunction, FunctionDesc
         type: "string",
         position: 3,
       },
+      {
+        name: "currency",
+        description:
+          "(CURRENCY) Currency to use in format ([ISO-4217 currency code](https://www.iso.org/iso-4217-currency-codes.html))",
+        type: "string",
+        position: 2,
+      },
     ],
   },
   numberparse: {

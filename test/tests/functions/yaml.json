@@ -1,0 +1,168 @@
+[
+  {
+    "name": "inline - sanity",
+    "given": {
+      "input": {
+        "title": "TITLE"
+      },
+      "definition": "$$yaml:$"
+    },
+    "expect": {
+      "equal": "title: TITLE\n"
+    }
+  },
+  {
+    "name": "inline - sanity (2)",
+    "given": {
+      "input": {
+        "root": {
+          "title": "TITLE"
+        }
+      },
+      "definition": "$$yaml:$"
+    },
+    "expect": {
+      "equal": "root:\n  title: TITLE\n"
+    }
+  },
+  {
+    "name": "inline (using yamlparse)",
+    "given": {
+      "input": {
+        "title" : "Mr.",
+        "firstName" : "Sam",
+        "lastName" : "Anton",
+        "address" : {
+          "flatNumber" : "BV-1025",
+          "buildingName" : "Shivaji",
+          "plotNumber" : "1093",
+          "sector" : "Sector 19",
+          "city" : "Bengaluru",
+          "state" : "Karnataka",
+          "country" : "India",
+          "nodeName" : "South Bengaluru"
+        },
+        "items" : [ {
+          "itemName" : "Television",
+          "itemBoughtYear" : "2014"
+        }, {
+          "itemName" : "Washing Machine",
+          "itemBoughtYear" : "2020"
+        }, {
+          "itemName" : "Refrigerator",
+          "itemBoughtYear" : "2011"
+        }, {
+          "itemName" : "Grinder",
+          "itemBoughtYear" : "2012"
+        }, {
+          "itemName" : "Computer",
+          "itemBoughtYear" : "2010"
+        } ]
+      },
+      "definition": "$$yamlparse:$$yaml:$"
+    },
+    "expect": {
+      "equal": {
+        "title" : "Mr.",
+        "firstName" : "Sam",
+        "lastName" : "Anton",
+        "address" : {
+          "flatNumber" : "BV-1025",
+          "buildingName" : "Shivaji",
+          "plotNumber" : "1093",
+          "sector" : "Sector 19",
+          "city" : "Bengaluru",
+          "state" : "Karnataka",
+          "country" : "India",
+          "nodeName" : "South Bengaluru"
+        },
+        "items" : [ {
+          "itemName" : "Television",
+          "itemBoughtYear" : "2014"
+        }, {
+          "itemName" : "Washing Machine",
+          "itemBoughtYear" : "2020"
+        }, {
+          "itemName" : "Refrigerator",
+          "itemBoughtYear" : "2011"
+        }, {
+          "itemName" : "Grinder",
+          "itemBoughtYear" : "2012"
+        }, {
+          "itemName" : "Computer",
+          "itemBoughtYear" : "2010"
+        } ]
+      }
+    }
+  },
+  {
+    "name": "object (using yamlparse)",
+    "given": {
+      "input": {
+        "title" : "Mr.",
+        "firstName" : "Sam",
+        "lastName" : "Anton",
+        "address" : {
+          "flatNumber" : "BV-1025",
+          "buildingName" : "Shivaji",
+          "plotNumber" : "1093",
+          "sector" : "Sector 19",
+          "city" : "Bengaluru",
+          "state" : "Karnataka",
+          "country" : "India",
+          "nodeName" : "South Bengaluru"
+        },
+        "items" : [ {
+          "itemName" : "Television",
+          "itemBoughtYear" : "2014"
+        }, {
+          "itemName" : "Washing Machine",
+          "itemBoughtYear" : "2020"
+        }, {
+          "itemName" : "Refrigerator",
+          "itemBoughtYear" : "2011"
+        }, {
+          "itemName" : "Grinder",
+          "itemBoughtYear" : "2012"
+        }, {
+          "itemName" : "Computer",
+          "itemBoughtYear" : "2010"
+        } ]
+      },
+      "definition": {"$$yamlparse": { "$$yaml": "$" }}
+    },
+    "expect": {
+      "equal": {
+        "title" : "Mr.",
+        "firstName" : "Sam",
+        "lastName" : "Anton",
+        "address" : {
+          "flatNumber" : "BV-1025",
+          "buildingName" : "Shivaji",
+          "plotNumber" : "1093",
+          "sector" : "Sector 19",
+          "city" : "Bengaluru",
+          "state" : "Karnataka",
+          "country" : "India",
+          "nodeName" : "South Bengaluru"
+        },
+        "items" : [ {
+          "itemName" : "Television",
+          "itemBoughtYear" : "2014"
+        }, {
+          "itemName" : "Washing Machine",
+          "itemBoughtYear" : "2020"
+        }, {
+          "itemName" : "Refrigerator",
+          "itemBoughtYear" : "2011"
+        }, {
+          "itemName" : "Grinder",
+          "itemBoughtYear" : "2012"
+        }, {
+          "itemName" : "Computer",
+          "itemBoughtYear" : "2010"
+        } ]
+      }
+    }
+  }
+]

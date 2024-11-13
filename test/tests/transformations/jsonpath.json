@@ -1,0 +1,208 @@
+[
+  {
+    "name": "Query root",
+    "given": {
+      "input": {
+        "x": 1
+      },
+      "definition": "$"
+    },
+    "expect": {
+      "equal": {
+        "x": 1
+      }
+    }
+  },
+  {
+    "name": "Query definite path",
+    "given": {
+      "input": {
+        "x": 1
+      },
+      "definition": "$.x"
+    },
+    "expect": {
+      "equal": 1
+    }
+  },
+  {
+    "name": "Query indefinite path (descendent)",
+    "given": {
+      "input": {
+        "x": [
+          {
+            "a": 1
+          },
+          {
+            "a": 2
+          }
+        ]
+      },
+      "definition": "$..a"
+    },
+    "expect": {
+      "equal": [
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "name": "Query indefinite path (descendent; 2)",
+    "given": {
+      "input": {
+        "x": [
+          {
+            "a": 1
+          },
+          {
+            "a": 2
+          },
+          {
+            "a": null
+          }
+        ]
+      },
+      "definition": "$..a"
+    },
+    "expect": {
+      "equal": [
+        1,
+        2,
+        null
+      ]
+    }
+  },
+  {
+    "name": "Query indefinite path (wildcard)",
+    "given": {
+      "input": {
+        "x": [
+          {
+            "a": 1
+          },
+          {
+            "a": 2
+          }
+        ]
+      },
+      "definition": "$.x[*]"
+    },
+    "expect": {
+      "equal": [
+        {
+          "a": 1
+        },
+        {
+          "a": 2
+        }
+      ]
+    }
+  },
+  {
+    "name": "Query indefinite path (filter)",
+    "given": {
+      "input": {
+        "x": [
+          {
+            "a": 1
+          },
+          {
+            "a": 2
+          }
+        ]
+      },
+      "definition": "$.x[?(@.a == 2)]"
+    },
+    "expect": {
+      "equal": [
+        {
+          "a": 2
+        }
+      ]
+    }
+  },
+  {
+    "name": "Copy integer",
+    "given": {
+      "input": 1,
+      "definition": "$"
+    },
+    "expect": {
+      "equal": 1
+    }
+  },
+  {
+    "name": "Copy boolean",
+    "given": {
+      "input": true,
+      "definition": "$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "Copy string",
+    "given": {
+      "input": "text",
+      "definition": "$"
+    },
+    "expect": {
+      "equal": "text"
+    }
+  },
+  {
+    "name": "Copy null",
+    "given": {
+      "input": null,
+      "definition": "$"
+    },
+    "expect": {
+      "isNull": true
+    }
+  },
+  {
+    "name": "Copy from additional context",
+    "given": {
+      "input": null,
+      "definition": "$extra.y",
+      "additionalContext": {
+        "$extra": {
+          "y": "text"
+        }
+      }
+    },
+    "expect": {
+      "equal": "text"
+    }
+  },
+  {
+    "name": "Copy from additional context (array)",
+    "given": {
+      "input": null,
+      "definition": "$extra[0]",
+      "additionalContext": {
+        "$extra": [1,2]
+      }
+    },
+    "expect": {
+      "equal": 1
+    }
+  },
+  {
+    "name": "Copy from additional context (unrecognized root)",
+    "given": {
+      "input": null,
+      "definition": "$extra2.y",
+      "additionalContext": {
+        "$extra": {
+          "y": "text"
+        }
+      }
+    },
+    "expect": {
+      "equal": "$extra2.y"
+    }
+  }
+]

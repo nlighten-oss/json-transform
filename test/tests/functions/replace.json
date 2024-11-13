@@ -1,0 +1,92 @@
+[
+  {
+    "name": "inline (no args)",
+    "given": {
+      "input": "hello",
+      "definition": "$$replace:$"
+    },
+    "expect": {
+      "equal": "hello"
+    }
+  },
+  {
+    "name": "inline (l)",
+    "given": {
+      "input": "hello",
+      "definition": "$$replace(l):$"
+    },
+    "expect": {
+      "equal": "heo"
+    }
+  },
+  {
+    "name": "inline (l,x)",
+    "given": {
+      "input": "hello",
+      "definition": "$$replace(l,x):$"
+    },
+    "expect": {
+      "equal": "hexxo"
+    }
+  },
+  {
+    "name": "inline (l,x,FIRST)",
+    "given": {
+      "input": "hello",
+      "definition": "$$replace(l,x,FIRST):$"
+    },
+    "expect": {
+      "equal": "hexlo"
+    }
+  },
+  {
+    "name": "inline (l,x,FIRST,3)",
+    "given": {
+      "input": "hello",
+      "definition": "$$replace(l,x,FIRST,3):$"
+    },
+    "expect": {
+      "equal": "helxo"
+    }
+  },
+  {
+    "name": "inline ([le],x,REGEX)",
+    "given": {
+      "input": "hello",
+      "definition": "$$replace([le],x,REGEX):$"
+    },
+    "expect": {
+      "equal": "hxxxo"
+    }
+  },
+  {
+    "name": "inline ([le],x,REGEX,2)",
+    "given": {
+      "input": "hello",
+      "definition": "$$replace([le],x,REGEX,2):$"
+    },
+    "expect": {
+      "equal": "hexxo"
+    }
+  },
+  {
+    "name": "inline ([le],x,REGEX-FIRST)",
+    "given": {
+      "input": "hello",
+      "definition": "$$replace([le],x,REGEX-FIRST):$"
+    },
+    "expect": {
+      "equal": "hxllo"
+    }
+  },
+  {
+    "name": "inline ([le],x,REGEX-FIRST,2)",
+    "given": {
+      "input": "hello",
+      "definition": "$$replace([le],x,REGEX-FIRST,2):$"
+    },
+    "expect": {
+      "equal": "hexlo"
+    }
+  }
+]

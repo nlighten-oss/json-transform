@@ -4,20 +4,14 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 /*
  * For tests
  * @see TransformerFunctionIfTest
  */
-@Aliases("if")
-@Documentation("Conditionally returns a value, if the evaluation of the condition argument is truthy (using the [Truthy logic]). A fallback value (if condition evaluates to false) is optional")
-@InputType(value = {ArgType.Array, ArgType.Any}, description = "Either a value to evaluate for condition, or an Array of size 2 / 3 (with `condition`, `then` and optionally `else`)")
-@ArgumentType(value = "then", type = ArgType.Any, position = 0, defaultIsNull = true,
-              description = "Value to return if condition is true")
-@ArgumentType(value = "else", type = ArgType.Any, position = 1, defaultIsNull = true,
-              description = "Value to return if condition is false")
-@OutputType(ArgType.Any)
+@ArgumentType(value = "then", type = ArgType.Any, position = 0, defaultIsNull = true)
+@ArgumentType(value = "else", type = ArgType.Any, position = 1, defaultIsNull = true)
 public class TransformerFunctionIf<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public TransformerFunctionIf(JsonAdapter<JE, JA, JO> adapter) {
         super(adapter);

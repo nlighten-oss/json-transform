@@ -1,0 +1,104 @@
+[
+  {
+    "name": "inline - basic string transformation",
+    "given": {
+      "input": "text",
+      "definition": "$$string:$"
+    },
+    "expect": {
+      "equal": "text"
+    }
+  },
+  {
+    "name": "inline - empty parentheses",
+    "given": {
+      "input": "text",
+      "definition": "$$string():$"
+    },
+    "expect": {
+      "equal": "text"
+    }
+  },
+  {
+    "name": "inline - string with quotes",
+    "given": {
+      "input": "text",
+      "definition": "$$string(true):$"
+    },
+    "expect": {
+      "equal": "\"text\""
+    }
+  },
+  {
+    "name": "inline - boolean to string",
+    "given": {
+      "input": true,
+      "definition": "$$string:$"
+    },
+    "expect": {
+      "equal": "true"
+    }
+  },
+  {
+    "name": "inline - integer to string",
+    "given": {
+      "input": 123,
+      "definition": "$$string:$"
+    },
+    "expect": {
+      "equal": "123"
+    }
+  },
+  {
+    "name": "inline - BigDecimal to string",
+    "given": {
+      "input": 3.14159265358979323846264338327950288419716939937510,
+      "definition": "$$string:$"
+    },
+    "expect": {
+      "equal": "3.1415926535897932384626433832795028841971693993751"
+    }
+  },
+  {
+    "name": "inline - null input",
+    "given": {
+      "input": null,
+      "definition": "$$string:$"
+    },
+    "expect": {
+      "isNull": true
+    }
+  },
+  {
+    "name": "inline - null input (json=true)",
+    "given": {
+      "input": null,
+      "definition": "$$string(true):$"
+    },
+    "expect": {
+      "equal": "null"
+    }
+  },
+  {
+    "name": "inline - JSON object to string",
+    "given": {
+      "input": {
+        "a": "b"
+      },
+      "definition": "$$string:$"
+    },
+    "expect": {
+      "equal": "{\"a\":\"b\"}"
+    }
+  },
+  {
+    "name": "inline - float to string",
+    "given": {
+      "input": 100.000,
+      "definition": "$$string:$"
+    },
+    "expect": {
+      "equal": "100"
+    }
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "name": "result is TRUE (2 fulfilled conditions)",
+    "given": {
+      "input": [
+        2,
+        3
+      ],
+      "definition": {
+        "$$and": [
+          {
+            "$$is": "$[0]",
+            "eq": 2
+          },
+          {
+            "$$is": "$[1]",
+            "eq": 3
+          }
+        ]
+      }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "result is FALSE (1 condition fulfilled and the other not)",
+    "given": {
+      "input": [
+        2,
+        4
+      ],
+      "definition": {
+        "$$and": [
+          {
+            "$$is": "$[0]",
+            "eq": 2
+          },
+          {
+            "$$is": "$[1]",
+            "eq": 3
+          }
+        ]
+      }
+    },
+    "expect": {
+      "equal": false
+    }
+  }
+]
