@@ -20,8 +20,7 @@ public class GsonJsonPathConfigurator {
 
         private static final JsonProvider jsonProvider = new GsonJsonProvider();
         private static final Set<Option> options = Set.of(
-                Option.SUPPRESS_EXCEPTIONS,
-                Option.DEFAULT_PATH_LEAF_TO_NULL
+                Option.SUPPRESS_EXCEPTIONS
         );
         private static final MappingProvider mappingProvider = new GsonMappingProvider();
 

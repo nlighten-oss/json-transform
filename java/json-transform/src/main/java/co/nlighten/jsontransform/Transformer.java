@@ -11,7 +11,7 @@ public interface Transformer {
      * @return The transformer input
      */
     static Transformer RAW() {
-        return (input, additionalContext) -> input;
+        return (input, additionalContext, allowReturningStreams) -> input;
     }
 
     /**
@@ -30,6 +30,16 @@ public interface Transformer {
      * @param additionalContext additional context to use during transformation
      * @return transformed data
      */
-    Object transform(Object input, Map<String, Object> additionalContext);
+    default Object transform(Object input, Map<String, Object> additionalContext) {
+        return transform(input, additionalContext, false);
+    }
 
+    /**
+     * transforms the given data based on the transformer rules
+     * @param input the data to transform
+     * @param additionalContext additional context to use during transformation
+     * @param allowReturningStreams allow returning json streams instead of arrays as transformation result
+     * @return transformed data
+     */
+    Object transform(Object input, Map<String, Object> additionalContext, boolean allowReturningStreams);
 }

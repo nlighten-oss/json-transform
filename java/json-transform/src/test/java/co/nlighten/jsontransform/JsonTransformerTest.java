@@ -127,27 +127,6 @@ public class JsonTransformerTest extends BaseTest {
 }
 """), adapter.parse("""
 {
-  "a": null,
-  "b": "B"
-}
-"""));
-    }
-
-    @Test
-    void testInputExtractorSpreadDontRemoveByNull() {
-        assertTransformation(fromJson("""
-{
-  "a": "A",
-  "b": "B"
-}
-"""), fromJson("""
-{
-  "*": "$",
-  "a": null
-}
-"""), fromJson("""
-{
-  "a": "A",
   "b": "B"
 }
 """));

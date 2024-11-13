@@ -29,12 +29,12 @@ public abstract class JsonTransformer<JE, JA extends Iterable<JE>, JO extends JE
         this.JSON_TRANSFORMER = this::fromJsonElement;
     }
 
-    public Object transform(Object payload, Map<String, Object> additionalContext) {
+    public Object transform(Object payload, Map<String, Object> additionalContext, boolean allowReturningStreams) {
         if (definition == null) {
             return JsonNull.INSTANCE;
         }
         var resolver = adapter.createPayloadResolver(payload, additionalContext, false);
-        return fromJsonElement(definition, resolver, false);
+        return fromJsonElement(definition, resolver, allowReturningStreams);
     }
 
     protected Object fromJsonPrimitive(JE definition, co.nlighten.jsontransform.ParameterResolver resolver, boolean allowReturningStreams) {
@@ -97,7 +97,14 @@ public abstract class JsonTransformer<JE, JA extends Iterable<JE>, JO extends JE
         for (Map.Entry<String, JE> kv : adapter.jObject.entrySet(definition)) {
             if (kv.getKey().equals(OBJ_DESTRUCT_KEY)) continue;
             var localKey = kv.getKey();
-            var value = (JE) fromJsonElement(kv.getValue(), resolver, false);
+            var localValue = kv.getValue();
+            if (adapter.isJsonString(localValue) && adapter.getAsString(localValue).equals("#null")) {
+                // don't define key if #null was used
+                // might already exist, so try removing it
+                adapter.jObject.remove(result, localKey);
+                continue;
+            }
+            var value = (JE) fromJsonElement(localValue, resolver, false);
             if (!adapter.isNull(value) || adapter.jObject.has(result, localKey) /* we allow overriding with null*/) {
                 adapter.jObject.add(result, localKey, value);
             }
