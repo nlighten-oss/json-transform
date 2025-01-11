@@ -324,7 +324,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
     public JE transformItem(JE definition, JE current, Integer index) {
         var currentContext = adapter.getDocumentContext(current);
         ParameterResolver itemResolver = name ->
-                name.equals(DOUBLE_HASH_INDEX)
+                DOUBLE_HASH_INDEX.equals(name)
                 ? wrap(index)
                 : pathOfVar(DOUBLE_HASH_CURRENT, name)
                   ? currentContext.read(DOLLAR + name.substring(9))
@@ -336,7 +336,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
         var currentContext = adapter.getDocumentContext(current);
         var additionalContext = adapter.getDocumentContext(additional);
         ParameterResolver itemResolver = name ->
-                name.equals(DOUBLE_HASH_INDEX)
+                DOUBLE_HASH_INDEX.equals(name)
                 ? wrap(index)
                 : pathOfVar(DOUBLE_HASH_CURRENT, name)
                   ? currentContext.read(DOLLAR + name.substring(9))
@@ -351,7 +351,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
         var addCtx = additionalContexts.keySet().stream().collect(
                 Collectors.toMap(key -> key, key -> adapter.getDocumentContext(additionalContexts.get(key))));
         ParameterResolver itemResolver = name -> {
-            if (name.equals(DOUBLE_HASH_INDEX)) return wrap(index);
+            if (DOUBLE_HASH_INDEX.equals(name)) return wrap(index);
             if (pathOfVar(DOUBLE_HASH_CURRENT, name)) return currentContext.read("$" + name.substring(9));
             for (var key : additionalContexts.keySet()) {
                 if (pathOfVar(key, name)) {

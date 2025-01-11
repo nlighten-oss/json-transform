@@ -85,8 +85,8 @@ public class TransformerFunctionIs<JE, JA extends Iterable<JE>, JO extends JE> e
                     var comparison = context.compareTo(value, that);
                     yield comparison != null && comparison <= 0;
                 }
-                case "EQ","=","==" -> value.equals(that);
-                case "NEQ","!=","<>" -> !value.equals(that);
+                case "EQ","=","==" -> Objects.equals(value, that);
+                case "NEQ","!=","<>" -> !Objects.equals(value, that);
                 default -> false;
             };
         }
@@ -121,11 +121,11 @@ public class TransformerFunctionIs<JE, JA extends Iterable<JE>, JO extends JE> e
         }
         if (result && context.has("eq")) {
             var eq = context.getJsonElement("eq");
-            result = value.equals(eq);
+            result = Objects.equals(value, eq);
         }
         if (result && context.has("neq")) {
             var neq = context.getJsonElement("neq");
-            result = !value.equals(neq);
+            result = !Objects.equals(value, neq);
         }
         return result;
     }
