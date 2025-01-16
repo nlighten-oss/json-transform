@@ -1,0 +1,356 @@
+[
+  {
+    "name": "basic now",
+    "given": {
+      "input": "2020-12-31T12:34:56.78Z",
+      "definition": "$$date:$"
+    },
+    "expect": {
+      "equal": "2020-12-31T12:34:56.780Z"
+    }
+  },
+  {
+    "name": "basic now with empty argument",
+    "given": {
+      "input": "2020-12-31T12:34:56.78Z",
+      "definition": "$$date():$"
+    },
+    "expect": {
+      "equal": "2020-12-31T12:34:56.780Z"
+    }
+  },
+  {
+    "name": "basic now with iso",
+    "given": {
+      "input": "2020-12-31T12:34:56.78Z",
+      "definition": "$$date(iso):$"
+    },
+    "expect": {
+      "equal": "2020-12-31T12:34:56.780Z"
+    }
+  },
+  {
+    "name": "basic now with ISO and 0",
+    "given": {
+      "input": "2020-12-31T12:34:56.78Z",
+      "definition": "$$date(ISO,0):$"
+    },
+    "expect": {
+      "equal": "2020-12-31T12:34:56Z"
+    }
+  },
+  {
+    "name": "basic now with iso and 3",
+    "given": {
+      "input": "2020-12-31T12:34:56.78Z",
+      "definition": "$$date(iso,3):$"
+    },
+    "expect": {
+      "equal": "2020-12-31T12:34:56.780Z"
+    }
+  },
+  {
+    "name": "basic now with iso and 6",
+    "given": {
+      "input": "2020-12-31T12:34:56.78Z",
+      "definition": "$$date(iso,6):$"
+    },
+    "expect": {
+      "equal": "2020-12-31T12:34:56.780000Z"
+    }
+  },
+  {
+    "name": "basic now with ZONE and America/New_York",
+    "given": {
+      "input": "2020-12-31T12:34:56.78Z",
+      "definition": "$$date(ZONE,America/New_York):$"
+    },
+    "expect": {
+      "equal": "2020-12-31T07:34:56.78-05:00"
+    }
+  },
+  {
+    "name": "basic 2023 with ZONE and EST",
+    "given": {
+      "input": "2023-01-01T00:00:00Z",
+      "definition": "$$date(ZONE,EST):$"
+    },
+    "expect": {
+      "equal": "2022-12-31T19:00:00-05:00"
+    }
+  },
+  {
+    "name": "basic now with GMT",
+    "given": {
+      "input": "2020-12-31T12:34:56.78Z",
+      "definition": "$$date(GMT):$"
+    },
+    "expect": {
+      "equal": "Thu, 31 Dec 2020 12:34:56 GMT"
+    }
+  },
+  {
+    "name": "basic now with date",
+    "given": {
+      "input": "2020-12-31T12:34:56.78Z",
+      "definition": "$$date(date):$"
+    },
+    "expect": {
+      "equal": "2020-12-31"
+    }
+  },
+  {
+    "name": "basic now with 'date'",
+    "given": {
+      "input": "2020-12-31T12:34:56.78Z",
+      "definition": "$$date('date'):$"
+    },
+    "expect": {
+      "equal": "2020-12-31"
+    }
+  },
+  {
+    "name": "format now",
+    "given": {
+      "input": "2020-12-31T12:34:56.78Z",
+      "definition": "$$date(format,'dd.MM.yyyy'):$"
+    },
+    "expect": {
+      "equal": "31.12.2020"
+    }
+  },
+  {
+    "name": "format 2023",
+    "given": {
+      "input": "2023-01-01T00:00:00Z",
+      "definition": "$$date(format,'yyyy-MM-dd HH:mm'):$"
+    },
+    "expect": {
+      "equal": "2023-01-01 00:00"
+    }
+  },
+  {
+    "name": "format 2023 with UTC",
+    "given": {
+      "input": "2023-01-01T00:00:00Z",
+      "definition": "$$date(format,'yyyy-MM-dd HH:mm',UTC):$"
+    },
+    "expect": {
+      "equal": "2023-01-01 00:00"
+    }
+  },
+  {
+    "name": "format 2023 with America/New_York",
+    "given": {
+      "input": "2023-01-01T00:00:00Z",
+      "definition": "$$date(format,'yyyy-MM-dd HH:mm','America/New_York'):$"
+    },
+    "expect": {
+      "equal": "2022-12-31 19:00"
+    }
+  },
+  {
+    "name": "epoch now",
+    "given": {
+      "input": "2020-12-31T12:34:56.78Z",
+      "definition": "$$date(epoch):$"
+    },
+    "expect": {
+      "equal": 1609418096
+    }
+  },
+  {
+    "name": "epoch now with MS",
+    "given": {
+      "input": "2020-12-31T12:34:56.78Z",
+      "definition": "$$date(epoch,MS):$"
+    },
+    "expect": {
+      "equal": 1609418096780
+    }
+  },
+  {
+    "name": "timezoneError with space",
+    "given": {
+      "input": " +01:00",
+      "definition": "$$date(ZONE,$):2023-01-01T00:00:00Z"
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "timezone - no error",
+    "given": {
+      "input": "+01:00",
+      "definition": "$$date(ZONE,$):2023-01-01T00:00:00Z"
+    },
+    "expect": {
+      "equal": "2023-01-01T01:00:00+01:00"
+    }
+  },
+  {
+    "name": "addSub exactNow with only add",
+    "given": {
+      "input": "2020-12-31T00:00:00Z",
+      "definition": "$$date(add):$"
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "addSub exactNow with ADD and MILLIS",
+    "given": {
+      "input": "2020-12-31T00:00:00Z",
+      "definition": "$$date(ADD,MILLIS,100):$"
+    },
+    "expect": {
+      "equal": "2020-12-31T00:00:00.100Z"
+    }
+  },
+  {
+    "name": "addSub exactNow with add and SECONDS",
+    "given": {
+      "input": "2020-12-31T00:00:00Z",
+      "definition": "$$date(add,SECONDS,59):$"
+    },
+    "expect": {
+      "equal": "2020-12-31T00:00:59Z"
+    }
+  },
+  {
+    "name": "addSub exactNow with add and MINUTES",
+    "given": {
+      "input": "2020-12-31T00:00:00Z",
+      "definition": "$$date(add,MINUTES,59):$"
+    },
+    "expect": {
+      "equal": "2020-12-31T00:59:00Z"
+    }
+  },
+  {
+    "name": "addSub exactNow with add and HOURS",
+    "given": {
+      "input": "2020-12-31T00:00:00Z",
+      "definition": "$$date(add,HOURS,24):$"
+    },
+    "expect": {
+      "equal": "2021-01-01T00:00:00Z"
+    }
+  },
+  {
+    "name": "addSub exactNow with ADD and DAYS",
+    "given": {
+      "input": "2020-12-31T00:00:00Z",
+      "definition": "$$date(ADD, DAYS, 1):$"
+    },
+    "expect": {
+      "equal": "2021-01-01T00:00:00Z"
+    }
+  },
+  {
+    "name": "addSub exactNow with add and days",
+    "given": {
+      "input": "2020-12-31T00:00:00Z",
+      "definition": "$$date(add,days , 1):$"
+    },
+    "expect": {
+      "equal": "2021-01-01T00:00:00Z"
+    }
+  },
+  {
+    "name": "addSub exactNow with add and MONTHS",
+    "given": {
+      "input": "2020-12-31T00:00:00Z",
+      "definition": "$$date(add,MONTHS,1):$"
+    },
+    "expect": {
+      "equal": "2021-01-31T00:00:00Z"
+    }
+  },
+  {
+    "name": "addSub exactNow with add and YEARS",
+    "given": {
+      "input": "2020-12-31T00:00:00Z",
+      "definition": "$$date(add,YEARS,1):$"
+    },
+    "expect": {
+      "equal": "2021-12-31T00:00:00Z"
+    }
+  },
+  {
+    "name": "addSub exactNow with SUB and HOURS",
+    "given": {
+      "input": "2020-12-31T00:00:00Z",
+      "definition": "$$date(SUB,HOURS,23):$"
+    },
+    "expect": {
+      "equal": "2020-12-30T01:00:00Z"
+    }
+  },
+  {
+    "name": "addSub exactNow with sub and DAYS",
+    "given": {
+      "input": "2020-12-31T00:00:00Z",
+      "definition": "$$date(sub,DAYS,1):$"
+    },
+    "expect": {
+      "equal": "2020-12-30T00:00:00Z"
+    }
+  },
+  {
+    "name": "addSub exactNow with sub and MONTHS",
+    "given": {
+      "input": "2020-12-31T00:00:00Z",
+      "definition": "$$date(sub,MONTHS,1):$"
+    },
+    "expect": {
+      "equal": "2020-11-30T00:00:00Z"
+    }
+  },
+  {
+    "name": "addSub exactNow with sub and YEARS",
+    "given": {
+      "input": "2020-12-31T00:00:00Z",
+      "definition": "$$date(sub,YEARS,1):$"
+    },
+    "expect": {
+      "equal": "2019-12-31T00:00:00Z"
+    }
+  },
+  {
+    "name": "addSub exactNow with add and DAYS negative",
+    "given": {
+      "input": "2020-12-31T00:00:00Z",
+      "definition": "$$date(add,DAYS,-1):$"
+    },
+    "expect": {
+      "equal": "2020-12-30T00:00:00Z"
+    }
+  },
+  {
+    "name": "addSub exactNow with add and YEARS negative",
+    "given": {
+      "input": "2020-12-31T00:00:00Z",
+      "definition": "$$date(add,YEARS,-1):$"
+    },
+    "expect": {
+      "equal": "2019-12-31T00:00:00Z"
+    }
+  },
+  {
+    "name": "addSub with args from vars",
+    "given": {
+      "input": {
+        "date": "2020-12-31T00:00:00Z",
+        "amount": 2,
+        "unit": "HOURS"
+      },
+      "definition": "$$date(add,$.unit,'$.amount'):$.date"
+    },
+    "expect": {
+      "equal": "2020-12-31T02:00:00Z"
+    }
+  }
+]

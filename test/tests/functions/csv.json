@@ -1,0 +1,90 @@
+[
+  {
+    "name": "inline - with headers",
+    "given": {
+      "input": [
+        { "a": "A", "b": 1 },
+        { "a": "C", "b": 2 }
+      ],
+      "definition": "$$csv:$"
+    },
+    "expect": {
+      "equal": "a,b\nA,1\nC,2\n"
+    }
+  },
+  {
+    "name": "inline - no headers",
+    "given": {
+      "input": [
+        { "a": "A", "b": 1 },
+        { "a": "C", "b": 2 }
+      ],
+      "definition": "$$csv(true):$"
+    },
+    "expect": {
+      "equal": "A,1\nC,2\n"
+    }
+  },
+  {
+    "name": "object - with headers",
+    "given": {
+      "input": [
+        { "a": "A", "b": 1 },
+        { "a": "C", "b": 2 }
+      ],
+      "definition": {
+        "$$csv": "$"
+      }
+    },
+    "expect": {
+      "equal": "a,b\nA,1\nC,2\n"
+    }
+  },
+  {
+    "name": "object - no headers",
+    "given": {
+      "input": [
+        { "a": "A", "b": 1 },
+        { "a": "C", "b": 2 }
+      ],
+      "definition": {
+        "$$csv": "$",
+        "no_headers": true
+      }
+    },
+    "expect": {
+      "equal": "A,1\nC,2\n"
+    }
+  },
+  {
+    "name": "object - arrays input with names",
+    "given": {
+      "input": [
+        [1, 2],
+        [3, 4]
+      ],
+      "definition": {
+        "$$csv": "$",
+        "names": ["a", "b"]
+      }
+    },
+    "expect": {
+      "equal": "a,b\n1,2\n3,4\n"
+    }
+  },
+  {
+    "name": "object - arrays input, without names",
+    "given": {
+      "input": [
+        [1, 2],
+        [3, 4]
+      ],
+      "definition": {
+        "$$csv": "$"
+      }
+    },
+    "expect": {
+      "equal": "1,2\n3,4\n"
+    }
+  }
+]

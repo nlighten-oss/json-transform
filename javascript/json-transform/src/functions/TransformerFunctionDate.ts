@@ -1,5 +1,5 @@
-import { add, addMilliseconds, format, fromUnixTime, sub, subMilliseconds, parseJSON } from "date-fns";
-import { formatInTimeZone } from "date-fns-tz";
+import { add, addMilliseconds, format, formatISO, fromUnixTime, sub, subMilliseconds, parseJSON } from "date-fns";
+import { tz, TZDate } from "@date-fns/tz";
 import BigNumber from "bignumber.js";
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
@@ -13,6 +13,18 @@ const ChronoUnitToDuration: Record<string, string> = {
   DAYS: "days",
   MONTHS: "months",
   YEARS: "years",
+};
+
+const ISO_TRIM = /\.000(Z|[+-]\d\d:)/;
+const MAX_TRIM = /\.?0+(Z|[+-]\d\d:)/;
+/**
+ *
+ * @param date date to format
+ * @param maxTrimmed if true, trim with min width of 0, otherwise, render milliseconds in 3 digits as usual unless it's 0
+ */
+const toISOString = (date: Date, maxTrimmed?: boolean) => {
+  const iso = date.toISOString();
+  return iso.replace(maxTrimmed ? MAX_TRIM : ISO_TRIM, "$1");
 };
 
 class TransformerFunctionDate extends TransformerFunction {
@@ -66,7 +78,7 @@ class TransformerFunctionDate extends TransformerFunction {
           case 9:
             return instant.toISOString().replace("Z", "000000Z"); // nanoseconds
           default:
-            return instant.toISOString();
+            return toISOString(instant);
         }
       }
       case "GMT":
@@ -74,21 +86,21 @@ class TransformerFunctionDate extends TransformerFunction {
       case "ADD": {
         const units = await context.getEnum("units");
         if (units && ChronoUnitToDuration[units]) {
-          return add(instant, { [ChronoUnitToDuration[units]]: await context.getInteger("amount") }).toISOString();
+          return toISOString(add(instant, { [ChronoUnitToDuration[units]]: await context.getInteger("amount") }));
         }
         switch (units) {
           case "HALF_DAYS": {
             const amount = (await context.getInteger("amount")) ?? 0;
-            return add(instant, { hours: amount * 12 }).toISOString();
+            return toISOString(add(instant, { hours: amount * 12 }));
           }
           case "MILLIS": {
             const amount = (await context.getInteger("amount")) ?? 0;
-            return addMilliseconds(instant, amount).toISOString();
+            return toISOString(addMilliseconds(instant, amount));
           }
           case "NANOS":
           case "MICROS": {
             const amount = (await context.getInteger("amount")) ?? 0;
-            return addMilliseconds(instant, amount / (units === "NANOS" ? 1e6 : 1e3)).toISOString();
+            return toISOString(addMilliseconds(instant, amount / (units === "NANOS" ? 1e6 : 1e3)));
           }
         }
         return null;
@@ -96,27 +108,27 @@ class TransformerFunctionDate extends TransformerFunction {
       case "SUB": {
         const units = await context.getEnum("units");
         if (units && ChronoUnitToDuration[units]) {
-          return sub(instant, { [ChronoUnitToDuration[units]]: await context.getInteger("amount") }).toISOString();
+          return toISOString(sub(instant, { [ChronoUnitToDuration[units]]: await context.getInteger("amount") }));
         }
         switch (units) {
           case "HALF_DAYS": {
             const amount = (await context.getInteger("amount")) ?? 0;
-            return sub(instant, { hours: amount * 12 }).toISOString();
+            return toISOString(sub(instant, { hours: amount * 12 }));
           }
           case "MILLIS": {
             const amount = (await context.getInteger("amount")) ?? 0;
-            return subMilliseconds(instant, amount).toISOString();
+            return toISOString(subMilliseconds(instant, amount));
           }
           case "NANOS":
           case "MICROS": {
             const amount = (await context.getInteger("amount")) ?? 0;
-            return subMilliseconds(instant, amount / (units === "NANOS" ? 1e6 : 1e3)).toISOString();
+            return toISOString(subMilliseconds(instant, amount / (units === "NANOS" ? 1e6 : 1e3)));
           }
         }
         return null;
       }
       case "DATE": {
-        return instant.toISOString().substring(0, 10);
+        return formatISO(instant, { representation: "date" });
       }
       case "EPOCH": {
         switch (await context.getEnum("resolution")) {
@@ -130,16 +142,15 @@ class TransformerFunctionDate extends TransformerFunction {
         const timeZone = await context.getString("timezone");
         const pattern = (await context.getString("pattern")) ?? "";
         if (timeZone) {
-          return formatInTimeZone(instant, timeZone, pattern);
+          return format(tz(timeZone)(instant), pattern); //(instant) formatInTimeZone(instant, timeZone, pattern);
         }
         return format(instant, pattern);
       }
       case "ZONE": {
         const zone = await context.getString("zone");
-        const iso = instant.toISOString();
+        const iso = toISOString(instant);
         if (!zone) return iso;
-        const fmt = formatInTimeZone(instant, zone, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        return /\.0+Z$/.test(iso) ? fmt.replace(/\.0+/, "") : fmt;
+        return toISOString(TZDate.tz(zone, instant), true);
       }
       default:
         return null;

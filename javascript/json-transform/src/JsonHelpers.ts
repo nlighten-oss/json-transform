@@ -44,12 +44,15 @@ const numberCompare = (a: number, b: number) => {
 };
 
 const isNumberType = (a: any) => typeof a === "number" || typeof a === "bigint" || a instanceof BigDecimal;
+const numberToBigDecimal = (a: any) => {
+  return BigDecimal(typeof a === "bigint" ? a.toString() : a);
+};
 
 const compareTo = (a: any, b: any) => {
   if (Array.isArray(a) && Array.isArray(b)) {
     return numberCompare(a.length, b.length);
   } else if (isNumberType(a) && isNumberType(b)) {
-    return BigDecimal(a).comparedTo(BigDecimal(b));
+    return numberToBigDecimal(a).comparedTo(numberToBigDecimal(b));
   } else if (a && b && typeof a === "object" && typeof b === "object") {
     return numberCompare(Object.keys(a).length, Object.keys(b).length);
   } else if (typeof a === "string" && typeof b === "string") {
@@ -194,7 +197,7 @@ const isEqual = (value: any, other: any): boolean => {
     return true;
   }
   if (isNumberType(value) && isNumberType(other)) {
-    return BigDecimal(value).eq(BigDecimal(other));
+    return numberToBigDecimal(value).eq(numberToBigDecimal(other));
   }
   return areSimilar(value, other);
 };
@@ -321,7 +324,7 @@ function createComparator(type: string | null) {
       case "NUMBER": {
         comparator = factory.compare((a, b) => {
           if ((isNumberType(a) || typeof a === "string") && (isNumberType(b) || typeof b === "string")) {
-            return BigDecimal(a).comparedTo(BigDecimal(b));
+            return numberToBigDecimal(a).comparedTo(numberToBigDecimal(b));
           } else if (isNullOrUndefined(a) && !isNullOrUndefined(b)) {
             return -1;
           } else if (!isNullOrUndefined(a) && isNullOrUndefined(b)) {
@@ -361,6 +364,7 @@ export {
   getAsString,
   createPayloadResolver,
   isNumberType,
+  numberToBigDecimal,
   compareTo,
   createComparator,
   getDocumentContext,

@@ -1,0 +1,113 @@
+[
+  {
+    "name": "primitives with duplicates",
+    "given": {
+      "input": ["a", "b", "b", "c", "b"],
+      "definition": {
+        "$$distinct": "$"
+      }
+    },
+    "expect": {
+      "equal": ["a", "b", "c"]
+    }
+  },
+  {
+    "name": "mixed primitives with duplicates",
+    "given": {
+      "input": ["a", 1, false, "b", "c", "b", 1, false, false],
+      "definition": {
+        "$$distinct": "$"
+      }
+    },
+    "expect": {
+      "equal": ["a", 1, false, "b", "c"]
+    }
+  },
+  {
+    "name": "primitives with nulls",
+    "given": {
+      "input": ["a", "a", null, null, "a", null],
+      "definition": {
+        "$$distinct": "$"
+      }
+    },
+    "expect": {
+      "equal": ["a", null]
+    }
+  },
+  {
+    "name": "objects with duplicates",
+    "given": {
+      "input": [{ "a": 1 }, { "a": 1 }, { "a": 1 }],
+      "definition": {
+        "$$distinct": "$"
+      }
+    },
+    "expect": {
+      "equal": [{ "a": 1 }]
+    }
+  },
+  {
+    "name": "arrays with duplicates",
+    "given": {
+      "input": [["a", 1], ["a", 2], ["a", 1], ["a", 1]],
+      "definition": {
+        "$$distinct": "$"
+      }
+    },
+    "expect": {
+      "equal": [
+        ["a", 1],
+        ["a", 2]
+      ]
+    }
+  },
+  {
+    "name": "withTransformation by a",
+    "given": {
+      "input": [{ "a": 1 }, { "a": 1, "b": 1 }, { "a": 1, "b": 2 }, { "a": 2, "b": 1 }],
+      "definition": {
+        "$$distinct": "$",
+        "by": "##current.a"
+      }
+    },
+    "expect": {
+      "equal": [{ "a": 1 }, { "a": 2, "b": 1 }]
+    }
+  },
+  {
+    "name": "withTransformation by b",
+    "given": {
+      "input": [{ "a": 1 }, { "a": 1, "b": 1 }, { "a": 1, "b": 2 }, { "a": 2, "b": 1 }],
+      "definition": {
+        "$$distinct": "$",
+        "by": "##current.b"
+      }
+    },
+    "expect": {
+      "equal": [{ "a": 1 }, { "a": 1, "b": 1 }, { "a": 1, "b": 2 }]
+    }
+  },
+  {
+    "name": "withTransformation without by and same arguments should stay the same",
+    "given": {
+      "input": [{ "a": 1 }, { "a": 1, "b": 1 }, { "a": 1, "b": 2 }, { "a": 2, "b": 1 }],
+      "definition": {
+        "$$distinct": "$"
+      }
+    },
+    "expect": {
+      "equal": [{ "a": 1 }, { "a": 1, "b": 1 }, { "a": 1, "b": 2 }, { "a": 2, "b": 1 }]
+    }
+  },
+  {
+    "name": "inline by a",
+    "given": {
+      "input": [{ "a": 1 }, { "a": 1, "b": 1 }, { "a": 1, "b": 2 }, { "a": 2, "b": 1 }],
+      "definition": "$$distinct(##current.a):$"
+    },
+    "expect": {
+      "equal": [{ "a": 1 }, { "a": 2, "b": 1 }]
+    }
+  }
+]

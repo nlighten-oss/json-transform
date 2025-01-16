@@ -1,0 +1,102 @@
+[
+  {
+    "name": "convert string to decimal",
+    "given": {
+      "input": "123456789.87654321",
+      "definition": "$$decimal:$"
+    },
+    "expect": {
+      "equal": 123456789.87654321
+    }
+  },
+  {
+    "name": "convert string to decimal with empty parentheses",
+    "given": {
+      "input": "123456789.87654321",
+      "definition": "$$decimal():$"
+    },
+    "expect": {
+      "equal": 123456789.87654321
+    }
+  },
+  {
+    "name": "convert number to decimal",
+    "given": {
+      "input": 123456789.87654321,
+      "definition": "$$decimal:$"
+    },
+    "expect": {
+      "equal": 123456789.87654321
+    }
+  },
+  {
+    "name": "convert null to decimal",
+    "given": {
+      "input": null,
+      "definition": "$$decimal:$"
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "scaling with rounding",
+    "given": {
+      "input": "123456789.87654321",
+      "definition": "$$decimal(2):$"
+    },
+    "expect": {
+      "equal": 123456789.88
+    }
+  },
+  {
+    "name": "scaling with floor rounding",
+    "given": {
+      "input": "123456789.87654321",
+      "definition": "$$decimal(2,FLOOR):$"
+    },
+    "expect": {
+      "equal": 123456789.87
+    }
+  },
+  {
+    "name": "scaling without rounding (over max)",
+    "given": {
+      "input": "1.01234567890123456789",
+      "definition": "$$decimal:$"
+    },
+    "expect": {
+      "equal": 1.012345678901235
+    }
+  },
+  {
+    "name": "object with rounding",
+    "given": {
+      "input": "123456789.87654321",
+      "definition": { "$$decimal": "$", "scale": 2 }
+    },
+    "expect": {
+      "equal": 123456789.88
+    }
+  },
+  {
+    "name": "object with floor rounding",
+    "given": {
+      "input": "123456789.87654321",
+      "definition": { "$$decimal": "$", "scale": 2, "rounding": "FLOOR" }
+    },
+    "expect": {
+      "equal": 123456789.87
+    }
+  },
+  {
+    "name": "object without rounding",
+    "given": {
+      "input": "1.01234567890123456789",
+      "definition": { "$$decimal": "$" }
+    },
+    "expect": {
+      "equal": 1.012345678901235
+    }
+  }
+]

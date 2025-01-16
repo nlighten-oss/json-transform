@@ -1,0 +1,75 @@
+[
+  {
+    "name": "Inline - parse CSV with comma as a value",
+    "given": {
+      "input": "a\n\",\"",
+      "definition": "$$csvparse:$"
+    },
+    "expect": {
+      "equal": [
+        {
+          "a": ","
+        }
+      ]
+    }
+  },
+  {
+    "name": "Inline - parse CSV with escaped double quotes",
+    "given": {
+      "input": "a\n\"\"\"\"",
+      "definition": "$$csvparse:$"
+    },
+    "expect": {
+      "equal": [
+        {
+          "a": "\""
+        }
+      ]
+    }
+  },
+  {
+    "name": "Inline - parse CSV into array format",
+    "given": {
+      "input": "1,2\n3,4",
+      "definition": "$$csvparse(true):$"
+    },
+    "expect": {
+      "equal": [
+        ["1", "2"],
+        ["3", "4"]
+      ]
+    }
+  },
+  {
+    "name": "Object - parse CSV with comma as a value",
+    "given": {
+      "input": "a\n\",\"",
+      "definition": {
+        "$$csvparse": "$"
+      }
+    },
+    "expect": {
+      "equal": [
+        {
+          "a": ","
+        }
+      ]
+    }
+  },
+  {
+    "name": "Object - parse CSV with escaped double quotes",
+    "given": {
+      "input": "a\n\"\"\"\"",
+      "definition": {
+        "$$csvparse": "$"
+      }
+    },
+    "expect": {
+      "equal": [
+        {
+          "a": "\""
+        }
+      ]
+    }
+  }
+]
