@@ -14,7 +14,8 @@ const JSONPATH_ROOT = "$",
 const isNullOrUndefined = (value: any): value is null | undefined => value == null || typeof value === "undefined";
 const isNullOrEmpty = (value?: string | null): value is null | undefined =>
   value == null || typeof value === "undefined" || value === "";
-const isMap = (value: any): value is Record<string, any> => value && typeof value === "object" && !Array.isArray(value);
+const isMap = (value: any): value is Record<string, any> =>
+  value && typeof value === "object" && !Array.isArray(value) && !BigNumber.isBigNumber(value);
 
 function getAsString<T extends string | number | boolean | object>(value: T): string;
 function getAsString<T extends null | undefined>(value: T): null;

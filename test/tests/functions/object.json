@@ -1,0 +1,148 @@
+[
+  {
+    "name": "Inline",
+    "given": {
+      "input": [
+        ["a", 1],
+        ["b", true],
+        ["c", "C"]
+      ],
+      "definition": "$$object:$"
+    },
+    "expect": {
+      "equal": { "a": 1, "b": true, "c": "C" }
+    }
+  },
+  {
+    "name": "Inline With Numbers",
+    "given": {
+      "input": [
+        [0, 1],
+        [1, true],
+        [2, "C"]
+      ],
+      "definition": "$$object:$"
+    },
+    "expect": {
+      "equal": { "0": 1, "1": true, "2": "C" }
+    }
+  },
+  {
+    "name": "Inline Invalid Input - Null",
+    "given": {
+      "input": null,
+      "definition": "$$object"
+    },
+    "expect": {
+      "equal": {}
+    }
+  },
+  {
+    "name": "Inline Invalid Input - Number",
+    "given": {
+      "input": 0.5,
+      "definition": "$$object:$"
+    },
+    "expect": {
+      "equal": {}
+    }
+  },
+  {
+    "name": "Inline Invalid Input - String",
+    "given": {
+      "input": "test",
+      "definition": "$$object:$"
+    },
+    "expect": {
+      "equal": {}
+    }
+  },
+  {
+    "name": "Inline Invalid Input - Boolean",
+    "given": {
+      "input": false,
+      "definition": "$$object:$"
+    },
+    "expect": {
+      "equal": {}
+    }
+  },
+  {
+    "name": "Object",
+    "given": {
+      "input": [
+        ["a", 1],
+        ["b", true],
+        ["c", "C"]
+      ],
+      "definition": { "$$object": "$" }
+    },
+    "expect": {
+      "equal": { "a": 1, "b": true, "c": "C" }
+    }
+  },
+  {
+    "name": "Object With Numbers",
+    "given": {
+      "input": [
+        [0, 1],
+        [1, true],
+        [2, "C"]
+      ],
+      "definition": { "$$object": "$" }
+    },
+    "expect": {
+      "equal": { "0": 1, "1": true, "2": "C" }
+    }
+  },
+  {
+    "name": "Object Invalid Input - Null",
+    "given": {
+      "input": null,
+      "definition": { "$$object": "$" }
+    },
+    "expect": {
+      "equal": {}
+    }
+  },
+  {
+    "name": "Object Invalid Input - Number",
+    "given": {
+      "input": 0.5,
+      "definition": { "$$object": "$" }
+    },
+    "expect": {
+      "equal": {}
+    }
+  },
+  {
+    "name": "Object Invalid Input - Boolean",
+    "given": {
+      "input": false,
+      "definition": { "$$object": "$" }
+    },
+    "expect": {
+      "equal": {}
+    }
+  },
+  {
+    "name": "Object Explicit",
+    "given": {
+      "input": { "key": 1, "value": true },
+      "definition": { "$$object": [["$.key", "$.value"]] }
+    },
+    "expect": {
+      "equal": { "1": true }
+    }
+  },
+  {
+    "name": "Object Explicit With String",
+    "given": {
+      "input": { "key": "a", "value": 0.5 },
+      "definition": { "$$object": [["$.key", "$.value"]] }
+    },
+    "expect": {
+      "equal": { "a": 0.5 }
+    }
+  }
+]

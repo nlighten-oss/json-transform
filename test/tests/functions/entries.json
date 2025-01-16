@@ -1,0 +1,85 @@
+[
+  {
+    "name": "inline - object to entries",
+    "given": {
+      "input": {
+        "a": 1,
+        "b": true,
+        "c": "C"
+      },
+      "definition": "$$entries:$"
+    },
+    "expect": {
+      "equal": [
+        ["a", 1],
+        ["b", true],
+        ["c", "C"]
+      ]
+    }
+  },
+  {
+    "name": "inline - array to entries",
+    "given": {
+      "input": [1, true, "C"],
+      "definition": "$$entries:$"
+    },
+    "expect": {
+      "equal": [
+        [0, 1],
+        [1, true],
+        [2, "C"]
+      ]
+    }
+  },
+  {
+    "name": "object - object to entries",
+    "given": {
+      "input": {
+        "a": 1,
+        "b": true,
+        "c": "C"
+      },
+      "definition": { "$$entries": "$" }
+    },
+    "expect": {
+      "equal": [
+        ["a", 1],
+        ["b", true],
+        ["c", "C"]
+      ]
+    }
+  },
+  {
+    "name": "object - array to entries",
+    "given": {
+      "input": [1, true, "C"],
+      "definition": { "$$entries": "$" }
+    },
+    "expect": {
+      "equal": [
+        [0, 1],
+        [1, true],
+        [2, "C"]
+      ]
+    }
+  },
+  {
+    "name": "object - explicit",
+    "given": {
+      "input": {
+        "a": 1,
+        "b": true,
+        "c": "C"
+      },
+      "definition": { "$$entries": { "*": "$", "d": 0.5 } }
+    },
+    "expect": {
+      "equal": [
+        ["a", 1],
+        ["b", true],
+        ["c", "C"],
+        ["d", 0.5]
+      ]
+    }
+  }
+]

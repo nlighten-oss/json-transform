@@ -1,0 +1,112 @@
+[
+  {
+    "name": "Inline",
+    "given": {
+      "input": "text",
+      "definition": "$$pad(right,3,2):$"
+    },
+    "expect": {
+      "equal": "text"
+    }
+  },
+  {
+    "name": "Inline with Value",
+    "given": {
+      "input": "text",
+      "definition": "$$pad(end,6):text"
+    },
+    "expect": {
+      "equal": "text00"
+    }
+  },
+  {
+    "name": "Inline with Right",
+    "given": {
+      "input": "text",
+      "definition": "$$pad(right,6,0):$"
+    },
+    "expect": {
+      "equal": "text00"
+    }
+  },
+  {
+    "name": "Inline with Space",
+    "given": {
+      "input": "text",
+      "definition": "$$pad(end,6,' '):$"
+    },
+    "expect": {
+      "equal": "text  "
+    }
+  },
+  {
+    "name": "Inline with Left Space",
+    "given": {
+      "input": "text",
+      "definition": "$$pad(left,6,' '):$"
+    },
+    "expect": {
+      "equal": "  text"
+    }
+  },
+  {
+    "name": "Inline with Left X",
+    "given": {
+      "input": "text",
+      "definition": "$$pad(left,6,x):$"
+    },
+    "expect": {
+      "equal": "xxtext"
+    }
+  },
+  {
+    "name": "Inline with Start XY",
+    "given": {
+      "input": "text",
+      "definition": "$$pad(start,6,xy):$"
+    },
+    "expect": {
+      "equal": "xytext"
+    }
+  },
+  {
+    "name": "Inline with Start XY Long",
+    "given": {
+      "input": "text",
+      "definition": "$$pad(start,9,xy):$"
+    },
+    "expect": {
+      "equal": "xyxyxtext"
+    }
+  },
+  {
+    "name": "Inline Bad Input 1",
+    "given": {
+      "input": "text",
+      "definition": "$$pad:$"
+    },
+    "expect": {
+      "equal": "text"
+    }
+  },
+  {
+    "name": "Inline Bad Input 2",
+    "given": {
+      "input": "text",
+      "definition": "$$pad():$"
+    },
+    "expect": {
+      "equal": "text"
+    }
+  },
+  {
+    "name": "Inline Bad Input 3",
+    "given": {
+      "input": "text",
+      "definition": "$$pad(start):$"
+    },
+    "expect": {
+      "equal": "text"
+    }
+  }
+]

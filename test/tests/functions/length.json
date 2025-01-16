@@ -1,0 +1,202 @@
+[
+  {
+    "name": "Auto Detect",
+    "given": {
+      "input": "Hello World",
+      "definition": "$$length:hello world"
+    },
+    "expect": {
+      "equal": 11
+    }
+  },
+  {
+    "name": "Auto Detect with Empty Arguments",
+    "given": {
+      "input": "Hello World",
+      "definition": "$$length():$"
+    },
+    "expect": {
+      "equal": 11
+    }
+  },
+  {
+    "name": "Auto Detect with Array",
+    "given": {
+      "input": ["Hello", "World"],
+      "definition": "$$length:$"
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "Auto Detect with Object",
+    "given": {
+      "input": { "a": "Hello", "b": "World", "c": "foo", "d": "bar" },
+      "definition": "$$length:$"
+    },
+    "expect": {
+      "equal": 4
+    }
+  },
+  {
+    "name": "String Only",
+    "given": {
+      "input": "Hello World",
+      "definition": "$$length(STRING):hello world"
+    },
+    "expect": {
+      "equal": 11
+    }
+  },
+  {
+    "name": "String Only with Empty Arguments",
+    "given": {
+      "input": "Hello World",
+      "definition": "$$length(STRING):$"
+    },
+    "expect": {
+      "equal": 11
+    }
+  },
+  {
+    "name": "String Only with Array",
+    "given": {
+      "input": ["Hello", "World"],
+      "definition": "$$length(STRING):$"
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "String Only with Object",
+    "given": {
+      "input": { "a": "Hello", "b": "World", "c": "foo", "d": "bar" },
+      "definition": "$$length(STRING):$"
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "Array Only",
+    "given": {
+      "input": "Hello World",
+      "definition": "$$length(ARRAY):hello world"
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "Array Only with Empty Arguments",
+    "given": {
+      "input": "Hello World",
+      "definition": "$$length(ARRAY):$"
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "Array Only with Array",
+    "given": {
+      "input": ["Hello", "World"],
+      "definition": "$$length(ARRAY):$"
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "Array Only with Object",
+    "given": {
+      "input": { "a": "Hello", "b": "World", "c": "foo", "d": "bar" },
+      "definition": "$$length(ARRAY):$"
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "Object Only",
+    "given": {
+      "input": "Hello World",
+      "definition": "$$length(OBJECT):hello world"
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "Object Only with Empty Arguments",
+    "given": {
+      "input": "Hello World",
+      "definition": "$$length(OBJECT):$"
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "Object Only with Array",
+    "given": {
+      "input": ["Hello", "World"],
+      "definition": "$$length(OBJECT):$"
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "Object Only with Object",
+    "given": {
+      "input": { "a": "Hello", "b": "World", "c": "foo", "d": "bar" },
+      "definition": "$$length(OBJECT):$"
+    },
+    "expect": {
+      "equal": 4
+    }
+  },
+  {
+    "name": "Zero Default",
+    "given": {
+      "input": null,
+      "definition": "$$length:$"
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "Zero Default with True",
+    "given": {
+      "input": null,
+      "definition": "$$length(AUTO,true):$"
+    },
+    "expect": {
+      "equal": 0
+    }
+  },
+  {
+    "name": "Zero Default with Number",
+    "given": {
+      "input": 42,
+      "definition": "$$length(AUTO,true):$"
+    },
+    "expect": {
+      "equal": 0
+    }
+  },
+  {
+    "name": "Zero Default with Boolean",
+    "given": {
+      "input": true,
+      "definition": "$$length(AUTO,true):$"
+    },
+    "expect": {
+      "equal": 0
+    }
+  }
+]

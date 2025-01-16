@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Convert",
+    "given": {
+      "input": "123456789.87654321",
+      "definition": "$$long:$"
+    },
+    "expect": {
+      "equal": 123456789
+    }
+  },
+  {
+    "name": "Convert with Empty Arguments",
+    "given": {
+      "input": "123456789.87654321",
+      "definition": "$$long():$"
+    },
+    "expect": {
+      "equal": 123456789
+    }
+  },
+  {
+    "name": "Convert with Number",
+    "given": {
+      "input": 123456789.87654321,
+      "definition": "$$long:$"
+    },
+    "expect": {
+      "equal": 123456789
+    }
+  },
+  {
+    "name": "Convert with Null",
+    "given": {
+      "input": null,
+      "definition": "$$long:$"
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "Max Long",
+    "given": {
+      "input": "9223372036854775807",
+      "definition": "$$long:$"
+    },
+    "expect": {
+      "equal": 9223372036854775807
+    }
+  }
+]

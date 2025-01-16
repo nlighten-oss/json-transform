@@ -36,21 +36,22 @@ function flatten(source: any, target: Record<string, any>, prefix?: string, arra
   if (isNullOrUndefined(source)) {
     return target;
   }
+  const noPrefix = isNullOrUndefined(prefix);
   if (isMap(source)) {
     Object.entries(source).forEach(([key, val]) =>
-      flatten(val, target, prefix == null ? key : prefix + "." + key, arrayPrefix),
+      flatten(val, target, noPrefix ? key : prefix + "." + key, arrayPrefix),
     );
   } else if (Array.isArray(source)) {
-    if (arrayPrefix != null) {
+    if (!isNullOrUndefined(arrayPrefix)) {
       const size = source.length;
       for (let i = 0; i < size; i++) {
-        flatten(source[i], target, (prefix == null ? "" : prefix + ".") + arrayPrefix + i, arrayPrefix);
+        flatten(source[i], target, (noPrefix ? "" : prefix + ".") + arrayPrefix + i, arrayPrefix);
       }
-    } else if (prefix != null) {
+    } else if (!noPrefix) {
       target[prefix] = source;
     }
   } else {
-    if (prefix == null || prefix === "") {
+    if (noPrefix || prefix === "") {
       return source;
     }
     target[prefix] = source;

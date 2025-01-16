@@ -1,7 +1,7 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { isEqual } from "../JsonHelpers";
+import { isEqual, isNumberType } from "../JsonHelpers";
 
 class TransformerFunctionIs extends TransformerFunction {
   constructor() {
@@ -28,7 +28,7 @@ class TransformerFunctionIs extends TransformerFunction {
       let that: any = null;
       // if operator is not in/nin then prepare the "that" argument which is a JsonElement
       if (op !== "IN" && op !== "NIN") {
-        that = await (typeof value === "number" ? context.getBigDecimal("that") : context.getJsonElement("that"));
+        that = await (isNumberType(value) ? context.getBigDecimal("that") : context.getJsonElement("that"));
       }
       switch (op) {
         case "IN": {

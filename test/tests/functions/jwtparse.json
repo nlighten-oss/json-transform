@@ -1,0 +1,54 @@
+[
+  {
+    "name": "Inline",
+    "given": {
+      "input": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+      "definition": "$$jwtparse:$"
+    },
+    "expect": {
+      "equal": {
+        "sub": "1234567890",
+        "name": "John Doe",
+        "iat": 1516239022
+      }
+    }
+  },
+  {
+    "name": "Inline Invalid",
+    "given": {
+      "input": true,
+      "definition": "$$jwtparse:$"
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "Object",
+    "given": {
+      "input": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+      "definition": {
+        "$$jwtparse": "$"
+      }
+    },
+    "expect": {
+      "equal": {
+        "sub": "1234567890",
+        "name": "John Doe",
+        "iat": 1516239022
+      }
+    }
+  },
+  {
+    "name": "Object Invalid",
+    "given": {
+      "input": true,
+      "definition": {
+        "$$jwtparse": "$"
+      }
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  }
+]

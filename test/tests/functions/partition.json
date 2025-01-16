@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Inline",
+    "given": {
+      "input": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      "definition": "$$partition(3):$"
+    },
+    "expect": {
+      "equal": [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9],
+        [10]
+      ]
+    }
+  },
+  {
+    "name": "Object",
+    "given": {
+      "input": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      "definition": { "$$partition": "$", "size": 3 }
+    },
+    "expect": {
+      "equal": [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9],
+        [10]
+      ]
+    }
+  }
+]

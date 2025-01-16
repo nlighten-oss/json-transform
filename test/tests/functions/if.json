@@ -1,0 +1,294 @@
+[
+  {
+    "name": "arrayForm true with then and else",
+    "given": {
+      "input": null,
+      "definition": {
+        "$$if": [true, "b", "c"]
+      }
+    },
+    "expect": {
+      "equal": "b"
+    }
+  },
+  {
+    "name": "arrayForm true with then",
+    "given": {
+      "input": null,
+      "definition": {
+        "$$if": [true, "b"]
+      }
+    },
+    "expect": {
+      "equal": "b"
+    }
+  },
+  {
+    "name": "arrayForm false with then",
+    "given": {
+      "input": null,
+      "definition": {
+        "$$if": [false, "b"]
+      }
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "arrayForm null with then",
+    "given": {
+      "input": null,
+      "definition": {
+        "$$if": [null, "b"]
+      }
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "arrayForm nested if",
+    "given": {
+      "input": ["a", "b", "c"],
+      "definition": {
+        "$$if": [
+          "$[0]",
+          {
+            "$$if": ["$[1]", "d"]
+          }
+        ]
+      }
+    },
+    "expect": {
+      "equal": "d"
+    }
+  },
+  {
+    "name": "arrayForm nested if with or",
+    "given": {
+      "input": [false, 0, "true"],
+      "definition": {
+        "$$if": ["$[0]", "d", { "$$if": ["$[1]", "d", { "$$if": ["$[2]", "d"] }] }]
+      }
+    },
+    "expect": {
+      "equal": "d"
+    }
+  },
+  {
+    "name": "arrayForm if else with array",
+    "given": {
+      "input": ["a", "b", "c"],
+      "definition": {
+        "$$if": ["$[0]", "$[1]", "$[2]"]
+      }
+    },
+    "expect": {
+      "equal": "b"
+    }
+  },
+  {
+    "name": "arrayForm if else with array and null",
+    "given": {
+      "input": [null, "b", "c"],
+      "definition": {
+        "$$if": ["$[0]", "$[1]", "$[2]"]
+      }
+    },
+    "expect": {
+      "equal": "c"
+    }
+  },
+  {
+    "name": "arrayForm if else with array and boolean",
+    "given": {
+      "input": ["false", "b", "c"],
+      "definition": {
+        "$$if": ["$$boolean:$[0]", "$[1]", "$[2]"]
+      }
+    },
+    "expect": {
+      "equal": "c"
+    }
+  },
+  {
+    "name": "arrayForm invalid input array",
+    "given": {
+      "input": [true],
+      "definition": { "$$if": "$" }
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "arrayForm invalid input string",
+    "given": {
+      "input": "hello",
+      "definition": { "$$if": "$" }
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "objectForm true with then and else",
+    "given": {
+      "input": null,
+      "definition": {
+        "$$if": true,
+        "then": "b",
+        "else": "c"
+      }
+    },
+    "expect": {
+      "equal": "b"
+    }
+  },
+  {
+    "name": "objectForm true with then",
+    "given": {
+      "input": null,
+      "definition": {
+        "$$if": true,
+        "then": "b"
+      }
+    },
+    "expect": {
+      "equal": "b"
+    }
+  },
+  {
+    "name": "objectForm false with then",
+    "given": {
+      "input": null,
+      "definition": {
+        "$$if": false,
+        "then": "b"
+      }
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "objectForm null with then",
+    "given": {
+      "input": null,
+      "definition": {
+        "$$if": "$",
+        "then": "b"
+      }
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "objectForm nested if",
+    "given": {
+      "input": ["a", "b", "c"],
+      "definition": {
+        "$$if": "$[0]",
+        "then": { "$$if": "$[1]", "then": "d" }
+      }
+    },
+    "expect": {
+      "equal": "d"
+    }
+  },
+  {
+    "name": "objectForm nested if with or",
+    "given": {
+      "input": [false, 0, "true"],
+      "definition": {
+        "$$if": "$[0]",
+        "then": "d",
+        "else": {
+          "$$if": "$[1]",
+          "then": "d",
+          "else": {
+            "$$if": "$[2]",
+            "then": "d"
+          }
+        }
+      }
+    },
+    "expect": {
+      "equal": "d"
+    }
+  },
+  {
+    "name": "objectForm if else with array",
+    "given": {
+      "input": ["a", "b", "c"],
+      "definition": {
+        "$$if": "$[0]",
+        "then": "$[1]",
+        "else": "$[2]"
+      }
+    },
+    "expect": {
+      "equal": "b"
+    }
+  },
+  {
+    "name": "objectForm if else with array and null",
+    "given": {
+      "input": [null, "b", "c"],
+      "definition": {
+        "$$if": "$[0]",
+        "then": "$[1]",
+        "else": "$[2]"
+      }
+    },
+    "expect": {
+      "equal": "c"
+    }
+  },
+  {
+    "name": "objectForm if else with array and boolean",
+    "given": {
+      "input": ["false", "b", "c"],
+      "definition": {
+        "$$if": "$$boolean:$[0]",
+        "then": "$[1]",
+        "else": "$[2]"
+      }
+    },
+    "expect": {
+      "equal": "c"
+    }
+  },
+  {
+    "name": "inline true",
+    "given": {
+      "input": true,
+      "definition": "$$if(a,b):$"
+    },
+    "expect": {
+      "equal": "a"
+    }
+  },
+  {
+    "name": "inline false",
+    "given": {
+      "input": false,
+      "definition": "$$if(a,b):$"
+    },
+    "expect": {
+      "equal": "b"
+    }
+  },
+  {
+    "name": "inline false without else",
+    "given": {
+      "input": false,
+      "definition": "$$if(a):$"
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  }
+]

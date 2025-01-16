@@ -1,0 +1,22 @@
+[
+  {
+    "name": "lower (no args)",
+    "given": {
+      "input": "TEXT",
+      "definition": "$$lower:$"
+    },
+    "expect": {
+      "equal": "text"
+    }
+  },
+  {
+    "name": "lower (no args, with parentheses)",
+    "given": {
+      "input": "TEXT",
+      "definition": "$$lower():$"
+    },
+    "expect": {
+      "equal": "text"
+    }
+  }
+]

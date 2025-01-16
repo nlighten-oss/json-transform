@@ -1,0 +1,77 @@
+[
+  {
+    "name": "Get",
+    "given": {
+      "input": {
+        "b": [
+          "c",
+          "d",
+          {
+            "e": "Hello"
+          }
+        ]
+      },
+      "definition": "$$jsonpointer(GET,/b/2/e):$"
+    },
+    "expect": {
+      "equal": "Hello"
+    }
+  },
+  {
+    "name": "Get Yo Dawg",
+    "given": {
+      "input": {
+        "pointer": "/pointer"
+      },
+      "definition": "$$jsonpointer(get,$.pointer):$"
+    },
+    "expect": {
+      "equal": "/pointer"
+    }
+  },
+  {
+    "name": "Set",
+    "given": {
+      "input": {
+        "b": [
+          "c",
+          "d",
+          {
+            "e": "Hello"
+          }
+        ]
+      },
+      "definition": "$$jsonpointer(SET,/b,'$.b[2]'):$"
+    },
+    "expect": {
+      "equal": {
+        "b": {
+          "e": "Hello"
+        }
+      }
+    }
+  },
+  {
+    "name": "Remove",
+    "given": {
+      "input": {
+        "b": [
+          "c",
+          "d",
+          {
+            "e": "Hello"
+          }
+        ]
+      },
+      "definition": "$$jsonpointer(REMOVE,/b/2):$"
+    },
+    "expect": {
+      "equal": {
+        "b": [
+          "c",
+          "d"
+        ]
+      }
+    }
+  }
+]

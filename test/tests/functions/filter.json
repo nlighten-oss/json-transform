@@ -1,0 +1,51 @@
+[
+  {
+    "name": "truthy values only",
+    "given": {
+      "input": ["a", true, "false", 0, 1, [], [0]],
+      "definition": {
+        "$$filter": "$",
+        "by": "##current"
+      }
+    },
+    "expect": {
+      "equal": ["a", true, "false", 1, [0]]
+    }
+  },
+  {
+    "name": "truthy values only (explicit boolean, non js style)",
+    "given": {
+      "input": ["a", true, "false", 0, 1, [], [0]],
+      "definition": {
+        "$$filter": "$",
+        "by": "$$boolean:##current"
+      }
+    },
+    "expect": {
+      "equal": [true, 1, [0]]
+    }
+  },
+  {
+    "name": "names that starts with a",
+    "given": {
+      "input": [{ "name": "alice" }, { "name": "ann" }, { "name": "bob" }],
+      "definition": {
+        "$$filter": "$",
+        "by": "$$test(^a):##current.name"
+      }
+    },
+    "expect": {
+      "equal": [{ "name": "alice" }, { "name": "ann" }]
+    }
+  },
+  {
+    "name": "inline",
+    "given": {
+      "input": ["a", true, "false", 0, 1, [], [0]],
+      "definition": "$$filter(##current):$"
+    },
+    "expect": {
+      "equal": ["a", true, "false", 1, [0]]
+    }
+  }
+]

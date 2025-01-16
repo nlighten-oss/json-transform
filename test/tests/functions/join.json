@@ -1,0 +1,221 @@
+[
+  {
+    "name": "Object array input",
+    "given": {
+      "input": ["a", "b", "c"],
+      "definition": {
+        "$$join": "$"
+      }
+    },
+    "expect": {
+      "equal": "abc"
+    }
+  },
+  {
+    "name": "Object array with first element and B",
+    "given": {
+      "input": ["a", "b", "c"],
+      "definition": {
+        "$$join": ["$[0]", "B"]
+      }
+    },
+    "expect": {
+      "equal": "aB"
+    }
+  },
+  {
+    "name": "Object array with first element, nulls and B",
+    "given": {
+      "input": ["a", "b", "c"],
+      "definition": {
+        "$$join": ["$[0]", null, null, "B"],
+        "delimiter": ","
+      }
+    },
+    "expect": {
+      "equal": "a,B"
+    }
+  },
+  {
+    "name": "Object array with delimiter",
+    "given": {
+      "input": ["a", "b", "c"],
+      "definition": {
+        "$$join": "$",
+        "$$delimiter": ","
+      }
+    },
+    "expect": {
+      "equal": "a,b,c"
+    }
+  },
+  {
+    "name": "Object array with prefix",
+    "given": {
+      "input": ["hello", "world"],
+      "definition": {
+        "$$join": "$",
+        "delimiter": " ",
+        "prefix": "<"
+      }
+    },
+    "expect": {
+      "equal": "<hello world"
+    }
+  },
+  {
+    "name": "Object array with prefix and suffix",
+    "given": {
+      "input": ["hello", "world"],
+      "definition": {
+        "$$join": "$",
+        "delimiter": " ",
+        "prefix": "<",
+        "suffix": ">"
+      }
+    },
+    "expect": {
+      "equal": "<hello world>"
+    }
+  },
+  {
+    "name": "Inline array input",
+    "given": {
+      "input": ["hello", " ", "world"],
+      "definition": "$$join:$"
+    },
+    "expect": {
+      "equal": "hello world"
+    }
+  },
+  {
+    "name": "Inline array input with empty parenthesis",
+    "given": {
+      "input": ["hello", " ", "world"],
+      "definition": "$$join():$"
+    },
+    "expect": {
+      "equal": "hello world"
+    }
+  },
+  {
+    "name": "Inline array with different types",
+    "given": {
+      "input": ["hello", 5, true],
+      "definition": "$$join:$"
+    },
+    "expect": {
+      "equal": "hello5true"
+    }
+  },
+  {
+    "name": "Inline array input 2",
+    "given": {
+      "input": ["hello", " ", "world"],
+      "definition": "$$join:$"
+    },
+    "expect": {
+      "equal": "hello world"
+    }
+  },
+  {
+    "name": "Inline array input sliced",
+    "given": {
+      "input": ["hello", " ", "world"],
+      "definition": "$$join:$"
+    },
+    "expect": {
+      "equal": "hello world"
+    }
+  },
+  {
+    "name": "Inline array with nulls",
+    "given": {
+      "input": ["hello", null, "world"],
+      "definition": "$$join(' '):$"
+    },
+    "expect": {
+      "equal": "hello world"
+    }
+  },
+  {
+    "name": "Inline array with nulls and true parameter",
+    "given": {
+      "input": ["hello", null, "world"],
+      "definition": "$$join(' ',,,true):$"
+    },
+    "expect": {
+      "equal": "hello null world"
+    }
+  },
+  {
+    "name": "Inline array with comma delimiter",
+    "given": {
+      "input": ["hello", " ", "world"],
+      "definition": "$$join(,):$"
+    },
+    "expect": {
+      "equal": "hello world"
+    }
+  },
+  {
+    "name": "Inline array with colon delimiter",
+    "given": {
+      "input": ["hello", " ", "world"],
+      "definition": "$$join(:):$"
+    },
+    "expect": {
+      "equal": "hello: :world"
+    }
+  },
+  {
+    "name": "Inline array with comma string delimiter",
+    "given": {
+      "input": ["hello", " ", "world"],
+      "definition": "$$join(','):$"
+    },
+    "expect": {
+      "equal": "hello, ,world"
+    }
+  },
+  {
+    "name": "Inline array with single quote delimiter",
+    "given": {
+      "input": ["hello", " ", "world"],
+      "definition": "$$join('\\''):$"
+    },
+    "expect": {
+      "equal": "hello' 'world"
+    }
+  },
+  {
+    "name": "Inline array with second element as delimiter",
+    "given": {
+      "input": ["hello", " ", "world"],
+      "definition": "$$join('$[1]'):$"
+    },
+    "expect": {
+      "equal": "hello   world"
+    }
+  },
+  {
+    "name": "Inline array with prefix",
+    "given": {
+      "input": ["hello", "world"],
+      "definition": "$$join( ,<):$"
+    },
+    "expect": {
+      "equal": "<hello world"
+    }
+  },
+  {
+    "name": "Inline array with prefix and suffix",
+    "given": {
+      "input": ["hello", "world"],
+      "definition": "$$join( ,<,>):$"
+    },
+    "expect": {
+      "equal": "<hello world>"
+    }
+  }
+]

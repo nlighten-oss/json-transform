@@ -3,7 +3,7 @@ import path from 'path';
 import {describe, test} from "vitest";
 import {assertTransformation, JSONBig} from "./assertTransformation";
 
-const platformToTest = "java";
+const platformToTest = "javascript";
 
 const testsFolder = __dirname + "/../tests";
 const testsSubfolders = fs.readdirSync(testsFolder);

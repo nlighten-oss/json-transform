@@ -1,0 +1,62 @@
+[
+  {
+    "name": "inline form to object",
+    "given": {
+      "input": "a=1&b=B&c",
+      "definition": "$$formparse:$"
+    },
+    "expect": {
+      "equal": {
+        "a": "1",
+        "a$$": ["1"],
+        "b": "B",
+        "b$$": ["B"],
+        "c": "true",
+        "c$$": ["true"]
+      }
+    }
+  },
+  {
+    "name": "inline form with array to object",
+    "given": {
+      "input": "a=1&a=2",
+      "definition": "$$formparse:$"
+    },
+    "expect": {
+      "equal": {
+        "a": "1",
+        "a$$": ["1", "2"]
+      }
+    }
+  },
+  {
+    "name": "object form to object",
+    "given": {
+      "input": "a=1&b=B&c",
+      "definition": { "$$formparse": "$" }
+    },
+    "expect": {
+      "equal": {
+        "a": "1",
+        "a$$": ["1"],
+        "b": "B",
+        "b$$": ["B"],
+        "c": "true",
+        "c$$": ["true"]
+      }
+    }
+  },
+  {
+    "name": "object form with array to object",
+    "given": {
+      "input": "a=1&a=2",
+      "definition": { "$$formparse": "$" }
+    },
+    "expect": {
+      "equal": {
+        "a": "1",
+        "a$$": ["1", "2"]
+      }
+    }
+  }
+]
