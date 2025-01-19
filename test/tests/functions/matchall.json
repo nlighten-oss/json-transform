@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Inline",
+    "given": {
+      "input": "hello my helloKitty",
+      "definition": "$$matchall([el]):$"
+    },
+    "expect": {
+      "equal": ["e", "l", "l", "e", "l", "l"]
+    }
+  },
+  {
+    "name": "Inline with Plus",
+    "given": {
+      "input": "hello my helloKitty",
+      "definition": "$$matchall([le]+):$"
+    },
+    "expect": {
+      "equal": ["ell", "ell"]
+    }
+  },
+  {
+    "name": "Inline with Hell",
+    "given": {
+      "input": "hello my helloKitty",
+      "definition": "$$matchall(hell):$"
+    },
+    "expect": {
+      "equal": ["hell", "hell"]
+    }
+  },
+  {
+    "name": "Inline with Start",
+    "given": {
+      "input": "hello my helloKitty",
+      "definition": "$$matchall(^hello):$"
+    },
+    "expect": {
+      "equal": ["hello"]
+    }
+  },
+  {
+    "name": "Inline with End",
+    "given": {
+      "input": "hello my helloKitty",
+      "definition": "$$matchall(hello$):$"
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "Inline Group",
+    "given": {
+      "input": "world to waterWorld",
+      "definition": "$$matchall('w(\\\\w+)d',1):$"
+    },
+    "expect": {
+      "equal": ["orl", "aterWorl"]
+    }
+  }
+]

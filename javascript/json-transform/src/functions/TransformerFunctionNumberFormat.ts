@@ -98,7 +98,11 @@ export const parsePattern = function (
   return [format, decimalPlaces, integerPlaces];
 };
 
+const RemoveTrailingZerosRegExp = /\.?0+$/;
+
 class TransformerFunctionNumberFormat extends TransformerFunction {
+  private readonly defaultFormat: Format;
+
   constructor() {
     super({
       arguments: {
@@ -111,6 +115,11 @@ class TransformerFunctionNumberFormat extends TransformerFunction {
         radix: { type: ArgType.Integer, position: 1, defaultInteger: 10 },
       },
     });
+    const [format] = parsePattern("#,##0.000");
+    format.decimalSeparator = ".";
+    format.groupSeparator = ",";
+    format.fractionGroupSize = 0;
+    this.defaultFormat = format;
   }
 
   override async apply(context: FunctionContext): Promise<any> {
@@ -166,7 +175,7 @@ class TransformerFunctionNumberFormat extends TransformerFunction {
         }).format(input.toString() as any);
       }
       default: {
-        return input.toString();
+        return input.toFormat(3, BigNumber.ROUND_UP, this.defaultFormat).replace(RemoveTrailingZerosRegExp, "");
       }
     }
   }

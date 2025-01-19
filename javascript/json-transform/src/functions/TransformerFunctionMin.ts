@@ -1,7 +1,7 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { createComparator, isNullOrUndefined } from "../JsonHelpers";
+import { createComparator, isNullOrUndefined, isNumberType } from "../JsonHelpers";
 
 class TransformerFunctionMin extends TransformerFunction {
   constructor() {
@@ -21,7 +21,7 @@ class TransformerFunctionMin extends TransformerFunction {
 
     const type = await context.getEnum("type");
 
-    const def = await context.getJsonElement("default", true);
+    const def = await (type === "NUMBER" ? context.getBigDecimal("default") : context.getJsonElement("default"));
     const comparator = createComparator(type);
     return streamer
       .stream()

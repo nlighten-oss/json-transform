@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Inline no arguments",
+    "given": {
+      "input": "123456789.88",
+      "definition": "$$numberparse:$"
+    },
+    "expect": {
+      "equal": 123456789.88
+    }
+  },
+  {
+    "name": "Inline empty arguments",
+    "given": {
+      "input": "123456789.88",
+      "definition": "$$numberparse():$"
+    },
+    "expect": {
+      "equal": 123456789.88
+    }
+  },
+  {
+    "name": "Inline with custom format",
+    "given": {
+      "input": "123,456,789.88",
+      "definition": "$$numberparse('#,##0.00'):$"
+    },
+    "expect": {
+      "equal": 123456789.88
+    }
+  },
+  {
+    "name": "Inline with custom format and de locale",
+    "given": {
+      "input": "123.456.789,88",
+      "definition": "$$numberparse('#,##0.00',de):$"
+    },
+    "expect": {
+      "equal": 123456789.88
+    }
+  },
+  {
+    "name": "Inline with custom format, en-US locale and separators",
+    "given": {
+      "input": "123.456.789,88",
+      "definition": "$$numberparse('#,##0.00',en-US,'.',','):$"
+    },
+    "expect": {
+      "equal": 123456789.88
+    }
+  },
+  {
+    "name": "Inline hex",
+    "given": {
+      "input": "75bcd15",
+      "definition": "$$numberparse(BASE,16):$"
+    },
+    "expect": {
+      "equal": 123456789
+    }
+  },
+  {
+    "name": "Inline binary",
+    "given": {
+      "input": "00001010",
+      "definition": "$$numberparse(BASE,2):$"
+    },
+    "expect": {
+      "equal": 10
+    }
+  }
+]

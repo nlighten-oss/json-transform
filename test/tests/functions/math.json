@@ -1,0 +1,1073 @@
+[
+  {
+    "name": "Inline plus",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(+,$[0],$[1])"
+    },
+    "expect": {
+      "equal": 6
+    }
+  },
+  {
+    "name": "Inline plus 2",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math($[0],+,$[1])"
+    },
+    "expect": {
+      "equal": 6
+    }
+  },
+  {
+    "name": "Inline plus 3",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math($[0],+)"
+    },
+    "expect": {
+      "equal": 4
+    }
+  },
+  {
+    "name": "Inline minus",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math($[0],-,$[1])"
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "Inline multiply",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math($[0],*,$[1])"
+    },
+    "expect": {
+      "equal": 8
+    }
+  },
+  {
+    "name": "Inline divide",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math($[0],/,$[1])"
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "Inline integer divide",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math($[0],//,3)"
+    },
+    "expect": {
+      "equal": 1
+    }
+  },
+  {
+    "name": "Inline modulo",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math($[0],%,3)"
+    },
+    "expect": {
+      "equal": 1
+    }
+  },
+  {
+    "name": "Inline power",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math($[1],^,3)"
+    },
+    "expect": {
+      "equal": 8
+    }
+  },
+  {
+    "name": "Inline bitwise and",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(3,&,1)"
+    },
+    "expect": {
+      "equal": 1
+    }
+  },
+  {
+    "name": "Inline bitwise and 2",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(6,AND,3)"
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "Inline bitwise or",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(6,|,3)"
+    },
+    "expect": {
+      "equal": 7
+    }
+  },
+  {
+    "name": "Inline bitwise xor",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(6,~,3)"
+    },
+    "expect": {
+      "equal": 5
+    }
+  },
+  {
+    "name": "Inline shift right",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(6,>>,1)"
+    },
+    "expect": {
+      "equal": 3
+    }
+  },
+  {
+    "name": "Inline shift left",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(6,<<,3)"
+    },
+    "expect": {
+      "equal": 48
+    }
+  },
+  {
+    "name": "Inline min",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(MIN,$[0],$[1])"
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "Inline max",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(MAX,$[0],$[1])"
+    },
+    "expect": {
+      "equal": 4
+    }
+  },
+  {
+    "name": "Inline sqrt",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(SQRT,81)"
+    },
+    "expect": {
+      "equal": 9
+    }
+  },
+  {
+    "name": "Inline sqrt 2",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(SQRT):81"
+    },
+    "expect": {
+      "equal": 9
+    }
+  },
+  {
+    "name": "Inline sqrt 3",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(SQRT):$$math($[0],^,2)"
+    },
+    "expect": {
+      "equal": 4
+    }
+  },
+  {
+    "name": "Inline round",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(ROUND,4.6)"
+    },
+    "expect": {
+      "equal": 5
+    }
+  },
+  {
+    "name": "Inline round 2",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(ROUND):4.6"
+    },
+    "expect": {
+      "equal": 5
+    }
+  },
+  {
+    "name": "Inline round 3",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(ROUND,1):4.66"
+    },
+    "expect": {
+      "equal": 4.7
+    }
+  },
+  {
+    "name": "Inline round 4",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(ROUND,4.66,1)"
+    },
+    "expect": {
+      "equal": 4.7
+    }
+  },
+  {
+    "name": "Inline round 5",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(4.66,ROUND,1)"
+    },
+    "expect": {
+      "equal": 4.7
+    }
+  },
+  {
+    "name": "Inline floor",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(FLOOR,4.6)"
+    },
+    "expect": {
+      "equal": 4
+    }
+  },
+  {
+    "name": "Inline floor 2",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(FLOOR):4.6"
+    },
+    "expect": {
+      "equal": 4
+    }
+  },
+  {
+    "name": "Inline floor 3",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(FLOOR,1):4.66"
+    },
+    "expect": {
+      "equal": 4.6
+    }
+  },
+  {
+    "name": "Inline ceil",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(CEIL,4.2)"
+    },
+    "expect": {
+      "equal": 5
+    }
+  },
+  {
+    "name": "Inline ceil 2",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(CEIL):4.2"
+    },
+    "expect": {
+      "equal": 5
+    }
+  },
+  {
+    "name": "Inline ceil 3",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(CEIL,1):4.22"
+    },
+    "expect": {
+      "equal": 4.3
+    }
+  },
+  {
+    "name": "Inline abs",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(ABS,-10)"
+    },
+    "expect": {
+      "equal": 10
+    }
+  },
+  {
+    "name": "Inline abs 2",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(ABS):-10"
+    },
+    "expect": {
+      "equal": 10
+    }
+  },
+  {
+    "name": "Inline neg",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(NEG,$[0])"
+    },
+    "expect": {
+      "equal": -4
+    }
+  },
+  {
+    "name": "Inline neg 2",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(NEG):$[0]"
+    },
+    "expect": {
+      "equal": -4
+    }
+  },
+  {
+    "name": "Inline sig",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(SIG):42"
+    },
+    "expect": {
+      "equal": 1
+    }
+  },
+  {
+    "name": "Inline signum",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(SIGNUM):-42"
+    },
+    "expect": {
+      "equal": -1
+    }
+  },
+  {
+    "name": "Inline sig zero",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": "$$math(SIG):0"
+    },
+    "expect": {
+      "equal": 0
+    }
+  },
+  {
+    "name": "Object plus",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "+",
+          "$[0]",
+          "$[1]"
+        ]
+      }
+    },
+    "expect": {
+      "equal": 6
+    }
+  },
+  {
+    "name": "Object plus 2",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "$[0]",
+          "+",
+          "$[1]"
+        ]
+      }
+    },
+    "expect": {
+      "equal": 6
+    }
+  },
+  {
+    "name": "Object minus",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "-",
+          "$[0]",
+          "$[1]"
+        ]
+      }
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "Object multiply",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "*",
+          "$[0]",
+          "$[1]"
+        ]
+      }
+    },
+    "expect": {
+      "equal": 8
+    }
+  },
+  {
+    "name": "Object divide",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "/",
+          "$[0]",
+          "$[1]"
+        ]
+      }
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "Object integer divide",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "//",
+          "$[0]",
+          "3"
+        ]
+      }
+    },
+    "expect": {
+      "equal": 1
+    }
+  },
+  {
+    "name": "Object integer divide 2",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "$[0]",
+          "//",
+          3
+        ]
+      }
+    },
+    "expect": {
+      "equal": 1
+    }
+  },
+  {
+    "name": "Object modulo",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "%",
+          "$[0]",
+          "3"
+        ]
+      }
+    },
+    "expect": {
+      "equal": 1
+    }
+  },
+  {
+    "name": "Object power",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "^",
+          "$[1]",
+          "3"
+        ]
+      }
+    },
+    "expect": {
+      "equal": 8
+    }
+  },
+  {
+    "name": "Object bitwise and",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          3,
+          "&",
+          1
+        ]
+      }
+    },
+    "expect": {
+      "equal": 1
+    }
+  },
+  {
+    "name": "Object bitwise and 2",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          6,
+          "&",
+          3
+        ]
+      }
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "Object bitwise or",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          6,
+          "|",
+          3
+        ]
+      }
+    },
+    "expect": {
+      "equal": 7
+    }
+  },
+  {
+    "name": "Object bitwise xor",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          6,
+          "XOR",
+          3
+        ]
+      }
+    },
+    "expect": {
+      "equal": 5
+    }
+  },
+  {
+    "name": "Object shift right",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          6,
+          ">>",
+          1
+        ]
+      }
+    },
+    "expect": {
+      "equal": 3
+    }
+  },
+  {
+    "name": "Object shift left",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          6,
+          "<<",
+          3
+        ]
+      }
+    },
+    "expect": {
+      "equal": 48
+    }
+  },
+  {
+    "name": "Object sqrt",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "sqrt",
+          81
+        ]
+      }
+    },
+    "expect": {
+      "equal": 9
+    }
+  },
+  {
+    "name": "Object min",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "min",
+          "$[0]",
+          "$[1]"
+        ]
+      }
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "Object max",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "max",
+          "$[0]",
+          "$[1]"
+        ]
+      }
+    },
+    "expect": {
+      "equal": 4
+    }
+  },
+  {
+    "name": "Object round",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "round",
+          4.6
+        ]
+      }
+    },
+    "expect": {
+      "equal": 5
+    }
+  },
+  {
+    "name": "Object round with precision",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "round",
+          4.66,
+          1
+        ]
+      }
+    },
+    "expect": {
+      "equal": 4.7
+    }
+  },
+  {
+    "name": "Object floor",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "floor",
+          4.6
+        ]
+      }
+    },
+    "expect": {
+      "equal": 4
+    }
+  },
+  {
+    "name": "Object floor with precision",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "floor",
+          4.66,
+          1
+        ]
+      }
+    },
+    "expect": {
+      "equal": 4.6
+    }
+  },
+  {
+    "name": "Object ceil",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "ceil",
+          4.2
+        ]
+      }
+    },
+    "expect": {
+      "equal": 5
+    }
+  },
+  {
+    "name": "Object ceil with precision",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "ceil",
+          4.22,
+          1
+        ]
+      }
+    },
+    "expect": {
+      "equal": 4.3
+    }
+  },
+  {
+    "name": "Object abs",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "abs",
+          -10
+        ]
+      }
+    },
+    "expect": {
+      "equal": 10
+    }
+  },
+  {
+    "name": "Object neg",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "neg",
+          "$[0]"
+        ]
+      }
+    },
+    "expect": {
+      "equal": -4
+    }
+  },
+  {
+    "name": "Object nested",
+    "given": {
+      "input": [
+        "abs",
+        -10
+      ],
+      "definition": {
+        "$$math": "$"
+      }
+    },
+    "expect": {
+      "equal": 10
+    }
+  },
+  {
+    "name": "Object sig",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "SIG",
+          42
+        ]
+      }
+    },
+    "expect": {
+      "equal": 1
+    }
+  },
+  {
+    "name": "Object signum",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "SIGNUM",
+          -42
+        ]
+      }
+    },
+    "expect": {
+      "equal": -1
+    }
+  },
+  {
+    "name": "Object sig zero",
+    "given": {
+      "input": [
+        4,
+        2
+      ],
+      "definition": {
+        "$$math": [
+          "SIG",
+          0
+        ]
+      }
+    },
+    "expect": {
+      "equal": 0
+    }
+  },
+  {
+    "name": "Combine scaling decimal",
+    "given": {
+      "input": null,
+      "definition": "$$decimal(2):$$math(1,*,0.987654321)"
+    },
+    "expect": {
+      "equal": 0.99
+    }
+  },
+  {
+    "name": "Combine scaling decimal floor",
+    "given": {
+      "input": null,
+      "definition": "$$decimal(2,FLOOR):$$math(1,*,0.987654321)"
+    },
+    "expect": {
+      "equal": 0.98
+    }
+  }
+]

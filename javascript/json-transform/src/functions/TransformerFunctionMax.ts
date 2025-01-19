@@ -21,7 +21,7 @@ class TransformerFunctionMax extends TransformerFunction {
 
     const type = await context.getEnum("type");
 
-    const def = await context.getJsonElement("default", true);
+    const def = await (type === "NUMBER" ? context.getBigDecimal("default") : context.getJsonElement("default"));
     const comparator = createComparator(type);
     return streamer
       .stream()

@@ -1,0 +1,95 @@
+[
+  {
+    "name": "Inline long",
+    "given": {
+      "input": [4, -2, 13.45, null],
+      "definition": "$$min($$long:-4):$"
+    },
+    "expect": {
+      "equal": -4
+    }
+  },
+  {
+    "name": "Inline number",
+    "given": {
+      "input": [4, -2, 13.45, null],
+      "definition": "$$min(-8,NUMBER):$"
+    },
+    "expect": {
+      "equal": -8
+    }
+  },
+  {
+    "name": "Inline no arguments",
+    "given": {
+      "input": [4, -2, 13.45, null],
+      "definition": "$$min():$"
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "Inline string",
+    "given": {
+      "input": [4, -2, 13.45, null],
+      "definition": "$$min(z,STRING):$"
+    },
+    "expect": {
+      "equal": -2
+    }
+  },
+  {
+    "name": "Object without default",
+    "given": {
+      "input": [
+        {
+          "value": 4
+        },
+        {
+          "value": 2
+        },
+        {
+          "value": 13.45
+        },
+        {
+          "value": null
+        }
+      ],
+      "definition": {
+        "$$min": "$",
+        "by": "##current.value"
+      }
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "Object with default",
+    "given": {
+      "input": [
+        {
+          "value": 4
+        },
+        {
+          "value": 2
+        },
+        {
+          "value": 13.45
+        },
+        {
+          "value": null
+        }
+      ],
+      "definition": {
+        "$$min": "$",
+        "by": "##current.value",
+        "default": 1
+      }
+    },
+    "expect": {
+      "equal": 1
+    }
+  }
+]

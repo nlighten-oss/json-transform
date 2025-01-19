@@ -1,0 +1,96 @@
+[
+  {
+    "name": "Inline long",
+    "given": {
+      "input": [4, -2, 13.45, null],
+      "definition": "$$max($$long:40):$"
+    },
+    "expect": {
+      "equal": 40
+    }
+  },
+  {
+    "name": "Inline number",
+    "given": {
+      "input": [4, -2, 13.45, null],
+      "definition": "$$max(-8,NUMBER):$"
+    },
+    "expect": {
+      "equal": 13.45
+    }
+  },
+  {
+    "name": "Inline no arguments",
+    "given": {
+      "input": [4, -2, 13.45, null],
+      "definition": "$$max():$"
+    },
+    "expect": {
+      "equal": 13.45
+    }
+  },
+  {
+    "name": "Inline string",
+    "given": {
+      "input": [4, -2, 13.45, null],
+      "definition": "$$max(z,STRING):$"
+    },
+    "expect": {
+      "equal": "z"
+    }
+  },
+  {
+    "name": "Object with default",
+    "given": {
+      "input": [
+        {
+          "value": 4
+        },
+        {
+          "value": 2
+        },
+        {
+          "value": 13.45
+        },
+        {
+          "value": null
+        }
+      ],
+      "definition": {
+        "$$max": "$",
+        "by": "##current.value",
+        "default": "zz",
+        "type": "STRING"
+      }
+    },
+    "expect": {
+      "equal": "zz"
+    }
+  },
+  {
+    "name": "Object without default",
+    "given": {
+      "input": [
+        {
+          "value": 4
+        },
+        {
+          "value": 2
+        },
+        {
+          "value": 13.45
+        },
+        {
+          "value": null
+        }
+      ],
+      "definition": {
+        "$$max": "$",
+        "by": "##current.value"
+      }
+    },
+    "expect": {
+      "equal": 13.45
+    }
+  }
+]

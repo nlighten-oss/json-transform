@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Inline",
+    "given": {
+      "input": "hello",
+      "definition": "$$match([le]):$"
+    },
+    "expect": {
+      "equal": "e"
+    }
+  },
+  {
+    "name": "Inline with Plus",
+    "given": {
+      "input": "hello",
+      "definition": "$$match([le]+):$"
+    },
+    "expect": {
+      "equal": "ell"
+    }
+  },
+  {
+    "name": "Inline with Hell",
+    "given": {
+      "input": "hello",
+      "definition": "$$match(hell):$"
+    },
+    "expect": {
+      "equal": "hell"
+    }
+  },
+  {
+    "name": "Inline with End",
+    "given": {
+      "input": "hello",
+      "definition": "$$match(hello$):$"
+    },
+    "expect": {
+      "equal": "hello"
+    }
+  },
+  {
+    "name": "Inline with End - No Match",
+    "given": {
+      "input": "hello",
+      "definition": "$$match(hell$):$"
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "Inline Group",
+    "given": {
+      "input": "world",
+      "definition": "$$match('w(\\\\w+)d',1):$"
+    },
+    "expect": {
+      "equal": "orl"
+    }
+  }
+]

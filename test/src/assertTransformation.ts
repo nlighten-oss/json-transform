@@ -42,12 +42,19 @@ const callTransform = async (given: any, platformToTest: keyof typeof PODS) => {
   });
 }
 
+const getTypeOf = (value: any) => {
+  if (typeof value === 'object') {
+    return value.constructor.name;
+  }
+  return typeof value;
+}
+
 export const assertTransformation = async (t: any, platform: keyof typeof PODS) => {
   return callTransform(t.given, platform)
     .then(res => res.text())
     .then(d => {
       const data = JSONBig.parse(d);
-      const message = `${t.name} (actual type: ${typeof data.result})`;
+      const message = `${t.name} (actual type: ${typeof data.result}${typeof t.expect.equal !== 'undefined' ? `, expected type: ${getTypeOf(t.expect.equal)}` : ""})`;
       if (hasOwn.call(t.expect, "isNull") && t.expect.isNull === true) {
         expect(data.result ?? null, message).toBeNull();
       }
