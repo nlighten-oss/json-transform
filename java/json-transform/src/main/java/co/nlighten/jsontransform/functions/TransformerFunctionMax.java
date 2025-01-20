@@ -44,12 +44,22 @@ public class TransformerFunctionMax<JE, JA extends Iterable<JE>, JO extends JE> 
             //case "string"
             default -> Comparator.comparing(adapter::getAsString);
         };
-        return streamer.stream()
+        var result = streamer.stream()
                 .map(t -> {
                     var res = !adapter.isNull(by) ? context.transformItem(by, t) : t;
                     return (adapter.isNull(res)) ? def : res;
                 })
-                .max(comparator)
-                .orElse(adapter.jsonNull());
+                .max(comparator);
+        if (result.isPresent()) {
+            var resultValue = result.get();
+            if ("NUMBER".equals(type) || adapter.isJsonNumber(resultValue)) {
+                return adapter.getNumberAsBigDecimal(resultValue);
+            } else if ("BOOLEAN".equals(type) || adapter.isJsonBoolean(resultValue)) {
+                return adapter.getBoolean(resultValue);
+            } else {
+                return adapter.getAsString(resultValue);
+            }
+        }
+        return adapter.jsonNull();
     }
 }
