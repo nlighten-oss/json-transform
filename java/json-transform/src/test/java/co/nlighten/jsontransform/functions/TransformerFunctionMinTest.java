@@ -11,7 +11,7 @@ public class TransformerFunctionMinTest extends BaseTest {
     void inline() {
         var arr = new Object[] {4,-2,13.45, JsonNull.INSTANCE};
         assertTransformation(arr, "$$min($$long:-4):$", fromJson("-4"));
-        assertTransformation(arr, "$$min(-8,NUMBER):$", fromJson("'-8'"));
+        assertTransformation(arr, "$$min(-8,NUMBER):$", fromJson("-8"));
         assertTransformation(arr, "$$min():$", fromJson(null));
         assertTransformation(arr, "$$min(z,STRING):$", fromJson("-2"));
 
