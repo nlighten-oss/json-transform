@@ -11,26 +11,22 @@
   },
   "maps the elements of the field \\\"item\\\" to an object with the following properties:  * \\\"id\\\" is set to the value of the \\\"id\\\" property of the corresponding item. * \\\"map_foo\\\" is set to the value of the \\\"foo\\\" property of the corresponding item. * \\\"idx\\\" is set to the index of the corresponding item in the \\\"items\\\" array. * \\\"value\\\" is set to the value of the \\\"value\\\" property of the input object. (object form)": {
     "$$map": [
-      [
-        "$.item"
-      ],
-      {
-        "id": "##current.id",
-        "map_foo": "##current.foo",
-        "idx": "##index",
-        "value": "$.value"
-      }
-    ]
+      "$.item"
+    ],
+    "to":{
+      "id": "##current.id",
+      "map_foo": "##current.foo",
+      "idx": "##index",
+      "value": "$.value"
+    }
   },
   "creates a new list by selecting the second element from each sublist in the input list. (object form)": {
     "$$map": [
       [
-        [
-          "$.a",
-          "$.b"
-        ]
-      ],
-      "##current[1]"
-    ]
+        "$.a",
+        "$.b"
+      ]
+    ],
+    "to": "##current[1]"
   }
 }

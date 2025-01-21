@@ -2,17 +2,15 @@
   "generate a transformer that double each letters in a word (example: from hello to hheelllloo)": [
     {
       "$$join": {
-        "$$map": [
-          {
-            "$$split": "$"
-          },
-          {
-            "$$join": [
-              "##current",
-              "##current"
-            ]
-          }
-        ]
+        "$$map": {
+          "$$split": "$"
+        },
+        "to": {
+          "$$join": [
+            "##current",
+            "##current"
+          ]
+        }
       }
     }
   ]
