@@ -2,7 +2,7 @@
 
 ![](https://img.shields.io/npm/v/@nlighten/json-transform.svg)
 
-[JSON transformers](https://nlighten-oss.github.io/json-transform/) JavaScript implementation
+[JSON transformers](https://nlighten-oss.github.io/json-transform/) JavaScript implementation (~20kB)
 
 # Installation
 
@@ -20,6 +20,12 @@
   
 })();
 ```
+
+# Peer dependencies
+Notice the following peer dependencies that are required by some of the functions:
+ - json-pointer
+ - xml2js
+ - yamljs
 
 # License
 [MIT](./LICENSE)
