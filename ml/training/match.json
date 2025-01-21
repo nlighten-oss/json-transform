@@ -1,0 +1,8 @@
+{
+  "extracts the first match of the regular expression \\\"[le]\\\" from the input string. (inline form)": "$$match([le]):$",
+  "extracts the first match of the regular expression \\\"[le]+\\\" from the input string. (inline form)": "$$match([le]+):$",
+  "extracts the first match of the regular expression \\\"hell\\\" from the input string. (inline form)": "$$match(hell):$",
+  "extracts the first match of the regular expression \\\"hello$\\\" from the input string. (inline form)": "$$match(hello$):$",
+  "extracts the first match of the regular expression \\\"hell$\\\" from the input string. (inline form)": "$$match(hell$):$",
+  "extracts the first group of the regular expression \\\"w(\\\\w+)d\\\" from the input string. (inline form)": "$$match('w(\\\\w+)d',1):$"
+}

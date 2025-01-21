@@ -1,0 +1,12 @@
+{
+  "adds a new property \"d\" with value \"e\" to the object at path \"/a\" (object form)": {
+    "$$jsonpatch": "$",
+    "ops": [
+      {
+        "op": "add",
+        "path": "/a/d",
+        "value": "e"
+      }
+    ]
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "evaluates the JSONPath expression \"$.path\", using inline definition (inline form)": "$$jsonpath($.path):$",
+  "evaluates the JSONPath expression \"\\$.arr[1]\", using inline definition (inline form)": "$$jsonpath('\\\\$.arr[1]'):$",
+  "evaluates the JSONPath expression \"\\$[?(@.active == true)]\", using inline definition (inline form)": "$$jsonpath('\\\\$[?(@.active == true)]'):$"
+}

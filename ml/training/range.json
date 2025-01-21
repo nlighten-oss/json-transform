@@ -1,0 +1,9 @@
+{
+  "creates a range of numbers from 1 to 5 (inline form)": "$$range(1,5):",
+  "creates a range of numbers from 1 to 5 with a step of 1 (inline form)": "$$range(1,5,1):",
+  "creates a range of numbers from 1.5 to 2.7 with a step of 0.5 (inline form)": "$$range(1.5,$,0.5):",
+  "creates a range of numbers from 1 to 5 with a step of 2 (inline form)": "$$range(1,5,2)",
+  "creates a range of numbers from 10 to 45 with a step of 10 (inline form)": "$$range(10,45,10)",
+  "creates a range of numbers from 10 to 50 with a step of 10, using an object as input (inline form)": "$$range($.start,$.end,$.step)",
+  "creates an empty range of numbers (inline form)": "$$range(1):"
+}

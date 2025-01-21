@@ -1,6 +1,6 @@
 package transformers;
 
-import co.nlighten.jsontransform.functions.TransformerFunctionLookupTest;
+import co.nlighten.jsontransform.JsonTransformerTest;
 import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;
@@ -15,8 +15,8 @@ public class TransformersFunctionsBenchmarksTests {
 
     @Benchmark
     @Measurement(iterations = 10, time = 100, timeUnit = TimeUnit.MILLISECONDS)
-    public void measureLookup_mergeWithTo(){
-        var test = new TransformerFunctionLookupTest();
-        test.mergeWithTo();
+    public void measureInputExtractorSpreadArray2(){
+        var test = new JsonTransformerTest();
+        test.testInputExtractorSpreadArray2();
     }
 }

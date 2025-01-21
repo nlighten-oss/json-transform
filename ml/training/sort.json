@@ -1,0 +1,77 @@
+{
+  "sorts an array of strings (object form)": {
+    "$$sort": "$"
+  },
+  "sorts an array of numbers (object form)": {
+    "$$sort": "$",
+    "type": "number"
+  },
+  "sorts an array of strings in descending order (object form)": {
+    "$$sort": "$",
+    "order": "desc"
+  },
+  "sorts an array of strings in descending order based on the third element of each item (object form)": {
+    "$$sort": "$[0]",
+    "order": "$[2]"
+  },
+  "sorts an array of numbers in descending order (object form)": {
+    "$$sort": "$",
+    "type": "number",
+    "order": "desc"
+  },
+  "sorts an array of booleans (object form)": {
+    "$$sort": "$",
+    "type": "boolean"
+  },
+  "sorts an array of booleans in descending order (object form)": {
+    "$$sort": "$",
+    "type": "boolean",
+    "order": "desc"
+  },
+  "sorts an array of objects by their name property (object form)": {
+    "$$sort": "$",
+    "by": "##current.name"
+  },
+  "sorts an array of objects by their name property in descending order (object form)": {
+    "$$sort": "$",
+    "type": "string",
+    "order": "desc",
+    "by": "##current.name"
+  },
+  "sorts an array of strings by their first character (object form)": {
+    "$$sort": "$",
+    "by": "$$substring(0,1):##current"
+  },
+  "sorts an array of strings first by their first character, then by their length in descending order (object form)": {
+    "$$sort": "$",
+    "by": "$$substring(0,1):##current",
+    "then": [
+      {
+        "by": "$$long:$$substring(-1):##current",
+        "order": "DESC"
+      }
+    ]
+  },
+  "sorts an array of strings first by their first character in descending order, then by their length in ascending order (object form)": {
+    "$$sort": "$",
+    "by": "$$substring(0,1):##current",
+    "order": "DESC",
+    "then": [
+      {
+        "by": "$$long:$$substring(-1):##current",
+        "order": "ASC"
+      }
+    ]
+  },
+  "sorts an array of strings first by their first character in descending order, then by their length in descending order (object form)": {
+    "$$sort": "$",
+    "by": "$$substring(0,1):##current",
+    "order": "DESC",
+    "then": [
+      {
+        "by": "$$long:$$substring(-1):##current",
+        "order": "DESC"
+      }
+    ]
+  }
+}

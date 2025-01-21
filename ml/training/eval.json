@@ -1,0 +1,18 @@
+{
+  "evaluates the expression \"$.b\", using inline definition (inline form)": "$$eval:$.b",
+  "evaluates the expression \"\\$\\$avg:\\$..value\" (object form)": {
+    "$$eval": {
+      "$$join": [
+        "\\$",
+        "$avg:",
+        "\\$",
+        "..value"
+      ]
+    }
+  },
+  "evaluates the expression \"{\\\"$$avg\\\":\\\"$\\\", \\\"by\\\":\\\"##current.value\\\"}\" (object form)": {
+    "$$eval": {
+      "$$jsonparse": "{\"$$avg\":\"$\", \"by\":\"##current.value\"}"
+    }
+  }
+}

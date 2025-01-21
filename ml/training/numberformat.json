@@ -1,0 +1,18 @@
+{
+  "formats a number with no arguments (inline form)": "$$numberformat:$",
+  "formats a number with empty arguments (inline form)": "$$numberformat():$",
+  "formats an integer with no arguments (inline form)": "$$numberformat:$",
+  "formats a number with no arguments and rounds it (inline form)": "$$numberformat:$",
+  "formats a number as a decimal (inline form)": "$$numberformat(DECIMAL):$",
+  "formats a number as a decimal with en-US locale and custom format (inline form)": "$$numberformat(DECIMAL,en-US,'#,##0.00'):$",
+  "formats a number as a decimal with en-US locale and custom format with separators (inline form)": "$$numberformat(DECIMAL,en-US,'#,##0.00','.',','):$",
+  "formats a number as a currency (inline form)": "$$numberformat(CURRENCY):$",
+  "formats a number as a currency with en-GB locale and GBP currency (inline form)": "$$numberformat(CURRENCY,en-GB,GBP):$",
+  "formats a number as a percentage (inline form)": "$$numberformat(PERCENT):$",
+  "formats a number as an integer (inline form)": "$$numberformat(INTEGER):$",
+  "formats a number in compact format (inline form)": "$$numberformat(COMPACT):$",
+  "formats a number in compact format with en-US locale and long format (inline form)": "$$numberformat(COMPACT,en-US,LONG):$",
+  "formats a number in compact format with he-IL locale and long format (inline form)": "$$numberformat(COMPACT,he-IL,LONG):$",
+  "formats a number in base 16 (inline form)": "$$numberformat(BASE,16):$",
+  "formats a number in base 2 (inline form)": "$$numberformat(BASE,2):$"
+}

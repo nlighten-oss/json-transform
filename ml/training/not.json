@@ -1,0 +1,6 @@
+{
+  "negates the input (inline form)": "$$not:$",
+  "negates the input (object form)": {
+    "$$not": "$"
+  }
+}

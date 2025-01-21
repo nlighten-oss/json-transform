@@ -1,0 +1,13 @@
+{
+  "calculates the average of the \"value\" properties in the input array, treating null values as 0 (object form)": {
+    "$$avg": "$",
+    "by": "##current.value"
+  },
+  "calculates the average of the \"value\" properties in the input array, using 1 as the default value for null values (object form)": {
+    "$$avg": "$",
+    "by": "##current.value",
+    "default": 1
+  },
+  "calculates the average of the elements in the input array, treating null values as 0 (inline form)": "$$avg():$",
+  "calculates the average of the elements in the input array, using 1 as the default value for null values (inline form)": "$$avg(1):$"
+}

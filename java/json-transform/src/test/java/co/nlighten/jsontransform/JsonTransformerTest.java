@@ -168,7 +168,7 @@ public class JsonTransformerTest extends BaseTest {
     }
 
     @Test
-    void testInputExtractorSpreadArray2() {
+    public void testInputExtractorSpreadArray2() {
         var m1 = fromJson("""
 {
   "X": {

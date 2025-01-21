@@ -1,0 +1,183 @@
+{
+  "returns the first element of the input array. (inline form)": "$$math($[0],+)",
+  "calculates the square root of the first element of the input array raised to the power of 2. (inline form)": "$$math(SQRT):$$math($[0],^,2)",
+  "multiplies 1 by 0.987654321 and then formats the result as a decimal with 2 decimal places. (inline form)": "$$decimal(2):$$math(1,*,0.987654321)",
+  "multiplies 1 by 0.987654321, rounds the result down to 2 decimal places, and then formats the result as a decimal. (inline form)": "$$decimal(2,FLOOR):$$math(1,*,0.987654321)",
+  "adds the first and second elements of the input array. (object form)": {
+    "$$math": [
+      "$[0]",
+      "+",
+      "$[1]"
+    ]
+  },
+  "subtracts the second element of the input array from the first element. (object form)": {
+    "$$math": [
+      "-",
+      "$[0]",
+      "$[1]"
+    ]
+  },
+  "multiplies the first and second elements of the input array. (object form)": {
+    "$$math": [
+      "*",
+      "$[0]",
+      "$[1]"
+    ]
+  },
+  "divides the first element of the input array by the second element. (object form)": {
+    "$$math": [
+      "/",
+      "$[0]",
+      "$[1]"
+    ]
+  },
+  "performs integer division of the first element of the input array by 3. (object form)": {
+    "$$math": [
+      "$[0]",
+      "//",
+      3
+    ]
+  },
+  "calculates the modulo of the first element of the input array by 3. (object form)": {
+    "$$math": [
+      "%",
+      "$[0]",
+      "3"
+    ]
+  },
+  "raises the second element of the input array to the power of 3. (object form)": {
+    "$$math": [
+      "^",
+      "$[1]",
+      "3"
+    ]
+  },
+  "performs a bitwise AND operation between 3 and 1. (object form)": {
+    "$$math": [
+      3,
+      "&",
+      1
+    ]
+  },
+  "performs a bitwise AND operation between 6 and 3. (object form)": {
+    "$$math": [
+      6,
+      "&",
+      3
+    ]
+  },
+  "performs a bitwise OR operation between 6 and 3. (object form)": {
+    "$$math": [
+      6,
+      "|",
+      3
+    ]
+  },
+  "performs a bitwise XOR operation between 6 and 3. (object form)": {
+    "$$math": [
+      6,
+      "XOR",
+      3
+    ]
+  },
+  "shifts the bits of 6 to the right by 1 position. (object form)": {
+    "$$math": [
+      6,
+      ">>",
+      1
+    ]
+  },
+  "shifts the bits of 6 to the left by 3 positions. (object form)": {
+    "$$math": [
+      6,
+      "\\<",
+      3
+    ]
+  },
+  "calculates the minimum value between the first and second elements of the input array. (object form)": {
+    "$$math": [
+      "min",
+      "$[0]",
+      "$[1]"
+    ]
+  },
+  "calculates the maximum value between the first and second elements of the input array. (object form)": {
+    "$$math": [
+      "max",
+      "$[0]",
+      "$[1]"
+    ]
+  },
+  "calculates the square root of 81. (object form)": {
+    "$$math": [
+      "sqrt",
+      81
+    ]
+  },
+  "rounds the number 4.6 to the nearest integer. (object form)": {
+    "$$math": [
+      "round",
+      4.6
+    ]
+  },
+  "rounds the number 4.66 to 1 decimal place. (object form)": {
+    "$$math": [
+      "round",
+      4.66,
+      1
+    ]
+  },
+  "rounds the number 4.6 down to the nearest integer. (object form)": {
+    "$$math": [
+      "floor",
+      4.6
+    ]
+  },
+  "rounds the number 4.66 down to 1 decimal place. (object form)": {
+    "$$math": [
+      "floor",
+      4.66,
+      1
+    ]
+  },
+  "rounds the number 4.2 up to the nearest integer. (object form)": {
+    "$$math": [
+      "ceil",
+      4.2
+    ]
+  },
+  "rounds the number 4.22 up to 1 decimal place. (object form)": {
+    "$$math": [
+      "ceil",
+      4.22,
+      1
+    ]
+  },
+  "calculates the absolute value of -10. (object form)": {
+    "$$math": "$"
+  },
+  "negates the first element of the input array. (object form)": {
+    "$$math": [
+      "neg",
+      "$[0]"
+    ]
+  },
+  "returns the sign of 42 (1 if positive, -1 if negative, 0 if zero). (object form)": {
+    "$$math": [
+      "SIG",
+      42
+    ]
+  },
+  "returns the sign of -42 (1 if positive, -1 if negative, 0 if zero). (object form)": {
+    "$$math": [
+      "SIGNUM",
+      -42
+    ]
+  },
+  "returns the sign of 0 (1 if positive, -1 if negative, 0 if zero). (object form)": {
+    "$$math": [
+      "SIG",
+      0
+    ]
+  }
+}

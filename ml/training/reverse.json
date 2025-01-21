@@ -1,0 +1,16 @@
+{
+  "reverses the order of elements in an array of strings (object form)": {
+    "$$reverse": "$"
+  },
+  "reverses the order of elements in an array of objects (object form)": {
+    "$$reverse": "$"
+  },
+  "reverses the order of elements in an array, but the array is already reversed (object form)": {
+    "$$reverse": [
+      "$[2]",
+      "$[1]",
+      "$[0]"
+    ]
+  },
+  "reverses the order of elements in an array of strings (inline form)": "$$reverse:$"
+}

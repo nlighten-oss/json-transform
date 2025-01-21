@@ -1,0 +1,37 @@
+{
+  "flattens the input object with the specified array prefix (object form)": {
+    "$$flatten": {
+      "a": {
+        "a1": 123,
+        "a2": [
+          1,
+          2,
+          3,
+          {
+            "c": true
+          }
+        ]
+      },
+      "b": "$.value"
+    },
+    "array_prefix": "\\$"
+  },
+  "flattens the input object with the specified prefix and array prefix (object form)": {
+    "$$flatten": {
+      "a": {
+        "a1": 123,
+        "a2": [
+          1,
+          2,
+          3,
+          {
+            "c": true
+          }
+        ]
+      },
+      "b": "$.value"
+    },
+    "prefix": "xxx",
+    "array_prefix": "#null"
+  }
+}

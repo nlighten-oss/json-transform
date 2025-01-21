@@ -1,0 +1,93 @@
+{
+  "encodes the input string to base64 (object form)": {
+    "$$base64": "$",
+    "action": "encode",
+    "rfc": "BASIC"
+  },
+  "encodes the input string to base64 using UTF-16 charset (object form)": {
+    "$$base64": "$",
+    "charset": "UTF-16"
+  },
+  "encodes the input string to base64 without padding (object form)": {
+    "$$base64": "$",
+    "action": "ENCODE",
+    "rfc": "BASIC",
+    "without_padding": true
+  },
+  "encodes the input string to base64-url (object form)": {
+    "$$base64": "$",
+    "action": "ENCODE",
+    "rfc": "URL"
+  },
+  "encodes the input string to base64-url without padding (object form)": {
+    "$$base64": "$",
+    "action": "ENCODE",
+    "rfc": "URL",
+    "without_padding": true
+  },
+  "encodes the input string to base64-mime (object form)": {
+    "$$base64": "$",
+    "action": "ENCODE",
+    "rfc": "MIME"
+  },
+  "encodes the input string to base64-mime without padding (object form)": {
+    "$$base64": "$",
+    "action": "ENCODE",
+    "rfc": "MIME",
+    "without_padding": true
+  },
+  "decodes the input base64 string (object form)": {
+    "$$base64": "$",
+    "action": "DECODE"
+  },
+  "decodes the input base64 string without padding (object form)": {
+    "$$base64": "$",
+    "action": "DECODE",
+    "rfc": "BASIC"
+  },
+  "decodes the input base64-url string (object form)": {
+    "$$base64": "$",
+    "action": "DECODE",
+    "rfc": "URL"
+  },
+  "decodes the input base64-url string without padding (object form)": {
+    "$$base64": "$",
+    "action": "DECODE",
+    "rfc": "URL"
+  },
+  "decodes the input base64-mime string (object form)": {
+    "$$base64": "$",
+    "action": "DECODE",
+    "rfc": "MIME"
+  },
+  "decodes the input base64mime string without padding (object form)": {
+    "$$base64": "$",
+    "action": "DECODE",
+    "rfc": "MIME"
+  },
+  "decodes the input base64 string using UTF-8 charset (object form)": {
+    "$$base64": "$",
+    "action": "DECODE",
+    "charset": "UTF-8"
+  },
+  "decodes the input base64 string using UTF-16 charset (object form)": {
+    "$$base64": "$",
+    "action": "DECODE",
+    "charset": "UTF-16"
+  },
+  "encodes the input string to base64 (inline form)": "$$base64:$",
+  "encodes the input string to base64 using UTF-16 charset (inline form)": "$$base64(ENCODE,BASIC,,UTF-16):$",
+  "encodes the input string to base64 without padding (inline form)": "$$base64(e,b,true):$",
+  "encodes the input string to base64-url (inline form)": "$$base64(ENCODE,URL):$",
+  "encodes the input string to base64-url without padding (inline form)": "$$base64(ENCODE,URL,true):$",
+  "encodes the input string to base64-mime (inline form)": "$$base64(ENCODE,MIME):$",
+  "encodes the input string to base64-mime without padding (inline form)": "$$base64(ENCODE,MIME,true):$",
+  "decodes the input base64 string (inline form)": "$$base64(DECODE):$",
+  "decodes the input base64 string without padding (inline form)": "$$base64(DECODE):$",
+  "decodes the input base64-url string (inline form)": "$$base64(DECODE,URL):$",
+  "decodes the input base64-url string without padding (inline form)": "$$base64(DECODE,URL):$",
+  "decodes the input base64-mime string (inline form)": "$$base64(DECODE,MIME):$",
+  "decodes the input base64-mime string without padding (inline form)": "$$base64(DECODE,MIME):$",
+  "decodes the input base64 string using UTF-8 charset (inline form)": "$$base64(DECODE,,,UTF-8):$",
+  "decodes the input base64 string using UTF-16 charset (inline form)": "$$base64(DECODE,,,UTF-16):$"
+}

@@ -1,0 +1,26 @@
+{
+  "parses the input CSV with an object, detecting the headers from the first line (object form)": {
+    "$$csvparse": "$"
+  },
+  "parses the input CSV into array format (object form)": {
+    "$$csvparse": "$",
+    "no_headers": true
+  },
+  "parses the input CSV into array format, treating the pipeline character as a column separator (object form)": {
+    "$$csvparse": "$",
+    "no_headers": true,
+    "separator": "|"
+  },
+  "parses the input CSV (without headers) into an object, using the following field names \"a\", \"b\" and \"c\" (object form)": {
+    "$$csvparse": "$",
+    "no_headers": true,
+    "names": [
+      "a",
+      "b",
+      "c"
+    ]
+  },
+  "parses the input CSV into an object, detecting the headers from the first line (inline form)": "$$csvparse:$",
+  "parses the input CSV into array format (inline form)": "$$csvparse(true):$",
+  "parses the input CSV into array format, treating the pipeline character as a column separator (inline form)": "$$csvparse(true,|):$"
+}

@@ -1,0 +1,21 @@
+{
+  "converts the input to CSV (object form)": {
+    "$$csv": "$"
+  },
+  "converts the input to CSV without headers (object form)": {
+    "$$csv": "$",
+    "no_headers": true
+  },
+  "converts the array input to CSV with the header names \"a\" and \"b\" (object form)": {
+    "$$csv": "$",
+    "names": [
+      "a",
+      "b"
+    ]
+  },
+  "converts the array input to CSV without names (object form)": {
+    "$$csv": "$"
+  },
+  "converts the input object to CSV (inline form)": "$$csv:$",
+  "converts the input object to CSV without headers (inline form)": "$$csv(true):$"
+}

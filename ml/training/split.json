@@ -1,0 +1,9 @@
+{
+  "splits a string into an array of characters (inline form)": "$$split:$",
+  "splits a string into an array of characters using an empty delimiter (inline form)": "$$split():$",
+  "splits a string by spaces (inline form)": "$$split( ):$",
+  "splits a string by single space characters (inline form)": "$$split(' '):$",
+  "splits a string by the substring 'll' (inline form)": "$$split(ll):$",
+  "splits a string by the regular expression 'll?' (inline form)": "$$split(ll?):$",
+  "splits a string by the substring 'o' with a limit of 2 (inline form)": "$$split(o,2):$"
+}

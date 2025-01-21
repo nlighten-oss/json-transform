@@ -1,0 +1,40 @@
+{
+  "slices an array with no arguments (inline form)": "$$slice():$",
+  "slices an array from index 1 to the end (inline form)": "$$slice(1):$",
+  "slices an array from index 2 to 6 (exclusive) (inline form)": "$$slice(2,6):$",
+  "slices an array from index 3 to the second-to-last element (inline form)": "$$slice(3,-1):$",
+  "slices an array from the second-to-last element to the end (inline form)": "$$slice(-2):$",
+  "slices an array from the third-to-last element to the second-to-last element (inline form)": "$$slice(-3,-1):$",
+  "slices an array from the second-to-last element to the second-to-last element (inline form)": "$$slice(-2,-1):$",
+  "slices an array with no arguments (object form)": {
+    "$$slice": "$"
+  },
+  "slices an array from index 1 to the end (object form)": {
+    "$$slice": "$",
+    "begin": 1
+  },
+  "slices an array from index 2 to 6 (exclusive) (object form)": {
+    "$$slice": "$",
+    "begin": 2,
+    "end": 6
+  },
+  "slices an array from index 3 to the second-to-last element (object form)": {
+    "$$slice": "$",
+    "begin": 3,
+    "end": -1
+  },
+  "slices an array from the second-to-last element to the end (object form)": {
+    "$$slice": "$",
+    "begin": -2
+  },
+  "slices an array from the third-to-last element to the second-to-last element (object form)": {
+    "$$slice": "$",
+    "begin": -3,
+    "end": -1
+  },
+  "slices an array from the second-to-last element to the second-to-last element (object form)": {
+    "$$slice": "$",
+    "begin": -2,
+    "end": -1
+  }
+}

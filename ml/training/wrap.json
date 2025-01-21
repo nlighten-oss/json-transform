@@ -1,0 +1,32 @@
+{
+  "wraps the input with no characters (object form)": [
+    "$$wrap():$"
+  ],
+  "wraps the input with an opening brace (object form)": [
+    "$$wrap({):$"
+  ],
+  "wraps the input with an opening parenthesis (object form)": [
+    "$$wrap(():$"
+  ],
+  "wraps the input with a closing brace (object form)": [
+    "$$wrap(,}):$"
+  ],
+  "wraps the input with a closing parenthesis (object form)": [
+    "$$wrap(,)):$"
+  ],
+  "wraps the input with both braces (object form)": [
+    "$$wrap({,}):$"
+  ],
+  "wraps the input with both parentheses (object form)": [
+    "$$wrap((,)):$"
+  ],
+  "wraps the input with a comma at the beginning (object form)": [
+    "$$wrap(',',):$"
+  ],
+  "wraps the input with a comma at the beginning and a single quote at the end (object form)": [
+    "$$wrap(',','):$"
+  ],
+  "wraps the input with a comma at the beginning and an escaped single quote (object form)": [
+    "$$wrap(',\\\\','):$"
+  ]
+}

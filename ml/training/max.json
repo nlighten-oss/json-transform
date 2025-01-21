@@ -1,0 +1,16 @@
+{
+  "finds the maximum value in the input array, with a default value of 40 if no numbers are found. (inline form)": "$$max($$long:40):$",
+  "finds the maximum number in the input array, with a default value of -8 if no numbers are found. (inline form)": "$$max(-8,NUMBER):$",
+  "finds the maximum value in the input array. (inline form)": "$$max():$",
+  "finds the maximum value in the input array, treating all values as strings, with a default value of \\\"z\\\" if no strings are found. (inline form)": "$$max(z,STRING):$",
+  "finds the maximum value of the field \\\"value\\\" in the input array of objects, treating all values as strings, with a default value of \\\"zz\\\" if no strings are found. (object form)": {
+    "$$max": "$",
+    "by": "##current.value",
+    "default": "zz",
+    "type": "STRING"
+  },
+  "finds the maximum value of the field \\\"value\\\" in the input array of objects. (object form)": {
+    "$$max": "$",
+    "by": "##current.value"
+  }
+}

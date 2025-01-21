@@ -1,0 +1,5 @@
+{
+  "parses a YAML string (object form)": [
+    "$$yamlparse:$"
+  ]
+}

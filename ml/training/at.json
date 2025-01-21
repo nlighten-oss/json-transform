@@ -1,0 +1,17 @@
+{
+  "returns the element at index 0 from the input array (object form)": {
+    "$$at": "$",
+    "index": 0
+  },
+  "returns the element at index 1 from the input array (object form)": {
+    "$$at": "$",
+    "index": 1
+  },
+  "returns the last element from the input array (object form)": {
+    "$$at": "$",
+    "index": -1
+  },
+  "returns the last element from the input array (inline form)": "$$at(-1):$",
+  "returns the element at index 0 from the input array (inline form)": "$$at(0):$",
+  "returns the element at index 1 from the input array (inline form)": "$$at(1):$"
+}
