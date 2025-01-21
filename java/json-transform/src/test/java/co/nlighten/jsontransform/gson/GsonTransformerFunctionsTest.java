@@ -156,9 +156,9 @@ public class GsonTransformerFunctionsTest extends BaseTest {
         Assertions.assertEquals(2, callCount.get());
     }
 
-    @ArgumentType(value = "a", type = ArgType.Any, position = 0, defaultIsNull = true, description = "")
-    @ArgumentType(value = "b", type = ArgType.Any, position = 1, defaultIsNull = true, description = "")
-    @ArgumentType(value = "c", type = ArgType.Any, position = 2, defaultIsNull = true, description = "")
+    @ArgumentType(value = "a", type = ArgType.Any, position = 0, defaultIsNull = true)
+    @ArgumentType(value = "b", type = ArgType.Any, position = 1, defaultIsNull = true)
+    @ArgumentType(value = "c", type = ArgType.Any, position = 2, defaultIsNull = true)
     private static class TransformerFunctionArgsTest extends TransformerFunction<JsonElement, JsonArray, JsonObject> {
 
         public TransformerFunctionArgsTest(JsonAdapter<JsonElement, JsonArray, JsonObject> adapter) {

@@ -1,0 +1,7 @@
+{
+  "URL-encodes a string (inline form)": "$$urlencode:$",
+  "URL-encodes a string, with explicit empty parentheses (inline form)": "$$urlencode():$",
+  "URL-encodes a string, with the string provided inline (inline form)": "$$urlencode:not url+safe?=x&b=path/path",
+  "URL-encodes a string using UTF-8 encoding (inline form)": "$$urlencode(UTF-8):$",
+  "URL-encodes a string using UTF-16 encoding (inline form)": "$$urlencode(UTF-16):$"
+}

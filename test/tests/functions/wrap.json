@@ -1,0 +1,122 @@
+[
+  {
+    "name": "inline - default wrap",
+    "given": {
+      "input": "text",
+      "definition": "$$wrap:$"
+    },
+    "expect": {
+      "equal": "text"
+    }
+  },
+  {
+    "name": "inline - empty wrap",
+    "given": {
+      "input": "text",
+      "definition": "$$wrap():$"
+    },
+    "expect": {
+      "equal": "text"
+    }
+  },
+  {
+    "name": "inline - wrap with opening brace",
+    "given": {
+      "input": "text",
+      "definition": "$$wrap({):$"
+    },
+    "expect": {
+      "equal": "{text"
+    }
+  },
+  {
+    "name": "inline - wrap with opening parenthesis",
+    "given": {
+      "input": "text",
+      "definition": "$$wrap(():$"
+    },
+    "expect": {
+      "equal": "(text"
+    }
+  },
+  {
+    "name": "inline - wrap with closing brace",
+    "given": {
+      "input": "text",
+      "definition": "$$wrap(,}):$"
+    },
+    "expect": {
+      "equal": "text}"
+    }
+  },
+  {
+    "name": "inline - wrap with closing parenthesis",
+    "given": {
+      "input": "text",
+      "definition": "$$wrap(,)):$"
+    },
+    "expect": {
+      "equal": "text)"
+    }
+  },
+  {
+    "name": "inline - wrap with both braces",
+    "given": {
+      "input": "text",
+      "definition": "$$wrap({,}):$"
+    },
+    "expect": {
+      "equal": "{text}"
+    }
+  },
+  {
+    "name": "inline - wrap with both parentheses",
+    "given": {
+      "input": "text",
+      "definition": "$$wrap((,)):$"
+    },
+    "expect": {
+      "equal": "(text)"
+    }
+  },
+  {
+    "name": "inline - wrap with comma at start",
+    "given": {
+      "input": "text",
+      "definition": "$$wrap(',',):$"
+    },
+    "expect": {
+      "equal": ",text"
+    }
+  },
+  {
+    "name": "inline - fail with invalid wrapping",
+    "given": {
+      "input": "text",
+      "definition": "$$wrap(',','):$"
+    },
+    "expect": {
+      "notEqual": ",text"
+    }
+  },
+  {
+    "name": "inline - wrap with single quote at end",
+    "given": {
+      "input": "text",
+      "definition": "$$wrap(',','):$"
+    },
+    "expect": {
+      "equal": ",text'"
+    }
+  },
+  {
+    "name": "inline - wrap with comma and escaped single quote",
+    "given": {
+      "input": "text",
+      "definition": "$$wrap(',\\','):$"
+    },
+    "expect": {
+      "equal": ",',text"
+    }
+  }
+]

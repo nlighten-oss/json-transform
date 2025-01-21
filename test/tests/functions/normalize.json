@@ -1,0 +1,142 @@
+[
+  {
+    "name": "Inline no form",
+    "given": {
+      "input": "Tĥïŝ ĩš â fůňķŷ Šťŕĭńġ ａｂｃＡＢＣ…",
+      "definition": "$$normalize:$"
+    },
+    "expect": {
+      "equal": "This is a funky String abcABC..."
+    }
+  },
+  {
+    "name": "Inline NFKD form",
+    "given": {
+      "input": "Tĥïŝ ĩš â fůňķŷ Šťŕĭńġ ａｂｃＡＢＣ…",
+      "definition": "$$normalize(NFKD):$"
+    },
+    "expect": {
+      "equal": "This is a funky String abcABC..."
+    }
+  },
+  {
+    "name": "Inline NFKD form no replacement",
+    "given": {
+      "input": "Tĥïŝ ĩš â fůňķŷ Šťŕĭńġ ａｂｃＡＢＣ…",
+      "definition": "$$normalize(NFKD,NONE):$"
+    },
+    "expect": {
+      "equal": "Tĥïŝ ĩš â fůňķŷ Šťŕĭńġ abcABC..."
+    }
+  },
+  {
+    "name": "Inline NFD form",
+    "given": {
+      "input": "Tĥïŝ ĩš â fůňķŷ Šťŕĭńġ ａｂｃＡＢＣ…",
+      "definition": "$$normalize(NFD):$"
+    },
+    "expect": {
+      "equal": "This is a funky String ａｂｃＡＢＣ…"
+    }
+  },
+  {
+    "name": "Inline NFD form no replacement",
+    "given": {
+      "input": "Tĥïŝ ĩš â fůňķŷ Šťŕĭńġ ａｂｃＡＢＣ…",
+      "definition": "$$normalize(NFD,NONE):$"
+    },
+    "expect": {
+      "equal": "Tĥïŝ ĩš â fůňķŷ Šťŕĭńġ ａｂｃＡＢＣ…"
+    }
+  },
+  {
+    "name": "Inline NFKC form",
+    "given": {
+      "input": "Tĥïŝ ĩš â fůňķŷ Šťŕĭńġ ａｂｃＡＢＣ…",
+      "definition": "$$normalize(NFKC):$"
+    },
+    "expect": {
+      "equal": "Tĥïŝ ĩš â fůňķŷ Šťŕĭńġ abcABC..."
+    }
+  },
+  {
+    "name": "Inline NFKC form no replacement",
+    "given": {
+      "input": "Tĥïŝ ĩš â fůňķŷ Šťŕĭńġ ａｂｃＡＢＣ…",
+      "definition": "$$normalize(NFKC,NONE):$"
+    },
+    "expect": {
+      "equal": "Tĥïŝ ĩš â fůňķŷ Šťŕĭńġ abcABC..."
+    }
+  },
+  {
+    "name": "Inline NFC form",
+    "given": {
+      "input": "Tĥïŝ ĩš â fůňķŷ Šťŕĭńġ ａｂｃＡＢＣ…",
+      "definition": "$$normalize(NFC):$"
+    },
+    "expect": {
+      "equal": "Tĥïŝ ĩš â fůňķŷ Šťŕĭńġ ａｂｃＡＢＣ…"
+    }
+  },
+  {
+    "name": "Inline NFC form no replacement",
+    "given": {
+      "input": "Tĥïŝ ĩš â fůňķŷ Šťŕĭńġ ａｂｃＡＢＣ…",
+      "definition": "$$normalize(NFC,NONE):$"
+    },
+    "expect": {
+      "equal": "Tĥïŝ ĩš â fůňķŷ Šťŕĭńġ ａｂｃＡＢＣ…"
+    }
+  },
+  {
+    "name": "Unicode table basic latin",
+    "given": {
+      "input": "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~",
+      "definition": "$$normalize:$"
+    },
+    "expect": {
+      "equal": "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+    }
+  },
+  {
+    "name": "Unicode table latin extended a",
+    "given": {
+      "input": "ĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſ",
+      "definition": "$$normalize:$"
+    },
+    "expect": {
+      "equal": "AaAaAaCcCcCcCcDdDdEeEeEeEeEeGgGgGgGgHhHhIiIiIiIiIıIJijJjKkĸLlLlLlLlLlNnNnNnnNnOoOoOoOEoeRrRrRrSsSsSsSsTtTtTtUuUuUuUuUuUuWwYyYZzZzZzs"
+    }
+  },
+  {
+    "name": "Unicode table latin extended b",
+    "given": {
+      "input": "ƀƁƂƃƄƅƆƇƈƉƊƋƌƍƎƏƐƑƒƓƔƕƖƗƘƙƚƛƜƝƞƟƠơƢƣƤƥƦƧƨƩƪƫƬƭƮƯưƱƲƳƴƵƶƷƸƹƺƻƼƽƾƿǀǁǂǃǄǅǆǇǈǉǊǋǌǍǎǏǐǑǒǓǔǕǖǗǘǙǚǛǜǝǞǟǠǡǢǣǤǥǦǧǨǩǪǫǬǭǮǯǰǱǲǳǴǵǶǷǸǹǺǻǼǽǾǿȀȁȂȃȄȅȆȇȈȉȊȋȌȍȎȏȐȑȒȓȔȕȖȗȘșȚțȜȝȞȟȠȡȢȣȤȥȦȧȨȩȪȫȬȭȮȯȰȱȲȳȴȵȶȷȸȹȺȻȼȽȾȿɀɁɂɃɄɅɆɇɈɉɊɋɌɍɎɏ",
+      "definition": "$$normalize:$"
+    },
+    "expect": {
+      "equal": "bBƂƃbbCCcDDƋƌƍƎƏƐFfGƔhƖIKklƛƜƝƞƟOoƢƣPpRSsƩƪtTtƮUuƱƲYyZzƷƸƹƺƻƼƽƾƿǀǁǂǃDZDzdzLJLjljNJNjnjAaIiOoUuUuUuUuUuǝAaAaAEaeGgGgKkOoOoƷʒjDZDzdzGgHpNnAaAEaeOoAaAaEeEeIiIiOoOoRrRrUuUuSsTtȜȝHhȠdȢȣZzAaEeOoOoOoOoYylntȷȸȹACcLTszɁɂBUAEeJjQqRrYy"
+    }
+  },
+  {
+    "name": "Unicode table latin 1 supplement",
+    "given": {
+      "input": "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ",
+      "definition": "$$normalize:$"
+    },
+    "expect": {
+      "equal": "AAAAAAAECEEEEIIIIDNOOOOO×OUUUUYÞßaaaaaaaeceeeeiiiiðnooooo÷ouuuuyþy"
+    }
+  },
+  {
+    "name": "Exceptions ae oe",
+    "given": {
+      "input": "ŒœÆæǢǣǼǽ",
+      "definition": "$$normalize:$"
+    },
+    "expect": {
+      "equal": "OEoeAEaeAEaeAEae"
+    }
+  }
+]

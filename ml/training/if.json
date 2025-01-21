@@ -1,0 +1,62 @@
+{
+  "evaluates the if-then-else expression with a true condition, using inline definition (inline form)": "$$if(a,b):$",
+  "evaluates the if-then-else expression with a false condition, using inline definition (inline form)": "$$if(a,b):$",
+  "evaluates the if-then expression with a false condition, using inline definition (inline form)": "$$if(a):$",
+  "evaluates the if-then-else expression with a true condition (object form)": {
+    "$$if": true,
+    "then": "b",
+    "else": "c"
+  },
+  "evaluates the if-then expression with a true condition (object form)": {
+    "$$if": true,
+    "then": "b"
+  },
+  "evaluates the if-then expression with a false condition (object form)": {
+    "$$if": false,
+    "then": "b"
+  },
+  "evaluates the if-then expression with a null condition (object form)": {
+    "$$if": "$",
+    "then": "b"
+  },
+  "evaluates the nested if-then expression (object form)": {
+    "$$if": "$[0]",
+    "then": {
+      "$$if": "$[1]",
+      "then": "d"
+    }
+  },
+  "evaluates the nested if-then-else expression with or condition (object form)": {
+    "$$if": "$[0]",
+    "then": "d",
+    "else": {
+      "$$if": "$[1]",
+      "then": "d",
+      "else": {
+        "$$if": "$[2]",
+        "then": "d"
+      }
+    }
+  },
+  "evaluates the if-then-else expression with an array (object form)": {
+    "$$if": "$[0]",
+    "then": "$[1]",
+    "else": "$[2]"
+  },
+  "evaluates the if-then-else expression with an array and null (object form)": {
+    "$$if": "$[0]",
+    "then": "$[1]",
+    "else": "$[2]"
+  },
+  "evaluates the if-then-else expression with an array and boolean (object form)": {
+    "$$if": "$$boolean:$[0]",
+    "then": "$[1]",
+    "else": "$[2]"
+  },
+  "evaluates the if-then-else expression with an invalid input array (object form)": {
+    "$$if": "$"
+  },
+  "evaluates the if-then-else expression with an invalid input string (object form)": {
+    "$$if": "$"
+  }
+}

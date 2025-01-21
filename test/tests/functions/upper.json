@@ -1,0 +1,22 @@
+[
+  {
+    "name": "upper (no args)",
+    "given": {
+      "input": "text",
+      "definition": "$$upper:$"
+    },
+    "expect": {
+      "equal": "TEXT"
+    }
+  },
+  {
+    "name": "upper (no args, with parentheses)",
+    "given": {
+      "input": "text",
+      "definition": "$$upper():$"
+    },
+    "expect": {
+      "equal": "TEXT"
+    }
+  }
+]

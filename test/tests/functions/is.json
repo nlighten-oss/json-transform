@@ -1,0 +1,512 @@
+[
+  {
+    "name": "assert eq not eq",
+    "given": {
+      "input": "A",
+      "definition": { "$$is": "$", "eq": "A" }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert eq not eq",
+    "given": {
+      "input": "A",
+      "definition": { "$$is": "$", "eq": "B" }
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "assert eq not eq",
+    "given": {
+      "input": 4,
+      "definition": { "$$is": "$", "eq": 4 }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert eq not eq",
+    "given": {
+      "input": 4.5,
+      "definition": { "$$is": "$", "eq": 4 }
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "assert eq not eq",
+    "given": {
+      "input": 4.5,
+      "definition": { "$$is": "$", "neq": 4 }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert eq not eq",
+    "given": {
+      "input": 4.5,
+      "definition": { "$$is": "$", "eq": 4.5, "neq": 4 }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert gt gte lt lte",
+    "given": {
+      "input": "B",
+      "definition": { "$$is": "$", "gt": "A" }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert gt gte lt lte",
+    "given": {
+      "input": "B",
+      "definition": { "$$is": "$", "gte": "B" }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert gt gte lt lte",
+    "given": {
+      "input": 4,
+      "definition": { "$$is": "$", "gt": 3 }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert gt gte lt lte",
+    "given": {
+      "input": 4,
+      "definition": { "$$is": "$", "gte": 4 }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert gt gte lt lte",
+    "given": {
+      "input": 4,
+      "definition": { "$$is": "$", "lte": 4 }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert gt gte lt lte",
+    "given": {
+      "input": 3,
+      "definition": { "$$is": "$", "lt": 4 }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert gt gte lt lte",
+    "given": {
+      "input": 4,
+      "definition": { "$$is": "$", "lt": 4 }
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "assert gt gte lt lte",
+    "given": {
+      "input": [1, 2, 3],
+      "definition": { "$$is": "$", "lt": [true, "a", "b", "c"] }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert gt gte lt lte",
+    "given": {
+      "input": [1, 2, 3],
+      "definition": { "$$is": "$", "gte": ["a", "b", "c"] }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert gt gte lt lte",
+    "given": {
+      "input": { "a": 1, "b": 2 },
+      "definition": { "$$is": "$", "gte": { "key1": "a", "key2": "b" } }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert in not in",
+    "given": {
+      "input": "A",
+      "definition": { "$$is": "$", "in": ["A", "B"] }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert in not in",
+    "given": {
+      "input": ["A", "B"],
+      "definition": { "$$is": "A", "in": "$" }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert in not in",
+    "given": {
+      "input": ["A", "B"],
+      "definition": { "$$is": "B", "in": ["$[0]", "$[1]"] }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert in not in",
+    "given": {
+      "input": ["a", "B"],
+      "definition": { "$$is": "A", "in": "$" }
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "assert in not in",
+    "given": {
+      "input": [false, true],
+      "definition": { "$$is": true, "in": "$" }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert in not in",
+    "given": {
+      "input": null,
+      "definition": { "$$is": 30, "in": [10, 20, 30] }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert in not in",
+    "given": {
+      "input": null,
+      "definition": { "$$is": 30, "nin": [10, 20, 30] }
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "assert in not in",
+    "given": {
+      "input": null,
+      "definition": { "$$is": 30, "in": "$" }
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "assert in not in",
+    "given": {
+      "input": null,
+      "definition": { "$$is": 30, "nin": "$" }
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "assert in not in",
+    "given": {
+      "input": null,
+      "definition": { "$$is": [{ "a": 1 }], "in": [[{ "a": 4 }], [{ "a": 1 }], [{ "a": 3 }]] }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert in not in",
+    "given": {
+      "input": null,
+      "definition": { "$$is": 30, "in": [10, 20, 30], "nin": [40, 50, 60] }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "assert in not in",
+    "given": {
+      "input": null,
+      "definition": { "$$is": 30, "in": [40, 50, 60], "nin": [10, 20, 30] }
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "and or example",
+    "given": {
+      "input": 2,
+      "definition": { "$$is": true, "in": [{ "$$is": "$", "gt": 1, "lt": 3 }, { "$$is": "$", "gte": 4, "lte": 6 }] }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "and or example",
+    "given": {
+      "input": 4,
+      "definition": { "$$is": true, "in": [{ "$$is": "$", "gt": 1, "lt": 3 }, { "$$is": "$", "gte": 4, "lte": 6 }] }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "and or example",
+    "given": {
+      "input": 5,
+      "definition": { "$$is": true, "in": [{ "$$is": "$", "gt": 1, "lt": 3 }, { "$$is": "$", "gte": 4, "lte": 6 }] }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "and or example",
+    "given": {
+      "input": 6,
+      "definition": { "$$is": true, "in": [{ "$$is": "$", "gt": 1, "lt": 3 }, { "$$is": "$", "gte": 4, "lte": 6 }] }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "and or example",
+    "given": {
+      "input": 1,
+      "definition": { "$$is": true, "in": [{ "$$is": "$", "gt": 1, "lt": 3 }, { "$$is": "$", "gte": 4, "lte": 6 }] }
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "and or example",
+    "given": {
+      "input": 3,
+      "definition": { "$$is": true, "in": [{ "$$is": "$", "gt": 1, "lt": 3 }, { "$$is": "$", "gte": 4, "lte": 6 }] }
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "and or example",
+    "given": {
+      "input": 7,
+      "definition": { "$$is": true, "in": [{ "$$is": "$", "gt": 1, "lt": 3 }, { "$$is": "$", "gte": 4, "lte": 6 }] }
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "object op that (EQ)",
+    "given": {
+      "input": "A",
+      "definition": { "$$is": "$", "op": "EQ", "that": "A" }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "object op that (EQ) false",
+    "given": {
+      "input": "A",
+      "definition": { "$$is": "$", "op": "EQ", "that": "B" }
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "object op that (!=)",
+    "given": {
+      "input": "A",
+      "definition": { "$$is": "$", "op": "!=", "that": "B" }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "object op that (>)",
+    "given": {
+      "input": 5,
+      "definition": { "$$is": "$", "op": ">", "that": 2 }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "inline op that (EQ equal)",
+    "given": {
+      "input": "A",
+      "definition": "$$is(EQ,A):$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "inline op that (= equal)",
+    "given": {
+      "input": "A",
+      "definition": "$$is(=,B):$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "inline op that (!= not equal)",
+    "given": {
+      "input": "A",
+      "definition": "$$is(!=,B):$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "inline op that (> can't compare string to number)",
+    "given": {
+      "input": "10",
+      "definition": "$$is(>,2):$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "inline op that (> detect literal number parameter)",
+    "given": {
+      "input": 10,
+      "definition": "$$is(>,2):$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "inline op that (IN)",
+    "given": {
+      "input": ["a", "b", "A", "B"],
+      "definition": "$$is(IN,$):A"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "inline op that (IN) false",
+    "given": {
+      "input": ["a", "b", "A", "B"],
+      "definition": "$$is(IN,$):C"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "inline op that (NIN)",
+    "given": {
+      "input": ["a", "b", "A", "B"],
+      "definition": "$$is(NIN,$):C"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "inline op that (in) false",
+    "given": {
+      "input": null,
+      "definition": "$$is(in,$):C"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "inline op that (Nin) false",
+    "given": {
+      "input": null,
+      "definition": "$$is(Nin,$):C"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "inline compare to null (!=) false",
+    "given": {
+      "input": null,
+      "definition": "$$is(!=,#null):$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "inline compare to null (=) true",
+    "given": {
+      "input": null,
+      "definition": "$$is(=,#null):$"
+    },
+    "expect": {
+      "equal": true
+    }
+  }
+]

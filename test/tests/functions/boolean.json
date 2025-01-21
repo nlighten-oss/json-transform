@@ -1,0 +1,236 @@
+[
+  {
+    "name": "true - true (no args)",
+    "given": {
+      "input": true,
+      "definition": "$$boolean:$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "true - \"0\" (js)",
+    "given": {
+      "input": "0",
+      "definition": "$$boolean(js):$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "true - \"false\" (js)",
+    "given": {
+      "input": "false",
+      "definition": "$$boolean(js):$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "true - \"true\" (no args)",
+    "given": {
+      "input": "true",
+      "definition": "$$boolean:$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "true - \"True\" (no args)",
+    "given": {
+      "input": "True",
+      "definition": "$$boolean:$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "true - \"true\" (JS)",
+    "given": {
+      "input": "true",
+      "definition": "$$boolean(JS):$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "true - 1 (no args)",
+    "given": {
+      "input": 1,
+      "definition": "$$boolean:$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "true - -1 (no args)",
+    "given": {
+      "input": -1,
+      "definition": "$$boolean:$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "true - {\"\":0} (no args)",
+    "given": {
+      "input": {
+        "": 0
+      },
+      "definition": "$$boolean:$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "true - [0] (no args)",
+    "given": {
+      "input": [
+        0
+      ],
+      "definition": "$$boolean:$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "false - false (no args)",
+    "given": {
+      "input": false,
+      "definition": "$$boolean:$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "false - \"\" (no args)",
+    "given": {
+      "input": "",
+      "definition": "$$boolean:$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "false - \"\" (js)",
+    "given": {
+      "input": "",
+      "definition": "$$boolean(js):$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "false - \"0\" (no args)",
+    "given": {
+      "input": "0",
+      "definition": "$$boolean:$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "false - \"false\" (no args)",
+    "given": {
+      "input": "false",
+      "definition": "$$boolean:$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "false - False (no args)",
+    "given": {
+      "input": "False",
+      "definition": "$$boolean:$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "false - 0 (no args)",
+    "given": {
+      "input": 0,
+      "definition": "$$boolean:$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "false - null (no args)",
+    "given": {
+      "input": null,
+      "definition": "$$boolean:$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "false - {} (no args)",
+    "given": {
+      "input": {},
+      "definition": "$$boolean:$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "false - [] (no args)",
+    "given": {
+      "input": [],
+      "definition": "$$boolean:$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "object true - \"true\" (style=JS)",
+    "given": {
+      "input": "true",
+      "definition": {"$$boolean":"$","style":"JS"}
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "object true - \"false\" (style=js)",
+    "given": {
+      "input": "false",
+      "definition": {"$$boolean":"$","style":"js"}
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "object false - \"false\" (no args)",
+    "given": {
+      "input": "false",
+      "definition": {"$$boolean":"$"}
+    },
+    "expect": {
+      "equal": false
+    }
+  }
+]

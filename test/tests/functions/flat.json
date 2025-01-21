@@ -1,0 +1,74 @@
+[
+  {
+    "name": "object flat 2 arrays",
+    "given": {
+      "input": [
+        ["a", "b", "c"],
+        ["d", "e", "f"]
+      ],
+      "definition": {
+        "$$flat": ["$[0]", "$[1]"]
+      }
+    },
+    "expect": {
+      "equal": ["a", "b", "c", "d", "e", "f"]
+    }
+  },
+  {
+    "name": "object flat 1 array",
+    "given": {
+      "input": [
+        ["a", "b", "c"],
+        ["d", "e", "f"]
+      ],
+      "definition": {
+        "$$flat": ["$[0]", "$.pointingToNowhere"]
+      }
+    },
+    "expect": {
+      "equal": ["a", "b", "c"]
+    }
+  },
+  {
+    "name": "object flat 2 arrays inline",
+    "given": {
+      "input": [
+        ["a", "b", "c"],
+        ["d", "e", "f"]
+      ],
+      "definition": {
+        "$$flat": [
+          ["a", "b", "c"],
+          ["d", "e", "f"]
+        ]
+      }
+    },
+    "expect": {
+      "equal": ["a", "b", "c", "d", "e", "f"]
+    }
+  },
+  {
+    "name": "object flat 1 array inline",
+    "given": {
+      "input": ["a", "b", "c"],
+      "definition": {
+        "$$flat": [["a", "b", "c"], []]
+      }
+    },
+    "expect": {
+      "equal": ["a", "b", "c"]
+    }
+  },
+  {
+    "name": "object flat 1 array with null",
+    "given": {
+      "input": ["a", "b", "c"],
+      "definition": {
+        "$$flat": [["a", "b", "c"], null]
+      }
+    },
+    "expect": {
+      "equal": ["a", "b", "c"]
+    }
+  }
+]

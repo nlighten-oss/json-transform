@@ -1,0 +1,7 @@
+{
+  "calculates the length of the input string \"hello world\", using inline definition (inline form)": "$$length(OBJECT):hello world",
+  "calculates the length of the input string, using inline definition (inline form)": "$$length(OBJECT):$",
+  "calculates the length of the input array, using inline definition (inline form)": "$$length(OBJECT):$",
+  "calculates the length of the input object, using inline definition (inline form)": "$$length(OBJECT):$",
+  "calculates the length of the input, using inline definition (inline form)": "$$length(AUTO,true):$"
+}

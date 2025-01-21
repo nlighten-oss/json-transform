@@ -1,0 +1,9 @@
+{
+  "parses a number with no arguments (inline form)": "$$numberparse:$",
+  "parses a number with empty arguments (inline form)": "$$numberparse():$",
+  "parses a number with a custom format (inline form)": "$$numberparse('#,##0.00'):$",
+  "parses a number with a custom format and de locale (inline form)": "$$numberparse('#,##0.00',de):$",
+  "parses a number with a custom format, en-US locale and separators (inline form)": "$$numberparse('#,##0.00',en-US,'.',','):$",
+  "parses a hexadecimal number (inline form)": "$$numberparse(BASE,16):$",
+  "parses a binary number (inline form)": "$$numberparse(BASE,2):$"
+}

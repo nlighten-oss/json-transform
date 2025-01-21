@@ -1,0 +1,188 @@
+[
+  {
+    "name": "Test Object Function Map",
+    "given": {
+      "input": {
+        "value": 5,
+        "item": {
+          "foo": "aaa",
+          "id": "bbb"
+        },
+        "items": [
+          {
+            "foo": "bar",
+            "id": "aaa"
+          },
+          {
+            "foo": "bar2",
+            "id": "bbb"
+          }
+        ]
+      },
+      "definition": {
+        "$$map": [
+          "$.items",
+          {
+            "id": "##current.id",
+            "map_foo": "##current.foo",
+            "idx": "##index",
+            "value": "$.value"
+          }
+        ]
+      }
+    },
+    "expect": {
+      "equal": [
+        {
+          "id": "aaa",
+          "map_foo": "bar",
+          "idx": 0,
+          "value": 5
+        },
+        {
+          "id": "bbb",
+          "map_foo": "bar2",
+          "idx": 1,
+          "value": 5
+        }
+      ]
+    }
+  },
+  {
+    "name": "Test Object Function Map with To",
+    "given": {
+      "input": {
+        "value": 5,
+        "item": {
+          "foo": "aaa",
+          "id": "bbb"
+        },
+        "items": [
+          {
+            "foo": "bar",
+            "id": "aaa"
+          },
+          {
+            "foo": "bar2",
+            "id": "bbb"
+          }
+        ]
+      },
+      "definition": {
+        "$$map": "$.items",
+        "to": {
+          "id": "##current.id",
+          "map_foo": "##current.foo",
+          "idx": "##index",
+          "value": "$.value"
+        }
+      }
+    },
+    "expect": {
+      "equal": [
+        {
+          "id": "aaa",
+          "map_foo": "bar",
+          "idx": 0,
+          "value": 5
+        },
+        {
+          "id": "bbb",
+          "map_foo": "bar2",
+          "idx": 1,
+          "value": 5
+        }
+      ]
+    }
+  },
+  {
+    "name": "Test Object Function Map with Value Lookup",
+    "given": {
+      "input": {
+        "value": 5,
+        "item": {
+          "foo": "aaa",
+          "id": "bbb"
+        },
+        "items": [
+          {
+            "foo": "bar",
+            "id": "aaa"
+          },
+          {
+            "foo": "bar2",
+            "id": "bbb"
+          }
+        ]
+      },
+      "definition": {
+        "$$map": [
+          "$.item",
+          {
+            "id": "##current.id",
+            "map_foo": "##current.foo",
+            "idx": "##index",
+            "value": "$.value"
+          }
+        ]
+      }
+    },
+    "expect": {
+      "isEmpty": true
+    }
+  },
+  {
+    "name": "Object Non Transformed",
+    "given": {
+      "input": {
+        "a": [
+          1,
+          2
+        ],
+        "b": [
+          2,
+          4
+        ]
+      },
+      "definition": {
+        "$$map": [
+          [
+            "$.a",
+            "$.b"
+          ],
+          "##current[1]"
+        ]
+      }
+    },
+    "expect": {
+      "equal": [
+        2,
+        4
+      ]
+    }
+  },
+  {
+    "name": "Inline",
+    "given": {
+      "input": [
+        {
+          "a": 10
+        },
+        {
+          "a": 11
+        },
+        {
+          "a": 12
+        }
+      ],
+      "definition": "$$map(##current.a):$"
+    },
+    "expect": {
+      "equal": [
+        10,
+        11,
+        12
+      ]
+    }
+  }
+]

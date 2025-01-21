@@ -1,0 +1,10 @@
+{
+  "extracts a substring from a string, using default values for start and end (inline form)": "$$substring:$",
+  "extracts a substring from a string, using default values for start and end, with explicit empty parentheses (inline form)": "$$substring():$",
+  "extracts a substring from a string, starting at index 5 (inline form)": "$$substring(5):$",
+  "extracts a substring from a string, starting at index 5 and ending at index 8 (exclusive) (inline form)": "$$substring(5,8):$",
+  "extracts a substring from a string, starting at the 5th character from the end (inline form)": "$$substring(-5):$",
+  "extracts a substring from a string, starting at index 5 and ending at the 5th character from the end (inline form)": "$$substring(5,-5):$",
+  "extracts a substring from a string, starting at the 5th character from the end and ending at the last character (exclusive) (inline form)": "$$substring(-5,-1):$",
+  "extracts a substring from a number, starting at the 5th digit from the end and ending at the last digit (exclusive), after coercing the number to a string (inline form)": "$$substring(-5,-1):$"
+}

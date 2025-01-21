@@ -1,0 +1,51 @@
+[
+  {
+    "name": "Null test",
+    "given": {
+      "input": null,
+      "definition": "$$isnull:$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "Undefined test",
+    "given": {
+      "definition": "$$isnull:$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "Zero test",
+    "given": {
+      "input": 0,
+      "definition": "$$isnull():$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "Empty string test",
+    "given": {
+      "input": "",
+      "definition": "$$isnull:$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "False test",
+    "given": {
+      "input": false,
+      "definition": "$$isnull:$"
+    },
+    "expect": {
+      "equal": false
+    }
+  }
+]

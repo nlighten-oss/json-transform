@@ -1,0 +1,52 @@
+[
+  {
+    "name": "parse - full",
+    "given": {
+      "input": "https://user:pass@example.com:9090/whatever/?q=a&q=b#fragment",
+      "definition": "$$uriparse:$"
+    },
+    "expect": {
+      "equal": {
+        "scheme": "https",
+        "user_info": "user:pass",
+        "authority": "user:pass@example.com:9090",
+        "host": "example.com:9090",
+        "hostname": "example.com",
+        "port": 9090,
+        "path": "/whatever/",
+        "query": {
+          "q": "a",
+          "q$$": [ "a", "b" ]
+        },
+        "query_raw": "q=a&q=b",
+        "fragment": "fragment"
+      }
+    }
+  },
+  {
+    "name": "parse - partial",
+    "given": {
+      "input": "https://example.com/whatever",
+      "definition": "$$uriparse:$"
+    },
+    "expect": {
+      "equal": {
+        "scheme": "https",
+        "authority": "example.com",
+        "host": "example.com",
+        "hostname": "example.com",
+        "path": "/whatever"
+      }
+    }
+  },
+  {
+    "name": "bad syntax",
+    "given": {
+      "input": "<https///>",
+      "definition": "$$uriparse:$"
+    },
+    "expect": {
+      "isNull": true
+    }
+  }
+]

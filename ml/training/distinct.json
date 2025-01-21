@@ -1,0 +1,16 @@
+{
+  "removes duplicate objects from the input array by the specified key, using inline definition (inline form)": "$$distinct(##current.a):$",
+  "removes duplicate primitives from the input array (object form)": {
+    "$$distinct": "$"
+  },
+  "removes duplicate objects from the input array (object form)": {
+    "$$distinct": "$"
+  },
+  "removes duplicate arrays from the input array (object form)": {
+    "$$distinct": "$"
+  },
+  "removes duplicate objects from the input array by the specified key (object form)": {
+    "$$distinct": "$",
+    "by": "##current.b"
+  }
+}

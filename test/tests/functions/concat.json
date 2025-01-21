@@ -1,0 +1,70 @@
+[
+  {
+    "name": "object - 2 arrays",
+    "given": {
+      "input": [["a","b","c"],["d","e","f"]],
+      "definition": { "$$concat": ["$[0]", "$[1]"] }
+    },
+    "expect": {
+      "equal": ["a", "b", "c", "d", "e", "f"]
+    }
+  },
+  {
+    "name": "object - keep nulls",
+    "given": {
+      "input": [["a","b","c"],["d","e","f"]],
+      "definition": {
+        "$$concat": [
+          ["a", null, "c"],
+          ["d", "e", null]
+        ]
+      }
+    },
+    "expect": {
+      "equal": ["a", null, "c", "d", "e", null]
+    }
+  },
+  {
+    "name": "object - skip nulls",
+    "given": {
+      "input": null,
+      "definition": {
+        "$$concat": [
+          [
+            "a",
+            "b",
+            "c"
+          ],
+          null
+        ]
+      }
+    },
+    "expect": {
+      "equal": [
+        "a",
+        "b",
+        "c"
+      ]
+    }
+  },
+  {
+    "name": "object - append non nulls",
+    "given": {
+      "input": null,
+      "definition": { "$$concat": [["a", "b", "c"], "d", ["e"]] }
+    },
+    "expect": {
+      "equal": ["a", "b", "c", "d", "e"]
+    }
+  },
+  {
+    "name": "object - blind concat",
+    "given": {
+      "input": [["a", "b", "c"], "d", ["e"]],
+      "definition": { "$$concat": "$" }
+    },
+    "expect": {
+      "equal": ["a", "b", "c", "d", "e"]
+    }
+  }
+]

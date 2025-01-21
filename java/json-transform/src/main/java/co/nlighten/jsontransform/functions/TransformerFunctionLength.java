@@ -5,17 +5,10 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
-@Aliases("length")
-@Documentation("Returns the length of a value")
-@InputType(ArgType.Any)
-@ArgumentType(value = "type", type = ArgType.Enum, position = 0, defaultEnum = "AUTO",
-              enumValues = { "AUTO", "STRING", "ARRAY", "OBJECT" },
-              description = "Restrict the type of value to check length of (if specified type no detected the result will be null)")
-@ArgumentType(value = "default_zero", type = ArgType.Boolean, position = 1, defaultBoolean = false,
-              description = "Whether to return 0 instead of null (on any kind of issue)")
-@OutputType(ArgType.Integer)
+@ArgumentType(value = "type", type = ArgType.Enum, position = 0, defaultEnum = "AUTO")
+@ArgumentType(value = "default_zero", type = ArgType.Boolean, position = 1, defaultBoolean = false)
 public class TransformerFunctionLength<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
 
     public TransformerFunctionLength(JsonAdapter<JE, JA, JO> adapter) {

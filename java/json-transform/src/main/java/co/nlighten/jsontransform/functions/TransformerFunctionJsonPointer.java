@@ -5,22 +5,15 @@ import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import co.nlighten.jsontransform.manipulation.JsonPointer;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 /*
  * For tests
  * @see TransformerFunctionJsonPointerTest
  */
-@Aliases({"jsonpointer"})
-@Documentation("Apply mutations on object paths using JSON Pointer (defined by RFC-6901)")
-@InputType(ArgType.Any)
-@ArgumentType(value = "op", type = ArgType.Enum, position = 0, defaultString = "GET",
-              description = "Operation", enumValues = { "GET", "SET", "REMOVE" })
-@ArgumentType(value = "pointer", type = ArgType.String, position = 1, defaultIsNull = true,
-              description = "JSON Pointer to apply operation on")
-@ArgumentType(value = "value", type = ArgType.Any, position = 2, defaultIsNull = true,
-              description = "Value to use")
-@OutputType(ArgType.Any)
+@ArgumentType(value = "op", type = ArgType.Enum, position = 0, defaultString = "GET")
+@ArgumentType(value = "pointer", type = ArgType.String, position = 1, defaultIsNull = true)
+@ArgumentType(value = "value", type = ArgType.Any, position = 2, defaultIsNull = true)
 public class TransformerFunctionJsonPointer<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     private final JsonPointer<JE, JA, JO> jsonPointer;
 

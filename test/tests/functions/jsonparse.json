@@ -1,0 +1,101 @@
+[
+  {
+    "name": "From String",
+    "given": {
+      "input": "\"text\"",
+      "definition": "$$jsonparse:$"
+    },
+    "expect": {
+      "equal": "text"
+    }
+  },
+  {
+    "name": "From String with Empty Arguments",
+    "given": {
+      "input": "\"text\"",
+      "definition": "$$jsonparse():$"
+    },
+    "expect": {
+      "equal": "text"
+    }
+  },
+  {
+    "name": "From Boolean",
+    "given": {
+      "input": "true",
+      "definition": "$$jsonparse:$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "From Number",
+    "given": {
+      "input": "123",
+      "definition": "$$jsonparse:$"
+    },
+    "expect": {
+      "equal": 123
+    }
+  },
+  {
+    "name": "From Big Decimal",
+    "given": {
+      "input": "\"1234567890.098765432123456789\"",
+      "definition": "$$jsonparse:$"
+    },
+    "expect": {
+      "equal": "1234567890.098765432123456789"
+    }
+  },
+  {
+    "name": "From Big Decimal - Large Value",
+    "given": {
+      "input": "\"123456789123456789123456789123456789\"",
+      "definition": "$$jsonparse:$"
+    },
+    "expect": {
+      "equal": "123456789123456789123456789123456789"
+    }
+  },
+  {
+    "name": "From Object",
+    "given": {
+      "input": "{\"a\":\"b\"}",
+      "definition": "$$jsonparse:$"
+    },
+    "expect": {
+      "equal": {
+        "a": "b"
+      }
+    }
+  },
+  {
+    "name": "From Array",
+    "given": {
+      "input": "[\"a\",\"b\"]",
+      "definition": "$$jsonparse:$"
+    },
+    "expect": {
+      "equal": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  {
+    "name": "Object From Object",
+    "given": {
+      "input": "{\"a\":\"b\"}",
+      "definition": {
+        "$$jsonparse": "$"
+      }
+    },
+    "expect": {
+      "equal": {
+        "a": "b"
+      }
+    }
+  }
+]

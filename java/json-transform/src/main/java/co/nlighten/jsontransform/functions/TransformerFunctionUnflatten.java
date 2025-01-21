@@ -4,22 +4,10 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
-@Aliases("unflatten")
-@Documentation("Accepts an objet with dot separated field names and merges them into an hierarchical object")
-@InputType(ArgType.Object)
-@OutputType(ArgType.Object)
-@ArgumentType(value = "target",
-              type = ArgType.Object,
-              position = 0,
-              description = "A target to merge into",
-              defaultIsNull = true)
-@ArgumentType(value = "path",
-              type = ArgType.String,
-              position = 1,
-              description = "The root path in the target to merge into",
-              defaultIsNull = true)
+@ArgumentType(value = "target", type = ArgType.Object, position = 0, defaultIsNull = true)
+@ArgumentType(value = "path", type = ArgType.String, position = 1, defaultIsNull = true)
 public class TransformerFunctionUnflatten<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
 
     public TransformerFunctionUnflatten(JsonAdapter<JE, JA, JO> adapter) {

@@ -4,7 +4,7 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -13,12 +13,7 @@ import java.util.stream.IntStream;
  * For tests
  * @see TransformerFunctionPartitionTest
  */
-@Aliases("partition")
-@Documentation("Partition an array to multiple constant size arrays")
-@InputType(ArgType.Array)
-@ArgumentType(value = "size", type = ArgType.Integer, position = 0, defaultInteger = 100, required = true,
-              description = "The size of each partition")
-@OutputType(value = ArgType.ArrayOfArray, description = "of same items type as input")
+@ArgumentType(value = "size", type = ArgType.Integer, position = 0, defaultInteger = 100)
 public class TransformerFunctionPartition<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public TransformerFunctionPartition(JsonAdapter<JE, JA, JO> adapter) {
         super(adapter);

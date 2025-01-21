@@ -4,7 +4,7 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 import java.util.regex.Pattern;
 
@@ -12,14 +12,8 @@ import java.util.regex.Pattern;
  * For tests
  * @see TransformerFunctionMatchTest
  */
-@Aliases("match")
-@Documentation("Returns a matched substring from input by a pattern (and optionally group id)")
-@InputType(ArgType.Object)
-@ArgumentType(value = "pattern", type = ArgType.String, position = 0, required = true,
-              description = "Regular expression to match and extract from input string")
-@ArgumentType(value = "group", type = ArgType.Integer, position = 1, defaultInteger = 0,
-              description = "The group id to get")
-@OutputType(ArgType.String)
+@ArgumentType(value = "pattern", type = ArgType.String, position = 0)
+@ArgumentType(value = "group", type = ArgType.Integer, position = 1, defaultInteger = 0)
 public class TransformerFunctionMatch<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public TransformerFunctionMatch(JsonAdapter<JE, JA, JO> adapter) {
         super(adapter);

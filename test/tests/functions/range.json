@@ -1,0 +1,110 @@
+[
+  {
+    "name": "Inline null input",
+    "given": {
+      "input": null,
+      "definition": "$$range(1,5)"
+    },
+    "expect": {
+      "equal": [1, 2, 3, 4, 5]
+    }
+  },
+  {
+    "name": "Inline null input with colon",
+    "given": {
+      "input": null,
+      "definition": "$$range(1,5):"
+    },
+    "expect": {
+      "equal": [1, 2, 3, 4, 5]
+    }
+  },
+  {
+    "name": "Inline null input with colon and step 1",
+    "given": {
+      "input": null,
+      "definition": "$$range(1,5,1):"
+    },
+    "expect": {
+      "equal": [1, 2, 3, 4, 5]
+    }
+  },
+  {
+    "name": "Inline decimal input with colon and step 0.5",
+    "given": {
+      "input": 2.7,
+      "definition": "$$range(1.5,$,0.5):"
+    },
+    "expect": {
+      "equal": [
+        1.5,
+        2,
+        2.5
+      ]
+    }
+  },
+  {
+    "name": "Inline null input with step 2",
+    "given": {
+      "input": null,
+      "definition": "$$range(1,5,2)"
+    },
+    "expect": {
+      "equal": [1, 3, 5]
+    }
+  },
+  {
+    "name": "Inline null input with step 10",
+    "given": {
+      "input": null,
+      "definition": "$$range(10,45,10)"
+    },
+    "expect": {
+      "equal": [10, 20, 30, 40]
+    }
+  },
+  {
+    "name": "Inline object input with start, end and step",
+    "given": {
+      "input": {
+        "start": 10,
+        "end": 50,
+        "step": 10
+      },
+      "definition": "$$range($.start,$.end,$.step)"
+    },
+    "expect": {
+      "equal": [10, 20, 30, 40, 50]
+    }
+  },
+  {
+    "name": "Inline null input with no arguments",
+    "given": {
+      "input": null,
+      "definition": "$$range"
+    },
+    "expect": {
+      "equal": []
+    }
+  },
+  {
+    "name": "Inline null input with colon and no arguments",
+    "given": {
+      "input": null,
+      "definition": "$$range():"
+    },
+    "expect": {
+      "equal": []
+    }
+  },
+  {
+    "name": "Inline null input with colon and one argument",
+    "given": {
+      "input": null,
+      "definition": "$$range(1):"
+    },
+    "expect": {
+      "equal": []
+    }
+  }
+]

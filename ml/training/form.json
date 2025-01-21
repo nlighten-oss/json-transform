@@ -1,0 +1,10 @@
+{
+  "converts the input object to an url encoded form, using inline definition (inline form)": "$$form:$",
+  "converts the input object with an array to an url encoded form, using inline definition (inline form)": "$$form:$",
+  "converts the input object to an url encoded form (object form)": {
+    "$$form": "$"
+  },
+  "converts the input object with an array to an url encoded form (object form)": {
+    "$$form": "$"
+  }
+}

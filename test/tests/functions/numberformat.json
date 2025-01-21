@@ -1,0 +1,162 @@
+[
+  {
+    "name": "Inline no arguments",
+    "given": {
+      "input": 123456789.87654321,
+      "definition": "$$numberformat:$"
+    },
+    "expect": {
+      "equal": "123,456,789.877"
+    }
+  },
+  {
+    "name": "Inline empty arguments",
+    "given": {
+      "input": 123456789.87654321,
+      "definition": "$$numberformat():$"
+    },
+    "expect": {
+      "equal": "123,456,789.877"
+    }
+  },
+  {
+    "name": "Inline no arguments, integer",
+    "given": {
+      "input": 123456789,
+      "definition": "$$numberformat:$"
+    },
+    "expect": {
+      "equal": "123,456,789"
+    }
+  },
+  {
+    "name": "Inline no arguments, rounding",
+    "given": {
+      "input": 1.9999,
+      "definition": "$$numberformat:$"
+    },
+    "expect": {
+      "equal": "2"
+    }
+  },
+  {
+    "name": "Inline decimal",
+    "given": {
+      "input": 123456789.87654321,
+      "definition": "$$numberformat(DECIMAL):$"
+    },
+    "expect": {
+      "equal": "123456789.88"
+    }
+  },
+  {
+    "name": "Inline decimal with en-US locale and custom format",
+    "given": {
+      "input": 123456789.87654321,
+      "definition": "$$numberformat(DECIMAL,en-US,'#,##0.00'):$"
+    },
+    "expect": {
+      "equal": "123,456,789.88"
+    }
+  },
+  {
+    "name": "Inline decimal with en-US locale and custom format with separators",
+    "given": {
+      "input": 123456789.87654321,
+      "definition": "$$numberformat(DECIMAL,en-US,'#,##0.00','.',','):$"
+    },
+    "expect": {
+      "equal": "123.456.789,88"
+    }
+  },
+  {
+    "name": "Inline currency",
+    "given": {
+      "input": 123456789.87654321,
+      "definition": "$$numberformat(CURRENCY):$"
+    },
+    "expect": {
+      "equal": "$123,456,789.88"
+    }
+  },
+  {
+    "name": "Inline currency with en-GB locale and GBP currency",
+    "given": {
+      "input": 123456789.87654321,
+      "definition": "$$numberformat(CURRENCY,en-GB,GBP):$"
+    },
+    "expect": {
+      "equal": "£123,456,789.88"
+    }
+  },
+  {
+    "name": "Inline percent",
+    "given": {
+      "input": 123456789.87654321,
+      "definition": "$$numberformat(PERCENT):$"
+    },
+    "expect": {
+      "equal": "12,345,678,988%"
+    }
+  },
+  {
+    "name": "Inline integer",
+    "given": {
+      "input": 123456789.87654321,
+      "definition": "$$numberformat(INTEGER):$"
+    },
+    "expect": {
+      "equal": "123,456,790"
+    }
+  },
+  {
+    "name": "Inline compact",
+    "given": {
+      "input": 123456789.87654321,
+      "definition": "$$numberformat(COMPACT):$"
+    },
+    "expect": {
+      "equal": "123M"
+    }
+  },
+  {
+    "name": "Inline compact with en-US locale and long format",
+    "given": {
+      "input": 123456789.87654321,
+      "definition": "$$numberformat(COMPACT,en-US,LONG):$"
+    },
+    "expect": {
+      "equal": "123 million"
+    }
+  },
+  {
+    "name": "Inline compact with he-IL locale and long format",
+    "given": {
+      "input": 123456789.87654321,
+      "definition": "$$numberformat(COMPACT,he-IL,LONG):$"
+    },
+    "expect": {
+      "equal": "\u200F123 מיליון"
+    }
+  },
+  {
+    "name": "Inline base 16",
+    "given": {
+      "input": 123456789.87654321,
+      "definition": "$$numberformat(BASE,16):$"
+    },
+    "expect": {
+      "equal": "75bcd15"
+    }
+  },
+  {
+    "name": "Inline base 2",
+    "given": {
+      "input": 123456789.87654321,
+      "definition": "$$numberformat(BASE,2):$"
+    },
+    "expect": {
+      "equal": "111010110111100110100010101"
+    }
+  }
+]

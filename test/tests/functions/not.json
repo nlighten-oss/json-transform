@@ -1,0 +1,46 @@
+[
+  {
+    "name": "Inline true",
+    "given": {
+      "input": true,
+      "definition": "$$not:$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "Inline false",
+    "given": {
+      "input": false,
+      "definition": "$$not:$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "Object true",
+    "given": {
+      "input": true,
+      "definition": {
+        "$$not": "$"
+      }
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "Object false",
+    "given": {
+      "input": false,
+      "definition": {
+        "$$not": "$"
+      }
+    },
+    "expect": {
+      "equal": true
+    }
+  }
+]

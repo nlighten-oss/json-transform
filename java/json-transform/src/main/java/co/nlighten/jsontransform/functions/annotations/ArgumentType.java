@@ -1,5 +1,6 @@
 package co.nlighten.jsontransform.functions.annotations;
 
+
 import co.nlighten.jsontransform.functions.common.ArgType;
 
 import java.lang.annotation.*;
@@ -12,11 +13,8 @@ import java.lang.annotation.*;
 @Repeatable(ArgumentsTypes.class)
 public @interface ArgumentType {
     String value();
-    String description();
-    String[] enumValues() default {};
     ArgType type();
     int position() default -1;
-    boolean required() default false;
 
     boolean defaultIsNull() default false;
     boolean defaultBoolean() default false;

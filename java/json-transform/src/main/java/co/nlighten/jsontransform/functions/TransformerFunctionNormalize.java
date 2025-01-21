@@ -4,7 +4,7 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -15,24 +15,8 @@ import java.util.regex.Pattern;
  * For tests
  * @see TransformerFunctionNormalizeTest
  */
-@Aliases("normalize")
-@Documentation(value = "Replace special characters forms with their simple form equivalent (removing marks by default)",
-               notes = """
-- Allows post-processing over Java's normalizer algorithm result
-### Post Operations
-- `ROBUST` - Try to return the most of similar letters to latin, replaced to their latin equivalent, including:
-  - Removing combining diacritical marks (works with NFD/NFKD which leaves the characters decomposed)
-  - Stroked (and others which are not composed) (i.e. "ĐŁłŒ" -> "DLlOE")
-  - Replacing (with space) and trimming white-spaces
-""")
-@InputType(ArgType.String)
-@ArgumentType(value = "form", type = ArgType.Enum, position = 0, defaultEnum = "NFKD",
-              enumValues = { "NFD", "NFC", "NFKD", "NFKC" },
-              description = "Normalizer Form (as described in Java's documentation. Default is NFKD; Decompose for compatibility)")
-@ArgumentType(value = "post_operation", type = ArgType.Enum, position = 1, defaultEnum = "ROBUST",
-              enumValues = { "ROBUST", "NONE" },
-              description = "Post operation to run on result to remove/replace more letters")
-@OutputType(ArgType.String)
+@ArgumentType(value = "form", type = ArgType.Enum, position = 0, defaultEnum = "NFKD")
+@ArgumentType(value = "post_operation", type = ArgType.Enum, position = 1, defaultEnum = "ROBUST")
 public class TransformerFunctionNormalize<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     // * source strings (ends with _S) are after decomposition and removal of marks
     // ** if target character is more than one letter,

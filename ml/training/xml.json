@@ -1,0 +1,37 @@
+{
+  "converts a JSON object with a \"root\" key to an XML string with a \"root\" tag enclosed in a \"container\" tag (object form)": {
+    "$$xml": "$",
+    "root": "container"
+  },
+  "converts a JSON object with a \"hello\" key to an XML string with a \"hello\" tag, with nested \"hi\" and \"to\" tags (object form)": {
+    "$$xml": {
+      "hello": {
+        "hi": [
+          "",
+          ""
+        ],
+        "to": "world"
+      }
+    }
+  },
+  "converts a JSON object with a \"root\" key to an XML string with a \"root\" tag (object form)": [
+    "$$xml:$"
+  ],
+  "converts a JSON object with \"root\" and \"root_b\" keys to an XML string with \"root\" and \"root_b\" tags (object form)": [
+    "$$xml:$"
+  ],
+  "converts a JSON object with \"root\" and \"root_b\" keys to an XML string with \"root\" and \"root_b\" tags enclosed in a \"container\" tag (object form)": [
+    "$$xml(container):$"
+  ],
+  "converts a JSON object with \"root\" and \"root_b\" keys to an XML string with \"root\" and \"root_b\" tags enclosed in a \"container\" tag, with indentation (object form)": [
+    "$$xml(container,,true):$"
+  ],
+  "converts a JSON object with \"a\" and \"b\" keys and an \"xslt\" key containing an XSLT stylesheet to an XML string that applies the stylesheet to the JSON object (object form)": {
+    "$$xml": {
+      "a": "AAA",
+      "b": "BBB"
+    },
+    "root": "container",
+    "xslt": "<xsl:stylesheet version=\"1.0\"\n         xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">\n         \n         <xsl:template match=\"/container\">\n         <my_record>\n           <first><xsl:value-of select=\"a\" /></first>\n           <second><xsl:value-of select=\"b\" /></second>\n         </my_record>\n         </xsl:template>\n               \n     </xsl:stylesheet>"
+  }
+}

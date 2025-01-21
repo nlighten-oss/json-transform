@@ -1,0 +1,43 @@
+[
+  {
+    "name": "object flatten with array_prefix",
+    "given": {
+      "input": { "value": "bbb" },
+      "definition": {
+        "$$flatten": { "a": { "a1": 123, "a2": [1, 2, 3, { "c": true }] }, "b": "$.value" },
+        "array_prefix": "\\$"
+      }
+    },
+    "expect": {
+      "equal": { "a.a1": 123, "a.a2.$0": 1, "a.a2.$1": 2, "a.a2.$2": 3, "a.a2.$3.c": true, "b": "bbb" }
+    }
+  },
+  {
+    "name": "object flatten with prefix and array_prefix",
+    "given": {
+      "input": { "value": "bbb" },
+      "definition": {
+        "$$flatten": { "a": { "a1": 123, "a2": [1, 2, 3, { "c": true }] }, "b": "$.value" },
+        "prefix": "xxx",
+        "array_prefix": ""
+      }
+    },
+    "expect": {
+      "equal": { "xxx.a.a1": 123, "xxx.a.a2.0": 1, "xxx.a.a2.1": 2, "xxx.a.a2.2": 3, "xxx.a.a2.3.c": true, "xxx.b": "bbb" }
+    }
+  },
+  {
+    "name": "object flatten with prefix and #null array_prefix",
+    "given": {
+      "input": { "value": "bbb" },
+      "definition": {
+        "$$flatten": { "a": { "a1": 123, "a2": [1, 2, 3, { "c": true }] }, "b": "$.value" },
+        "prefix": "xxx",
+        "array_prefix": "#null"
+      }
+    },
+    "expect": {
+      "equal": { "xxx.a.a1": 123, "xxx.a.a2": [1, 2, 3, { "c": true }], "xxx.b": "bbb" }
+    }
+  }
+]

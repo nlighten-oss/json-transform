@@ -1,0 +1,91 @@
+{
+  "name": "@nlighten/json-transform",
+  "description": "JSON transformers JavaScript implementation",
+  "version": "1.0.0",
+  "main": "dist/json-transform.js",
+  "umd:main": "dist/json-transform.umd.js",
+  "module": "dist/json-transform.module.js",
+  "typings": "dist/index.d.ts",
+  "source": "src/index.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/json-transform.js",
+      "import": "./dist/json-transform.module.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "microbundle",
+    "test": "vitest --no-watch",
+    "test:watch": "vitest",
+    "test:server": "ts-node ./test/server.ts",
+    "test:server:watch": "nodemon ./test/server.ts",
+    "build:test-server": "tsc --project test-server.tsconfig.json",
+    "predocker:test-server:run": "npm run build:test-server && docker build -f ../../javascript.test-server.Dockerfile -t json_transform_js_test_server_image .",
+    "docker:test-server:run": "docker run --rm -p 10001:10001 --name json_transform_js_test_server json_transform_js_test_server_image"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nlighten-oss/json-transform.git"
+  },
+  "files": [
+    "dist/"
+  ],
+  "keywords": [
+    "json-transform"
+  ],
+  "author": "Eli Sherer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nlighten-oss/json-transform/issues"
+  },
+  "homepage": "https://github.com/nlighten-oss/json-transform#readme",
+  "peerDependencies": {
+    "@date-fns/tz": "^1.2.0",
+    "@nlighten/json-schema-utils": "^1.0.2",
+    "@wortise/sequency": "^0.20.0",
+    "bignumber.js": "^9.1.2",
+    "date-fns": "^4.1.0",
+    "fast-json-stable-stringify": "^2.1.0",
+    "fast-json-patch": "^3.1.1",
+    "formatfusionjs": "^1.1.10",
+    "json-pointer": "^0.6.2",
+    "jsonpath": "^1.1.1",
+    "lossless-json": "^4.0.2",
+    "uuid": "^10.0.0",
+    "xml2js": "^0.6.2",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "@date-fns/tz": "^1.2.0",
+    "@nlighten/json-schema-utils": "^1.0.2",
+    "@types/json-bigint": "^1.0.4",
+    "@types/json-pointer": "^1.0.34",
+    "@types/jsonpath": "^0.2.4",
+    "@types/uuid": "^10.0.0",
+    "@types/xml2js": "^0.4.14",
+    "@types/yamljs": "^0.2.34",
+    "@wortise/sequency": "^0.20.0",
+    "bignumber.js": "^9.1.2",
+    "date-fns": "^4.1.0",
+    "fast-json-stable-stringify": "^2.1.0",
+    "fast-json-patch": "^3.1.1",
+    "formatfusionjs": "^1.1.10",
+    "json-pointer": "^0.6.2",
+    "jsonpath": "^1.1.1",
+    "lossless-json": "^4.0.2",
+    "microbundle": "^0.15.1",
+    "nodemon": "^3.1.7",
+    "ts-node": "^10.9.2",
+    "prettier": "3.1.1",
+    "typescript": "^5.3.3",
+    "uuid": "^10.0.0",
+    "vitest": "1.2.2",
+    "xml2js": "^0.6.2",
+    "yamljs": "^0.3.0"
+  }
+}

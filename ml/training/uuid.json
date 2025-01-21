@@ -1,0 +1,17 @@
+{
+  "formats a UUID with default settings (inline form)": "$$uuid:$",
+  "formats a UUID with empty arguments (inline form)": "$$uuid():$",
+  "formats a UUID as a base36 string (inline form)": "$$uuid(b36):$",
+  "formats a UUID as a base36 string, using the full keyword (inline form)": "$$uuid(base36):$",
+  "formats a UUID as a base62 string (inline form)": "$$uuid(b62):$",
+  "formats a UUID as a base62 string, using the full keyword (inline form)": "$$uuid(Base62):$",
+  "formats a UUID as a base64 string (inline form)": "$$uuid(b64):$",
+  "formats a UUID as a base64 string, using the full keyword (inline form)": "$$uuid(base64):$",
+  "formats a UUID as a base64 string, with the encoding specified in quotes (inline form)": "$$uuid('base64'):$",
+  "formats a UUID with no hyphens, using the short keyword (inline form)": "$$uuid(N):$",
+  "formats a UUID with no hyphens, using the full keyword (inline form)": "$$uuid(no_hyphens):$",
+  "formats a UUID with no hyphens, using the short keyword and providing the UUID literally (inline form)": "$$uuid(n):a8e41dc6-74c9-42c5-bb03-3bfd623044c5",
+  "generates a UUID v3 with a custom namespace (inline form)": "$$uuid(v3,4bdbe8ec-5cb5-11ea-bc55-0242ac130003):$",
+  "generates a UUID v3 with the default namespace (inline form)": "$$uuid(v3):$",
+  "generates a UUID v5 with a custom namespace (inline form)": "$$uuid(v5,4bdbe8ec-5cb5-11ea-bc55-0242ac130003):$"
+}

@@ -1,0 +1,33 @@
+{
+  "performs a switch-case operation on a value, with a matching case (object form)": {
+    "$$switch": "$",
+    "cases": {
+      "a": 1,
+      "B": 2,
+      "c": 3
+    }
+  },
+  "performs a switch-case operation on a value, with no matching case and no default case (object form)": {
+    "$$switch": "$",
+    "cases": {
+      "a": 1,
+      "B": 2,
+      "c": 3
+    }
+  },
+  "performs a switch-case operation on a value, with no matching case and a default case (object form)": {
+    "$$switch": "$",
+    "cases": {
+      "a": 1,
+      "B": 2,
+      "c": 3
+    },
+    "default": 4
+  },
+  "performs a switch-case operation on a value, with the value and cases extracted from an array input (object form)": {
+    "$$switch": "$[0]",
+    "cases": "$[1]"
+  },
+  "performs a switch-case operation on a value, with a matching case (inline form)": "$$switch($,'$$decimal:4'):B",
+  "performs a switch-case operation on a value, with no matching case and a default case (inline form)": "$$switch($,'$$decimal:4'):C"
+}

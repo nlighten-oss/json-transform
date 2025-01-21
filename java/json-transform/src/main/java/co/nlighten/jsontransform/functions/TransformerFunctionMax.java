@@ -4,23 +4,13 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 import java.util.Comparator;
 
-@Aliases("max")
-@Documentation("Returns the max of all values in the array")
-@InputType(ArgType.Array)
-
-@ArgumentType(value = "default", type = ArgType.Object, position = 0,
-              description = "The default value to use for empty values")
-@ArgumentType(value = "by", type = ArgType.Transformer, position = 2,
-              defaultString = "##current",
-              description = "A transformer to extract a property to sum by (using ##current to refer to the current item)")
-@ArgumentType(value = "type", type = ArgType.Enum, position = 1, defaultEnum = "AUTO",
-              enumValues = { "AUTO", "STRING", "NUMBER", "BOOLEAN" },
-              description = "Type of values to expect when ordering the input array")
-@OutputType(ArgType.Any)
+@ArgumentType(value = "default", type = ArgType.Object, position = 0)
+@ArgumentType(value = "by", type = ArgType.Transformer, position = 2, defaultString = "##current")
+@ArgumentType(value = "type", type = ArgType.Enum, position = 1, defaultEnum = "AUTO")
 public class TransformerFunctionMax<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
 
     public TransformerFunctionMax(JsonAdapter<JE, JA, JO> adapter) {

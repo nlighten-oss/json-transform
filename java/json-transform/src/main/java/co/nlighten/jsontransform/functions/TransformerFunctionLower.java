@@ -1,22 +1,13 @@
 package co.nlighten.jsontransform.functions;
 
 import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.Aliases;
-import co.nlighten.jsontransform.functions.annotations.Documentation;
-import co.nlighten.jsontransform.functions.annotations.InputType;
-import co.nlighten.jsontransform.functions.annotations.OutputType;
 
 /*
  * For tests
  * @see TransformerFunctionLowerTest
  */
-@Aliases("lower")
-@Documentation("Converts a string to all lowercase letters")
-@InputType(ArgType.String)
-@OutputType(ArgType.String)
 public class TransformerFunctionLower<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public TransformerFunctionLower(JsonAdapter<JE, JA, JO> adapter) {
         super(adapter);

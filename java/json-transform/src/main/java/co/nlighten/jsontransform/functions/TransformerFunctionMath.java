@@ -5,7 +5,7 @@ import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.FunctionHelpers;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,17 +17,9 @@ import java.math.RoundingMode;
  * For tests
  * @see TransformerFunctionMathTest
  */
-@Aliases("math")
-@Documentation("Evaluate a mathematical expression")
-@InputType(value = {ArgType.BigDecimal, ArgType.Enum, ArgType.Array}, description = "op1 / op / [op1, op, op2] / [op, op1, op2]")
-@ArgumentType(value = "op1", type = ArgType.BigDecimal, position = 0 /* or 1 */, defaultBigDecimal = 0d, required = true,
-              description = "First operand")
-@ArgumentType(value = "op", type = ArgType.Enum, position = 1 /* or 0 */, defaultEnum = "0", required = true,
-              enumValues = {"+","-","*","/","//","%","^","&","|","~","<<",">>","MIN","MAX","SQRT","ROUND","FLOOR","CEIL","ABS","NEG","SIG"},
-              description = "")
-@ArgumentType(value = "op2", type = ArgType.BigDecimal, position = 2, defaultBigDecimal = 0d,
-              description = "Second operand or scale for ROUND/FLOOR/CEIL")
-@OutputType(ArgType.BigDecimal)
+@ArgumentType(value = "op1", type = ArgType.BigDecimal, position = 0 /* or 1 */, defaultBigDecimal = 0d)
+@ArgumentType(value = "op", type = ArgType.Enum, position = 1 /* or 0 */, defaultEnum = "0")
+@ArgumentType(value = "op2", type = ArgType.BigDecimal, position = 2, defaultBigDecimal = 0d)
 public class TransformerFunctionMath<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionMath.class);
 

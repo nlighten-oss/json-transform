@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Add",
+    "given": {
+      "input": {
+        "a": {
+          "b": "c"
+        }
+      },
+      "definition": {
+        "$$jsonpatch": "$",
+        "ops": [
+          {
+            "op": "add",
+            "path": "/a/d",
+            "value": "e"
+          }
+        ]
+      }
+    },
+    "expect": {
+      "equal": {
+        "a": {
+          "b": "c",
+          "d": "e"
+        }
+      }
+    }
+  }
+]

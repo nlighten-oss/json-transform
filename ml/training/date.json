@@ -1,0 +1,47 @@
+{
+  "converts the input to a date (object form)": [
+    "$$date('date'):$"
+  ],
+  "converts the input to an ISO formatted date (object form)": [
+    "$$date(iso):$"
+  ],
+  "converts the input to an ISO formatted date with 0 fractional seconds (object form)": [
+    "$$date(ISO,0):$"
+  ],
+  "converts the input to an ISO formatted date with 3 fractional seconds (object form)": [
+    "$$date(iso,3):$"
+  ],
+  "converts the input to an ISO formatted date with 6 fractional seconds (object form)": [
+    "$$date(iso,6):$"
+  ],
+  "converts the input to a date in the specified timezone (object form)": [
+    "$$date(ZONE,America/New_York):$"
+  ],
+  "converts the input to a date in EST timezone (object form)": [
+    "$$date(ZONE,EST):$"
+  ],
+  "converts the input to a date in GMT timezone (object form)": [
+    "$$date(GMT):$"
+  ],
+  "converts the input to a date with a specified format (object form)": [
+    "$$date(format,'yyyy-MM-dd HH:mm'):$"
+  ],
+  "converts the input to a date with a specified format and timezone (object form)": [
+    "$$date(format,'yyyy-MM-dd HH:mm','America/New_York'):$"
+  ],
+  "converts the input to a unix timestamp (object form)": [
+    "$$date(epoch):$"
+  ],
+  "converts the input to a unix timestamp in milliseconds (object form)": [
+    "$$date(epoch,MS):$"
+  ],
+  "converts the input to a date with the specified timezone (object form)": [
+    "$$date(ZONE,$):2023-01-01T00:00:00Z"
+  ],
+  "converts the input to a date with the specified unit and amount added (object form)": [
+    "$$date(add,$.unit,'$.amount'):$.date"
+  ],
+  "converts the input to a date with the specified unit and amount subtracted (object form)": [
+    "$$date(sub,YEARS,1):$"
+  ]
+}

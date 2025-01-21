@@ -1,0 +1,17 @@
+{
+  "converts the input string to a decimal (inline form)": "$$decimal():$",
+  "converts the input number to a decimal (inline form)": "$$decimal:$",
+  "converts the null input to a decimal (inline form)": "$$decimal:$",
+  "converts the input string to a decimal with rounding (object form)": {
+    "$$decimal": "$",
+    "scale": 2
+  },
+  "converts the input string to a decimal with floor rounding (object form)": {
+    "$$decimal": "$",
+    "scale": 2,
+    "rounding": "FLOOR"
+  },
+  "converts the input string to a decimal without rounding (object form)": {
+    "$$decimal": "$"
+  }
+}

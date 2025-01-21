@@ -1,0 +1,11 @@
+{
+  "normalizes the input string to the default Unicode normalization form (NFC). (inline form)": "$$normalize:$",
+  "normalizes the input string to the NFKD Unicode normalization form. (inline form)": "$$normalize(NFKD):$",
+  "normalizes the input string to the NFKD Unicode normalization form without replacing compatibility characters. (inline form)": "$$normalize(NFKD,NONE):$",
+  "normalizes the input string to the NFD Unicode normalization form. (inline form)": "$$normalize(NFD):$",
+  "normalizes the input string to the NFD Unicode normalization form without replacing compatibility characters. (inline form)": "$$normalize(NFD,NONE):$",
+  "normalizes the input string to the NFKC Unicode normalization form. (inline form)": "$$normalize(NFKC):$",
+  "normalizes the input string to the NFKC Unicode normalization form without replacing compatibility characters. (inline form)": "$$normalize(NFKC,NONE):$",
+  "normalizes the input string to the NFC Unicode normalization form. (inline form)": "$$normalize(NFC):$",
+  "normalizes the input string to the NFC Unicode normalization form without replacing compatibility characters. (inline form)": "$$normalize(NFC,NONE):$"
+}

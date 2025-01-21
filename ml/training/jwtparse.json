@@ -1,0 +1,6 @@
+{
+  "parses the input JWT token, using inline definition (inline form)": "$$jwtparse:$",
+  "parses the input JWT token (object form)": {
+    "$$jwtparse": "$"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "calculates the SHA-1 digest of the input and encodes it in Base64 (inline form)": "$$digest(SHA-1):$",
+  "calculates the SHA-1 digest of the input and encodes it in HEX (inline form)": "$$digest(SHA-1,HEX):$",
+  "calculates the SHA-256 digest of the input and encodes it in Base64 (inline form)": "$$digest(SHA-256):$",
+  "calculates the SHA-256 digest of the input and encodes it in HEX (inline form)": "$$digest(SHA-256,HEX):$",
+  "calculates the SHA-384 digest of the input and encodes it in Base64 (inline form)": "$$digest(SHA-384):$",
+  "calculates the SHA-384 digest of the input and encodes it in Base64URL (inline form)": "$$digest(SHA-384,BASE64URL):$",
+  "calculates the SHA-512 digest of the input and encodes it in Base64 (inline form)": "$$digest(SHA-512):$",
+  "calculates the MD5 digest of the input and encodes it in Base64 (inline form)": "$$digest(MD5):$",
+  "calculates the MD5 digest of the input and encodes it in HEX (inline form)": "$$digest(MD5,HEX):$",
+  "calculates the Java digest of the input (inline form)": "$$digest(JAVA):$"
+}

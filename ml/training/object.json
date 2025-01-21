@@ -1,0 +1,30 @@
+{
+  "converts an array of key-value pairs to an object (inline form)": "$$object:$",
+  "converts a null input to an empty object (inline form)": "$$object",
+  "converts a number input to an empty object (inline form)": "$$object:$",
+  "converts a string input to an empty object (inline form)": "$$object:$",
+  "converts a boolean input to an empty object (inline form)": "$$object:$",
+  "converts an array of key-value pairs to an object (object form)": {
+    "$$object": "$"
+  },
+  "converts an array of key-value pairs to an object, where the keys are numbers (object form)": {
+    "$$object": "$"
+  },
+  "converts a null input to an empty object (object form)": {
+    "$$object": "$"
+  },
+  "converts a number input to an empty object (object form)": {
+    "$$object": "$"
+  },
+  "converts a boolean input to an empty object (object form)": {
+    "$$object": "$"
+  },
+  "converts an object to an object with specified key-value pairs (object form)": {
+    "$$object": [
+      [
+        "$.key",
+        "$.value"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,102 @@
+[
+  {
+    "name": "Assert Or",
+    "given": {
+      "input": [2, 3],
+      "definition": {
+        "$$or": [
+          { "$$is": "$[0]", "eq": 2 },
+          { "$$is": "$[1]", "eq": 3 }
+        ]
+      }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "Assert Or - First Condition True",
+    "given": {
+      "input": [1, 3],
+      "definition": {
+        "$$or": [
+          { "$$is": "$[0]", "eq": 2 },
+          { "$$is": "$[1]", "eq": 3 }
+        ]
+      }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "Assert Or - Second Condition True",
+    "given": {
+      "input": [2, 4],
+      "definition": {
+        "$$or": [
+          { "$$is": "$[0]", "eq": 2 },
+          { "$$is": "$[1]", "eq": 3 }
+        ]
+      }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "Assert Or - No Condition True",
+    "given": {
+      "input": [1, 4],
+      "definition": {
+        "$$or": [
+          { "$$is": "$[0]", "eq": 2 },
+          { "$$is": "$[1]", "eq": 3 }
+        ]
+      }
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "Assert Or - First Or Second",
+    "given": {
+      "input": [null, 1],
+      "definition": { "$$or": ["$[0]", "$[1]"] }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "Assert Or - First Or Second - All Null",
+    "given": {
+      "input": [null, null],
+      "definition": { "$$or": ["$[0]", "$[1]"] }
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "Inline",
+    "given": {
+      "input": [null, 0],
+      "definition": "$$or:$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "Inline - With Value",
+    "given": {
+      "input": [1, 0],
+      "definition": "$$or:$"
+    },
+    "expect": {
+      "equal": true
+    }
+  }
+]

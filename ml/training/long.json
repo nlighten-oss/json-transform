@@ -1,0 +1,5 @@
+{
+  "converts the input string to a long (inline form)": "$$long:$",
+  "converts the input number to a long (inline form)": "$$long:$",
+  "converts the null input to a long (inline form)": "$$long:$"
+}

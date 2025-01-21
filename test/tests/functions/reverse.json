@@ -1,0 +1,94 @@
+[
+  {
+    "name": "object - strings",
+    "given": {
+      "input": ["c","a","b"],
+      "definition": {
+        "$$reverse": "$"
+      }
+    },
+    "expect": {
+      "equal": ["b","a","c"]
+    }
+  },
+  {
+    "name": "object - objects",
+    "given": {
+      "input": [
+        {
+          "name": "Dan"
+        },
+        {
+          "name": "Alice"
+        },
+        {
+          "name": "Carl"
+        },
+        {
+          "name": "Bob"
+        }
+      ],
+      "definition": {
+        "$$reverse": "$"
+      }
+    },
+    "expect": {
+      "equal": [
+        {
+          "name": "Bob"
+        },
+        {
+          "name": "Carl"
+        },
+        {
+          "name": "Alice"
+        },
+        {
+          "name": "Dan"
+        }
+      ]
+    }
+  },
+  {
+    "name": "object - lazy",
+    "given": {
+      "input": [
+        1,
+        2,
+        3
+      ],
+      "definition": {
+        "$$reverse": [
+          "$[2]",
+          "$[1]",
+          "$[0]"
+        ]
+      }
+    },
+    "expect": {
+      "equal": [
+        1,
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "name": "inline - strings",
+    "given": {
+      "input": [
+        "c",
+        "a",
+        "b"
+      ],
+      "definition": "$$reverse:$"
+    },
+    "expect": {
+      "equal": [
+        "b",
+        "a",
+        "c"
+      ]
+    }
+  }
+]

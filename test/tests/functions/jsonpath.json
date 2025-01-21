@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Yo Dawg",
+    "given": {
+      "input": {
+        "path": "$.path"
+      },
+      "definition": "$$jsonpath($.path):$"
+    },
+    "expect": {
+      "equal": "$.path"
+    }
+  },
+  {
+    "name": "In Array",
+    "given": {
+      "input": {
+        "arr": [null, "boo"]
+      },
+      "definition": "$$jsonpath('\\\\$.arr[1]'):$"
+    },
+    "expect": {
+      "equal": "boo"
+    }
+  },
+  {
+    "name": "Multiple Results",
+    "given": {
+      "input": [
+        {
+          "id": 1,
+          "active": true
+        },
+        {
+          "id": 3,
+          "active": false
+        },
+        {
+          "id": 4,
+          "active": true
+        },
+        {
+          "id": 5,
+          "active": false
+        }
+      ],
+      "definition": "$$jsonpath('\\\\$[?(@.active == true)]'):$"
+    },
+    "expect": {
+      "equal": [
+        {
+          "id": 1,
+          "active": true
+        },
+        {
+          "id": 4,
+          "active": true
+        }
+      ]
+    }
+  }
+]

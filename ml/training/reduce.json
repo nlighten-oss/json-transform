@@ -1,0 +1,19 @@
+{
+  "reduces an array to a single value by accumulating the amounts of each item (object form)": {
+    "$$reduce": "$.items",
+    "identity": 0,
+    "to": {
+      "$$math": [
+        "##accumulator",
+        "+",
+        "##current.amount"
+      ]
+    }
+  },
+  "attempts to reduce a value to another value, resulting in null (object form)": {
+    "$$reduce": "aaa",
+    "identity": "bbb",
+    "to": "##current"
+  },
+  "reduces an array to a single value by accumulating the amounts of each item (inline form)": "$$reduce('$$math(##accumulator,+,##current.amount)',0):$.items"
+}

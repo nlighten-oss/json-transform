@@ -1,0 +1,78 @@
+[
+  {
+    "name": "object - simple switch case with matching value",
+    "given": {
+      "input": "B",
+      "definition": {
+        "$$switch": "$",
+        "cases": { "a": 1, "B": 2, "c": 3 }
+      }
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "object - no default and unmatched value",
+    "given": {
+      "input": "D",
+      "definition": {
+        "$$switch": "$",
+        "cases": { "a": 1, "B": 2, "c": 3 }
+      }
+    },
+    "expect": {
+      "isNull": true
+    }
+  },
+  {
+    "name": "object - unmatched value with default case",
+    "given": {
+      "input": "D",
+      "definition": {
+        "$$switch": "$",
+        "cases": { "a": 1, "B": 2, "c": 3 },
+        "default": 4
+      }
+    },
+    "expect": {
+      "equal": 4
+    }
+  },
+  {
+    "name": "object - full extraction with array input and cases",
+    "given": {
+      "input": [
+        "B",
+        { "a": 1, "B": 2, "c": 3 }
+      ],
+      "definition": {
+        "$$switch": "$[0]",
+        "cases": "$[1]"
+      }
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "inline - switch inline with matching value",
+    "given": {
+      "input": { "a": 1, "B": 2, "c": 3 },
+      "definition": "$$switch($,'$$decimal:4'):B"
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "inline - switch inline with default value",
+    "given": {
+      "input": { "a": 1, "B": 2, "c": 3 },
+      "definition": "$$switch($,'$$decimal:4'):C"
+    },
+    "expect": {
+      "equal": 4
+    }
+  }
+]

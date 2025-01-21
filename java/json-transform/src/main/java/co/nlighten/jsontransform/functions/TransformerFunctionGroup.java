@@ -4,7 +4,7 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 import co.nlighten.jsontransform.functions.common.CompareBy;
 
 import java.util.ArrayList;
@@ -15,22 +15,10 @@ import java.util.concurrent.atomic.AtomicReference;
  * For tests
  * @see TransformerFunctionGroupTest
  */
-@Aliases("group")
-@Documentation(value = "Groups an array of entries into a map of key/arr[] by a specified transformer (with optional nested grouping)",
-               notes = "Sorts elements of an array")
-@InputType(ArgType.Array)
-@ArgumentType(value = "by", type = ArgType.Transformer, position = 0, required = true,
-              description = "A transformer to extract a property to group by (using ##current to refer to the current item)")
-@ArgumentType(value = "order", type = ArgType.Enum, position = 1, defaultEnum = "ASC",
-              enumValues = { "ASC", "DESC" },
-              description = "Direction of ordering (ascending / descending)")
-@ArgumentType(value = "type", type = ArgType.Enum, position = 2, defaultEnum = "AUTO",
-              enumValues = { "AUTO", "STRING", "NUMBER", "BOOLEAN" },
-              description = "Type of values to expect when ordering the input array")
-@ArgumentType(value = "then", type = ArgType.Array, position = 3, defaultIsNull = true,
-              description = "An array of subsequent grouping. When previous sort had no difference (only when `by` specified)\n" +
-                            "{ \"by\": ..., \"order\": ..., \"type\": ...} // same 3 fields as above (`by` is required)")
-@OutputType(ArgType.Object)
+@ArgumentType(value = "by", type = ArgType.Transformer, position = 0)
+@ArgumentType(value = "order", type = ArgType.Enum, position = 1, defaultEnum = "ASC")
+@ArgumentType(value = "type", type = ArgType.Enum, position = 2, defaultEnum = "AUTO")
+@ArgumentType(value = "then", type = ArgType.Array, position = 3, defaultIsNull = true)
 public class TransformerFunctionGroup<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public TransformerFunctionGroup(JsonAdapter<JE, JA, JO> adapter) {
         super(adapter);

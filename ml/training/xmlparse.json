@@ -1,0 +1,27 @@
+{
+  "parses an XML string with an empty \"root\" tag (object form)": [
+    "$$xmlparse:$"
+  ],
+  "parses an XML string with nested elements and attributes (object form)": [
+    "$$xmlparse:$"
+  ],
+  "parses an XML string and forces the \"hi\" element to be a list (object form)": {
+    "$$xmlparse": "$",
+    "force_list": [
+      "hi"
+    ]
+  },
+  "parses an XML string and forces the \"hi\" element to be an empty list (object form)": {
+    "$$xmlparse": "$",
+    "force_list": [
+      "hi"
+    ]
+  },
+  "parses an XML string and keeps the string values as they are (object form)": {
+    "$$xmlparse": "$",
+    "keep_strings": true
+  },
+  "parses an XML string and automatically parses the types of the values (object form)": {
+    "$$xmlparse": "$"
+  }
+}

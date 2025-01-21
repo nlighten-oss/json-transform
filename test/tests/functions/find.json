@@ -1,0 +1,51 @@
+[
+  {
+    "name": "findTheTruth",
+    "given": {
+      "input": [0, [], "a"],
+      "definition": {
+        "$$find": "$",
+        "by": "##current"
+      }
+    },
+    "expect": {
+      "equal": "a"
+    }
+  },
+  {
+    "name": "findTheTruth explicit boolean",
+    "given": {
+      "input": ["a", "1", "true"],
+      "definition": {
+        "$$find": "$",
+        "by": "$$boolean:##current"
+      }
+    },
+    "expect": {
+      "equal": "true"
+    }
+  },
+  {
+    "name": "nameThatStartsWithB",
+    "given": {
+      "input": [{ "name": "alice" }, { "name": "ann" }, { "name": "Bob" }],
+      "definition": {
+        "$$find": "$",
+        "by": "$$test('(?i)^b'):##current.name"
+      }
+    },
+    "expect": {
+      "equal": { "name": "Bob" }
+    }
+  },
+  {
+    "name": "inline",
+    "given": {
+      "input": [0, [], "a"],
+      "definition": "$$find(##current):$"
+    },
+    "expect": {
+      "equal": "a"
+    }
+  }
+]

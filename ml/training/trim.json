@@ -1,0 +1,6 @@
+{
+  "removes leading and trailing spaces from a string (inline form)": "$$trim:$",
+  "removes leading spaces from a string (inline form)": "$$trim(start):$",
+  "removes trailing spaces from a string (inline form)": "$$trim(END):$",
+  "removes indentation from a string (inline form)": "$$trim(INDENT):$"
+}

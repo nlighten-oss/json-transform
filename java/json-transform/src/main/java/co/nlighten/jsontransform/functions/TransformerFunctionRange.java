@@ -4,7 +4,7 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.ArgType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.*;
+import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -13,16 +13,9 @@ import java.math.RoundingMode;
  * For tests
  * @see TransformerFunctionRangeTest
  */
-@Aliases("range")
-@Documentation("Creates an array with a sequence of numbers starting with `start` up-to `end` in steps of `step`")
-@InputType(ArgType.Any)
-@ArgumentType(value = "start", type = ArgType.BigDecimal, position = 0, defaultIsNull = true, required = true,
-              description = "First value")
-@ArgumentType(value = "end", type = ArgType.BigDecimal, position = 1, defaultIsNull = true, required = true,
-              description = "Max value to appear in sequence")
-@ArgumentType(value = "step", type = ArgType.BigDecimal, position = 2, defaultBigDecimal = 1d,
-              description = "Step to add on each iteration to the previous value in the sequence")
-@OutputType(ArgType.ArrayOfBigDecimal)
+@ArgumentType(value = "start", type = ArgType.BigDecimal, position = 0, defaultIsNull = true)
+@ArgumentType(value = "end", type = ArgType.BigDecimal, position = 1, defaultIsNull = true)
+@ArgumentType(value = "step", type = ArgType.BigDecimal, position = 2, defaultBigDecimal = 1d)
 public class TransformerFunctionRange<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public TransformerFunctionRange(JsonAdapter<JE, JA, JO> adapter) {
         super(adapter);

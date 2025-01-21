@@ -1,0 +1,208 @@
+[
+  {
+    "name": "inline group by o",
+    "given": {
+      "input": [
+        { "o": 1, "p": 11, "w": "aaa" },
+        { "o": 1, "p": 13, "w": "bbb" },
+        { "o": 1, "p": 11, "w": "ccc" },
+        { "o": 2, "p": 11, "w": "ddd" },
+        { "o": 2, "p": 13, "w": "eee" },
+        { "o": 3, "p": 12, "w": "fff" },
+        { "o": 1, "p": 9, "w": "zzz" },
+        { "no_o": false, "p": 9, "w": "zzz" }
+      ],
+      "definition": "$$group(##current.o):$"
+    },
+    "expect": {
+      "equal": {
+        "": [{ "no_o": false, "p": 9, "w": "zzz" }],
+        "1": [
+          { "o": 1, "p": 11, "w": "aaa" },
+          { "o": 1, "p": 13, "w": "bbb" },
+          { "o": 1, "p": 11, "w": "ccc" },
+          { "o": 1, "p": 9, "w": "zzz" }
+        ],
+        "2": [
+          { "o": 2, "p": 11, "w": "ddd" },
+          { "o": 2, "p": 13, "w": "eee" }
+        ],
+        "3": [{ "o": 3, "p": 12, "w": "fff" }]
+      }
+    }
+  },
+  {
+    "name": "inline group by first element",
+    "given": {
+      "input": [
+        ["a", 0, 1],
+        ["a", 1, true],
+        ["a", 2, "C"],
+        ["b", 1, 6]
+      ],
+      "definition": "$$group(##current[0]):$"
+    },
+    "expect": {
+      "equal": {
+        "a": [
+          ["a", 0, 1],
+          ["a", 1, true],
+          ["a", 2, "C"]
+        ],
+        "b": [["b", 1, 6]]
+      }
+    }
+  },
+  {
+    "name": "inline invalid input",
+    "given": {
+      "input": null,
+      "definition": "$$group"
+    },
+    "expect": {
+      "equal": {}
+    }
+  },
+  {
+    "name": "inline invalid input number",
+    "given": {
+      "input": 0.5,
+      "definition": "$$group(##current[0]):$"
+    },
+    "expect": {
+      "equal": {}
+    }
+  },
+  {
+    "name": "inline invalid input string",
+    "given": {
+      "input": "test",
+      "definition": "$$group(##current[0]):$"
+    },
+    "expect": {
+      "equal": {}
+    }
+  },
+  {
+    "name": "inline invalid input boolean",
+    "given": {
+      "input": false,
+      "definition": "$$group:$"
+    },
+    "expect": {
+      "equal": {}
+    }
+  },
+  {
+    "name": "object group by o then by p",
+    "given": {
+      "input": [
+        { "o": 1, "p": 11, "w": "aaa" },
+        { "o": 1, "p": 13, "w": "bbb" },
+        { "o": 1, "p": 11, "w": "ccc" },
+        { "o": 2, "p": 11, "w": "ddd" },
+        { "o": 2, "p": 13, "w": "eee" },
+        { "o": 3, "p": 12, "w": "fff" },
+        { "o": 1, "p": 9, "w": "zzz" },
+        { "no_o": false, "p": 9, "w": "zzz" }
+      ],
+      "definition": {
+        "$$group": "$",
+        "by": "##current.o",
+        "then": [
+          {
+            "by": {
+              "$$join": ["p_", "##current.p"]
+            },
+            "order": "DESC"
+          }
+        ]
+      }
+    },
+    "expect": {
+      "equal": {
+        "": {
+          "p_9": [{ "no_o": false, "p": 9, "w": "zzz" }]
+        },
+        "1": {
+          "p_9": [{ "o": 1, "p": 9, "w": "zzz" }],
+          "p_13": [{ "o": 1, "p": 13, "w": "bbb" }],
+          "p_11": [
+            { "o": 1, "p": 11, "w": "aaa" },
+            { "o": 1, "p": 11, "w": "ccc" }
+          ]
+        },
+        "2": {
+          "p_13": [{ "o": 2, "p": 13, "w": "eee" }],
+          "p_11": [{ "o": 2, "p": 11, "w": "ddd" }]
+        },
+        "3": {
+          "p_12": [{ "o": 3, "p": 12, "w": "fff" }]
+        }
+      }
+    }
+  },
+  {
+    "name": "object invalid input",
+    "given": {
+      "input": null,
+      "definition": { "$$group": "$" }
+    },
+    "expect": {
+      "equal": {}
+    }
+  },
+  {
+    "name": "object invalid input number",
+    "given": {
+      "input": 0.5,
+      "definition": { "$$group": "$" }
+    },
+    "expect": {
+      "equal": {}
+    }
+  },
+  {
+    "name": "object invalid input boolean",
+    "given": {
+      "input": false,
+      "definition": { "$$group": "$" }
+    },
+    "expect": {
+      "equal": {}
+    }
+  },
+  {
+    "name": "objectLazyBy group by o and p",
+    "given": {
+      "input": [
+        { "o": 1, "p": 11, "w": "aaa" },
+        { "o": 1, "p": 13, "w": "bbb" },
+        { "o": 1, "p": 11, "w": "ccc" },
+        { "o": 2, "p": 11, "w": "ddd" },
+        { "o": 2, "p": 13, "w": "eee" },
+        { "o": 3, "p": 12, "w": "fff" },
+        { "o": 1, "p": 9, "w": "zzz" },
+        { "no_o": false, "p": 9, "w": "zzz" }
+      ],
+      "definition": {
+        "$$group": "$",
+        "by": { "$$join": ["##current.o", "##current.p"] }
+      }
+    },
+    "expect": {
+      "equal": {
+        "111": [
+          { "o": 1, "p": 11, "w": "aaa" },
+          { "o": 1, "p": 11, "w": "ccc" }
+        ],
+        "113": [{ "o": 1, "p": 13, "w": "bbb" }],
+        "19": [{ "o": 1, "p": 9, "w": "zzz" }],
+        "211": [{ "o": 2, "p": 11, "w": "ddd" }],
+        "213": [{ "o": 2, "p": 13, "w": "eee" }],
+        "312": [{ "o": 3, "p": 12, "w": "fff" }],
+        "9": [{ "no_o": false, "p": 9, "w": "zzz" }]
+      }
+    }
+  }
+]
