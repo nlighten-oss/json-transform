@@ -10,12 +10,12 @@ public class InlineFunctionContext<JE, JA extends Iterable<JE>, JO extends JE> e
     protected final String stringInput;
     protected final ArrayList<Object> args;
 
-    public InlineFunctionContext(String input, ArrayList<Object> args,
+    public InlineFunctionContext(String path, String input, ArrayList<Object> args,
                                  JsonAdapter<JE, JA, JO> jsonAdapter,
                                  String functionKey,
                                  TransformerFunction<JE, JA, JO> function,
                                  ParameterResolver resolver, JsonTransformerFunction<JE> extractor) {
-        super(jsonAdapter, functionKey, function, resolver, extractor, null);
+        super(path, jsonAdapter, functionKey, function, resolver, extractor, null);
         this.stringInput = input;
         this.args = args;
     }
@@ -34,12 +34,17 @@ public class InlineFunctionContext<JE, JA extends Iterable<JE>, JO extends JE> e
         }
         var argValue = name == null ? stringInput : args.get(argument.position());
         if (argValue instanceof String s && transform) {
-            return extractor.transform(adapter.wrap(s), resolver, true);
+            return extractor.transform(getPathFor(name), adapter.wrap(s), resolver, true);
         }
         if (adapter.is(argValue)) {
             var je = (JE)argValue;
-            return transform ? extractor.transform(je, resolver, true) : je;
+            return transform ? extractor.transform(getPathFor(name), je, resolver, true) : je;
         }
         return argValue;
+    }
+
+    @Override
+    public String getPathFor(String name) {
+        return path + (name == null ? "" : "(" + name + ")");
     }
 }

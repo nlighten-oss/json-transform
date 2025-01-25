@@ -8,7 +8,7 @@ import java.util.stream.StreamSupport;
 public class JsonElementStreamer<JE, JA extends Iterable<JE>, JO extends JE> {
     private final FunctionContext<JE, JA, JO> context;
     private final boolean transformed;
-    private final JA value;
+    private JA value;
     private final Stream<JE> stream;
 
     private JsonElementStreamer(FunctionContext<JE, JA, JO> context, JA arr, boolean transformed) {
@@ -34,7 +34,7 @@ public class JsonElementStreamer<JE, JA extends Iterable<JE>, JO extends JE> {
     }
 
     public Stream<JE> stream(Long skip, Long limit) {
-        if (this.stream != null) {
+        if (this.stream != null && this.value == null) {
             var skipped = skip != null ? this.stream.skip(skip) : this.stream;
             return limit != null ? skipped.limit(limit) : skipped;
         }
@@ -72,6 +72,7 @@ public class JsonElementStreamer<JE, JA extends Iterable<JE>, JO extends JE> {
         if (stream != null) {
             stream.forEach(item -> context.jArray.add(ja, item));
         }
+        value = ja;
         return ja;
     }
 }

@@ -8,8 +8,8 @@ import java.math.BigDecimal;
 public class BigDecimalTypeAdapter implements JsonSerializer<BigDecimal>, JsonDeserializer<BigDecimal> {
     @Override
     public BigDecimal deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-        if (jsonElement instanceof JsonPrimitive jp && jp.isString() && jp.getAsString().startsWith("bd#")) {
-            return new BigDecimal(jp.getAsString().substring(3));
+        if (jsonElement instanceof JsonPrimitive jp) {
+            return new BigDecimal(jp.isString() ? jp.getAsString() : jp.getAsNumber().toString());
         }
         return null;
     }
@@ -19,6 +19,6 @@ public class BigDecimalTypeAdapter implements JsonSerializer<BigDecimal>, JsonDe
         if (bigDecimal == null) {
             return JsonNull.INSTANCE;
         }
-        return new JsonPrimitive("bd#" + bigDecimal);
+        return new JsonPrimitive(bigDecimal);
     }
 }

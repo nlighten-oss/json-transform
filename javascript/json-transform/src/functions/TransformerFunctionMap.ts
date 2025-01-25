@@ -25,7 +25,7 @@ class TransformerFunctionMap extends TransformerFunction {
       // [ input, to ]
       const arr = await context.getJsonArray(null, false); // we don't transform definitions to prevent premature evaluation
       if (arr == null) return null;
-      const inputEl = await context.transform(arr[0]);
+      const inputEl = await context.transform(context.getPathFor(0), arr[0]);
       if (!Array.isArray(inputEl)) {
         console.warn(`${context.getAlias()} was not specified with an array of items`);
         return null;

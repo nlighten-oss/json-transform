@@ -16,6 +16,6 @@ public class TransformerFunctionEval<JE, JA extends Iterable<JE>, JO extends JE>
     @Override
     public Object apply(FunctionContext<JE, JA, JO> context) {
         var eval = context.getJsonElement(null,true);
-        return context.transform(eval, true);
+        return context.transform(context.getPath() + "/.", eval, true);
     }
 }

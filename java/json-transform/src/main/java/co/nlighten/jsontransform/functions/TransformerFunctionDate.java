@@ -7,9 +7,7 @@ import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
@@ -29,6 +27,7 @@ import java.util.Date;
 @ArgumentType(value = "pattern", type = ArgType.String, position = 1)
 @ArgumentType(value = "timezone", type = ArgType.String, position = 2, defaultString = "UTC")
 @ArgumentType(value = "zone", type = ArgType.String, position = 1, defaultString = "UTC")
+@ArgumentType(value = "end", type = ArgType.String, position = 2)
 public class TransformerFunctionDate<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
     public static final DateTimeFormatter ISO_INSTANT_0 = new DateTimeFormatterBuilder().appendInstant(0).toFormatter();
     public static final DateTimeFormatter ISO_INSTANT_3 = new DateTimeFormatterBuilder().appendInstant(3).toFormatter();
@@ -117,6 +116,21 @@ public class TransformerFunctionDate<JE, JA extends Iterable<JE>, JO extends JE>
                 default -> DateTimeFormatter.ISO_INSTANT.format(instant);
             };
             case "DATE" -> DateTimeFormatter.ISO_INSTANT.format(instant).substring(0, 10);
+            case "DIFF" -> {
+                var end = parseInstant(context.getUnwrapped("end"));
+                var units = ChronoUnit.valueOf(context.getEnum("units"));
+                if (ChronoUnit.MONTHS.equals(units)) {
+                    var endLocalDate = LocalDate.ofInstant(end, ZoneId.of("UTC"));
+                    var startLocalDate = LocalDate.ofInstant(instant, ZoneId.of("UTC"));
+                    yield BigDecimal.valueOf(Period.between(startLocalDate, endLocalDate).toTotalMonths());
+                } else if (ChronoUnit.YEARS.equals(units)) {
+                    var endLocalDate = LocalDate.ofInstant(end, ZoneId.of("UTC"));
+                    var startLocalDate = LocalDate.ofInstant(instant, ZoneId.of("UTC"));
+                    yield BigDecimal.valueOf(Period.between(startLocalDate, endLocalDate).getYears());
+                } else {
+                    yield BigDecimal.valueOf(instant.until(end, units));
+                }
+            }
             case "EPOCH" -> switch (context.getEnum("resolution")) {
                 case "MS" -> BigDecimal.valueOf(instant.toEpochMilli());
                 default -> BigDecimal.valueOf(instant.getEpochSecond());

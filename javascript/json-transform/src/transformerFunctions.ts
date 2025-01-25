@@ -6,19 +6,42 @@ import ObjectFunctionContext from "./functions/common/ObjectFunctionContext";
 import InlineFunctionContext from "./functions/common/InlineFunctionContext";
 import embeddedFunctions from "./functions";
 
-class FunctionMatchResult {
-  private readonly result;
+/**
+ * The purpose of this class is to differentiate between null and null result
+ */
+export class FunctionMatchResult {
+  private readonly result: any;
+  private readonly resultPath: string;
 
-  constructor(result: any) {
+  constructor(result: any, resultPath: string) {
     this.result = result;
+    this.resultPath = resultPath;
   }
 
   getResult() {
     return this.result;
   }
+  getResultPath() {
+    return this.resultPath;
+  }
 }
 
-export class TransformerFunctions {
+export interface TransformerFunctionsAdapter {
+  matchObject(
+    path: string,
+    definition: any,
+    resolver: ParameterResolver,
+    transformer: JsonTransformerFunction,
+  ): Promise<FunctionMatchResult | null>;
+  matchInline(
+    path: string,
+    value: string,
+    resolver: ParameterResolver,
+    transformer: JsonTransformerFunction,
+  ): Promise<FunctionMatchResult | null>;
+}
+
+export class TransformerFunctions implements TransformerFunctionsAdapter {
   private static readonly inlineFunctionRegex = /^\$\$(\w+)(\((.*?)\))?(:|$)/;
   private static readonly inlineFunctionArgsRegex = /('(\\'|[^'])*'|[^,]*)(?:,|$)/g;
   public static readonly FUNCTION_KEY_PREFIX = "$$";
@@ -48,7 +71,7 @@ export class TransformerFunctions {
     }
   }
 
-  async matchObject(definition: any, resolver: ParameterResolver, transformer: JsonTransformerFunction) {
+  async matchObject(path: string, definition: any, resolver: ParameterResolver, transformer: JsonTransformerFunction) {
     if (isNullOrUndefined(definition)) {
       return null;
     }
@@ -58,18 +81,20 @@ export class TransformerFunctions {
       if (Object.prototype.hasOwnProperty.call(definition, TransformerFunctions.FUNCTION_KEY_PREFIX + key)) {
         const func = this.functions[key];
         const context = await ObjectFunctionContext.createAsync(
+          path,
           definition,
           TransformerFunctions.FUNCTION_KEY_PREFIX + key,
           func,
           resolver,
           transformer,
         );
+        const resolvedPath = path + "." + TransformerFunctions.FUNCTION_KEY_PREFIX + key;
         try {
           const result = await func.apply(context);
-          return new FunctionMatchResult(result);
+          return new FunctionMatchResult(result, resolvedPath);
         } catch (ex) {
-          console.warn("Failed running object function ", ex);
-          return new FunctionMatchResult(null);
+          console.warn(`Failed running object function (at ${resolvedPath})`, ex);
+          return new FunctionMatchResult(null, resolvedPath);
         }
       }
     }
@@ -77,7 +102,12 @@ export class TransformerFunctions {
     return null;
   }
 
-  tryParseInlineFunction(value: string, resolver: ParameterResolver, transformer: JsonTransformerFunction) {
+  tryParseInlineFunction(
+    path: string,
+    value: string,
+    resolver: ParameterResolver,
+    transformer: JsonTransformerFunction,
+  ) {
     const match = value.match(TransformerFunctions.inlineFunctionRegex);
     if (match) {
       const functionKey = match[1];
@@ -117,27 +147,36 @@ export class TransformerFunctions {
         } else {
           input = value.substring(matchEndIndex);
         }
-        return InlineFunctionContext.create(input, args, functionKey, _function, resolver, transformer);
+        return InlineFunctionContext.create(
+          path + "/" + TransformerFunctions.FUNCTION_KEY_PREFIX + functionKey,
+          input,
+          args,
+          functionKey,
+          _function,
+          resolver,
+          transformer,
+        );
       }
     }
     return null;
   }
 
-  async matchInline(value: string, resolver: ParameterResolver, transformer: JsonTransformerFunction) {
+  async matchInline(path: string, value: string, resolver: ParameterResolver, transformer: JsonTransformerFunction) {
     if (value == null) return null;
-    const context = this.tryParseInlineFunction(value, resolver, transformer);
+    const context = this.tryParseInlineFunction(path, value, resolver, transformer);
     if (context == null) {
       return null;
     }
     // at this point we detected an inline function, we must return a match result
+    const resolvedPath = context.getPathFor(null);
     try {
       const func = this.functions[context.getAlias()];
       const result = await func.apply(context);
-      return new FunctionMatchResult(result);
+      return new FunctionMatchResult(result, resolvedPath);
     } catch (ex) {
-      console.warn("Failed running inline function ", ex);
+      console.warn(`Failed running inline function  (at ${resolvedPath})`, ex);
     }
-    return new FunctionMatchResult(null);
+    return new FunctionMatchResult(null, resolvedPath);
   }
 }
 

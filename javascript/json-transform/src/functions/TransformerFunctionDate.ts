@@ -1,4 +1,20 @@
-import { add, addMilliseconds, format, formatISO, fromUnixTime, sub, subMilliseconds, parseJSON } from "date-fns";
+import {
+  add,
+  addMilliseconds,
+  format,
+  formatISO,
+  fromUnixTime,
+  sub,
+  subMilliseconds,
+  parseJSON,
+  differenceInMilliseconds,
+  differenceInSeconds,
+  differenceInMinutes,
+  differenceInHours,
+  differenceInDays,
+  differenceInMonths,
+  differenceInYears,
+} from "date-fns";
 import { tz, TZDate } from "@date-fns/tz";
 import BigNumber from "bignumber.js";
 import TransformerFunction from "./common/TransformerFunction";
@@ -40,6 +56,7 @@ class TransformerFunctionDate extends TransformerFunction {
         pattern: { type: ArgType.String, position: 1 },
         timezone: { type: ArgType.String, position: 2, defaultString: "UTC" },
         zone: { type: ArgType.String, position: 1, defaultString: "UTC" },
+        end: { type: ArgType.String, position: 2 },
       },
     });
   }
@@ -47,7 +64,12 @@ class TransformerFunctionDate extends TransformerFunction {
   private static parseInstant(value: any): Date {
     if (value instanceof Date) return value;
     if (typeof value === "string") {
-      if (value.includes("T") || value.includes("-")) return parseJSON(value);
+      if (value.includes("T")) {
+        return parseJSON(value);
+      }
+      if (value.includes("-")) {
+        return parseJSON(`${value}T00:00:00Z`);
+      }
       if (value.includes(":")) return parseJSON(`1970-01-01T${value}`);
       value = parseInt(value);
     }
@@ -129,6 +151,33 @@ class TransformerFunctionDate extends TransformerFunction {
       }
       case "DATE": {
         return formatISO(instant, { representation: "date" });
+      }
+      case "DIFF": {
+        const units = await context.getEnum("units");
+        const end = TransformerFunctionDate.parseInstant(await context.get("end"));
+        switch (units) {
+          case "NANOS":
+            return differenceInMilliseconds(end, instant) * 1e6;
+          case "MICROS":
+            return differenceInMilliseconds(end, instant) * 1e3;
+          case "MILLIS":
+            return differenceInMilliseconds(end, instant);
+          case "SECONDS":
+            return differenceInSeconds(end, instant);
+          case "MINUTES":
+            return differenceInMinutes(end, instant);
+          case "HOURS":
+            return differenceInHours(end, instant);
+          case "HALF_DAYS":
+            return Math.trunc(differenceInHours(end, instant) / 12);
+          case "DAYS":
+            return differenceInDays(end, instant);
+          case "MONTHS":
+            return differenceInMonths(end, instant);
+          case "YEARS":
+            return differenceInYears(end, instant);
+        }
+        return null;
       }
       case "EPOCH": {
         switch (await context.getEnum("resolution")) {

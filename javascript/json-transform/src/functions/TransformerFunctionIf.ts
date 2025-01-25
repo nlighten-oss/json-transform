@@ -31,13 +31,13 @@ class TransformerFunctionIf extends TransformerFunction {
       } else if (typeof cje === "boolean") {
         condition = cje;
       } else {
-        condition = isTruthy(await context.transform(cje));
+        condition = isTruthy(await context.transform(context.getPathFor(0), cje));
       }
 
       if (condition) {
-        return await context.transform(arr[1]);
+        return await context.transform(context.getPathFor(1), arr[1]);
       } else if (arr.length > 2) {
-        return await context.transform(arr[2]);
+        return await context.transform(context.getPathFor(2), arr[2]);
       }
     }
     return null; // default falsy value

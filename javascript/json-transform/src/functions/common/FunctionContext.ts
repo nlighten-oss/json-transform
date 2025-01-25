@@ -1,7 +1,14 @@
 import TransformerFunction from "./TransformerFunction";
 import { ParameterResolver } from "../../ParameterResolver";
 import { JsonTransformerFunction } from "../../JsonTransformerFunction";
-import { compareTo, isNullOrUndefined, getAsString, getDocumentContext, isMap } from "../../JsonHelpers";
+import {
+  compareTo,
+  isNullOrUndefined,
+  getAsString,
+  getDocumentContext,
+  isMap,
+  toObjectFieldPath,
+} from "../../JsonHelpers";
 import { BigDecimal, MAX_SCALE_ROUNDING, RoundingModes } from "./FunctionHelpers";
 import JsonElementStreamer from "../../JsonElementStreamer";
 import BigNumber from "bignumber.js";
@@ -13,17 +20,20 @@ class FunctionContext {
   protected static readonly DOUBLE_HASH_INDEX = "##index";
   protected static readonly DOLLAR = "$";
 
+  protected readonly path: string;
   protected readonly alias: string;
   protected readonly function: TransformerFunction;
   protected readonly extractor: JsonTransformerFunction;
   protected resolver: ParameterResolver;
 
   protected constructor(
+    path: string,
     alias: string,
     func: TransformerFunction,
     resolver: ParameterResolver,
     extractor: JsonTransformerFunction,
   ) {
+    this.path = path;
     this.alias = alias;
     this.function = func;
     this.extractor = extractor;
@@ -31,13 +41,16 @@ class FunctionContext {
   }
 
   protected static async recalcResolver(
+    path: string,
     contextElement: any,
     resolver: ParameterResolver,
     extractor: JsonTransformerFunction,
   ): Promise<ParameterResolver> {
     const addCtx: Record<string, DocumentContext> = {};
     for (const key in contextElement) {
-      addCtx[key] = getDocumentContext(await extractor.transform(contextElement[key], resolver, false));
+      addCtx[key] = getDocumentContext(
+        await extractor.transform(path + toObjectFieldPath(key), contextElement[key], resolver, false),
+      );
     }
     return {
       get: name => {
@@ -65,6 +78,10 @@ class FunctionContext {
     return this.alias;
   }
 
+  public getPath() {
+    return this.path;
+  }
+
   public getResolver() {
     return this.resolver;
   }
@@ -75,6 +92,10 @@ class FunctionContext {
 
   public async get(name: string | null, transform: boolean = true): Promise<any> {
     return null;
+  }
+
+  public getPathFor(key: number | string | null) {
+    return this.path + (!key ? "" : typeof key === "number" ? "[" + key + "]" : toObjectFieldPath(key));
   }
 
   public isNull(value: any) {
@@ -216,7 +237,7 @@ class FunctionContext {
     // in case val is already an array we don't transform it to prevent evaluation of its result values
     // so if is not an array, we must transform it and check after-wards (not lazy anymore)
     if (!Array.isArray(value)) {
-      value = await this.extractor.transform(value, this.resolver, true);
+      value = await this.extractor.transform(this.getPathFor(name), value, this.resolver, true);
       if (value instanceof JsonElementStreamer) {
         return value;
       }
@@ -229,8 +250,8 @@ class FunctionContext {
     return null;
   }
 
-  public async transform(definition: any, allowReturningStreams: boolean = false) {
-    return await this.extractor.transform(definition, this.resolver, allowReturningStreams);
+  public async transform(path: string | undefined, definition: any, allowReturningStreams: boolean = false) {
+    return await this.extractor.transform(path ?? this.path, definition, this.resolver, allowReturningStreams);
   }
 
   public async transformItem(
@@ -292,7 +313,7 @@ class FunctionContext {
         },
       };
     }
-    return this.extractor.transform(definition, itemResolver, false);
+    return this.extractor.transform("$", definition, itemResolver, false);
   }
 }
 

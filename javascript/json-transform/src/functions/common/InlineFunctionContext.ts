@@ -5,6 +5,7 @@ class InlineFunctionContext extends FunctionContext {
   private args: any[];
 
   private constructor(
+    path: string,
     input: string | null,
     args: any[],
     functionKey: string,
@@ -12,12 +13,13 @@ class InlineFunctionContext extends FunctionContext {
     resolver: any,
     extractor: any,
   ) {
-    super(functionKey, func, resolver, extractor);
+    super(path, functionKey, func, resolver, extractor);
     this.stringInput = input;
     this.args = args;
   }
 
   public static create(
+    path: string,
     input: string | null,
     args: any[],
     functionKey: string,
@@ -25,7 +27,7 @@ class InlineFunctionContext extends FunctionContext {
     resolver: any,
     extractor: any,
   ) {
-    return new InlineFunctionContext(input, args, functionKey, func, resolver, extractor);
+    return new InlineFunctionContext(path, input, args, functionKey, func, resolver, extractor);
   }
 
   override has(name: string): boolean {
@@ -52,9 +54,13 @@ class InlineFunctionContext extends FunctionContext {
     }
     const argValue = name == null ? this.stringInput : this.args[argument?.position ?? -1];
     if (typeof argValue === "string" && transform) {
-      return await this.extractor.transform(argValue, this.resolver, true);
+      return await this.extractor.transform(this.getPathFor(name), argValue, this.resolver, true);
     }
-    return !transform ? argValue : await this.extractor.transform(argValue, this.resolver, true);
+    return !transform ? argValue : await this.extractor.transform(this.getPathFor(name), argValue, this.resolver, true);
+  }
+
+  override getPathFor(key: number | string | null): string {
+    return this.path + (key == null ? "" : `(${key})`);
   }
 }
 

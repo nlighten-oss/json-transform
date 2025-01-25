@@ -1,5 +1,6 @@
 package co.nlighten.jsontransform.functions.common;
 
+import co.nlighten.jsontransform.JsonTransformerUtils;
 import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.JsonTransformerFunction;
 import co.nlighten.jsontransform.ParameterResolver;
@@ -7,11 +8,12 @@ import co.nlighten.jsontransform.ParameterResolver;
 public class ObjectFunctionContext<JE, JA extends Iterable<JE>, JO extends JE> extends FunctionContext<JE, JA, JO> {
     private final JO definition;
 
-    public ObjectFunctionContext(JO definition, JsonAdapter<JE, JA, JO> jsonAdapter,
+    public ObjectFunctionContext(String path,
+                                 JO definition, JsonAdapter<JE, JA, JO> jsonAdapter,
                                  String functionKey,
                                  TransformerFunction<JE, JA, JO> function,
                                  ParameterResolver resolver, JsonTransformerFunction<JE> extractor) {
-        super(jsonAdapter, functionKey, function, resolver, extractor, definition);
+        super(path, jsonAdapter, functionKey, function, resolver, extractor, definition);
         this.definition = definition;
     }
 
@@ -26,6 +28,11 @@ public class ObjectFunctionContext<JE, JA extends Iterable<JE>, JO extends JE> e
         if (adapter.isNull(el)) {
             return function.getDefaultValue(name);
         }
-        return transform ? extractor.transform(el, resolver, true) : el;
+        return transform ? extractor.transform(getPathFor(name), el, resolver, true) : el;
+    }
+
+    @Override
+    public String getPathFor(String name) {
+        return path + JsonTransformerUtils.toObjectFieldPath(adapter, name == null ? getAlias() : name);
     }
 }

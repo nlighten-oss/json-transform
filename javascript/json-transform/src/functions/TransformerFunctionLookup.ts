@@ -41,7 +41,7 @@ class TransformerFunctionLookup extends TransformerFunction {
       // collect using
       const withDef = using.with;
       if (isNullOrUndefined(withDef)) continue; // with - null
-      const $with = await context.transform(withDef);
+      const $with = await context.transform(context.getPathFor("with"), withDef);
       if (!Array.isArray($with)) continue; // with - not array
       usingMap[w] = { with: $with, as, on: using.on };
     }

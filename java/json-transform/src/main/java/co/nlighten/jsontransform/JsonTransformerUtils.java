@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 public class JsonTransformerUtils {
 
     private static Pattern variableDetectionRegExp = variableDetectionRegExpFactory(null, null);
+    static final Pattern validIdRegExp = Pattern.compile("^[a-zA-Z_$][a-zA-Z0-9_$]*$");
 
     public static Pattern variableDetectionRegExpFactory(Integer flags, List<String> altNames) {
         var altPrefixes =  altNames != null && !altNames.isEmpty()
@@ -77,5 +78,9 @@ public class JsonTransformerUtils {
      */
     public static Pattern getVariableDetectionRegExp() {
         return variableDetectionRegExp;
+    }
+
+    public static <JE, JA extends Iterable<JE>, JO extends JE> String toObjectFieldPath(JsonAdapter<JE, JA, JO> adapter, String key) {
+        return validIdRegExp.matcher(key).matches() ? "." + key : "[" + adapter.toString(key) + "]";
     }
 }

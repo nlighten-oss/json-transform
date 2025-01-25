@@ -1,22 +1,29 @@
 import FunctionContext from "./FunctionContext";
-import { isMap, isNullOrUndefined } from "../../JsonHelpers";
+import { isMap, isNullOrUndefined, toObjectFieldPath } from "../../JsonHelpers";
 
 class ObjectFunctionContext extends FunctionContext {
   private definition: any;
-  private constructor(definition: any, functionKey: string, func: any, resolver: any, extractor: any) {
-    super(functionKey, func, resolver, extractor);
+  private constructor(path: string, definition: any, functionKey: string, func: any, resolver: any, extractor: any) {
+    super(path, functionKey, func, resolver, extractor);
     this.definition = definition;
   }
 
-  public static async createAsync(definition: any, functionKey: string, func: any, resolver: any, extractor: any) {
+  public static async createAsync(
+    path: string,
+    definition: any,
+    functionKey: string,
+    func: any,
+    resolver: any,
+    extractor: any,
+  ) {
     let objResolver = resolver;
     if (definition?.[FunctionContext.CONTEXT_KEY]) {
       const contextElement = definition[FunctionContext.CONTEXT_KEY];
       if (isMap(contextElement)) {
-        objResolver = await FunctionContext.recalcResolver(contextElement, resolver, extractor);
+        objResolver = await FunctionContext.recalcResolver(path, contextElement, resolver, extractor);
       }
     }
-    return new ObjectFunctionContext(definition, functionKey, func, objResolver, extractor);
+    return new ObjectFunctionContext(path, definition, functionKey, func, objResolver, extractor);
   }
 
   override has(name: string): boolean {
@@ -28,7 +35,11 @@ class ObjectFunctionContext extends FunctionContext {
     if (isNullOrUndefined(el)) {
       return this.function.getDefaultValue(name);
     }
-    return !transform ? el : await this.extractor.transform(el, this.resolver, true);
+    return !transform ? el : await this.extractor.transform(this.getPathFor(name), el, this.resolver, true);
+  }
+
+  override getPathFor(key: number | string | null): string {
+    return this.path + (typeof key === "number" ? `[${key}]` : toObjectFieldPath(!key ? this.getAlias() : key));
   }
 }
 

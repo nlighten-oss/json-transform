@@ -21,11 +21,12 @@ const api: Record<string, (req: IncomingMessage, res: ServerResponse, url: UrlWi
     "POST /api/v1/transform": async (req, res) => {
       const body = await parseBody(req);
       console.log("called with " + JSONBig.stringify(body));
-      const t = new JsonTransformer(body.definition);
+      let functionsAdapter = body.debug ? JsonTransformer.getDebuggableAdapter() : undefined;
+      const t = new JsonTransformer(body.definition, functionsAdapter);
       try {
         const result = await t.transform(body.input, body.additionalContext);
         console.log("returning as result <" + JSONBig.stringify(result) + ">");
-        send(res, 200, JSONHeaders, { result });
+        send(res, 200, JSONHeaders, { result, debugResults: functionsAdapter?.getDebugResults() });
       } catch (e: any) {
         send(res, 500, JSONHeaders, { error: e.message ?? e });
       }

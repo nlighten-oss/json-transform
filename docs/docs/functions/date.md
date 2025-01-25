@@ -140,6 +140,58 @@ Date part of ISO 8601,
 </div>
 ```
 
+## DIFF
+
+Calculate the difference between two dates in specified units.
+
+### Usage
+```transformers
+"$$date(DIFF,{units},{end}):{input}"
+```
+### Returns
+`integer`
+### Arguments
+| Argument | Type                  | Values                            | Required / Default&nbsp;Value | Description                    |
+|----------|-----------------------|-----------------------------------|-------------------------------|--------------------------------|
+| `units`  | `Enum` (`ChronoUnit`) | `SECONDS`/`MINUTES`/ ... /`DAYS`  | Yes                           | The units of calculated result |
+| `end`    | `Date`                |                                   | Yes                           | End date                       |
+
+### Examples
+
+```mdx-code-block
+<div className="examples_grid">
+```
+
+**Input**
+
+**Definition**
+
+**Output**
+
+```json
+"2024-01-01"
+```
+```transformers
+"$$date(DIFF,DAYS,2025-01-01):$"
+```
+```json
+366
+```
+
+```json
+"2025-01-01"
+```
+```transformers
+"$$date(DIFF,DAYS,2026-01-01):$"
+```
+```json
+365
+```
+
+```mdx-code-block
+</div>
+```
+
 ## EPOCH
 
 Seconds passed since 1970-01-01; unless `type`=`MS` then milliseconds,

@@ -7,10 +7,9 @@ import {
 import { EmbeddedTransformerFunction } from "./functions/types";
 import { functions } from "./functions/functions";
 import { matchJsonPathFunction } from "./jsonpath/jsonpathFunctions";
-import { jsonpathJoin } from "./jsonpath/jsonpathJoin";
+import { jsonpathJoin, VALID_ID_REGEXP } from "./jsonpath/jsonpathJoin";
 import ParseContext, { HandleFunctionMethod, ParseMethod } from "./ParseContext";
 
-const VALID_ID_REGEXP = /^[a-z_$][a-z0-9_$]*$/i;
 const ALL_DIGITS = /^\d+$/;
 
 class TransformerParser {

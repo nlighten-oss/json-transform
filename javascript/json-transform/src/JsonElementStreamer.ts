@@ -4,7 +4,7 @@ import { asAsyncSequence, AsyncSequence, emptyAsyncSequence } from "@wortise/seq
 class JsonElementStreamer {
   private readonly context: FunctionContext;
   private readonly transformed: boolean;
-  private readonly value?: any[];
+  private value?: any[];
   private readonly _stream?: AsyncSequence<any>;
 
   private constructor(context: FunctionContext, value: any[] | AsyncSequence<any>, transformed: boolean) {
@@ -24,7 +24,7 @@ class JsonElementStreamer {
   }
 
   public stream(skip: number = 0, limit: number = -1) {
-    if (this._stream != null) {
+    if (this._stream != null && !this.value) {
       const skipped = skip > 0 ? this._stream.drop(skip) : this._stream;
       return limit > -1 ? skipped.take(limit) : skipped;
     }
@@ -39,7 +39,7 @@ class JsonElementStreamer {
       valueStream = valueStream.take(limit);
     }
     if (!this.transformed) {
-      valueStream = valueStream.map(el => this.context.transform(el));
+      valueStream = valueStream.map(el => this.context.transform(undefined, el));
     }
     return valueStream;
   }
@@ -57,7 +57,10 @@ class JsonElementStreamer {
       return this.value;
     }
     if (this._stream) {
-      return this._stream.toArray();
+      return this._stream.toArray().then(arr => {
+        this.value = arr;
+        return arr;
+      });
     }
     return [];
   }

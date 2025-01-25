@@ -36,13 +36,13 @@ public class TransformerFunctionIf<JE, JA extends Iterable<JE>, JO extends JE> e
             } else if (adapter.isJsonBoolean(cje)) {
                 condition = adapter.getBoolean(cje);
             } else {
-                condition = adapter.isTruthy(context.transform(cje));
+                condition = adapter.isTruthy(context.transform(context.getPathFor(0), cje));
             }
 
             if (condition) {
-                return context.transform(jArray.get(arr, 1));
+                return context.transform(context.getPathFor(1), jArray.get(arr, 1));
             } else if (jArray.size(arr) > 2) {
-                return context.transform(jArray.get(arr, 2));
+                return context.transform(context.getPathFor(2), jArray.get(arr, 2));
             }
         }
         return null; // default falsy value

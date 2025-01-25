@@ -5,5 +5,5 @@ public interface JsonTransformerFunction<JE> {
     /**
      * @return JsonElement | JsonElementStreamer
      */
-    Object transform(JE definition, ParameterResolver resolver, boolean allowReturningStreams);
+    Object transform(String path, JE definition, ParameterResolver resolver, boolean allowReturningStreams);
 }

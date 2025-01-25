@@ -1,5 +1,6 @@
 package co.nlighten.jsontransform.functions.common;
 
+import co.nlighten.jsontransform.JsonTransformerUtils;
 import co.nlighten.jsontransform.ParameterResolver;
 import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.adapters.JsonArrayAdapter;
@@ -19,6 +20,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
     protected final String DOUBLE_HASH_INDEX = "##index";
     protected final String DOLLAR = "$";
 
+    protected final String path;
     /**
      * The function's name as it appeared in the transformer (e.g. "$$filter")
      */
@@ -31,7 +33,8 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
     public final JsonObjectAdapter<JE, JA, JO> jObject;
     protected final JsonAdapter<JE, JA, JO> adapter;
 
-    public FunctionContext(JsonAdapter<JE, JA, JO> jsonAdapter,
+    public FunctionContext(String path,
+                           JsonAdapter<JE, JA, JO> jsonAdapter,
                            String alias,
                            co.nlighten.jsontransform.functions.common.TransformerFunction<JE, JA, JO> function,
                            ParameterResolver resolver, JsonTransformerFunction<JE> extractor,
@@ -39,6 +42,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
         this.jArray = jsonAdapter.jArray;
         this.jObject = jsonAdapter.jObject;
         this.adapter = jsonAdapter;
+        this.path = path;
         this.alias = alias;
         this.function = function;
         this.extractor = extractor;
@@ -49,8 +53,8 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
         }
     }
 
-    public FunctionContext(JsonAdapter<JE,JA,JO> jsonAdapter, String alias, TransformerFunction<JE,JA,JO> function, ParameterResolver resolver, JsonTransformerFunction<JE> extractor) {
-        this(jsonAdapter, alias, function, resolver, extractor, null);
+    public FunctionContext(String path, JsonAdapter<JE,JA,JO> jsonAdapter, String alias, TransformerFunction<JE,JA,JO> function, ParameterResolver resolver, JsonTransformerFunction<JE> extractor) {
+        this(path, jsonAdapter, alias, function, resolver, extractor, null);
     }
 
     private ParameterResolver recalcResolver(JO definition, ParameterResolver resolver, JsonTransformerFunction<JE> extractor) {
@@ -61,7 +65,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
                 var addCtx = adapter.jObject.entrySet(ctx).stream().collect(
                         Collectors.toMap(
                                 Map.Entry::getKey,
-                                kv -> adapter.getDocumentContext(extractor.transform(kv.getValue(), resolver, false))
+                                kv -> adapter.getDocumentContext(extractor.transform(path + JsonTransformerUtils.toObjectFieldPath(adapter, kv.getKey()),kv.getValue(), resolver, false))
                         )
                 );
                 return name -> {
@@ -91,6 +95,10 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
         return alias;
     }
 
+    public String getPath() {
+        return alias;
+    }
+
     public ParameterResolver getResolver() {
         return resolver;
     }
@@ -103,6 +111,12 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
         return get(name, true);
     }
 
+    public String getPathFor(String name) {
+        return this.path;
+    }
+    public String getPathFor(int index) {
+        return this.path + "[" + index + "]";
+    }
 
     public boolean isNull(JE value) {
         return adapter.isNull(value);
@@ -291,7 +305,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
         // in case val is already an array we don't transform it to prevent evaluation of its result values
         // so if is not an array, we must transform it and check after-wards (not lazy anymore)
         if (!adapter.jArray.is(value)) {
-            value = extractor.transform(wrap(value), resolver, true);
+            value = extractor.transform(getPathFor(name), wrap(value), resolver, true);
             if (value instanceof JsonElementStreamer jes) {
                 return jes;
             }
@@ -304,12 +318,17 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
         return null;
     }
 
+    // TODO: replace this with something
     public JE transform(JE definition){
-        return (JE) extractor.transform(definition, resolver, false);
+        return (JE) extractor.transform(path, definition, resolver, false);
     }
 
-    public Object transform(JE definition, boolean allowReturningStreams){
-        return extractor.transform(definition, resolver, allowReturningStreams);
+    public Object transform(String path, JE definition){
+        return extractor.transform(path, definition, resolver, false);
+    }
+
+    public Object transform(String path, JE definition, boolean allowReturningStreams){
+        return extractor.transform(path, definition, resolver, allowReturningStreams);
     }
 
     public JE transformItem(JE definition, JE current) {
@@ -318,7 +337,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
                 pathOfVar(DOUBLE_HASH_CURRENT, name)
                 ? currentContext.read(DOLLAR + name.substring(9))
                 : resolver.get(name);
-        return (JE) extractor.transform(definition, itemResolver, false);
+        return (JE) extractor.transform("$", definition, itemResolver, false);
     }
 
     public JE transformItem(JE definition, JE current, Integer index) {
@@ -329,7 +348,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
                 : pathOfVar(DOUBLE_HASH_CURRENT, name)
                   ? currentContext.read(DOLLAR + name.substring(9))
                   : resolver.get(name);
-        return (JE) extractor.transform(definition, itemResolver, false);
+        return (JE) extractor.transform("$", definition, itemResolver, false);
     }
 
     public JE transformItem(JE definition, JE current, Integer index, String additionalName, JE additional) {
@@ -343,7 +362,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
                   : pathOfVar(additionalName, name)
                     ? additionalContext.read(DOLLAR + name.substring(additionalName.length()))
                     : resolver.get(name);
-        return (JE) extractor.transform(definition, itemResolver, false);
+        return (JE) extractor.transform("$", definition, itemResolver, false);
     }
 
     public JE transformItem(JE definition, JE current, Integer index, Map<String, JE> additionalContexts) {
@@ -360,6 +379,6 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
             }
             return resolver.get(name);
         };
-        return (JE) extractor.transform(definition, itemResolver, false);
+        return (JE) extractor.transform("$", definition, itemResolver, false);
     }
 }

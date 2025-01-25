@@ -57,7 +57,7 @@ public class TransformerFunctionLookup<JE, JA extends Iterable<JE>, JO extends J
             var withDef = jObject.get(using, "with");
             if (adapter.isNull(withDef))
                 continue; // with - null
-            var with = context.transform(withDef);
+            var with = context.transform(context.getPathFor("with"), withDef);
             if (!jArray.is(with))
                 continue; // with - not array
             usingMap.put(w, new UsingEntry((JA)with, as, jObject.get(using, "on")));

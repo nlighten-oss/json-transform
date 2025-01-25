@@ -358,6 +358,12 @@ function createComparator(type: string | null) {
   return comparator;
 }
 
+const VALID_ID_REGEXP = /^[a-z_$][a-z0-9_$]*$/i;
+
+function toObjectFieldPath(key: string) {
+  return VALID_ID_REGEXP.test(key) ? "." + key : "[" + JSON.stringify(key) + "]";
+}
+
 export {
   isNullOrUndefined,
   isNullOrEmpty,
@@ -373,4 +379,5 @@ export {
   isTruthy,
   isEqual,
   mergeInto,
+  toObjectFieldPath,
 };

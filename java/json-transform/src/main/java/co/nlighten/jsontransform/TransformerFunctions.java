@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-public class TransformerFunctions<JE, JA extends Iterable<JE>, JO extends JE> {
+public class TransformerFunctions<JE, JA extends Iterable<JE>, JO extends JE> implements TransformerFunctionsAdapter<JE, JA, JO>{
     static final Logger log = LoggerFactory.getLogger(TransformerFunctions.class);
 
     private static final Pattern inlineFunctionRegex = Pattern.compile("^\\$\\$(\\w+)(\\((.*?)\\))?(:|$)");
@@ -135,7 +135,7 @@ public class TransformerFunctions<JE, JA extends Iterable<JE>, JO extends JE> {
     /**
      * Checks the context for a registered object function and returns the result if matched
      */
-    public FunctionMatchResult<Object> matchObject(JO definition, co.nlighten.jsontransform.ParameterResolver resolver, JsonTransformerFunction<JE> transformer) {
+    public FunctionMatchResult<Object> matchObject(String path, JO definition, co.nlighten.jsontransform.ParameterResolver resolver, JsonTransformerFunction<JE> transformer) {
         if (definition == null) {
             return null;
         }
@@ -145,15 +145,17 @@ public class TransformerFunctions<JE, JA extends Iterable<JE>, JO extends JE> {
             if (jsonAdapter.jObject.has(definition, FUNCTION_KEY_PREFIX + key)) {
                 var func = functions.get(key);
                 var context = new ObjectFunctionContext<>(
+                        path,
                         definition,
                         jsonAdapter,
                         FUNCTION_KEY_PREFIX + key,
                         func, resolver, transformer);
+                var resolvedPath = path + "." + FUNCTION_KEY_PREFIX + key;
                 try {
-                    return new FunctionMatchResult<>(func.apply(context));
+                    return new FunctionMatchResult<>(func.apply(context), resolvedPath);
                 } catch (Throwable ex) {
-                    log.warn("Failed running object function ", ex);
-                    return new FunctionMatchResult<>(null);
+                    log.warn("Failed running object function (at {})", resolvedPath, ex);
+                    return new FunctionMatchResult<>(null, resolvedPath);
                 }
             }
         }
@@ -161,7 +163,7 @@ public class TransformerFunctions<JE, JA extends Iterable<JE>, JO extends JE> {
         return null;
     }
 
-    private InlineFunctionContext<JE, JA, JO> tryParseInlineFunction(String value, co.nlighten.jsontransform.ParameterResolver resolver,
+    private InlineFunctionContext<JE, JA, JO> tryParseInlineFunction(String path, String value, co.nlighten.jsontransform.ParameterResolver resolver,
                                                                      JsonTransformerFunction<JE> transformer) {
         var matcher = inlineFunctionRegex.matcher(value);
         if (matcher.find()) {
@@ -195,6 +197,7 @@ public class TransformerFunctions<JE, JA extends Iterable<JE>, JO extends JE> {
                     input = value.substring(matchEndIndex);
                 }
                 return new InlineFunctionContext<>(
+                        path + "/" + FUNCTION_KEY_PREFIX + functionKey,
                         input, args,
                         jsonAdapter,
                         functionKey,
@@ -205,20 +208,21 @@ public class TransformerFunctions<JE, JA extends Iterable<JE>, JO extends JE> {
         return null;
     }
 
-    public FunctionMatchResult<Object> matchInline(String value, ParameterResolver resolver, JsonTransformerFunction<JE> transformer) {
+    public FunctionMatchResult<Object> matchInline(String path, String value, ParameterResolver resolver, JsonTransformerFunction<JE> transformer) {
         if (value == null) return null;
-        var context = tryParseInlineFunction(value, resolver, transformer);
+        var context = tryParseInlineFunction(path, value, resolver, transformer);
         if (context == null) {
             return null;
         }
         // at this point we detected an inline function, we must return a match result
+        var resolvedPath = context.getPathFor(null);
         try {
             var result = functions.get(context.getAlias()).apply(context);
-            return new FunctionMatchResult<>(result);
+            return new FunctionMatchResult<>(result, resolvedPath);
         } catch (Throwable ex) {
-            log.warn("Failed running inline function ", ex);
+            log.warn("Failed running inline function (at {})", resolvedPath, ex);
         }
-        return new FunctionMatchResult<>(null);
+        return new FunctionMatchResult<>(null, resolvedPath);
     }
 
     public Map<String, TransformerFunction<JE, JA, JO>> getFunctions() {
@@ -227,24 +231,8 @@ public class TransformerFunctions<JE, JA extends Iterable<JE>, JO extends JE> {
 
     /**
      * The purpose of this class is to differentiate between null and null result
+     *
      * @param <T>
      */
-    static class FunctionMatchResult<T> {
-        final T result;
-
-        /**
-         * Wrap a function result.
-         * @param result the result of the function
-         */
-        public FunctionMatchResult(T result) {
-            this.result = result;
-        }
-
-        /**
-         * @return the result of the function
-         */
-        public T getResult() {
-            return result;
-        }
-    }
+    public record FunctionMatchResult<T>(T result, String resultPath) {}
 }

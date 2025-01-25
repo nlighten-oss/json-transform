@@ -38,7 +38,7 @@ public class TransformerFunctionMap<JE, JA extends Iterable<JE>, JO extends JE> 
             var arr = context.getJsonArray(null, false); // we don't transform definitions to prevent premature evaluation
             if (arr == null)
                 return null;
-            var inputEl = context.transform(jArray.get(arr, 0));
+            var inputEl = context.transform(context.getPathFor(0), jArray.get(arr, 0));
             if (!jArray.is(inputEl)) {
                 logger.warn("{} was not specified with an array of items", context.getAlias());
                 return null;
