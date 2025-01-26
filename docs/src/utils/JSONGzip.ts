@@ -13,7 +13,7 @@ const blobToBase64 = (blob: Blob): Promise<string> => {
   return new Promise(resolve => {
     reader.onloadend = () => {
       const dataUrl = reader.result as string;
-      resolve(dataUrl.substring(dataUrl.indexOf(";") + 1));
+      resolve(dataUrl.substring(dataUrl.indexOf(";") + 1).replace(/^base64,/, ""));
     };
   });
 };

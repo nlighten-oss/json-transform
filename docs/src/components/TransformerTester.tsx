@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import { JSONSchemaUtils } from '@nlighten/json-schema-utils'
-import MonacoEditor from "../components/monaco/MonacoEditor";
-import useJSONString from "../components/hooks/useJSONString";
-import {setSuggestions} from "@site/src/components/monaco/suggestionsProvider";
 import {jsonpathJoin} from "@nlighten/json-transform-core";
 import {JsonTransformer} from "@nlighten/json-transform";
-import JSONGzip from "@site/src/utils/JSONGzip";
 import {useLocation, useHistory} from "@docusaurus/router";
+import MonacoEditor from "../components/monaco/MonacoEditor";
+import useJSONString from "../components/hooks/useJSONString";
+import {setSuggestions} from "../components/monaco/suggestionsProvider";
+import JSONGzip from "../utils/JSONGzip";
 
 const DEFAULT_INPUT_VALUE = `{
   "first_name": "John",
