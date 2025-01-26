@@ -17,7 +17,8 @@ const playground = () => {
     <Layout>
       <div className="container" style={{
         // @ts-ignore
-        "--ifm-container-width-xl": "1600px"
+        "--ifm-container-width-xl": "1600px",
+        paddingBottom: "10px"
       }}>
         <br/>
         <h1>Playground</h1>

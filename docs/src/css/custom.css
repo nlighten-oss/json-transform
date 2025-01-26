@@ -54,7 +54,7 @@
   .tester_grid {
     grid-template-columns: auto;
   }
-  .desktop-title, p, h3 {
+  .hide-on-mobile {
     display: none;
   }
 }
