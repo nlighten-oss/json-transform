@@ -73,5 +73,43 @@
     "expect": {
       "equal": [["A", "A"], ["B", "B"], ["FALSE", "C"]]
     }
+  },
+  {
+    "name": "playground sample",
+    "given": {
+      "input": {
+        "first_name": "John",
+        "last_name": "Doe",
+        "date_of_birth": "1980-01-01"
+      },
+      "definition": {
+        "*": "$",
+        "full_name": {
+          "$$join": ["$.first_name", " ", "$.last_name"]
+        },
+        "age": {
+          "$$math": [
+            {
+              "$$math": [
+                "$$date(EPOCH):#now",
+                "-",
+                "$$date(EPOCH):$.date_of_birth"
+              ]
+            },
+            "//",
+            "$$math(365,*,86400)"
+          ]
+        }
+      }
+    },
+    "expect": {
+      "equal": {
+        "age": 45,
+        "date_of_birth": "1980-01-01",
+        "first_name": "John",
+        "full_name": "John Doe",
+        "last_name": "Doe"
+      }
+    }
   }
 ]

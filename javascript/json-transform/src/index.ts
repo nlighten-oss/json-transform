@@ -7,6 +7,7 @@ import { Transformer, RAW as RawTransformer } from "./Transformer";
 
 // Functions API
 import { TransformerFunctions } from "./transformerFunctions";
+import DebuggableTransformerFunctions from "./DebuggableTransformerFunctions";
 import { ArgType } from "./functions/common/ArgType";
 import { ArgumentType } from "./functions/common/ArgumentType";
 import CompareBy from "./functions/common/CompareBy";
@@ -38,6 +39,7 @@ export {
   Transformer,
   RawTransformer,
   TransformerFunctions,
+  DebuggableTransformerFunctions,
   ArgType,
   ArgumentType,
   CompareBy,

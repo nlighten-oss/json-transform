@@ -67,8 +67,9 @@ class TransformerFunctionDate extends TransformerFunction {
       if (value.includes("T")) {
         return parseJSON(value);
       }
-      if (value.includes("-")) {
-        return parseJSON(`${value}T00:00:00Z`);
+      if (value.length === 10 && !value.includes(":")) {
+        // assuming just date
+        return new Date(value);
       }
       if (value.includes(":")) return parseJSON(`1970-01-01T${value}`);
       value = parseInt(value);

@@ -39,6 +39,16 @@ const config: Config = {
       name: "monaco-webpack-plugin-patch",
       configureWebpack(config, isServer, utils) {
         return {
+          resolve: {
+            fallback: {
+              "crypto": require.resolve("crypto-browserify"),
+              "timers": require.resolve("timers-browserify"),
+              "stream": require.resolve("stream-browserify"),
+              "buffer": require.resolve("buffer/"),
+              "fs": false,
+              "vm": false
+            }
+          },
           plugins: [new MonacoWebpackPlugin({
             publicPath: '/json-transform'
           })]

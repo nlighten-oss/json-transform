@@ -24,7 +24,7 @@ class JsonTransformer implements Transformer {
     };
   }
 
-  static getDebuggableAdapter() {
+  public static getDebuggableAdapter() {
     return new DebuggableTransformerFunctions();
   }
 
