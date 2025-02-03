@@ -1,7 +1,7 @@
 import TransformerFunction from "./functions/common/TransformerFunction";
 import { ParameterResolver } from "./ParameterResolver";
 import { JsonTransformerFunction } from "./JsonTransformerFunction";
-import { isNullOrUndefined, lenientJsonParse } from "./JsonHelpers";
+import { isNullOrUndefined, singleQuotedStringJsonParse } from "./JsonHelpers";
 import ObjectFunctionContext from "./functions/common/ObjectFunctionContext";
 import InlineFunctionContext from "./functions/common/InlineFunctionContext";
 import embeddedFunctions from "./functions";
@@ -121,19 +121,12 @@ export class TransformerFunctions implements TransformerFunctionsAdapter {
             if (argMatch.index != argsString.length || argsString.endsWith(",")) {
               let arg = argMatch[1];
               let trimmed = arg?.trim();
-              // if after removing all the surrounding spaces we are left with quoted text, then unquote it
               if (
                 trimmed?.startsWith(TransformerFunctions.QUOTE_APOS) &&
-                trimmed?.endsWith(TransformerFunctions.QUOTE_APOS) &&
+                trimmed.endsWith(TransformerFunctions.QUOTE_APOS) &&
                 trimmed.length > 1
               ) {
-                if (
-                  trimmed.startsWith(TransformerFunctions.ESCAPE_DOLLAR) ||
-                  trimmed.startsWith(TransformerFunctions.ESCAPE_HASH)
-                ) {
-                  trimmed = trimmed.substring(1); // escape
-                }
-                arg = `${lenientJsonParse(trimmed)}`;
+                arg = `${singleQuotedStringJsonParse(trimmed)}`;
               }
               args.push(arg);
             }

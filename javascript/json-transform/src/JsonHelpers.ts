@@ -167,10 +167,13 @@ const createPayloadResolver = (payload: any, additionalContext: Record<string, a
   };
 };
 
-const lenientJsonParse = (input: string) => {
-  // TODO: replace with a non exploitable solution
-  const f = new Function(`return ${input}`);
-  return f();
+const singleQuotedStringJsonParse = (input: string) => {
+  try {
+    return JSON.parse(`"${input.slice(1, -1).replace(/"/g, '\\"')}"`);
+  } catch (e: any) {
+    console.error(e);
+    return null;
+  }
 };
 
 const BIGINT_ZERO = BigInt(0);
@@ -375,7 +378,7 @@ export {
   compareTo,
   createComparator,
   getDocumentContext,
-  lenientJsonParse,
+  singleQuotedStringJsonParse,
   isTruthy,
   isEqual,
   mergeInto,
