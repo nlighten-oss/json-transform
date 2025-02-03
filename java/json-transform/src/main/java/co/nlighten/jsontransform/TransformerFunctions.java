@@ -178,11 +178,7 @@ public class TransformerFunctions<JE, JA extends Iterable<JE>, JO extends JE> im
                             (argMatcher.start() != argsString.length() || argsString.endsWith(","))) {
                         var arg = argMatcher.group(1);
                         var trimmed = argMatcher.group(1).trim();
-                        // if after removing all the surrounding spaces we are left with quoted text, then unquote it
                         if (trimmed.startsWith(QUOTE_APOS) && trimmed.endsWith(QUOTE_APOS) && trimmed.length() > 1) {
-                            if (trimmed.startsWith(ESCAPE_DOLLAR) || trimmed.startsWith(ESCAPE_HASH)) {
-                                trimmed = trimmed.substring(1); // escape
-                            }
                             arg = jsonAdapter.getAsString(jsonAdapter.parse(trimmed));
                             //otherwise, take the whole argument as-is
                         }
