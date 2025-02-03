@@ -151,10 +151,10 @@ Calculate the difference between two dates in specified units.
 ### Returns
 `integer`
 ### Arguments
-| Argument | Type                  | Values                            | Required / Default&nbsp;Value | Description                    |
-|----------|-----------------------|-----------------------------------|-------------------------------|--------------------------------|
-| `units`  | `Enum` (`ChronoUnit`) | `SECONDS`/`MINUTES`/ ... /`DAYS`  | Yes                           | The units of calculated result |
-| `end`    | `Date`                |                                   | Yes                           | End date                       |
+| Argument | Type                  | Values                             | Required / Default&nbsp;Value | Description                    |
+|----------|-----------------------|------------------------------------|-------------------------------|--------------------------------|
+| `units`  | `Enum` (`ChronoUnit`) | `SECONDS`/`MINUTES`/`DAYS`/ etc... | Yes                           | The units of calculated result |
+| `end`    | `Date`                |                                    | Yes                           | End date                       |
 
 ### Examples
 

@@ -64,6 +64,14 @@
   max-height: 500px;
 }
 
+.markmap-container {
+  display: flex;
+  flex-direction: column;
+}
+.markmap-container svg {
+  min-height: 600px;
+}
+
 .aa-Autocomplete button {
   border-radius: 24px;
 }
