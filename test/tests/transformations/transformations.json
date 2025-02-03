@@ -40,6 +40,16 @@
     }
   },
   {
+    "name": "Escaping in inline args",
+    "given": {
+      "input": ":",
+      "definition": "$$wrap(\\$$date):$"
+    },
+    "expect": {
+      "equal": "$$date:"
+    }
+  },
+  {
     "name": "Unrecognized macro",
     "given": {
       "input": null,
