@@ -42,11 +42,14 @@ export const tokenizeLine = (line: string, lineNumber: number, ts: TokenizationS
     iterResult = iter.next(), match = iterResult.value as RegExpMatchArray | null
   ) {
     if (!match || typeof match.index === "undefined") continue;
+    const func = functions.get(match[1])
+    const deprecated = func?.deprecated;
+
     ts.tokens.push({
       line: lineNumber,
       char: match.index,
       length: 2 + match[1].length, // $$ and name
-      type: TokenType.FUNCTION,
+      type: deprecated ? TokenType.FUNCTION_DEPRECATED : TokenType.FUNCTION,
       modifier: TokenModifier.DECLARATION,
     });
   }

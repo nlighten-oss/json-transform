@@ -93,7 +93,9 @@ const initMonaco = (monaco: Monaco) => {
       tags,
     };
   };
-  const functionSuggestions = functions.getNames().map(x => `$$${x}`);
+  const functionSuggestions = functions.getNames()
+    .filter(x => !functions.get(x).deprecated)
+    .map(x => `$$${x}`);
 
   monaco.languages.registerCompletionItemProvider("json", {
     provideCompletionItems: (model, position) => {

@@ -169,7 +169,7 @@ const createPayloadResolver = (payload: any, additionalContext: Record<string, a
 
 const singleQuotedStringJsonParse = (input: string) => {
   try {
-    return JSON.parse(`"${input.slice(1, -1).replace(/"/g, '\\"')}"`);
+    return JSON.parse(`"${input.slice(1, -1).replace(/"/g, '\\"').replace(/\\'/g, "'")}"`);
   } catch (e: any) {
     console.error(e);
     return null;
