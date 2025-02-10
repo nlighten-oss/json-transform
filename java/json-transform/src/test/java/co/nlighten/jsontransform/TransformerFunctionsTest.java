@@ -1,16 +1,10 @@
-package co.nlighten.jsontransform.gson;
+package co.nlighten.jsontransform;
 
-import co.nlighten.jsontransform.BaseTest;
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.adapters.gson.GsonJsonTransformer;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 import co.nlighten.jsontransform.functions.common.ArgType;
+import co.nlighten.jsontransform.functions.common.ArgumentType;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
+import co.nlighten.jsontransform.functions.common.FunctionDescription;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class GsonTransformerFunctionsTest extends BaseTest {
+public class TransformerFunctionsTest extends BaseTest {
     @Test
     void testMultipleInlineFunctions() {
         var date = Instant.now();
@@ -72,9 +66,9 @@ public class GsonTransformerFunctionsTest extends BaseTest {
     @Test
     void testJsonElementStreamsImmediateEvaluation() {
         var callCount = new AtomicInteger();
-        GsonJsonTransformer.FUNCTIONS.registerFunctions(Map.entry("c", new TransformerFunction<>(GsonJsonTransformer.ADAPTER) {
+        TransformerFunctions.registerFunctions(Map.entry("c", new TransformerFunction() {
             @Override
-            public Object apply(FunctionContext<JsonElement, JsonArray, JsonObject> context) {
+            public Object apply(FunctionContext context) {
                 callCount.incrementAndGet();
                 return context.get(null);
             }
@@ -89,7 +83,7 @@ public class GsonTransformerFunctionsTest extends BaseTest {
   },
   "by": "$$is(=,B):##current"
 }
-"""), fromJson("B"));
+"""), "B");
         // assert that "c" was called twice (check A, check B, break)
         Assertions.assertEquals(2, callCount.get());
 
@@ -156,17 +150,18 @@ public class GsonTransformerFunctionsTest extends BaseTest {
         Assertions.assertEquals(2, callCount.get());
     }
 
-    @ArgumentType(value = "a", type = ArgType.Any, position = 0, defaultIsNull = true)
-    @ArgumentType(value = "b", type = ArgType.Any, position = 1, defaultIsNull = true)
-    @ArgumentType(value = "c", type = ArgType.Any, position = 2, defaultIsNull = true)
-    private static class TransformerFunctionArgsTest extends TransformerFunction<JsonElement, JsonArray, JsonObject> {
-
-        public TransformerFunctionArgsTest(JsonAdapter<JsonElement, JsonArray, JsonObject> adapter) {
-            super(adapter);
+    private static class TransformerFunctionArgsTest extends TransformerFunction {
+        public TransformerFunctionArgsTest() {
+            super(FunctionDescription.of(
+                Map.of("a", ArgumentType.of(ArgType.Any).position(0).defaultIsNull(true),
+                       "b", ArgumentType.of(ArgType.Any).position(1).defaultIsNull(true),
+                       "c", ArgumentType.of(ArgType.Any).position(2).defaultIsNull(true)
+                )
+            ));
         }
 
         @Override
-        public Object apply(FunctionContext<JsonElement, JsonArray, JsonObject> context) {
+        public Object apply(FunctionContext context) {
             if (!context.has("a"))
                 return "N/A";
             var lst = new ArrayList<>();
@@ -178,17 +173,17 @@ public class GsonTransformerFunctionsTest extends BaseTest {
                 lst.add(context.get("c"));
             }
             if (lst.size() == 1) {
-                return lst.get(0) == null || lst.get(0) instanceof JsonNull ? "[NULL]" : lst.get(0);
+                return adapter.isNull(lst.get(0)) ? "[NULL]" : lst.get(0);
             }
             return String.join(",", lst.stream().map(arg ->
-                 "[" + (arg == null || arg instanceof JsonNull ? "NULL" : adapter.getAsString(arg)) + "]"
+                 "[" + (adapter.isNull(arg) ? "NULL" : adapter.getAsString(arg)) + "]"
             ).toList());
         }
     }
 
     @Test
     void inlineArgsParsingTest() {
-        GsonJsonTransformer.FUNCTIONS.registerFunctions(Map.entry("argstest", new TransformerFunctionArgsTest(GsonJsonTransformer.ADAPTER)));
+        TransformerFunctions.registerFunctions(Map.entry("argstest", new TransformerFunctionArgsTest()));
         assertTransformation(null, "$$argstest(,):", "[],[]");
 
         assertTransformation(null, "$$argstest", "N/A");
@@ -228,13 +223,9 @@ public class GsonTransformerFunctionsTest extends BaseTest {
         assertTransformation(null, "$$argstest(\n\r\t\u0f0f)", "$$argstest(\n\r\t\u0f0f)");
     }
 
-    private static class TransformerFunctionValTest<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
-        public TransformerFunctionValTest(JsonAdapter<JE, JA, JO> adapter) {
-            super(adapter);
-        }
-
+    private static class TransformerFunctionValTest extends TransformerFunction {
         @Override
-        public Object apply(FunctionContext<JE, JA, JO> context) {
+        public Object apply(FunctionContext context) {
             var value = context.getUnwrapped(null);
             if (value == null)
                 return "NULL";
@@ -244,15 +235,15 @@ public class GsonTransformerFunctionsTest extends BaseTest {
 
     @Test
     void inlineValueParsingTest() {
-        GsonJsonTransformer.FUNCTIONS.registerFunctions(Map.entry("valtest", new TransformerFunctionValTest<>(GsonJsonTransformer.ADAPTER)));
+        TransformerFunctions.registerFunctions(Map.entry("valtest", new TransformerFunctionValTest()));
 
         assertTransformation(null, "$$valtest", "NULL");
         assertTransformation(null, "$$valtest:", fromJson("\"\""));
         assertTransformation(null, "$$valtest:A", fromJson("\"A\""));
         assertTransformation("IN", "$$valtest:$", fromJson("\"IN\""));
-        assertTransformation("IN", "$$valtest:\\$", fromJson("$"));
+        assertTransformation("IN", "$$valtest:\\$", "$");
         // regex replacements
-        assertTransformation("IN", "$$valtest:$1", fromJson("$1"));
+        assertTransformation("IN", "$$valtest:$1", "$1");
     }
 
     @Test
@@ -265,14 +256,14 @@ public class GsonTransformerFunctionsTest extends BaseTest {
 
         var result2 = transform(null, fromJson("""
                 ["#now"]"""), null);
-        Assertions.assertTrue(adapter.jArray.is(result2));
-        var arg2_0 = adapter.unwrap(adapter.jArray.get(adapter.jArray.type.cast(result2), 0), false);
+        Assertions.assertTrue(adapter.isJsonArray(result2));
+        var arg2_0 = adapter.unwrap(adapter.get(result2, 0), false);
         Assertions.assertDoesNotThrow(() -> DateTimeFormatter.ISO_INSTANT.parse(arg2_0.toString()));
 
         var result3 = transform(null, fromJson("""
                 ["#uuid"]"""), null);
-        Assertions.assertTrue(adapter.jArray.is(result3));
-        var arg3_0 = adapter.unwrap(adapter.jArray.get(adapter.jArray.type.cast(result3), 0), false);
+        Assertions.assertTrue(adapter.isJsonArray(result3));
+        var arg3_0 = adapter.unwrap(adapter.get(result3, 0), false);
         Assertions.assertDoesNotThrow(() -> UUID.fromString(arg3_0.toString()));
     }
 
@@ -283,7 +274,7 @@ public class GsonTransformerFunctionsTest extends BaseTest {
         assertTransformation(null, "$example.key", adapter.wrap("KEY"), Map.of("$example", Map.of("key", "KEY")));
         assertTransformation(null, "$example", adapter.wrap("$example"));
         assertTransformation(null, "#call_id", adapter.wrap("CALL"), Map.of("#call_id", "CALL"));
-        assertTransformation(null, "#ctx[2]", adapter.wrap(new BigDecimal(4)), Map.of("#ctx", List.of(0,2,4,6)));
+        assertTransformation(null, "#ctx[2]", adapter.wrap(4), Map.of("#ctx", List.of(0,2,4,6)));
         assertTransformation(null, "#ctx.key", adapter.wrap("KEY"), Map.of("#ctx", Map.of("key", "KEY")));
     }
 }

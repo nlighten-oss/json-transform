@@ -1,24 +1,26 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
+import co.nlighten.jsontransform.functions.common.*;
+
+import java.util.Map;
 
 /*
  * For tests
  * @see TransformerFunctionIfTest
  */
-@ArgumentType(value = "then", type = ArgType.Any, position = 0, defaultIsNull = true)
-@ArgumentType(value = "else", type = ArgType.Any, position = 1, defaultIsNull = true)
-public class TransformerFunctionIf<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
-    public TransformerFunctionIf(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+public class TransformerFunctionIf extends TransformerFunction {
+    public TransformerFunctionIf() {
+        super(FunctionDescription.of(
+            Map.of(
+            "then", ArgumentType.of(ArgType.Any).position(0).defaultIsNull(true),
+            "else", ArgumentType.of(ArgType.Any).position(1).defaultIsNull(true)
+            )
+        ));
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         boolean condition;
+        var adapter = context.getAdapter();
         if (context.has("then")) {
             var value = context.getJsonElement(null);
             if (adapter.isTruthy(value)) {
@@ -28,9 +30,9 @@ public class TransformerFunctionIf<JE, JA extends Iterable<JE>, JO extends JE> e
             }
         } else {
             var arr = context.getJsonArray(null);
-            if (arr == null || jArray.size(arr) < 2)
+            if (arr == null || adapter.size(arr) < 2)
                 return null;
-            var cje = jArray.get(arr, 0);
+            var cje = adapter.get(arr, 0);
             if (adapter.isNull(cje)) {
                 condition = false;
             } else if (adapter.isJsonBoolean(cje)) {
@@ -40,9 +42,9 @@ public class TransformerFunctionIf<JE, JA extends Iterable<JE>, JO extends JE> e
             }
 
             if (condition) {
-                return context.transform(context.getPathFor(1), jArray.get(arr, 1));
-            } else if (jArray.size(arr) > 2) {
-                return context.transform(context.getPathFor(2), jArray.get(arr, 2));
+                return context.transform(context.getPathFor(1), adapter.get(arr, 1));
+            } else if (adapter.size(arr) > 2) {
+                return context.transform(context.getPathFor(2), adapter.get(arr, 2));
             }
         }
         return null; // default falsy value

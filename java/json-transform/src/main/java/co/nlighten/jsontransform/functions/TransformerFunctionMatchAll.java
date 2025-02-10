@@ -1,26 +1,26 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
+import co.nlighten.jsontransform.functions.common.*;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /*
  * For tests
  * @see TransformerFunctionMatchTest
  */
-@ArgumentType(value = "pattern", type = ArgType.String, position = 0)
-@ArgumentType(value = "group", type = ArgType.Integer, position = 1, defaultInteger = 0)
-public class TransformerFunctionMatchAll<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
-    public TransformerFunctionMatchAll(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+public class TransformerFunctionMatchAll extends TransformerFunction {
+    public TransformerFunctionMatchAll() {
+        super(FunctionDescription.of(
+            Map.of(
+                "pattern", ArgumentType.of(ArgType.String).position(0),
+                "group", ArgumentType.of(ArgType.Integer).position(1).defaultInteger(0)
+            )
+        ));
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var str = context.getString(null);
         if (str == null) {
             return null;

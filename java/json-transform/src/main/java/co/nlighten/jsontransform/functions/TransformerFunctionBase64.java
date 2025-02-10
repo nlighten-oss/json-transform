@@ -1,35 +1,35 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
+import co.nlighten.jsontransform.functions.common.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Map;
 
 /*
  * For tests
  * @see TransformerFunctionBase64Test
  */
-@ArgumentType(value = "action", type = ArgType.Enum, position = 0, defaultEnum = "ENCODE")
-@ArgumentType(value = "rfc", type = ArgType.Enum, position = 1, defaultEnum = "BASIC")
-@ArgumentType(value = "without_padding", type = ArgType.Boolean, position = 2, defaultBoolean = false)
-@ArgumentType(value = "charset", type = ArgType.Enum, position = 3, defaultEnum = "UTF-8")
-public class TransformerFunctionBase64<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
+public class TransformerFunctionBase64 extends TransformerFunction {
 
     static final Logger log = LoggerFactory.getLogger(TransformerFunctionBase64.class);
 
-    public TransformerFunctionBase64(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+    public TransformerFunctionBase64() {
+        super(FunctionDescription.of(
+            Map.of(
+            "action", ArgumentType.of(ArgType.Enum).position(0).defaultEnum("ENCODE"),
+            "rfc", ArgumentType.of(ArgType.Enum).position(1).defaultEnum("BASIC"),
+            "without_padding", ArgumentType.of(ArgType.Boolean).position(2).defaultBoolean(false),
+            "charset", ArgumentType.of(ArgType.Enum).position(3).defaultEnum("UTF-8")
+            )
+        ));
     }
 
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var str = context.getString(null);
         if (str == null) {
             return null;

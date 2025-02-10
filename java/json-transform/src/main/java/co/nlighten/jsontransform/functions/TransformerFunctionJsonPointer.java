@@ -1,28 +1,26 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
+import co.nlighten.jsontransform.functions.common.*;
 import co.nlighten.jsontransform.manipulation.JsonPointer;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
+
+import java.util.Map;
 
 /*
  * For tests
  * @see TransformerFunctionJsonPointerTest
  */
-@ArgumentType(value = "op", type = ArgType.Enum, position = 0, defaultString = "GET")
-@ArgumentType(value = "pointer", type = ArgType.String, position = 1, defaultIsNull = true)
-@ArgumentType(value = "value", type = ArgType.Any, position = 2, defaultIsNull = true)
-public class TransformerFunctionJsonPointer<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
-    private final JsonPointer<JE, JA, JO> jsonPointer;
-
-    public TransformerFunctionJsonPointer(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
-        this.jsonPointer = new JsonPointer<>(adapter);
+public class TransformerFunctionJsonPointer extends TransformerFunction {
+    public TransformerFunctionJsonPointer() {
+        super(FunctionDescription.of(
+                Map.of(
+                        "op", ArgumentType.of(ArgType.Enum).position(0).defaultString("GET"),
+                        "pointer", ArgumentType.of(ArgType.String).position(1).defaultIsNull(true),
+                        "value", ArgumentType.of(ArgType.Any).position(2).defaultIsNull(true)
+                )
+        ));
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var source = context.getJsonElement(null);
         if (source == null) {
             return null;
@@ -32,7 +30,7 @@ public class TransformerFunctionJsonPointer<JE, JA extends Iterable<JE>, JO exte
             return null;
         }
         var op = context.getEnum("op");
-
+        var jsonPointer = new JsonPointer(context.getAdapter());
         return switch (op) {
             case "GET" -> jsonPointer.get(source, pointer);
             case "SET" -> jsonPointer.set(source, pointer, context.getJsonElement("value"));

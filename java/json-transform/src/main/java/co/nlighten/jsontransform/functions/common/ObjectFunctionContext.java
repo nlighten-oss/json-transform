@@ -1,30 +1,31 @@
 package co.nlighten.jsontransform.functions.common;
 
 import co.nlighten.jsontransform.JsonTransformerUtils;
-import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.JsonTransformerFunction;
 import co.nlighten.jsontransform.ParameterResolver;
+import co.nlighten.jsontransform.adapters.JsonAdapter;
 
-public class ObjectFunctionContext<JE, JA extends Iterable<JE>, JO extends JE> extends FunctionContext<JE, JA, JO> {
-    private final JO definition;
+public class ObjectFunctionContext extends FunctionContext {
+    private final Object definition;
 
     public ObjectFunctionContext(String path,
-                                 JO definition, JsonAdapter<JE, JA, JO> jsonAdapter,
+                                 Object definition,
+                                 JsonAdapter<?, ?, ?> adapter,
                                  String functionKey,
-                                 TransformerFunction<JE, JA, JO> function,
-                                 ParameterResolver resolver, JsonTransformerFunction<JE> extractor) {
-        super(path, jsonAdapter, functionKey, function, resolver, extractor, definition);
+                                 TransformerFunction function,
+                                 ParameterResolver resolver, JsonTransformerFunction extractor) {
+        super(path, adapter, functionKey, function, resolver, extractor, definition);
         this.definition = definition;
     }
 
     @Override
     public boolean has(String name) {
-        return jObject.has(definition, name);
+        return adapter.has(definition, name);
     }
 
     @Override
     public Object get(String name, boolean transform) {
-        var el = jObject.get(definition, name == null ? alias : name);
+        var el = adapter.get(definition, name == null ? alias : name);
         if (adapter.isNull(el)) {
             return function.getDefaultValue(name);
         }

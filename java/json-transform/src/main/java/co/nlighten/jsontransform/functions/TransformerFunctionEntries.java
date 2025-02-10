@@ -1,7 +1,6 @@
 package co.nlighten.jsontransform.functions;
 
 import co.nlighten.jsontransform.JsonElementStreamer;
-import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 
@@ -11,33 +10,32 @@ import java.util.concurrent.atomic.AtomicInteger;
  * For tests
  * @see TransformerFunctionEntriesTest
  */
-public class TransformerFunctionEntries<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
-    public TransformerFunctionEntries(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+public class TransformerFunctionEntries extends TransformerFunction {
+    public TransformerFunctionEntries() {
+        super();
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var input = context.getJsonElement(null);
-        if (jArray.is(input)) {
-            var ja = (JA) input;
+        var adapter = context.getAdapter();
+        if (adapter.isJsonArray(input)) {
             var i = new AtomicInteger(0);
-            return JsonElementStreamer.fromTransformedStream(context, jArray.stream(ja)
+            return JsonElementStreamer.fromTransformedStream(context, adapter.stream(input)
                     .map(a -> {
-                        var entry = jArray.create(2);
-                        jArray.add(entry, i.getAndIncrement());
-                        jArray.add(entry, a);
-                        return (JE)entry;
+                        var entry = adapter.createArray(2);
+                        adapter.add(entry, i.getAndIncrement());
+                        adapter.add(entry, a);
+                        return entry;
                     }));
         }
-        if (jObject.is(input)) {
-            var jo = (JO) input;
-            return JsonElementStreamer.fromTransformedStream(context, jObject.entrySet(jo)
+        if (adapter.isJsonObject(input)) {
+            return JsonElementStreamer.fromTransformedStream(context, adapter.entrySet(input)
                     .stream()
                     .map(e -> {
-                        var entry = jArray.create(2);
-                        jArray.add(entry, e.getKey());
-                        jArray.add(entry, e.getValue());
-                        return (JE)entry;
+                        var entry = adapter.createArray(2);
+                        adapter.add(entry, e.getKey());
+                        adapter.add(entry, e.getValue());
+                        return entry;
                     }));
         }
         return null;

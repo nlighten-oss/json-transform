@@ -13,7 +13,7 @@ public class FormUrlEncodedFormatTest extends BaseTest {
 
     @Test
     void testSerialize() {
-        var xbt = new FormUrlEncodedFormat<>(adapter);
+        var xbt = new FormUrlEncodedFormat(adapter);
         var result = xbt.serialize(new FUETest());
 
         var expect = """
@@ -33,7 +33,7 @@ title=Hello+World&numbers=1&numbers=2""";
 
     @Test
     void testDeserialize() {
-        var xbt = new FormUrlEncodedFormat<>(adapter);
+        var xbt = new FormUrlEncodedFormat(adapter);
         var result = adapter.unwrap(xbt.deserialize("a=1&b=hello&c"), false);
         Assertions.assertEquals(fromJson("""
                                                              {

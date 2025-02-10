@@ -1,23 +1,25 @@
 package co.nlighten.jsontransform.functions;
 
 import co.nlighten.jsontransform.JsonElementStreamer;
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
+import co.nlighten.jsontransform.functions.common.*;
 
-@ArgumentType(value = "type", type = ArgType.Enum, position = 0, defaultEnum = "AUTO")
-@ArgumentType(value = "default_zero", type = ArgType.Boolean, position = 1, defaultBoolean = false)
-public class TransformerFunctionLength<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
+import java.util.Map;
 
-    public TransformerFunctionLength(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+public class TransformerFunctionLength extends TransformerFunction {
+
+    public TransformerFunctionLength() {
+        super(FunctionDescription.of(
+            Map.of(
+            "type", ArgumentType.of(ArgType.Enum).position(0).defaultEnum("AUTO"),
+            "default_zero", ArgumentType.of(ArgType.Boolean).position(1).defaultBoolean(false)
+            )
+        ));
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var type = context.getEnum("type");
         var defaultZero = context.getBoolean("default_zero");
+        var adapter = context.getAdapter();
         switch (type) {
             case "STRING" -> {
                 var je = context.getJsonElement(null);
@@ -31,16 +33,16 @@ public class TransformerFunctionLength<JE, JA extends Iterable<JE>, JO extends J
                     return jes.stream().count();
                 }
                 if (obj != null) {
-                    var el = context.wrap(obj);
-                    if (jArray.is(el)) {
-                        return jArray.size((JA)el);
+                    var el = context.getAdapter().wrap(obj);
+                    if (adapter.isJsonArray(el)) {
+                        return adapter.size(el);
                     }
                 }
             }
             case "OBJECT" -> {
                 var obj = context.getJsonElement(null);
-                if (jObject.is(obj)) {
-                    return jObject.size((JO)obj);
+                if (adapter.isJsonObject(obj)) {
+                    return adapter.size(obj);
                 }
             }
             default -> {
@@ -49,12 +51,9 @@ public class TransformerFunctionLength<JE, JA extends Iterable<JE>, JO extends J
                 if (obj instanceof JsonElementStreamer jes) {
                     return jes.stream().count();
                 }
-                var je = adapter.is(obj) ? (JE)obj : context.wrap(obj);
-                if (jObject.is(je)) {
-                    return jObject.size((JO)je);
-                }
-                if (jArray.is(je)) {
-                    return jArray.size((JA)je);
+                var je = context.getAdapter().wrap(obj);
+                if (adapter.isJsonObject(je) || adapter.isJsonArray(je)) {
+                    return adapter.size(je);
                 }
                 if (adapter.isJsonString(obj)) {
                     return context.getAsString(obj).length();

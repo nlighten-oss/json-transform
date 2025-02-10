@@ -1,11 +1,8 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
+import co.nlighten.jsontransform.functions.common.*;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -13,29 +10,33 @@ import java.util.stream.IntStream;
  * For tests
  * @see TransformerFunctionPartitionTest
  */
-@ArgumentType(value = "size", type = ArgType.Integer, position = 0, defaultInteger = 100)
-public class TransformerFunctionPartition<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
-    public TransformerFunctionPartition(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+public class TransformerFunctionPartition extends TransformerFunction {
+    public TransformerFunctionPartition() {
+        super(FunctionDescription.of(
+                Map.of(
+                        "size", ArgumentType.of(ArgType.Integer).position(0).defaultInteger(100)
+                )
+        ));
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var value = context.getJsonArray(null);
         if (value == null) {
             return null;
         }
         var size = context.getInteger("size");
 
-        var list = jArray.create();
-        IntStream.range(0, jArray.size(value))
+        var adapter = context.getAdapter();
+        var list = adapter.createArray();
+        IntStream.range(0, adapter.size(value))
                 .boxed()
                 .collect(Collectors.groupingBy(e -> e / size, Collectors.mapping(
-                        i -> jArray.get(value, i),
+                        i -> adapter.get(value, i),
                         Collectors.toList())))
                 .values().forEach(x -> {
-                    var subList = jArray.create();
-                    x.forEach(item -> jArray.add(subList, item));
-                    jArray.add(list, subList);
+                    var subList = adapter.createArray();
+                    x.forEach(item -> adapter.add(subList, item));
+                    adapter.add(list, subList);
                 });
         return list;
     }

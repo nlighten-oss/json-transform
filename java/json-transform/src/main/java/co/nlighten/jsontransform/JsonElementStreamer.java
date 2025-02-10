@@ -3,37 +3,29 @@ package co.nlighten.jsontransform;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
-public class JsonElementStreamer<JE, JA extends Iterable<JE>, JO extends JE> {
-    private final FunctionContext<JE, JA, JO> context;
+public class JsonElementStreamer {
+    private final FunctionContext context;
     private final boolean transformed;
-    private JA value;
-    private final Stream<JE> stream;
+    private Object value;
+    private final Stream<?> stream;
 
-    private JsonElementStreamer(FunctionContext<JE, JA, JO> context, JA arr, boolean transformed) {
+    private JsonElementStreamer(FunctionContext context, Stream<?> stream, Object arr, boolean transformed) {
         this.context = context;
         this.value = arr;
-        this.transformed = transformed;
-        this.stream = null;
-    }
-
-    private JsonElementStreamer(FunctionContext<JE, JA, JO> context, Stream<JE> stream, boolean transformed) {
-        this.context = context;
-        this.value = null;
         this.transformed = transformed;
         this.stream = stream;
     }
 
     public boolean knownAsEmpty() {
-        return value != null && this.context.jArray.isEmpty(value);
+        return value != null && this.context.getAdapter().isEmpty(value);
     }
 
-    public Stream<JE> stream() {
+    public Stream<?> stream() {
         return stream(null, null);
     }
 
-    public Stream<JE> stream(Long skip, Long limit) {
+    public Stream<?> stream(Long skip, Long limit) {
         if (this.stream != null && this.value == null) {
             var skipped = skip != null ? this.stream.skip(skip) : this.stream;
             return limit != null ? skipped.limit(limit) : skipped;
@@ -41,7 +33,7 @@ public class JsonElementStreamer<JE, JA extends Iterable<JE>, JO extends JE> {
         if (value == null) {
             return Stream.empty();
         }
-        var valueStream = StreamSupport.stream(value.spliterator(), false);
+        var valueStream = context.getAdapter().stream(value, false);
         if (skip != null) {
             valueStream = valueStream.skip(skip);
         }
@@ -54,23 +46,24 @@ public class JsonElementStreamer<JE, JA extends Iterable<JE>, JO extends JE> {
         return valueStream;
     }
 
-    public static <JE, JA extends Iterable<JE>, JO extends JE> JsonElementStreamer<JE, JA, JO> fromJsonArray(
-            FunctionContext<JE, JA, JO> context, JA array, boolean transformed) {
-        return new JsonElementStreamer<>(context, array, transformed);
+    public static JsonElementStreamer fromJsonArray(
+            FunctionContext context, Object array, boolean transformed) {
+        return new JsonElementStreamer(context, null, array, transformed);
     }
 
-    public static <JE, JA extends Iterable<JE>, JO extends JE> JsonElementStreamer<JE, JA, JO> fromTransformedStream(
-            FunctionContext<JE, JA, JO> context, Stream<JE> stream) {
-        return new JsonElementStreamer<>(context, stream, true);
+    public static JsonElementStreamer fromTransformedStream(
+            FunctionContext context, Stream<?> stream) {
+        return new JsonElementStreamer(context, stream, null, true);
     }
 
-    public JA toJsonArray() {
+    public Object toJsonArray() {
         if (value != null) {
             return value;
         }
-        var ja = context.jArray.create();
+        var adapter = context.getAdapter();
+        var ja = adapter.createArray();
         if (stream != null) {
-            stream.forEach(item -> context.jArray.add(ja, item));
+            stream.forEach(item -> adapter.add(ja, item));
         }
         value = ja;
         return ja;

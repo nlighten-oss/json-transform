@@ -9,11 +9,11 @@ import java.math.BigDecimal;
 
 public class GsonJsonAdapter extends JsonAdapter<JsonElement, JsonArray, JsonObject> {
 
-    private static final String dateTime = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    public static final String ISO_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     public static GsonBuilder gsonBuilder() {
         return new GsonBuilder()
-                .setDateFormat(dateTime)
+                .setDateFormat(ISO_DATETIME_FORMAT)
                 .setNumberToNumberStrategy(ToNumberPolicy.BIG_DECIMAL)
                 .setObjectToNumberStrategy(ToNumberPolicy.BIG_DECIMAL);
     }
@@ -58,7 +58,7 @@ public class GsonJsonAdapter extends JsonAdapter<JsonElement, JsonArray, JsonObj
     }
 
     @Override
-    public Object unwrap(JsonElement value, boolean reduceBigDecimals) {
+    public Object unwrap(Object value, boolean reduceBigDecimals) {
         return GsonJsonElementUnwrapper.unwrap(value, false, reduceBigDecimals);
     }
 
@@ -68,23 +68,23 @@ public class GsonJsonAdapter extends JsonAdapter<JsonElement, JsonArray, JsonObj
     }
 
     @Override
-    public JsonElement clone(JsonElement value) {
-        return value.deepCopy();
+    public Object clone(Object value) {
+        return ((JsonElement)value).deepCopy();
     }
 
     @Override
-    public Number getNumber(JsonElement value) {
-        return value.getAsNumber();
+    public Number getNumber(Object value) {
+        return ((JsonElement)value).getAsNumber();
     }
 
     @Override
-    public BigDecimal getNumberAsBigDecimal(JsonElement value) {
-        return value.getAsBigDecimal();
+    public BigDecimal getNumberAsBigDecimal(Object value) {
+        return ((JsonElement)value).getAsBigDecimal();
     }
 
     @Override
-    public Boolean getBoolean(JsonElement value) {
-        return value.getAsBoolean();
+    public Boolean getBoolean(Object value) {
+        return ((JsonElement)value).getAsBoolean();
     }
 
     @Override

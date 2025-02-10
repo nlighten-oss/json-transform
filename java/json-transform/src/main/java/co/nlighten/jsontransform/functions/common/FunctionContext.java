@@ -3,8 +3,6 @@ package co.nlighten.jsontransform.functions.common;
 import co.nlighten.jsontransform.JsonTransformerUtils;
 import co.nlighten.jsontransform.ParameterResolver;
 import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.adapters.JsonArrayAdapter;
-import co.nlighten.jsontransform.adapters.JsonObjectAdapter;
 import co.nlighten.jsontransform.JsonElementStreamer;
 import co.nlighten.jsontransform.JsonTransformerFunction;
 
@@ -13,7 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE> {
+public abstract class FunctionContext {
 
     protected final String CONTEXT_KEY = "context";
     protected final String DOUBLE_HASH_CURRENT = "##current";
@@ -25,22 +23,19 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
      * The function's name as it appeared in the transformer (e.g. "$$filter")
      */
     protected final String alias;
-    protected final co.nlighten.jsontransform.functions.common.TransformerFunction<JE, JA, JO> function;
+    protected final TransformerFunction function;
     protected final ParameterResolver resolver;
-    protected final JsonTransformerFunction<JE> extractor;
+    protected final JsonTransformerFunction extractor;
 
-    public final JsonArrayAdapter<JE, JA, JO> jArray;
-    public final JsonObjectAdapter<JE, JA, JO> jObject;
-    protected final JsonAdapter<JE, JA, JO> adapter;
+    protected final JsonAdapter<?, ?, ?> adapter;
 
     public FunctionContext(String path,
-                           JsonAdapter<JE, JA, JO> jsonAdapter,
+                           JsonAdapter<?, ?, ?> jsonAdapter,
                            String alias,
-                           co.nlighten.jsontransform.functions.common.TransformerFunction<JE, JA, JO> function,
-                           ParameterResolver resolver, JsonTransformerFunction<JE> extractor,
-                           JO definition) {
-        this.jArray = jsonAdapter.jArray;
-        this.jObject = jsonAdapter.jObject;
+                           TransformerFunction function,
+                           ParameterResolver resolver,
+                           JsonTransformerFunction extractor,
+                           Object definition) {
         this.adapter = jsonAdapter;
         this.path = path;
         this.alias = alias;
@@ -53,16 +48,20 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
         }
     }
 
-    public FunctionContext(String path, JsonAdapter<JE,JA,JO> jsonAdapter, String alias, TransformerFunction<JE,JA,JO> function, ParameterResolver resolver, JsonTransformerFunction<JE> extractor) {
+    public FunctionContext(String path,
+                           JsonAdapter<?, ?, ?> jsonAdapter,
+                           String alias,
+                           TransformerFunction function,
+                           ParameterResolver resolver,
+                           JsonTransformerFunction extractor) {
         this(path, jsonAdapter, alias, function, resolver, extractor, null);
     }
 
-    private ParameterResolver recalcResolver(JO definition, ParameterResolver resolver, JsonTransformerFunction<JE> extractor) {
-        if (adapter.jObject.has(definition, CONTEXT_KEY)) {
-            var contextElement = adapter.jObject.get(definition, CONTEXT_KEY);
-            if (adapter.jObject.is(contextElement)) {
-                var ctx = adapter.jObject.convert(contextElement);
-                var addCtx = adapter.jObject.entrySet(ctx).stream().collect(
+    private ParameterResolver recalcResolver(Object definition, ParameterResolver resolver, JsonTransformerFunction extractor) {
+        if (adapter.has(definition, CONTEXT_KEY)) {
+            var contextElement = adapter.get(definition, CONTEXT_KEY);
+            if (adapter.isJsonObject(contextElement)) {
+                var addCtx = adapter.entrySet(contextElement).stream().collect(
                         Collectors.toMap(
                                 Map.Entry::getKey,
                                 kv -> adapter.getDocumentContext(extractor.transform(path + JsonTransformerUtils.toObjectFieldPath(adapter, kv.getKey()),kv.getValue(), resolver, false))
@@ -118,20 +117,8 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
         return this.path + "[" + index + "]";
     }
 
-    public boolean isNull(JE value) {
-        return adapter.isNull(value);
-    }
-    public JE wrap(Object value) {
-        return adapter.wrap(value);
-    }
-    public Object unwrap(JE value) {
-        return adapter.unwrap(value, false);
-    }
-    public Object unwrap(JE value, boolean reduceBigDecimals) {
-        return adapter.unwrap(value, reduceBigDecimals);
-    }
-    public JE parse(String jsonString) {
-        return adapter.parse(jsonString);
+    public JsonAdapter<?,?,?> getAdapter() {
+        return adapter;
     }
 
     public String getAsString(Object value) {
@@ -143,18 +130,14 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
         if (value instanceof JsonElementStreamer streamer) {
             value = streamer.toJsonArray();
         }
-        return adapter.unwrap((JE)value, reduceBigDecimals);
+        return adapter.unwrap(value, reduceBigDecimals);
     }
 
     public Object getUnwrapped(String name) {
         return getUnwrapped(name, false);
     }
 
-    public Integer compareTo(JE a, JE b) {
-        return adapter.compareTo(a, b);
-    }
-
-    public JE getJsonElement(String name, boolean transform) {
+    public Object getJsonElement(String name, boolean transform) {
         var value = get(name, transform);
         if (value instanceof JsonElementStreamer streamer) {
             value = streamer.toJsonArray();
@@ -162,7 +145,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
         return adapter.wrap(value);
     }
 
-    public JE getJsonElement(String name) {
+    public Object getJsonElement(String name) {
         return getJsonElement(name, true);
     }
 
@@ -217,7 +200,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
             return n.intValue();
         }
         if (adapter.isJsonNumber(value)) {
-            return adapter.getNumber((JE)value).intValue();
+            return adapter.getNumber(value).intValue();
         }
         var str = getAsString(value);
         if (str == null) return null;
@@ -239,7 +222,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
             return n.longValue();
         }
         if (adapter.isJsonNumber(value)) {
-            return adapter.getNumber((JE)value).longValue();
+            return adapter.getNumber(value).longValue();
         }
         var str = getAsString(value);
         if (str == null) return null;
@@ -261,7 +244,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
             return b;
         }
         if (adapter.isJsonNumber(value)) {
-            return adapter.getNumberAsBigDecimal((JE)value);
+            return adapter.getNumberAsBigDecimal(value);
         }
         var str = getAsString(value);
         if (str == null) return null;
@@ -274,17 +257,17 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
         return getBigDecimal(name, true);
     }
 
-    public JA getJsonArray(String name, boolean transform) {
+    public Object getJsonArray(String name, boolean transform) {
         var value = get(name, transform);
         if (value instanceof JsonElementStreamer jes) {
-            return (JA)jes.toJsonArray();
+            return jes.toJsonArray();
         }
         var el = adapter.wrap(value);
-        if (!adapter.jArray.is(el)) return null;
-        return (JA)el;
+        if (!adapter.isJsonArray(el)) return null;
+        return el;
     }
 
-    public JA getJsonArray(String name) {
+    public Object getJsonArray(String name) {
         return getJsonArray(name, true);
     }
 
@@ -296,7 +279,7 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
      * - It lazy transforms the array elements, so if there is short-circuiting, some transformations might be prevented
      * @return JsonElementStreamer
      */
-    public JsonElementStreamer<JE, JA, JO> getJsonElementStreamer(String name) {
+    public JsonElementStreamer getJsonElementStreamer(String name) {
         var transformed = false;
         var value = get(name, false);
         if (value instanceof JsonElementStreamer jes) {
@@ -304,73 +287,73 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
         }
         // in case val is already an array we don't transform it to prevent evaluation of its result values
         // so if is not an array, we must transform it and check after-wards (not lazy anymore)
-        if (!adapter.jArray.is(value)) {
-            value = extractor.transform(getPathFor(name), wrap(value), resolver, true);
+        if (!adapter.isJsonArray(value)) {
+            value = extractor.transform(getPathFor(name), adapter.wrap(value), resolver, true);
             if (value instanceof JsonElementStreamer jes) {
                 return jes;
             }
             transformed = true;
         }
         // check if initially or after transformation we got an array
-        if (adapter.jArray.is(value)) {
-            return JsonElementStreamer.fromJsonArray(this, (JA)value, transformed);
+        if (adapter.isJsonArray(value)) {
+            return JsonElementStreamer.fromJsonArray(this, value, transformed);
         }
         return null;
     }
 
     // TODO: replace this with something
-    public JE transform(JE definition){
-        return (JE) extractor.transform(path, definition, resolver, false);
-    }
-
-    public Object transform(String path, JE definition){
+    public Object transform(Object definition){
         return extractor.transform(path, definition, resolver, false);
     }
 
-    public Object transform(String path, JE definition, boolean allowReturningStreams){
+    public Object transform(String path, Object definition){
+        return extractor.transform(path, definition, resolver, false);
+    }
+
+    public Object transform(String path, Object definition, boolean allowReturningStreams){
         return extractor.transform(path, definition, resolver, allowReturningStreams);
     }
 
-    public JE transformItem(JE definition, JE current) {
+    public Object transformItem(Object definition, Object current) {
         var currentContext = adapter.getDocumentContext(current);
         ParameterResolver itemResolver = name ->
                 pathOfVar(DOUBLE_HASH_CURRENT, name)
                 ? currentContext.read(DOLLAR + name.substring(9))
                 : resolver.get(name);
-        return (JE) extractor.transform("$", definition, itemResolver, false);
+        return extractor.transform("$", definition, itemResolver, false);
     }
 
-    public JE transformItem(JE definition, JE current, Integer index) {
+    public Object transformItem(Object definition, Object current, Integer index) {
         var currentContext = adapter.getDocumentContext(current);
         ParameterResolver itemResolver = name ->
                 DOUBLE_HASH_INDEX.equals(name)
-                ? wrap(index)
+                ? adapter.wrap(index)
                 : pathOfVar(DOUBLE_HASH_CURRENT, name)
                   ? currentContext.read(DOLLAR + name.substring(9))
                   : resolver.get(name);
-        return (JE) extractor.transform("$", definition, itemResolver, false);
+        return extractor.transform("$", definition, itemResolver, false);
     }
 
-    public JE transformItem(JE definition, JE current, Integer index, String additionalName, JE additional) {
+    public Object transformItem(Object definition, Object current, Integer index, String additionalName, Object additional) {
         var currentContext = adapter.getDocumentContext(current);
         var additionalContext = adapter.getDocumentContext(additional);
         ParameterResolver itemResolver = name ->
                 DOUBLE_HASH_INDEX.equals(name)
-                ? wrap(index)
+                ? adapter.wrap(index)
                 : pathOfVar(DOUBLE_HASH_CURRENT, name)
                   ? currentContext.read(DOLLAR + name.substring(9))
                   : pathOfVar(additionalName, name)
                     ? additionalContext.read(DOLLAR + name.substring(additionalName.length()))
                     : resolver.get(name);
-        return (JE) extractor.transform("$", definition, itemResolver, false);
+        return extractor.transform("$", definition, itemResolver, false);
     }
 
-    public JE transformItem(JE definition, JE current, Integer index, Map<String, JE> additionalContexts) {
+    public Object transformItem(Object definition, Object current, Integer index, Map<String, Object> additionalContexts) {
         var currentContext = adapter.getDocumentContext(current);
         var addCtx = additionalContexts.keySet().stream().collect(
                 Collectors.toMap(key -> key, key -> adapter.getDocumentContext(additionalContexts.get(key))));
         ParameterResolver itemResolver = name -> {
-            if (DOUBLE_HASH_INDEX.equals(name)) return wrap(index);
+            if (DOUBLE_HASH_INDEX.equals(name)) return adapter.wrap(index);
             if (pathOfVar(DOUBLE_HASH_CURRENT, name)) return currentContext.read("$" + name.substring(9));
             for (var key : additionalContexts.keySet()) {
                 if (pathOfVar(key, name)) {
@@ -379,6 +362,6 @@ public abstract class FunctionContext<JE, JA extends Iterable<JE>, JO extends JE
             }
             return resolver.get(name);
         };
-        return (JE) extractor.transform("$", definition, itemResolver, false);
+        return extractor.transform("$", definition, itemResolver, false);
     }
 }

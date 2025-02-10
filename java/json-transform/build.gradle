@@ -9,13 +9,14 @@ plugins {
 }
 
 group 'co.nlighten'
-version = '0.6.1'
+version = '0.7.0'
 
 ext {
     gsonVersion = "2.10.1"
     jsonVersion = '20240303'
     jsonPathVersion = "2.9.0"
     jmhVersion = "1.36"
+    jacksonBindVersion = "2.17.1"
     snakeYamlVersion = "2.7"
     coNlightenShortUuidVersion = "0.1.1"
     slf4jVersion = "2.0.11"
@@ -36,7 +37,8 @@ dependencies {
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
 
     /** JSON **/
-    implementation "com.google.code.gson:gson:${gsonVersion}"
+    compileOnly "com.google.code.gson:gson:${gsonVersion}"
+    compileOnly "com.fasterxml.jackson.core:jackson-databind:${jacksonBindVersion}"
     implementation "org.json:json:${jsonVersion}" // for XML conversion
     implementation "com.jayway.jsonpath:json-path:${jsonPathVersion}"
 
@@ -48,6 +50,8 @@ dependencies {
 
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation "com.google.code.gson:gson:${gsonVersion}"
+    testImplementation "com.fasterxml.jackson.core:jackson-databind:${jacksonBindVersion}"
 }
 
 jar { archiveClassifier = '' }

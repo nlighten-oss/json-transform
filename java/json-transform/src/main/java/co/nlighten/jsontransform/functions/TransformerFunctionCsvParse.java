@@ -1,14 +1,11 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
+import co.nlighten.jsontransform.functions.common.*;
 import co.nlighten.jsontransform.formats.csv.CsvFormat;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /*
@@ -16,17 +13,20 @@ import java.util.stream.Collectors;
  * For tests
  * @see TransformerFunctionCsvParseTest
  */
-@ArgumentType(value = "no_headers", type = ArgType.Boolean, position = 0, defaultBoolean = false)
-@ArgumentType(value = "separator", type = ArgType.String, position = 1, defaultString = ",")
-@ArgumentType(value = "names", type = ArgType.Array, position = 2, defaultIsNull = true)
-public class TransformerFunctionCsvParse<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
+public class TransformerFunctionCsvParse extends TransformerFunction {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionCsvParse.class);
 
-    public TransformerFunctionCsvParse(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+    public TransformerFunctionCsvParse() {
+        super(FunctionDescription.of(
+            Map.of(
+            "no_headers", ArgumentType.of(ArgType.Boolean).position(0).defaultBoolean(false),
+            "separator", ArgumentType.of(ArgType.String).position(1).defaultString(","),
+            "names", ArgumentType.of(ArgType.Array).position(2).defaultIsNull(true)
+            )
+        ));
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var csv = context.getString(null);
         try {
             if (csv == null)
@@ -34,10 +34,11 @@ public class TransformerFunctionCsvParse<JE, JA extends Iterable<JE>, JO extends
             var names = context.getJsonArray("names");
             var noHeaders = context.getBoolean("no_headers");
             var separator = context.getString("separator");
+            var adapter = context.getAdapter();
             return new CsvFormat(adapter,
                                  names == null
                                  ? null
-                                 : jArray.stream(names)
+                                 : adapter.stream(names)
                                          .map(context::getAsString)
                                          .collect(Collectors.toList()),
                                                         noHeaders,

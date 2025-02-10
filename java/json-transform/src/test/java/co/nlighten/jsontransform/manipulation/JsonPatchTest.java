@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  */
 public class JsonPatchTest extends BaseTest {
 
-    JsonPatch jsonPatch = new JsonPatch<>(adapter);
+    JsonPatch jsonPatch = new JsonPatch(adapter);
 
     public static String read(final String filename) throws FileNotFoundException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -33,31 +33,30 @@ public class JsonPatchTest extends BaseTest {
         }
     }
 
-    private static Stream tests() throws FileNotFoundException {
+    private static Stream<?> tests() throws FileNotFoundException {
         String json = read("JsonPatchTests.json");
-        return adapter.jArray.stream(adapter.jArray.type.cast(adapter.parse(json)), true);
+        return adapter.stream(adapter.parse(json), true);
     }
 
     @MethodSource("tests")
     @ParameterizedTest
-    void test(final Object testEl) {
-        var test = adapter.jObject.convert(testEl);
-        if (test.has("disabled") && adapter.getBoolean(test.get("disabled"))) {
+    void test(final Object test) {
+        if (adapter.has(test, "disabled") && adapter.getBoolean(adapter.get(test, "disabled"))) {
             // skip
             return;
         }
 
-        var doc = test.get("doc");
-        var patch = adapter.jArray.type.cast(test.get("patch"));
-        var hasError = test.has("error");
+        var doc = adapter.get(test, "doc");
+        var patch = adapter.get(test, "patch");
+        var hasError = adapter.has(test, "error");
         if (hasError) {
             Assertions.assertThrows(Exception.class, () -> {
                 jsonPatch.patch(patch, doc);
             });
         } else {
             var actual = jsonPatch.patch(patch, doc);
-            var message = test.get("comment");
-            var expected = test.get("expected");
+            var message = adapter.get(test, "comment");
+            var expected = adapter.get(test, "expected");
             Assertions.assertEquals(expected, actual, message == null ? "unexpected" : adapter.getAsString(message));
         }
     }

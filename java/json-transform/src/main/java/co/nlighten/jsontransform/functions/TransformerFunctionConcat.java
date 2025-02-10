@@ -1,6 +1,5 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import co.nlighten.jsontransform.JsonElementStreamer;
@@ -11,21 +10,22 @@ import java.util.stream.Stream;
  * For tests
  * @see TransformerFunctionConcatTest
  */
-public class TransformerFunctionConcat<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
-    public TransformerFunctionConcat(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+public class TransformerFunctionConcat extends TransformerFunction {
+    public TransformerFunctionConcat() {
+        super();
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var streamer = context.getJsonElementStreamer(null);
         if (streamer == null) return null;
 
+        var adapter = context.getAdapter();
         return JsonElementStreamer.fromTransformedStream(context, streamer.stream()
             .flatMap(itm -> {
                 if (adapter.isNull(itm)) {
                     return Stream.empty();
-                } else if (jArray.is(itm)) {
-                    return jArray.stream((JA)itm);
+                } else if (adapter.isJsonArray(itm)) {
+                    return adapter.stream(itm);
                 }
                 return Stream.of(itm);
             }));

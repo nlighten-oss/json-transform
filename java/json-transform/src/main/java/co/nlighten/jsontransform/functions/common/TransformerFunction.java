@@ -1,63 +1,40 @@
 package co.nlighten.jsontransform.functions.common;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.adapters.JsonArrayAdapter;
-import co.nlighten.jsontransform.adapters.JsonObjectAdapter;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
-
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Base class for all transformer functions.
- * @param <JE> Json Element type
- * @param <JA> Json Array type
- * @param <JO> Json Object type
  */
-public abstract class TransformerFunction<JE, JA extends Iterable<JE>, JO extends JE> {
-    protected final Map<String, ArgumentType> arguments;
-    protected final Map<String, Object> defaultValues;
-    protected final JsonAdapter<JE, JA, JO> adapter;
+public abstract class TransformerFunction {
+    private final Map<String, Object> defaultValues;
+    private final FunctionDescription description;
 
-    protected final JsonArrayAdapter<JE, JA, JO> jArray;
-    protected final JsonObjectAdapter<JE, JA, JO> jObject;
-
-    public TransformerFunction(JsonAdapter<JE, JA, JO> adapter) {
-        this.adapter = adapter;
-        this.jArray = adapter.jArray;
-        this.jObject = adapter.jObject;
-
-        var argArr = this.getClass().getAnnotationsByType(ArgumentType.class);
-        if (argArr.length > 0) {
-            var arguments = new HashMap<String, ArgumentType>();
-            var defaultValues = new HashMap<String, Object>();
-            Arrays.stream(argArr).forEachOrdered(arg -> {
-               arguments.put(arg.value(), arg);
-               if (arg.aliases().length > 0) {
-                   Arrays.stream(arg.aliases()).forEach(alias -> {
-                       arguments.put(alias, arg);
-                   });
-               }
-               defaultValues.put(arg.value(), TransformerFunction.getDefaultValue(arg));
-            });
-            this.arguments = arguments;
-            this.defaultValues = defaultValues;
-        } else {
-            this.arguments = Map.of();
-            this.defaultValues = Map.of();
+    public TransformerFunction(FunctionDescription description) {
+        this.description = description;
+        this.defaultValues = new HashMap<>();
+        var args = description.getArguments();
+        for (var arg : args.keySet()) {
+            this.defaultValues.put(arg, TransformerFunction.getDefaultValue(args.get(arg)));
         }
     }
 
+    public TransformerFunction() {
+        this(FunctionDescription.of(Collections.emptyMap()));
+    }
+
+
     private static Object getDefaultValue(ArgumentType a) {
-        if (a == null || a.defaultIsNull()) return null;
-        return switch (a.type()) {
-            case Boolean -> a.defaultBoolean();
-            case String -> a.defaultString();
-            case Enum -> a.defaultEnum();
-            case Integer -> a.defaultInteger();
-            case Long -> a.defaultLong();
-            case BigDecimal -> a.defaultBigDecimal();
+        if (a == null || a.defaultIsNull) return null;
+        return switch (a.type) {
+            case Boolean -> a.defaultBoolean;
+            case String -> a.defaultString;
+            case Enum -> a.defaultEnum;
+            case Integer -> a.defaultInteger;
+            case Long -> a.defaultLong;
+            case BigDecimal -> a.defaultBigDecimal;
             default -> null;
         };
     }
@@ -67,7 +44,7 @@ public abstract class TransformerFunction<JE, JA extends Iterable<JE>, JO extend
      * @param context the context
      * @return the result of the function
      */
-    public abstract Object apply(FunctionContext<JE, JA, JO> context);
+    public abstract Object apply(FunctionContext context);
 
     /**
      * Get the argument type for the given name.
@@ -76,7 +53,7 @@ public abstract class TransformerFunction<JE, JA extends Iterable<JE>, JO extend
      */
     public ArgumentType getArgument(String name) {
         if (name == null) return null;
-        return arguments.get(name);
+        return description.getArguments().get(name);
     }
 
     /**
@@ -84,7 +61,7 @@ public abstract class TransformerFunction<JE, JA extends Iterable<JE>, JO extend
      * @return the function arguments
      */
     public Map<String, ArgumentType> getArguments() {
-        return arguments;
+        return description.getArguments();
     }
 
     /**

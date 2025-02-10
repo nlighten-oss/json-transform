@@ -1,23 +1,24 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
+import co.nlighten.jsontransform.functions.common.*;
+
+import java.util.Map;
 
 /*
  * For tests
  * @see TransformerFunctionWrapTest
  */
-@ArgumentType(value = "prefix", type = ArgType.String, position = 0, defaultString = "")
-@ArgumentType(value = "suffix", type = ArgType.String, position = 1, defaultString = "")
-public class TransformerFunctionWrap<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
-    public TransformerFunctionWrap(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+public class TransformerFunctionWrap extends TransformerFunction {
+    public TransformerFunctionWrap() {
+        super(FunctionDescription.of(
+                Map.of(
+                    "prefix", ArgumentType.of(ArgType.String).position(0).defaultString(""),
+                    "suffix", ArgumentType.of(ArgType.String).position(1).defaultString("")
+                )
+        ));
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var res = context.getString(null);
         if (res == null)
             return null;

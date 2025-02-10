@@ -1,31 +1,30 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.FunctionHelpers;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
+import co.nlighten.jsontransform.functions.common.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Locale;
+import java.util.Map;
 
 /*
  * For tests
  * @see TransformerFunctionNumberParseTest
  */
-@ArgumentType(value = "pattern", type = ArgType.String, position = 0, defaultString = "#0.00")
-@ArgumentType(value = "locale", type = ArgType.String, position = 1, defaultIsNull = true)
-@ArgumentType(value = "grouping", type = ArgType.String, position = 2, defaultIsNull = true)
-@ArgumentType(value = "decimal", type = ArgType.String, position = 3, defaultIsNull = true)
-@ArgumentType(value = "radix", type = ArgType.Integer, position = 1, defaultInteger = 10)
-public class TransformerFunctionNumberParse<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
-    public TransformerFunctionNumberParse(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+public class TransformerFunctionNumberParse extends TransformerFunction {
+    public TransformerFunctionNumberParse() {
+        super(FunctionDescription.of(
+                Map.of(
+                        "pattern", ArgumentType.of(ArgType.String).position(0).defaultString("#0.00"),
+                        "locale", ArgumentType.of(ArgType.String).position(1).defaultIsNull(true),
+                        "grouping", ArgumentType.of(ArgType.String).position(2).defaultIsNull(true),
+                        "decimal", ArgumentType.of(ArgType.String).position(3).defaultIsNull(true),
+                        "radix", ArgumentType.of(ArgType.Integer).position(1).defaultInteger(10)
+                )
+        ));
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var str = context.getString(null);
         if (str == null) {
             return null;

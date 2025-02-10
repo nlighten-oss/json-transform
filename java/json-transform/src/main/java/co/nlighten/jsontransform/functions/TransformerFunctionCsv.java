@@ -1,15 +1,12 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
+import co.nlighten.jsontransform.functions.common.*;
 import co.nlighten.jsontransform.formats.csv.CsvFormat;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,18 +15,21 @@ import java.util.stream.Stream;
  * For tests
  * @see TransformerFunctionCsvTest
  */
-@ArgumentType(value = "no_headers", type = ArgType.Boolean, position = 0, defaultBoolean = false)
-@ArgumentType(value = "force_quote", type = ArgType.Boolean, position = 1, defaultBoolean = false)
-@ArgumentType(value = "separator", type = ArgType.String, position = 2, defaultString = ",")
-@ArgumentType(value = "names", type = ArgType.Array, position = 3, defaultIsNull = true)
-public class TransformerFunctionCsv<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
+public class TransformerFunctionCsv extends TransformerFunction {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionCsv.class);
 
-    public TransformerFunctionCsv(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+    public TransformerFunctionCsv() {
+        super(FunctionDescription.of(
+            Map.of(
+            "no_headers", ArgumentType.of(ArgType.Boolean).position(0).defaultBoolean(false),
+            "force_quote", ArgumentType.of(ArgType.Boolean).position(1).defaultBoolean(false),
+            "separator", ArgumentType.of(ArgType.String).position(2).defaultString(","),
+            "names", ArgumentType.of(ArgType.Array).position(3).defaultIsNull(true)
+            )
+        ));
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var streamer = context.getJsonElementStreamer(null);
         try {
             if (streamer == null)
@@ -39,8 +39,9 @@ public class TransformerFunctionCsv<JE, JA extends Iterable<JE>, JO extends JE> 
             var forceQuote = context.getBoolean("force_quote");
             var separator = context.getString("separator");
             List<String> namesList = null;
+            var adapter = context.getAdapter();
             if (names != null) {
-                var stringStream = (Stream<String>) jArray.stream(names).map(context::getAsString);
+                var stringStream = (Stream<String>) adapter.stream(names).map(context::getAsString);
                 namesList = stringStream.collect(Collectors.toList());
             }
             return new CsvFormat(

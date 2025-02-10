@@ -1,43 +1,43 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.FunctionHelpers;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
+import co.nlighten.jsontransform.functions.common.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.Map;
 
 /*
  * For tests
  * @see TransformerFunctionMathTest
  */
-@ArgumentType(value = "op1", type = ArgType.BigDecimal, position = 0 /* or 1 */, defaultBigDecimal = 0d)
-@ArgumentType(value = "op", type = ArgType.Enum, position = 1 /* or 0 */, defaultEnum = "0")
-@ArgumentType(value = "op2", type = ArgType.BigDecimal, position = 2, defaultBigDecimal = 0d)
-public class TransformerFunctionMath<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
+public class TransformerFunctionMath extends TransformerFunction {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionMath.class);
 
-    public TransformerFunctionMath(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+    public TransformerFunctionMath() {
+        super(FunctionDescription.of(
+            Map.of(
+            "op1", ArgumentType.of(ArgType.BigDecimal).position(0 /* or 1 */).defaultBigDecimal(BigDecimal.ZERO),
+            "op", ArgumentType.of(ArgType.Enum).position(1 /* or 0 */).defaultEnum("0"),
+            "op2", ArgumentType.of(ArgType.BigDecimal).position(2).defaultBigDecimal(BigDecimal.ZERO)
+            )
+        ));
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var value = context.getJsonArray(null);
         String parsedOp;
         MathOp op;
         BigDecimal op1;
         BigDecimal op2;
         if (value != null) {
-            var size = jArray.size(value);
+            var adapter = context.getAdapter();
+            var size = adapter.size(value);
             if (size <= 1) return null; // invalid input
-            var arg0 = jArray.get(value, 0);
-            var arg1 = jArray.get(value, 1);
+            var arg0 = adapter.get(value, 0);
+            var arg1 = adapter.get(value, 1);
             parsedOp = context.getAsString(arg0);
             op = parseMathOp(parsedOp) ;
             if (size > 2 && op == MathOp.UNKNOWN) {
@@ -47,7 +47,7 @@ public class TransformerFunctionMath<JE, JA extends Iterable<JE>, JO extends JE>
             } else {
                 op1 = adapter.getNumberAsBigDecimal(arg1);
             }
-            op2 = size < 3 ? BigDecimal.ZERO : adapter.getNumberAsBigDecimal(jArray.get(value, 2));
+            op2 = size < 3 ? BigDecimal.ZERO : adapter.getNumberAsBigDecimal(adapter.get(value, 2));
         } else {
             // order of arguments ( op1, op, op2 )
             parsedOp = context.getEnum("op1");

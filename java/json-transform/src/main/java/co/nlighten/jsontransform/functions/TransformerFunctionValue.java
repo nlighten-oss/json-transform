@@ -1,6 +1,5 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import co.nlighten.jsontransform.JsonElementStreamer;
@@ -10,17 +9,17 @@ import co.nlighten.jsontransform.JsonElementStreamer;
  *
  * @see TransformerFunctionValueTest
  */
-public class TransformerFunctionValue<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
-    public TransformerFunctionValue(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+public class TransformerFunctionValue extends TransformerFunction {
+    public TransformerFunctionValue() {
+        super();
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var result = context.get(null, true);
         if (result instanceof JsonElementStreamer streamer) {
             result = streamer.toJsonArray();
         }
-        if (adapter.isTruthy(result)) {
+        if (context.getAdapter().isTruthy(result)) {
             return result;
         }
         return null;

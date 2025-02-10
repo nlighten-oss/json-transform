@@ -1,23 +1,24 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
+import co.nlighten.jsontransform.functions.common.*;
 
 import java.util.Comparator;
+import java.util.Map;
 
-@ArgumentType(value = "default", type = ArgType.Object, position = 0)
-@ArgumentType(value = "by", type = ArgType.Transformer, position = 2, defaultString = "##current")
-@ArgumentType(value = "type", type = ArgType.Enum, position = 1, defaultEnum = "AUTO")
-public class TransformerFunctionMin<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
 
-    public TransformerFunctionMin(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+public class TransformerFunctionMin extends TransformerFunction {
+
+    public TransformerFunctionMin() {
+        super(FunctionDescription.of(
+            Map.of(
+            "default", ArgumentType.of(ArgType.Object).position(0),
+            "by", ArgumentType.of(ArgType.Transformer).position(2).defaultIsNull(true),
+            "type", ArgumentType.of(ArgType.Enum).position(1).defaultEnum("AUTO")
+            )
+        ));
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var streamer = context.getJsonElementStreamer(null);
         if (streamer == null || streamer.knownAsEmpty())
             return null;
@@ -26,7 +27,8 @@ public class TransformerFunctionMin<JE, JA extends Iterable<JE>, JO extends JE> 
         var type = context.getEnum("type");
 
         var def = context.getJsonElement("default");
-        Comparator<JE> comparator = type == null || "AUTO".equals(type)
+        var adapter = context.getAdapter();
+        Comparator<Object> comparator = type == null || "AUTO".equals(type)
                                     ? adapter.comparator()
                                     : switch (type) {
             case "NUMBER" -> Comparator.comparing(adapter::getNumberAsBigDecimal);

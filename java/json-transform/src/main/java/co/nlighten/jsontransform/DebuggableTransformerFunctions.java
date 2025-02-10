@@ -5,12 +5,12 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DebuggableTransformerFunctions<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunctions<JE, JA, JO>{
+public class DebuggableTransformerFunctions extends TransformerFunctions{
     private final Map<String, TransformerDebugInfo> debugResults;
 
     public record TransformerDebugInfo(Object result) {}
 
-    public DebuggableTransformerFunctions(JsonAdapter<JE, JA, JO> adapter) {
+    public DebuggableTransformerFunctions(JsonAdapter<?, ?, ?> adapter) {
         super(adapter);
         debugResults = new HashMap<>();
     }
@@ -22,7 +22,7 @@ public class DebuggableTransformerFunctions<JE, JA extends Iterable<JE>, JO exte
         // if the function result is the transformer's output, don't audit it
         if ("$".equals(path)) return matchResult;
 
-        if (matchResult.result() instanceof JsonElementStreamer<?,?,?> streamer) {
+        if (matchResult.result() instanceof JsonElementStreamer streamer) {
             debugResults.put(matchResult.resultPath(), new TransformerDebugInfo(streamer.toJsonArray()));
             return matchResult;
         }
@@ -30,11 +30,11 @@ public class DebuggableTransformerFunctions<JE, JA extends Iterable<JE>, JO exte
         return matchResult;
     }
 
-    public TransformerFunctions.FunctionMatchResult<Object> matchObject(String path, JO definition, ParameterResolver resolver, JsonTransformerFunction<JE> transformer) {
+    public TransformerFunctions.FunctionMatchResult<Object> matchObject(String path, Object definition, ParameterResolver resolver, JsonTransformerFunction transformer) {
         return auditAndReturn(path, super.matchObject(path, definition, resolver, transformer));
     }
 
-    public TransformerFunctions.FunctionMatchResult<Object> matchInline(String path, String value, ParameterResolver resolver, JsonTransformerFunction<JE> transformer) {
+    public TransformerFunctions.FunctionMatchResult<Object> matchInline(String path, String value, ParameterResolver resolver, JsonTransformerFunction transformer) {
         return auditAndReturn(path, super.matchInline(path, value, resolver, transformer));
     }
 

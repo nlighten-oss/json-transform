@@ -15,7 +15,16 @@ public interface Transformer {
     }
 
     /**
-     * transforms the given data based on the transformer rules
+     * transforms based on the transformer specification
+     *
+     * @return transformed data
+     */
+    default Object transform() {
+        return transform(null, null);
+    }
+
+    /**
+     * transforms the given data based on the transformer specification
      *
      * @param input the data to transform
      * @return transformed data
@@ -25,7 +34,7 @@ public interface Transformer {
     }
 
     /**
-     * transforms the given data based on the transformer rules
+     * transforms the given data based on the transformer specification
      * @param input the data to transform
      * @param additionalContext additional context to use during transformation
      * @return transformed data
@@ -35,7 +44,7 @@ public interface Transformer {
     }
 
     /**
-     * transforms the given data based on the transformer rules
+     * transforms the given data based on the transformer specification
      * @param input the data to transform
      * @param additionalContext additional context to use during transformation
      * @param allowReturningStreams allow returning json streams instead of arrays as transformation result

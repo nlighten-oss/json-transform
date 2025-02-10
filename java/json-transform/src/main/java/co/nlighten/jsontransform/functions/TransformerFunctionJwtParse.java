@@ -1,6 +1,5 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import org.slf4j.Logger;
@@ -14,15 +13,15 @@ import java.util.Base64;
  * For tests
  * @see TransformerFunctionJwtParseTest
  */
-public class TransformerFunctionJwtParse<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
+public class TransformerFunctionJwtParse extends TransformerFunction {
 
     private static final Logger logger = LoggerFactory.getLogger(TransformerFunctionJwtParse.class);
 
-    public TransformerFunctionJwtParse(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+    public TransformerFunctionJwtParse() {
+        super();
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var jwt = context.getString(null);
         try {
             final int dot1 = jwt.indexOf(".");
@@ -36,7 +35,7 @@ public class TransformerFunctionJwtParse<JE, JA extends Iterable<JE>, JO extends
             var encodedClaimsString = jwt.substring(dot1 + 1, dot2);
             var claimsString = new String(Base64.getUrlDecoder().decode(encodedClaimsString), StandardCharsets.UTF_8);
             if (claimsString.startsWith("{") && claimsString.endsWith("}")) {
-                return context.parse(claimsString);
+                return context.getAdapter().parse(claimsString);
             } else {
                 return claimsString;
             }

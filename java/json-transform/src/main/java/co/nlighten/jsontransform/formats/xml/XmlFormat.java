@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-public class XmlFormat<JE, JA extends Iterable<JE>, JO extends JE> implements FormatSerializer, FormatDeserializer<JE> {
+public class XmlFormat implements FormatSerializer, FormatDeserializer {
     static final Logger log = LoggerFactory.getLogger(XmlFormat.class);
 
     static private final boolean DEFAULT_KEEP_STRINGS = false;
@@ -30,12 +30,12 @@ public class XmlFormat<JE, JA extends Iterable<JE>, JO extends JE> implements Fo
     static private final Map<String, XMLXsiTypeConverter<?>> DEFAULT_XSI_TYPE_MAP = Collections.emptyMap();
     static private final Set<String> DEFAULT_FORCE_LIST = Collections.emptySet();
 
-    private final JsonOrg<JE, JA, JO> jsonOrg;
+    private final JsonOrg jsonOrg;
     private final javax.xml.transform.Transformer xslt; // function of 'xslt' field
     private final XMLParserConfiguration config;
-    private final JsonAdapter<JE, JA, JO> adapter;
+    private final JsonAdapter<?, ?, ?> adapter;
 
-    public XmlFormat(JsonAdapter<JE, JA, JO> adapter,
+    public XmlFormat(JsonAdapter<?, ?, ?> adapter,
                      String xslt,
                      final Boolean keepStrings,
                      final String cDataTagName,
@@ -50,13 +50,13 @@ public class XmlFormat<JE, JA extends Iterable<JE>, JO extends JE> implements Fo
                 .withConvertNilAttributeToNull(convertNilAttributeToNull != null ? convertNilAttributeToNull : DEFAULT_CONVERT_NIL_TO_NULL)
                 .withXsiTypeMap(xsiTypeMap != null ? xsiTypeMap : DEFAULT_XSI_TYPE_MAP)
                 .withForceList(forceList != null ? forceList : DEFAULT_FORCE_LIST);
-        this.jsonOrg = new JsonOrg<>(adapter);
+        this.jsonOrg = new JsonOrg(adapter);
     }
-    public XmlFormat(JsonAdapter<JE, JA, JO> adapter, String xslt) {
+    public XmlFormat(JsonAdapter<?, ?, ?> adapter, String xslt) {
         this(adapter, xslt, null, null, null, null, null);
     }
 
-    public XmlFormat(JsonAdapter<JE, JA, JO> adapter) {
+    public XmlFormat(JsonAdapter<?, ?, ?> adapter) {
         this(adapter, null, null, null, null, null, null);
     }
 
@@ -122,7 +122,7 @@ public class XmlFormat<JE, JA extends Iterable<JE>, JO extends JE> implements Fo
     }
 
     @Override
-    public JE deserialize(String input) {
+    public Object deserialize(String input) {
         if (input == null) return null;
         var jsonOrgObject = org.json.XML.toJSONObject(input, config);
         return jsonOrg.toJsonObject(jsonOrgObject);

@@ -9,6 +9,7 @@ version = '1.0.0'
 
 ext {
 	gsonVersion = "2.10.1"
+	jacksonBindVersion = "2.17.1"
 }
 
 java {
@@ -23,6 +24,7 @@ dependencies {
 	implementation project(':java:json-transform')
 
 	implementation "com.google.code.gson:gson:${gsonVersion}"
+	// implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonBindVersion}"
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

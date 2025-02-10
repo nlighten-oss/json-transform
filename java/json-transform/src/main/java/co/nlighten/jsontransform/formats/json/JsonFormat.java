@@ -4,11 +4,11 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.formats.FormatDeserializer;
 import co.nlighten.jsontransform.formats.FormatSerializer;
 
-public class JsonFormat<JE, JA extends Iterable<JE>, JO extends JE> implements FormatSerializer, FormatDeserializer<JE> {
+public class JsonFormat implements FormatSerializer, FormatDeserializer {
 
-    private final JsonAdapter<JE, JA, JO> adapter;
+    private final JsonAdapter<?, ?, ?> adapter;
 
-    public JsonFormat(JsonAdapter<JE, JA, JO> adapter) {
+    public JsonFormat(JsonAdapter<?, ?, ?> adapter) {
         this.adapter = adapter;
     }
 
@@ -21,7 +21,7 @@ public class JsonFormat<JE, JA extends Iterable<JE>, JO extends JE> implements F
     }
 
     @Override
-    public JE deserialize(String input) {
+    public Object deserialize(String input) {
         return adapter.parse(input);
     }
 }

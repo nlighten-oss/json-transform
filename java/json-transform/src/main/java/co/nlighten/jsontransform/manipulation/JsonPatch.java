@@ -6,69 +6,69 @@ import java.util.Objects;
 
 /**
  * JavaScript Object Notation (JSON) Patch (RFC-6902) implementation
- * over GSON's JSON implementation
+ * over a generic JSON implementation
  */
-public class JsonPatch<JE, JA extends Iterable<JE>, JO extends JE> {
+public class JsonPatch {
 
-    private final JsonAdapter<JE, JA, JO> adapter;
-    private final JsonPointer<JE, JA, JO> jsonPointer;
+    private final JsonAdapter<?, ?, ?> adapter;
+    private final JsonPointer jsonPointer;
 
-    public JsonPatch(JsonAdapter<JE, JA, JO> adapter) {
+    public JsonPatch(JsonAdapter<?, ?, ?> adapter) {
         this.adapter = adapter;
-        this.jsonPointer = new JsonPointer<>(adapter);
+        this.jsonPointer = new JsonPointer(adapter);
     }
 
-    public JE patch(JA ops, JE source) {
-        if (!adapter.jObject.is(source) && !adapter.jArray.is(ops)) {
+    public Object patch(Object ops, Object source) {
+        if (!adapter.isJsonObject(source) && !adapter.isJsonArray(ops)) {
             throw new IllegalArgumentException("Invalid source argument (an object or array is required)");
         }
-        if (ops == null || adapter.jArray.size(ops) == 0) {
+        if (ops == null || adapter.size(ops) == 0) {
             return source;
         }
 
         var result = adapter.clone(source);
 
-        for (JE operation : ops) {
-            if (!adapter.jObject.is(operation)) {
+        for (var operation : adapter.asIterable(ops)) {
+            if (!adapter.isJsonObject(operation)) {
                 throw new IllegalArgumentException("Invalid operation: " + operation);
             }
-            result = perform((JO)operation, result);
+            result = perform(operation, result);
         }
 
         return result;
     }
 
-    private JE getRequiredJEArgument(JO operation, String arg, String context) {
-        if (!adapter.jObject.has(operation, arg)) {
-            throw new IllegalArgumentException(context + " - Missing argument \"" + arg);
+    private Object getRequiredValueArgument(Object operation, String context) {
+        if (!adapter.has(operation, "value")) {
+            throw new IllegalArgumentException(context + " - Missing argument \"value\"");
         }
-        return adapter.jObject.get(operation, arg);
+        return adapter.get(operation, "value");
     }
 
-    private String getRequiredStringArgument(JO operation, String arg, String context) {
-        var el = adapter.jObject.get(operation, arg);
+    private String getRequiredStringArgument(Object operation, String arg, String context) {
+        var el = adapter.get(operation, arg);
         if (!adapter.isJsonString(el)) {
             throw new IllegalArgumentException(context + " - Invalid argument \"" + arg + "\" = " + (el == null ? "null" : el));
         }
         return adapter.getAsString(el);
     }
 
-    private String getRequiredPathArgument(JO operation, String arg, String context) {
+    private String getRequiredPathArgument(Object operation, String arg, String context) {
         var path = getRequiredStringArgument(operation, arg, context);
-        if (path.length() != 0 && path.charAt(0) != '/') {
+        if (!path.isEmpty() && path.charAt(0) != '/') {
             throw new IllegalArgumentException(context + " - Invalid argument \"" + arg + "\" = " + path);
         }
         return path;
     }
 
-    private JE perform(JO operation, JE doc) {
+    private Object perform(Object operation, Object doc) {
         var op = getRequiredStringArgument(operation, "op", "JsonPatch.perform");
         var path = getRequiredPathArgument(operation, "path", op);
         var result = doc;
 
         switch (op) {
             case "add" -> {
-                var value = getRequiredJEArgument(operation, "value", op);
+                var value = getRequiredValueArgument(operation, op);
                 result = jsonPointer.set(doc, path, value, true);
             }
             case "remove" -> {
@@ -79,7 +79,7 @@ public class JsonPatch<JE, JA extends Iterable<JE>, JO extends JE> {
                 jsonPointer.remove(doc, path);
             }
             case "replace" -> {
-                var value = getRequiredJEArgument(operation, "value", op);
+                var value = getRequiredValueArgument(operation, op);
                 if (jsonPointer.get(doc, path) == null) {
                     throw new RuntimeException("replace - Target location MUST exist");
                 }
@@ -103,7 +103,7 @@ public class JsonPatch<JE, JA extends Iterable<JE>, JO extends JE> {
                 result = jsonPointer.set(doc, path, fromValue, true);
             }
             case "test" -> {
-                var value = getRequiredJEArgument(operation, "value", op);
+                var value = getRequiredValueArgument(operation, op);
                 if (!Objects.equals(jsonPointer.get(doc, path), value)) {
                     throw new RuntimeException("test - The value does not equal value from path");
                 }

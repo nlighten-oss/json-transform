@@ -4,23 +4,22 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class JsonOrg<JE, JA extends Iterable<JE>, JO extends JE> {
+public class JsonOrg {
 
-    private final JsonAdapter<JE, JA, JO> adapter;
+    private final JsonAdapter<?, ?, ?> adapter;
 
-    public JsonOrg(JsonAdapter<JE, JA, JO> adapter) {
+    public JsonOrg(JsonAdapter<?, ?, ?> adapter) {
         this.adapter = adapter;
     }
 
-    @SuppressWarnings("unchecked")
-    public JE toJsonElement(Object value) {
-        JE jeValue = null;
+    public Object toJsonElement(Object value) {
+        Object jeValue = null;
         if (JSONObject.NULL.equals(value)) {
             jeValue = adapter.jsonNull();
         } else if (value instanceof JSONObject propertyValue) {
             jeValue = toJsonObject(propertyValue);
         } else if (value instanceof JSONArray propertyArrayValue) {
-            jeValue = (JE)toJsonArray(propertyArrayValue);
+            jeValue = toJsonArray(propertyArrayValue);
         } else if (value instanceof Character c) {
             jeValue = adapter.wrap(c);
         } else if (value instanceof String s) {
@@ -33,51 +32,51 @@ public class JsonOrg<JE, JA extends Iterable<JE>, JO extends JE> {
         return jeValue;
     }
 
-    public JA toJsonArray(JSONArray ja) {
-        var result = adapter.jArray.create();
-        ja.forEach(value -> adapter.jArray.add(result, toJsonElement(value)));
+    public Object toJsonArray(JSONArray ja) {
+        var result = adapter.createArray();
+        ja.forEach(value -> adapter.add(result, toJsonElement(value)));
         return result;
     }
 
-    public JO toJsonObject(JSONObject jo) {
-        var results = adapter.jObject.create();
+    public Object toJsonObject(JSONObject jo) {
+        var results = adapter.createObject();
         for (String key : jo.keySet()) {
-            adapter.jObject.add(results, key, toJsonElement(jo.get(key)));
+            adapter.add(results, key, toJsonElement(jo.get(key)));
         }
         return results;
     }
 
-    @SuppressWarnings("unchecked")
     public Object toJSONElement(Object value) {
         if (value instanceof JSONArray || value instanceof JSONObject || JSONObject.NULL.equals(value)) {
             return value;
         }
         if (adapter.is(value)) {
-            var je = (JE)value;
-            if (adapter.isNull(je)) {
+            if (adapter.isNull(value)) {
                 return JSONObject.NULL;
             }
-            if (adapter.jArray.is(je)) {
-                return toJSONArray((JA)je);
+            if (adapter.isJsonArray(value)) {
+                return toJSONArray(value);
             }
-            if (adapter.jObject.is(je)) {
-                return toJSONObject((JO)je);
+            if (adapter.isJsonObject(value)) {
+                return toJSONObject(value);
             }
-            return adapter.unwrap(je, true);
+            return adapter.unwrap(value, true);
         }
         return JSONObject.wrap(value);
     }
 
-    public JSONArray toJSONArray(JA ja) {
+    public JSONArray toJSONArray(Object ja) {
         var result = new JSONArray();
-        ja.forEach(value -> result.put(toJSONElement(value)));
+        for (var value: adapter.asIterable(ja)) {
+            result.put(toJSONElement(value));
+        }
         return result;
     }
 
-    public JSONObject toJSONObject(JO jo) {
+    public JSONObject toJSONObject(Object jo) {
         var results = new JSONObject();
-        for (String key : adapter.jObject.keySet(jo)) {
-            results.put(key, toJSONElement(adapter.jObject.get(jo, key)));
+        for (String key : adapter.keySet(jo)) {
+            results.put(key, toJSONElement(adapter.get(jo, key)));
         }
         return results;
     }

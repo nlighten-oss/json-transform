@@ -1,22 +1,23 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
+import co.nlighten.jsontransform.functions.common.*;
+
+import java.util.Map;
 
 /*
  * For tests
  * @see TransformerFunctionReplaceTest
  */
-@ArgumentType(value = "find", type = ArgType.String, position = 0, defaultString = "")
-@ArgumentType(value = "replacement", type = ArgType.String, position = 1, defaultString = "")
-@ArgumentType(value = "type", type = ArgType.Enum, position = 2, defaultEnum = "STRING")
-@ArgumentType(value = "from", type = ArgType.Integer, position = 3, defaultInteger = 0)
-public class TransformerFunctionReplace<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
-    public TransformerFunctionReplace(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+public class TransformerFunctionReplace extends TransformerFunction {
+    public TransformerFunctionReplace() {
+        super(FunctionDescription.of(
+                Map.of(
+                        "find", ArgumentType.of(ArgType.String).position(0).defaultString(""),
+                        "replacement", ArgumentType.of(ArgType.String).position(1).defaultString(""),
+                        "type", ArgumentType.of(ArgType.Enum).position(2).defaultEnum("STRING"),
+                        "from", ArgumentType.of(ArgType.Integer).position(3).defaultInteger(0)
+                )
+        ));
     }
     private static String replaceOnce(String value, String find, String replacement, Integer fromIndex) {
         int index = value.indexOf(find, fromIndex);
@@ -29,7 +30,7 @@ public class TransformerFunctionReplace<JE, JA extends Iterable<JE>, JO extends 
     }
 
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var str = context.getString(null);
         if (str == null) {
             return null;

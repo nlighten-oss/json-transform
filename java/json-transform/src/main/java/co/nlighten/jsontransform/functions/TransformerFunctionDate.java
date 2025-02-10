@@ -1,10 +1,6 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
+import co.nlighten.jsontransform.functions.common.*;
 
 import java.math.BigDecimal;
 import java.time.*;
@@ -14,28 +10,32 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 /*
  * For tests
  * @see TransformerFunctionDateTest
  */
-@ArgumentType(value = "format", type = ArgType.Enum, position = 0, defaultEnum = "ISO")
-@ArgumentType(value = "digits", type = ArgType.Integer, position = 1, defaultInteger = -1)
-@ArgumentType(value = "units", type = ArgType.Enum, position = 1)
-@ArgumentType(value = "amount", type = ArgType.Long, position = 2, defaultLong = 0L)
-@ArgumentType(value = "resolution", type = ArgType.Enum, position = 1, defaultEnum = "UNIX")
-@ArgumentType(value = "pattern", type = ArgType.String, position = 1)
-@ArgumentType(value = "timezone", type = ArgType.String, position = 2, defaultString = "UTC")
-@ArgumentType(value = "zone", type = ArgType.String, position = 1, defaultString = "UTC")
-@ArgumentType(value = "end", type = ArgType.String, position = 2)
-public class TransformerFunctionDate<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
+public class TransformerFunctionDate extends TransformerFunction {
     public static final DateTimeFormatter ISO_INSTANT_0 = new DateTimeFormatterBuilder().appendInstant(0).toFormatter();
     public static final DateTimeFormatter ISO_INSTANT_3 = new DateTimeFormatterBuilder().appendInstant(3).toFormatter();
     public static final DateTimeFormatter ISO_INSTANT_6 = new DateTimeFormatterBuilder().appendInstant(6).toFormatter();
     public static final DateTimeFormatter ISO_INSTANT_9 = new DateTimeFormatterBuilder().appendInstant(9).toFormatter();
 
-    public TransformerFunctionDate(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+    public TransformerFunctionDate() {
+        super(FunctionDescription.of(
+            Map.of(
+            "format", ArgumentType.of(ArgType.Enum).position(0).defaultEnum("ISO"),
+            "digits", ArgumentType.of(ArgType.Integer).position(1).defaultInteger(-1),
+            "units", ArgumentType.of(ArgType.Enum).position(1),
+            "amount", ArgumentType.of(ArgType.Long).position(2).defaultLong(0L),
+            "resolution", ArgumentType.of(ArgType.Enum).position(1).defaultEnum("UNIX"),
+            "pattern", ArgumentType.of(ArgType.String).position(1),
+            "timezone", ArgumentType.of(ArgType.String).position(2).defaultString("UTC"),
+            "zone", ArgumentType.of(ArgType.String).position(1).defaultString("UTC"),
+            "end", ArgumentType.of(ArgType.String).position(2)
+            )
+        ));
     }
     static final DateTimeFormatter ISO_DATE = new DateTimeFormatterBuilder()
             // date and offset
@@ -85,7 +85,7 @@ public class TransformerFunctionDate<JE, JA extends Iterable<JE>, JO extends JE>
     }
 
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var unwrapped = context.getUnwrapped(null);
         if (unwrapped == null) {
             return null;

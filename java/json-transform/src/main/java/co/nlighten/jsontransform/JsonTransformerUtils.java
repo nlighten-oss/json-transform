@@ -21,7 +21,7 @@ public class JsonTransformerUtils {
                 flags != null ? flags : 0);
     }
 
-    private static <JE, JA extends Iterable<JE>, JO extends JE> void findAllVariableUses(JsonAdapter<JE, JA, JO> adapter, JE element, Map<String, Object> result, String path) {
+    private static void findAllVariableUses(JsonAdapter<?, ?, ?> adapter, Object element, Map<String, Object> result, String path) {
         if (adapter.isJsonString(element)) {
             var string = adapter.getAsString(element);
             var matcher = variableDetectionRegExp.matcher(string);
@@ -29,17 +29,15 @@ public class JsonTransformerUtils {
                 var v = matcher.group();
                 if (!result.containsKey(v)) result.put(v, path);
             }
-        } else if (adapter.jArray.is(element)) {
-            var array = adapter.jArray.type.cast(element);
-            var size = adapter.jArray.size(array);
+        } else if (adapter.isJsonArray(element)) {
+            var size = adapter.size(element);
             for (var i = 0; i < size; i++) {
-                findAllVariableUses(adapter, adapter.jArray.get(array, i), result, path + "[" + i + "]");
+                findAllVariableUses(adapter, adapter.get(element, i), result, path + "[" + i + "]");
             }
-        } else if (adapter.jObject.is(element)) {
-            var coll = adapter.jObject.type.cast(element);
-            var isObjectFunction = adapter.jObject.keySet(coll).stream().anyMatch(x -> x.startsWith("$$"));
-            adapter.jObject.keySet(coll).forEach(x -> {
-                var value = adapter.jObject.get(coll, x);
+        } else if (adapter.isJsonObject(element)) {
+            var isObjectFunction = adapter.keySet(element).stream().anyMatch(x -> x.startsWith("$$"));
+            adapter.keySet(element).forEach(x -> {
+                var value = adapter.get(element, x);
                 findAllVariableUses(adapter, value, result,
                         JsonTransformer.OBJ_DESTRUCT_KEY.equals(x) || isObjectFunction
                                 ? path
@@ -54,11 +52,8 @@ public class JsonTransformerUtils {
      * @param adapter the JSON adapter to use
      * @param element the JSON element to search
      * @return a map of variable uses to their paths
-     * @param <JE> the JSON element type
-     * @param <JA> the JSON array type
-     * @param <JO> the JSON object type
      */
-    public static <JE, JA extends Iterable<JE>, JO extends JE> Map<String, Object> findAllVariableUses(JsonAdapter<JE, JA, JO> adapter, JE element) {
+    public static Map<String, Object> findAllVariableUses(JsonAdapter<?, ?, ?> adapter, Object element) {
         var result = new HashMap<String, Object>();
         findAllVariableUses(adapter, element, result, "$");
         return result;
@@ -80,7 +75,7 @@ public class JsonTransformerUtils {
         return variableDetectionRegExp;
     }
 
-    public static <JE, JA extends Iterable<JE>, JO extends JE> String toObjectFieldPath(JsonAdapter<JE, JA, JO> adapter, String key) {
+    public static String toObjectFieldPath(JsonAdapter<?, ?, ?> adapter, String key) {
         return validIdRegExp.matcher(key).matches() ? "." + key : "[" + adapter.toString(key) + "]";
     }
 }

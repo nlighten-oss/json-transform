@@ -1,24 +1,25 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
+import co.nlighten.jsontransform.functions.common.*;
+
+import java.util.Map;
 
 /*
  * For tests
  * @see TransformerFunctionPadTest
  */
-@ArgumentType(value = "direction", type = ArgType.Enum, position = 0, defaultIsNull = true)
-@ArgumentType(value = "width", type = ArgType.Integer, position = 1, defaultIsNull = true)
-@ArgumentType(value = "pad_string", type = ArgType.String, position = 2, defaultString = "0")
-public class TransformerFunctionPad<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
-    public TransformerFunctionPad(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+public class TransformerFunctionPad extends TransformerFunction {
+    public TransformerFunctionPad() {
+        super(FunctionDescription.of(
+            Map.of(
+            "direction", ArgumentType.of(ArgType.Enum).position(0).defaultIsNull(true),
+            "width", ArgumentType.of(ArgType.Integer).position(1).defaultIsNull(true),
+            "pad_string", ArgumentType.of(ArgType.String).position(2).defaultString("0")
+            )
+        ));
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var res = context.getString(null);
         if (res == null)
             return null;

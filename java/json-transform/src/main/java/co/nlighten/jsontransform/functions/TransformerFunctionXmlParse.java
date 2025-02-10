@@ -1,31 +1,31 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
+import co.nlighten.jsontransform.functions.common.*;
 import co.nlighten.jsontransform.formats.xml.XmlFormat;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /*
  * For tests
  * @see TransformerFunctionXmlParseTest
  */
-@ArgumentType(value = "keep_strings", type = ArgType.Boolean, position = 0, defaultBoolean = false)
-@ArgumentType(value = "cdata_tag_name", type = ArgType.String, position = 1, defaultString = "$content")
-@ArgumentType(value = "convert_nil_to_null", type = ArgType.Boolean, position = 2, defaultBoolean = false)
-@ArgumentType(value = "force_list", type = ArgType.ArrayOfString, position = 3, defaultIsNull = true)
-public class TransformerFunctionXmlParse<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
+public class TransformerFunctionXmlParse extends TransformerFunction {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionXmlParse.class);
-    public TransformerFunctionXmlParse(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+    public TransformerFunctionXmlParse() {
+        super(FunctionDescription.of(
+            Map.of(
+            "keep_strings", ArgumentType.of(ArgType.Boolean).position(0).defaultBoolean(false),
+            "cdata_tag_name", ArgumentType.of(ArgType.String).position(1).defaultString("$content"),
+            "convert_nil_to_null", ArgumentType.of(ArgType.Boolean).position(2).defaultBoolean(false),
+            "force_list", ArgumentType.of(ArgType.ArrayOfString).position(3).defaultIsNull(true)
+            )
+        ));
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var xml = context.getString(null);
         if (xml == null)
             return null;
@@ -34,7 +34,8 @@ public class TransformerFunctionXmlParse<JE, JA extends Iterable<JE>, JO extends
             var cDataTagName = context.getString("cdata_tag_name");
             var convertNilAttributeToNull = context.getBoolean("convert_nil_to_null");
             var forceList = context.getJsonArray("force_list");
-            return new XmlFormat<>(adapter,
+            var adapter = context.getAdapter();
+            return new XmlFormat(adapter,
                                  null,
                                  keepStrings,
                                  cDataTagName,
@@ -42,7 +43,7 @@ public class TransformerFunctionXmlParse<JE, JA extends Iterable<JE>, JO extends
                                  null,
                                  forceList == null
                                  ? null
-                                 : jArray.stream(forceList)
+                                 : adapter.stream(forceList)
                                          .map(context::getAsString)
                                          .collect(Collectors.toSet())
                                                        ).deserialize(xml);

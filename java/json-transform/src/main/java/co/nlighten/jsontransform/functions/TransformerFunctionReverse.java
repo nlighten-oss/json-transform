@@ -1,6 +1,5 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import co.nlighten.jsontransform.JsonElementStreamer;
@@ -9,16 +8,16 @@ import co.nlighten.jsontransform.JsonElementStreamer;
  * For tests
  * @see TransformerFunctionReverseTest
  */
-public class TransformerFunctionReverse<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
-    public TransformerFunctionReverse(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+public class TransformerFunctionReverse extends TransformerFunction {
+    public TransformerFunctionReverse() {
+        super();
     }
-    private int compare(JE a, JE b) {
+    private  <T> int compare(T a, T b) {
         return -1;
     }
 
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var streamer = context.getJsonElementStreamer(null);
         if (streamer == null) {
             return null;

@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * JsonAdapter is a base class for Json element adapters. It provides methods for working with Json elements
@@ -28,8 +29,8 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
     private static final String JSONPATH_ALT_PREFIX = "#";
     private static final String JSONPATH_ALT_PREFIX_ESC = "\\#";
 
-    public final JsonObjectAdapter<JE, JA, JO> jObject;
-    public final JsonArrayAdapter<JE, JA, JO> jArray;
+    private final JsonObjectAdapter<JE, JA, JO> jObject;
+    private final JsonArrayAdapter<JE, JA, JO> jArray;
     public final Class<JE> type;
 
     public JsonAdapter(
@@ -47,6 +48,14 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
      * @return true if the object is a Json element
      */
     public abstract boolean is(Object value);
+
+    public boolean isJsonObject(Object value) {
+        return jObject.is(value);
+    }
+
+    public boolean isJsonArray(Object value) {
+        return jArray.is(value);
+    }
 
     /**
      * Checks if the given object is a Json string
@@ -90,12 +99,21 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
     public abstract JE wrap(Object value);
 
     /**
-     * Unwraps the given Json element into a Java object
-     * @param value the Json element to unwrap
+     * Unwraps the given Json element into a Java object (if not wrapper, it will just be returned as-is)
+     * @param value the possible Json element to unwrap
      * @param reduceBigDecimals reduce big decimals to less precise java number types
      * @return a Java object
      */
-    public abstract Object unwrap(JE value, boolean reduceBigDecimals);
+    public abstract Object unwrap(Object value, boolean reduceBigDecimals);
+
+    /**
+     * Unwraps the given Json element into a Java object (if not wrapper, it will just be returned as-is)
+     * @param value the possible Json element to unwrap
+     * @return a Java object
+     */
+    public Object unwrap(Object value) {
+        return unwrap(value, false);
+    }
 
     /**
      * Parses a Json string into a Json element
@@ -109,7 +127,7 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
      * @param value the Json element to clone
      * @return a cloned Json element
      */
-    public abstract JE clone(JE value);
+    public abstract Object clone(Object value);
 
     private static boolean isMathematicalInteger(double x) {
         return !Double.isNaN(x) && !Double.isInfinite(x) && x == Math.rint(x);
@@ -122,7 +140,7 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
      * @return a string value or null if the object is null. for a complex object, a JSON string is returned
      */
     public String getAsString(Object value) {
-        var object = is(value) ? unwrap((JE)value, false) : value;
+        var object = is(value) ? unwrap(value, false) : value;
         if (object == null) {
             return null;
         }
@@ -147,21 +165,21 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
      * @param value the object to convert
      * @return a Json element
      */
-    public abstract Number getNumber(JE value);
+    public abstract Number getNumber(Object value);
 
     /**
      * Converts the given object into a BigDecimal
      * @param value the object to convert
      * @return a BigDecimal
      */
-    public abstract BigDecimal getNumberAsBigDecimal(JE value);
+    public abstract BigDecimal getNumberAsBigDecimal(Object value);
 
     /**
      * Converts the given object into a Boolean
      * @param value the object to convert
      * @return a Boolean
      */
-    public abstract Boolean getBoolean(JE value);
+    public abstract Boolean getBoolean(Object value);
 
     /**
      * Compares two Json elements
@@ -170,7 +188,7 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
      * @return a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second
      */
     @SuppressWarnings("unchecked")
-    public Integer compareTo(JE a, JE b) {
+    public Integer compareTo(Object a, Object b) {
         if (jArray.is(a) && jArray.is(b)) {
             return Integer.compare(jArray.size((JA)a), jArray.size((JA)b));
         } else if (jObject.is(a) && jObject.is(b)) {
@@ -194,8 +212,8 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
      * Returns a comparator for Json elements
      * @return a comparator for Json elements
      */
-    public Comparator<JE> comparator() {
-        return (JE a, JE b) -> {
+    public Comparator<Object> comparator() {
+        return (Object a, Object b) -> {
             var result = compareTo(a, b);
             if (result == null) return 0; // can't compare
             return result;
@@ -224,7 +242,7 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
             return !jObject.isEmpty((JO)value);
         }
         if (is(value)) {
-            value = unwrap((JE)value, false);
+            value = unwrap(value, false);
         }
         if (value instanceof Boolean b) {
             return b;
@@ -251,6 +269,136 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
         } else {
             return !isNull(value);
         }
+    }
+
+    public JO createObject() {
+        return jObject.create();
+    }
+    public boolean has(Object obj, String key) {
+        if (!jObject.is(obj)) {
+            throw new IllegalArgumentException("obj is not a Json object");
+        }
+        return jObject.has((JO)obj, key);
+    }
+    public JE get(Object obj, String key) {
+        if (!jObject.is(obj)) {
+            throw new IllegalArgumentException("obj is not a Json object");
+        }
+        return jObject.get((JO)obj, key);
+    }
+    public Set<String> keySet(Object value) {
+        return jObject.keySet((JO)value);
+    }
+    public Set<Map. Entry<String, JE>> entrySet(Object value) {
+        return jObject.entrySet((JO)value);
+    }
+    public void add(Object obj, String key, Object value) {
+        if (!jObject.is(obj)) {
+            throw new IllegalArgumentException("obj is not a Json object");
+        }
+        if (value instanceof String s) {
+            jObject.add((JO)obj, key, s);
+        } else if (value instanceof Number n) {
+            jObject.add((JO)obj, key, n);
+        } else if (value instanceof Boolean b) {
+            jObject.add((JO)obj, key, b);
+        } else if (value instanceof Character c) {
+            jObject.add((JO)obj, key, c);
+        } else if (is(value)) {
+            jObject.add((JO)obj, key, (JE)value);
+        } else {
+            throw new IllegalArgumentException("value is not a Json element");
+        }
+    }
+    public JE remove(Object obj, String key) {
+        if (!jObject.is(obj)) {
+            throw new IllegalArgumentException("obj is not a Json object");
+        }
+        return jObject.remove((JO)obj, key);
+    }
+
+    public JA createArray(int capacity) {
+        return jArray.create(capacity);
+    }
+    public JA createArray() {
+        return jArray.create();
+    }
+    public JE get(Object arr, int index) {
+        if (!jArray.is(arr)) {
+            throw new IllegalArgumentException("arr is not a Json array");
+        }
+        return jArray.get((JA)arr, index);
+    }
+    public void add(Object arr, Object value) {
+        if (!jArray.is(arr)) {
+            throw new IllegalArgumentException("arr is not a Json array");
+        }
+        if (value instanceof String s) {
+            jArray.add((JA)arr, s);
+        } else if (value instanceof Number n) {
+            jArray.add((JA)arr, n);
+        } else if (value instanceof Boolean b) {
+            jArray.add((JA)arr, b);
+        } else if (value instanceof Character c) {
+            jArray.add((JA)arr, c);
+        } else if (is(value)) {
+            jArray.add((JA)arr, (JE)value);
+        } else {
+            throw new IllegalArgumentException("value is not a Json element");
+        }
+    }
+    public void set(Object arr, int index, Object value) {
+        if (!jArray.is(arr)) {
+            throw new IllegalArgumentException("arr is not a Json array");
+        }
+        if (!is(value)) {
+            throw new IllegalArgumentException("value is not a Json element");
+        }
+        jArray.set((JA)arr, index, (JE)value);
+    }
+    public JE remove(Object arr, int index) {
+        if (!jArray.is(arr)) {
+            throw new IllegalArgumentException("arr is not a Json array");
+        }
+        return jArray.remove((JA)arr, index);
+    }
+    public Stream<?> stream(Object arr, boolean parallel) {
+        if (!jArray.is(arr)) {
+            throw new IllegalArgumentException("arr is not a Json array");
+        }
+        return jArray.stream((JA)arr, parallel);
+    }
+    public Stream<?> stream(Object arr) {
+        return stream(arr, false);
+    }
+    public Iterable<?> asIterable(Object arr) {
+        if (!jArray.is(arr)) {
+            throw new IllegalArgumentException("arr is not a Json array");
+        }
+        return (JA)arr;
+    }
+
+    public int size(Object value) {
+        if (isJsonArray(value)) {
+            return jArray.size((JA)value);
+        }
+        if (isJsonObject(value)) {
+            return jObject.size((JO)value);
+        }
+        throw new IllegalArgumentException("value is not a Json object nor array");
+    }
+
+    public boolean isEmpty(Object value) {
+        if (isJsonArray(value)) {
+            return jArray.isEmpty((JA)value);
+        }
+        if (isJsonString(value)) {
+            return getAsString(value).isEmpty();
+        }
+        if (isJsonObject(value)) {
+            return jObject.isEmpty((JO)value);
+        }
+        return false;
     }
 
     /**
@@ -323,7 +471,7 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
      * @param path  the json path to merge the value at
      * @return the updated root object
      */
-    public JO mergeInto(JE rootEl, JE value, String path) {
+    public Object mergeInto(Object rootEl, Object value, String path) {
         var root = (JO)rootEl;
         if (value == null || root == null) {
             return root;
@@ -337,7 +485,7 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
             }
             if (location.size() == 0 && !jObject.is(value)) {
                 if (!isNull(value)) {
-                    jObject.add(object, point, value);
+                    jObject.add(object, point, (JE)value);
                 }
                 return root;
             }
@@ -346,17 +494,17 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
                 if (jObject.is(current)) {
                     object = (JO)current;
                 } else if (jArray.is(current)) {
-                    jArray.add((JA)current, wrapElement(value, location));
+                    jArray.add((JA)current, wrapElement((JE)value, location));
                     return root;
                 } else {
                     //we create an array and add ourselves
                     var arr = jArray.create();
                     jArray.add(arr, current);
-                    jArray.add(arr, wrapElement(value, location));
+                    jArray.add(arr, wrapElement((JE)value, location));
                     jObject.add(object, point, arr);
                 }
             } else {
-                var elm = wrapElement(value, location);
+                var elm = wrapElement((JE)value, location);
                 if (!isNull(elm)) {
                     jObject.add(object, point, elm);
                 }

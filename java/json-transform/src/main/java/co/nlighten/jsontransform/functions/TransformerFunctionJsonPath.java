@@ -1,27 +1,27 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.adapters.gson.GsonJsonPathConfigurator;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
+import co.nlighten.jsontransform.functions.common.*;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
+
+import java.util.Map;
 
 /*
  * For tests
  * @see TransformerFunctionJsonPathTest
  */
-@ArgumentType(value = "path", type = ArgType.String, position = 0)
-@ArgumentType(value = "options", type = ArgType.ArrayOfString, position = 1, defaultIsNull = true)
-public class TransformerFunctionJsonPath<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
-    public TransformerFunctionJsonPath(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+public class TransformerFunctionJsonPath extends TransformerFunction {
+    public TransformerFunctionJsonPath() {
+        super(FunctionDescription.of(
+                Map.of(
+                        "path", ArgumentType.of(ArgType.String).position(0),
+                        "options", ArgumentType.of(ArgType.ArrayOfString).position(1).defaultIsNull(true)
+                )
+        ));
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var source = context.getJsonElement(null);
         if (source == null) {
             return null;
@@ -30,11 +30,12 @@ public class TransformerFunctionJsonPath<JE, JA extends Iterable<JE>, JO extends
         if (path == null) {
             return null;
         }
-        GsonJsonPathConfigurator.setup();
+        var adapter = context.getAdapter();
+        adapter.setupJsonPath();
         var optionsArray = context.getJsonArray("options");
-        if (optionsArray != null && !jArray.isEmpty(optionsArray)) {
+        if (optionsArray != null && !adapter.isEmpty(optionsArray)) {
             var conf = Configuration.defaultConfiguration();
-            for (var option : optionsArray) {
+            for (var option : adapter.asIterable(optionsArray)) {
                 conf = conf.addOptions(Option.valueOf(adapter.getAsString(option)));
             }
             return JsonPath.using(conf).parse(source).read(path);

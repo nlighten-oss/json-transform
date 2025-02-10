@@ -1,6 +1,5 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 
@@ -8,13 +7,14 @@ import co.nlighten.jsontransform.functions.common.TransformerFunction;
  * For tests
  * @see TransformerFunctionXorTest
  */
-public class TransformerFunctionXor<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
-    public TransformerFunctionXor(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+public class TransformerFunctionXor extends TransformerFunction {
+    public TransformerFunctionXor() {
+        super();
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var value = context.getJsonElementStreamer(null);
+        var adapter = context.getAdapter();
         return value.stream().filter(adapter::isTruthy).count() == 1;
     }
 }

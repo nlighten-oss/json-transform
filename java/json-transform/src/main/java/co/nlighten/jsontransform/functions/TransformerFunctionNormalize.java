@@ -1,10 +1,6 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
+import co.nlighten.jsontransform.functions.common.*;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -15,9 +11,7 @@ import java.util.regex.Pattern;
  * For tests
  * @see TransformerFunctionNormalizeTest
  */
-@ArgumentType(value = "form", type = ArgType.Enum, position = 0, defaultEnum = "NFKD")
-@ArgumentType(value = "post_operation", type = ArgType.Enum, position = 1, defaultEnum = "ROBUST")
-public class TransformerFunctionNormalize<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
+public class TransformerFunctionNormalize extends TransformerFunction {
     // * source strings (ends with _S) are after decomposition and removal of marks
     // ** if target character is more than one letter,
     //    use _ instead and add it as a separate mapping in the exceptions map (ends with _E)
@@ -62,11 +56,17 @@ public class TransformerFunctionNormalize<JE, JA extends Iterable<JE>, JO extend
         }
     }
 
-    public TransformerFunctionNormalize(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+    public TransformerFunctionNormalize() {
+        super(FunctionDescription.of(
+                Map.of(
+                        "form", ArgumentType.of(ArgType.Enum).position(0).defaultEnum("NFKD"),
+                        "post_operation", ArgumentType.of(ArgType.Enum).position(1).defaultEnum("ROBUST")
+                )
+        ));
     }
+
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var str = context.getString(null);
         if (str == null) {
             return null;

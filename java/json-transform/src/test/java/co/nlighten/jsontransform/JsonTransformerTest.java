@@ -3,7 +3,6 @@ package co.nlighten.jsontransform;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.UUID;
@@ -36,7 +35,7 @@ public class JsonTransformerTest extends BaseTest {
     @Test
     void testJsonPathCopyInteger() {
         var val = 123;
-        assertTransformation(val, "$", new BigDecimal(val));
+        assertTransformation(val, "$", val);
     }
 
     @Test
@@ -206,7 +205,7 @@ public class JsonTransformerTest extends BaseTest {
         assertTransformation(fromJson("""
 {
   "x": "foo"
-}"""), fromJson("$"), fromJson("""
+}"""), "$", fromJson("""
 {
   "x": "foo"
 }"""));
@@ -215,15 +214,15 @@ public class JsonTransformerTest extends BaseTest {
     @Test
     public void testInputExtractorTransformDefinitionJsonArray() {
         // Given input is an object and InputExtractor definition is an array
-        var definition = adapter.jArray.create();;
-        adapter.jArray.add(definition, "element1");
-        adapter.jArray.add(definition, 1.23);
-        adapter.jArray.add(definition, false);
-        adapter.jArray.add(definition, 'c');
-        adapter.jArray.add(definition, adapter.jsonNull());
-        var nestedJson = adapter.jObject.create();
-        adapter.jObject.add(nestedJson, "nested", "*");
-        adapter.jArray.add(definition, nestedJson);
+        var definition = adapter.createArray();;
+        adapter.add(definition, "element1");
+        adapter.add(definition, 1.23);
+        adapter.add(definition, false);
+        adapter.add(definition, 'c');
+        adapter.add(definition, adapter.jsonNull());
+        var nestedJson = adapter.createObject();
+        adapter.add(nestedJson, "nested", "*");
+        adapter.add(definition, nestedJson);
 
         assertTransformation(fromJson("""
 {

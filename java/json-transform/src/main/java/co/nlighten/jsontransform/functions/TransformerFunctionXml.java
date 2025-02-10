@@ -1,37 +1,38 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
+import co.nlighten.jsontransform.functions.common.*;
 import co.nlighten.jsontransform.formats.xml.XmlFormat;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /*
  * For tests
  * @see TransformerFunctionXmlTest
  */
-@ArgumentType(value = "root", type = ArgType.String, position = 0, defaultIsNull = true)
-@ArgumentType(value = "xslt", type = ArgType.String, position = 1, defaultIsNull = true)
-@ArgumentType(value = "indent", type = ArgType.Boolean, position = 2, defaultBoolean = false)
-public class TransformerFunctionXml<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
+public class TransformerFunctionXml extends TransformerFunction {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionXml.class);
-    private final XmlFormat<JE, JA, JO> xmlFormat;
 
-    public TransformerFunctionXml(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
-        this.xmlFormat = new XmlFormat<>(adapter);
+    public TransformerFunctionXml() {
+        super(FunctionDescription.of(
+                Map.of(
+                        "root", ArgumentType.of(ArgType.String).position(0).defaultIsNull(true),
+                        "xslt", ArgumentType.of(ArgType.String).position(1).defaultIsNull(true),
+                        "indent", ArgumentType.of(ArgType.Boolean).position(2).defaultBoolean(false)
+                )
+        ));
     }
+
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var obj = context.getJsonElement(null);
         if (obj == null)
             return null;
         try {
             var rootName = context.getString("root");
-            var xml = xmlFormat.obj2xml(obj, rootName);
+            // TODO: how to create the format once?
+            var xml = new XmlFormat(context.getAdapter()).obj2xml(obj, rootName);
             var xslt = context.getString("xslt");
             if (xslt != null && !xslt.isBlank()) {
                 var transformer = XmlFormat.createXSLTTransformer(xslt);

@@ -1,43 +1,45 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
+import co.nlighten.jsontransform.functions.common.*;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Objects;
 
 /*
  * For tests
  * @see TransformerFunctionIsTest
  */
-@ArgumentType(value = "op", type = ArgType.Enum, position = 0, defaultIsNull = true)
-@ArgumentType(value = "that", type = ArgType.Any, position = 1, defaultIsNull = true)
-@ArgumentType(value = "in", type = ArgType.Array, defaultIsNull = true)
-@ArgumentType(value = "nin", type = ArgType.Array, defaultIsNull = true)
-@ArgumentType(value = "eq", type = ArgType.Any, defaultIsNull = true)
-@ArgumentType(value = "neq", type = ArgType.Any, defaultIsNull = true)
-@ArgumentType(value = "gt", type = ArgType.Any, defaultIsNull = true)
-@ArgumentType(value = "gte", type = ArgType.Any, defaultIsNull = true)
-@ArgumentType(value = "lt", type = ArgType.Any, defaultIsNull = true)
-@ArgumentType(value = "lte", type = ArgType.Any, defaultIsNull = true)
-public class TransformerFunctionIs<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
+public class TransformerFunctionIs extends TransformerFunction {
 
-    public TransformerFunctionIs(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+    public TransformerFunctionIs() {
+        super(FunctionDescription.of(
+            Map.of(
+            "op", ArgumentType.of(ArgType.Enum).position(0).defaultIsNull(true),
+            "that", ArgumentType.of(ArgType.Any).position(1).defaultIsNull(true),
+            "in", ArgumentType.of(ArgType.Array).defaultIsNull(true),
+            "nin", ArgumentType.of(ArgType.Array).defaultIsNull(true),
+            "eq", ArgumentType.of(ArgType.Any).defaultIsNull(true),
+            "neq", ArgumentType.of(ArgType.Any).defaultIsNull(true),
+            "gt", ArgumentType.of(ArgType.Any).defaultIsNull(true),
+            "gte", ArgumentType.of(ArgType.Any).defaultIsNull(true),
+            "lt", ArgumentType.of(ArgType.Any).defaultIsNull(true),
+            "lte", ArgumentType.of(ArgType.Any).defaultIsNull(true)
+            )
+        ));
     }
-    private JE nullableBigDecimalJsonPrimitive(FunctionContext<JE, JA, JO> context, BigDecimal number) {
+    private Object nullableBigDecimalJsonPrimitive(FunctionContext context, BigDecimal number) {
+        var adapter = context.getAdapter();
         return number == null ? adapter.jsonNull() : adapter.wrap(number);
     }
 
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var value = context.getJsonElement(null);
+        var adapter = context.getAdapter();
         if (context.has("op")) {
             var op = context.getEnum("op");
-            JE that = null;
+            Object that = null;
             // if operator is not in/nin then prepare the "that" argument which is a JsonElement
             if (!Objects.equals(op, "IN") && !Objects.equals(op, "NIN")) {
                 that = adapter.isJsonNumber(value)
@@ -54,19 +56,19 @@ public class TransformerFunctionIs<JE, JA extends Iterable<JE>, JO extends JE> e
                     yield nin != null && nin.stream().noneMatch(value::equals);
                 }
                 case "GT",">" -> {
-                    var comparison = context.compareTo(value, that);
+                    var comparison = adapter.compareTo(value, that);
                     yield comparison != null && comparison > 0;
                 }
                 case "GTE",">=" -> {
-                    var comparison = context.compareTo(value, that);
+                    var comparison = adapter.compareTo(value, that);
                     yield comparison != null && comparison >= 0;
                 }
                 case "LT","<" -> {
-                    var comparison = context.compareTo(value, that);
+                    var comparison = adapter.compareTo(value, that);
                     yield comparison != null && comparison < 0;
                 }
                 case "LTE","<=" -> {
-                    var comparison = context.compareTo(value, that);
+                    var comparison = adapter.compareTo(value, that);
                     yield comparison != null && comparison <= 0;
                 }
                 case "EQ","=","==" -> Objects.equals(value, that);
@@ -85,22 +87,22 @@ public class TransformerFunctionIs<JE, JA extends Iterable<JE>, JO extends JE> e
         }
         if (result && context.has("gt")) {
             var gt = context.getJsonElement("gt");
-            var comparison = context.compareTo(value, gt);
+            var comparison = adapter.compareTo(value, gt);
             result = comparison != null && comparison > 0;
         }
         if (result && context.has("gte")) {
             var gte = context.getJsonElement("gte");
-            var comparison = context.compareTo(value, gte);
+            var comparison = adapter.compareTo(value, gte);
             result = comparison != null && comparison >= 0;
         }
         if (result && context.has("lt")) {
             var lt = context.getJsonElement("lt");
-            var comparison = context.compareTo(value, lt);
+            var comparison = adapter.compareTo(value, lt);
             result = comparison != null && comparison < 0;
         }
         if (result && context.has("lte")) {
             var lte = context.getJsonElement("lte");
-            var comparison = context.compareTo(value, lte);
+            var comparison = adapter.compareTo(value, lte);
             result = comparison != null && comparison <= 0;
         }
         if (result && context.has("eq")) {

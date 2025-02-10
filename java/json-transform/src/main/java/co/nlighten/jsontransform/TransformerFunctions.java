@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-public class TransformerFunctions<JE, JA extends Iterable<JE>, JO extends JE> implements TransformerFunctionsAdapter<JE, JA, JO>{
+public class TransformerFunctions implements TransformerFunctionsAdapter {
     static final Logger log = LoggerFactory.getLogger(TransformerFunctions.class);
 
     private static final Pattern inlineFunctionRegex = Pattern.compile("^\\$\\$(\\w+)(\\((.*?)\\))?(:|$)");
@@ -25,97 +25,100 @@ public class TransformerFunctions<JE, JA extends Iterable<JE>, JO extends JE> im
     public static final String ESCAPE_HASH = "\\#";
 
 
-    private Map<String, TransformerFunction<JE, JA, JO>> functions = Map.of();
-    private final JsonAdapter<JE, JA, JO> jsonAdapter;
+    private static Map<String, TransformerFunction> functions = Map.of();
+    private final JsonAdapter<?, ?, ?> jsonAdapter;
 
-    public TransformerFunctions(JsonAdapter<JE, JA, JO> adapter) {
-        this.jsonAdapter = adapter;
+    static {
         registerFunctions(
-                Map.entry("and", new TransformerFunctionAnd<>(adapter)),
-                Map.entry("at",new TransformerFunctionAt<>(adapter)),
-                Map.entry("avg",new TransformerFunctionAvg<>(adapter)),
-                Map.entry("base64", new TransformerFunctionBase64<>(adapter)),
-                Map.entry("boolean", new TransformerFunctionBoolean<>(adapter)),
-                Map.entry("coalesce", new TransformerFunctionCoalesce<>(adapter)),
-                Map.entry("concat", new TransformerFunctionConcat<>(adapter)),
-                Map.entry("contains", new TransformerFunctionContains<>(adapter)),
-                Map.entry("csv", new TransformerFunctionCsv<>(adapter)),
-                Map.entry("csvparse", new TransformerFunctionCsvParse<>(adapter)),
-                Map.entry("date", new TransformerFunctionDate<>(adapter)),
-                Map.entry("decimal", new TransformerFunctionDecimal<>(adapter)),
-                Map.entry("digest", new TransformerFunctionDigest<>(adapter)),
-                Map.entry("distinct", new TransformerFunctionDistinct<>(adapter)),
-                Map.entry("entries", new TransformerFunctionEntries<>(adapter)),
-                Map.entry("eval",new TransformerFunctionEval<>(adapter)),
-                Map.entry("filter", new TransformerFunctionFilter<>(adapter)),
-                Map.entry("find", new TransformerFunctionFind<>(adapter)),
-                Map.entry("first", new TransformerFunctionCoalesce<>(adapter)), // * alias for coalesce
-                Map.entry("flat", new TransformerFunctionFlat<>(adapter)),
-                Map.entry("flatten",new TransformerFunctionFlatten<>(adapter)),
-                Map.entry("form", new TransformerFunctionForm<>(adapter)),
-                Map.entry("formparse", new TransformerFunctionFormParse<>(adapter)),
-                Map.entry("group", new TransformerFunctionGroup<>(adapter)),
-                Map.entry("if", new TransformerFunctionIf<>(adapter)),
-                Map.entry("is", new TransformerFunctionIs<>(adapter)),
-                Map.entry("isnull", new TransformerFunctionIsNull<>(adapter)),
-                Map.entry("join", new TransformerFunctionJoin<>(adapter)),
-                Map.entry("json", new TransformerFunctionJsonParse<>(adapter)),
-                Map.entry("jsonparse", new TransformerFunctionJsonParse<>(adapter)),
-                Map.entry("jsonpatch", new TransformerFunctionJsonPatch<>(adapter)),
-                Map.entry("jsonpath", new TransformerFunctionJsonPath<>(adapter)),
-                Map.entry("jsonpointer", new TransformerFunctionJsonPointer<>(adapter)),
-                Map.entry("jwtparse", new TransformerFunctionJwtParse<>(adapter)),
-                Map.entry("length", new TransformerFunctionLength<>(adapter)),
-                Map.entry("long", new TransformerFunctionLong<>(adapter)),
-                Map.entry("lookup", new TransformerFunctionLookup<>(adapter)),
-                Map.entry("lower", new TransformerFunctionLower<>(adapter)),
-                Map.entry("map", new TransformerFunctionMap<>(adapter)),
-                Map.entry("match", new TransformerFunctionMatch<>(adapter)),
-                Map.entry("matchall", new TransformerFunctionMatchAll<>(adapter)),
-                Map.entry("math", new TransformerFunctionMath<>(adapter)),
-                Map.entry("max",new TransformerFunctionMax<>(adapter)),
-                Map.entry("min",new TransformerFunctionMin<>(adapter)),
-                Map.entry("normalize", new TransformerFunctionNormalize<>(adapter)),
-                Map.entry("not", new TransformerFunctionNot<>(adapter)),
-                Map.entry("numberformat", new TransformerFunctionNumberFormat<>(adapter)),
-                Map.entry("numberparse", new TransformerFunctionNumberParse<>(adapter)),
-                Map.entry("object", new TransformerFunctionObject<>(adapter)),
-                Map.entry("or", new TransformerFunctionOr<>(adapter)),
-                Map.entry("pad", new TransformerFunctionPad<>(adapter)),
-                Map.entry("partition", new TransformerFunctionPartition<>(adapter)),
-                Map.entry("range", new TransformerFunctionRange<>(adapter)),
-                Map.entry("raw", new TransformerFunctionRaw<>(adapter)),
-                Map.entry("reduce", new TransformerFunctionReduce<>(adapter)),
-                Map.entry("replace", new TransformerFunctionReplace<>(adapter)),
-                Map.entry("reverse", new TransformerFunctionReverse<>(adapter)),
-                Map.entry("slice", new TransformerFunctionSlice<>(adapter)),
-                Map.entry("sort", new TransformerFunctionSort<>(adapter)),
-                Map.entry("split", new TransformerFunctionSplit<>(adapter)),
-                Map.entry("string", new TransformerFunctionString<>(adapter)),
-                Map.entry("substring", new TransformerFunctionSubstring<>(adapter)),
-                Map.entry("sum",new TransformerFunctionSum<>(adapter)),
-                Map.entry("switch", new TransformerFunctionSwitch<>(adapter)),
-                Map.entry("test", new TransformerFunctionTest<>(adapter)),
-                Map.entry("transform", new TransformerFunctionTransform<>(adapter)),
-                Map.entry("trim", new TransformerFunctionTrim<>(adapter)),
-                Map.entry("unflatten",new TransformerFunctionUnflatten<>(adapter)),
-                Map.entry("upper", new TransformerFunctionUpper<>(adapter)),
-                Map.entry("uriparse", new TransformerFunctionUriParse<>(adapter)),
-                Map.entry("urldecode", new TransformerFunctionUrlDecode<>(adapter)),
-                Map.entry("urlencode", new TransformerFunctionUrlEncode<>(adapter)),
-                Map.entry("uuid", new TransformerFunctionUuid<>(adapter)),
-                Map.entry("value",new TransformerFunctionValue<>(adapter)),
-                Map.entry("wrap", new TransformerFunctionWrap<>(adapter)),
-                Map.entry("xml", new TransformerFunctionXml<>(adapter)),
-                Map.entry("xmlparse", new TransformerFunctionXmlParse<>(adapter)),
-                Map.entry("xor", new TransformerFunctionXor<>(adapter)),
-                Map.entry("yaml", new TransformerFunctionYaml<>(adapter)),
-                Map.entry("yamlparse", new TransformerFunctionYamlParse<>(adapter))
+                Map.entry("and", new TransformerFunctionAnd()),
+                Map.entry("at",new TransformerFunctionAt()),
+                Map.entry("avg",new TransformerFunctionAvg()),
+                Map.entry("base64", new TransformerFunctionBase64()),
+                Map.entry("boolean", new TransformerFunctionBoolean()),
+                Map.entry("coalesce", new TransformerFunctionCoalesce()),
+                Map.entry("concat", new TransformerFunctionConcat()),
+                Map.entry("contains", new TransformerFunctionContains()),
+                Map.entry("csv", new TransformerFunctionCsv()),
+                Map.entry("csvparse", new TransformerFunctionCsvParse()),
+                Map.entry("date", new TransformerFunctionDate()),
+                Map.entry("decimal", new TransformerFunctionDecimal()),
+                Map.entry("digest", new TransformerFunctionDigest()),
+                Map.entry("distinct", new TransformerFunctionDistinct()),
+                Map.entry("entries", new TransformerFunctionEntries()),
+                Map.entry("eval",new TransformerFunctionEval()),
+                Map.entry("filter", new TransformerFunctionFilter()),
+                Map.entry("find", new TransformerFunctionFind()),
+                Map.entry("first", new TransformerFunctionCoalesce()), // * alias for coalesce
+                Map.entry("flat", new TransformerFunctionFlat()),
+                Map.entry("flatten",new TransformerFunctionFlatten()),
+                Map.entry("form", new TransformerFunctionForm()),
+                Map.entry("formparse", new TransformerFunctionFormParse()),
+                Map.entry("group", new TransformerFunctionGroup()),
+                Map.entry("if", new TransformerFunctionIf()),
+                Map.entry("is", new TransformerFunctionIs()),
+                Map.entry("isnull", new TransformerFunctionIsNull()),
+                Map.entry("join", new TransformerFunctionJoin()),
+                Map.entry("json", new TransformerFunctionJsonParse()),
+                Map.entry("jsonparse", new TransformerFunctionJsonParse()),
+                Map.entry("jsonpatch", new TransformerFunctionJsonPatch()),
+                Map.entry("jsonpath", new TransformerFunctionJsonPath()),
+                Map.entry("jsonpointer", new TransformerFunctionJsonPointer()),
+                Map.entry("jwtparse", new TransformerFunctionJwtParse()),
+                Map.entry("length", new TransformerFunctionLength()),
+                Map.entry("long", new TransformerFunctionLong()),
+                Map.entry("lookup", new TransformerFunctionLookup()),
+                Map.entry("lower", new TransformerFunctionLower()),
+                Map.entry("map", new TransformerFunctionMap()),
+                Map.entry("match", new TransformerFunctionMatch()),
+                Map.entry("matchall", new TransformerFunctionMatchAll()),
+                Map.entry("math", new TransformerFunctionMath()),
+                Map.entry("max",new TransformerFunctionMax()),
+                Map.entry("min",new TransformerFunctionMin()),
+                Map.entry("normalize", new TransformerFunctionNormalize()),
+                Map.entry("not", new TransformerFunctionNot()),
+                Map.entry("numberformat", new TransformerFunctionNumberFormat()),
+                Map.entry("numberparse", new TransformerFunctionNumberParse()),
+                Map.entry("object", new TransformerFunctionObject()),
+                Map.entry("or", new TransformerFunctionOr()),
+                Map.entry("pad", new TransformerFunctionPad()),
+                Map.entry("partition", new TransformerFunctionPartition()),
+                Map.entry("range", new TransformerFunctionRange()),
+                Map.entry("raw", new TransformerFunctionRaw()),
+                Map.entry("reduce", new TransformerFunctionReduce()),
+                Map.entry("replace", new TransformerFunctionReplace()),
+                Map.entry("reverse", new TransformerFunctionReverse()),
+                Map.entry("slice", new TransformerFunctionSlice()),
+                Map.entry("sort", new TransformerFunctionSort()),
+                Map.entry("split", new TransformerFunctionSplit()),
+                Map.entry("string", new TransformerFunctionString()),
+                Map.entry("substring", new TransformerFunctionSubstring()),
+                Map.entry("sum",new TransformerFunctionSum()),
+                Map.entry("switch", new TransformerFunctionSwitch()),
+                Map.entry("test", new TransformerFunctionTest()),
+                Map.entry("transform", new TransformerFunctionTransform()),
+                Map.entry("trim", new TransformerFunctionTrim()),
+                Map.entry("unflatten",new TransformerFunctionUnflatten()),
+                Map.entry("upper", new TransformerFunctionUpper()),
+                Map.entry("uriparse", new TransformerFunctionUriParse()),
+                Map.entry("urldecode", new TransformerFunctionUrlDecode()),
+                Map.entry("urlencode", new TransformerFunctionUrlEncode()),
+                Map.entry("uuid", new TransformerFunctionUuid()),
+                Map.entry("value",new TransformerFunctionValue()),
+                Map.entry("wrap", new TransformerFunctionWrap()),
+                Map.entry("xml", new TransformerFunctionXml()),
+                Map.entry("xmlparse", new TransformerFunctionXmlParse()),
+                Map.entry("xor", new TransformerFunctionXor()),
+                Map.entry("yaml", new TransformerFunctionYaml()),
+                Map.entry("yamlparse", new TransformerFunctionYamlParse())
         );
     }
 
-    @SuppressWarnings("unchecked")
-    public void registerFunctions(Map.Entry<String, TransformerFunction<JE, JA, JO>>... moreFunctions) {
+    public TransformerFunctions(JsonAdapter<?, ?, ?> adapter) {
+        this.jsonAdapter = adapter;
+    }
+
+    @SafeVarargs
+    public synchronized static void registerFunctions(Map.Entry<String, TransformerFunction>... moreFunctions) {
         var additions = Arrays.stream(moreFunctions).filter(x -> {
             if (functions.containsKey(x.getKey())) {
                 log.debug("Skipping registering function $${} (already exists)", x.getKey());
@@ -135,16 +138,16 @@ public class TransformerFunctions<JE, JA extends Iterable<JE>, JO extends JE> im
     /**
      * Checks the context for a registered object function and returns the result if matched
      */
-    public FunctionMatchResult<Object> matchObject(String path, JO definition, co.nlighten.jsontransform.ParameterResolver resolver, JsonTransformerFunction<JE> transformer) {
+    public FunctionMatchResult<Object> matchObject(String path, Object definition, co.nlighten.jsontransform.ParameterResolver resolver, JsonTransformerFunction transformer) {
         if (definition == null) {
             return null;
         }
         // look for an object function
         // (precedence is all internal functions sorted alphabetically first, then client added ones second, by registration order)
         for (String key : functions.keySet()) {
-            if (jsonAdapter.jObject.has(definition, FUNCTION_KEY_PREFIX + key)) {
+            if (jsonAdapter.has(definition, FUNCTION_KEY_PREFIX + key)) {
                 var func = functions.get(key);
-                var context = new ObjectFunctionContext<>(
+                var context = new ObjectFunctionContext(
                         path,
                         definition,
                         jsonAdapter,
@@ -163,8 +166,8 @@ public class TransformerFunctions<JE, JA extends Iterable<JE>, JO extends JE> im
         return null;
     }
 
-    private InlineFunctionContext<JE, JA, JO> tryParseInlineFunction(String path, String value, co.nlighten.jsontransform.ParameterResolver resolver,
-                                                                     JsonTransformerFunction<JE> transformer) {
+    private InlineFunctionContext tryParseInlineFunction(String path, String value, co.nlighten.jsontransform.ParameterResolver resolver,
+                                                                     JsonTransformerFunction transformer) {
         var matcher = inlineFunctionRegex.matcher(value);
         if (matcher.find()) {
             var functionKey = matcher.group(1);
@@ -192,7 +195,7 @@ public class TransformerFunctions<JE, JA extends Iterable<JE>, JO extends JE> im
                 } else {
                     input = value.substring(matchEndIndex);
                 }
-                return new InlineFunctionContext<>(
+                return new InlineFunctionContext(
                         path + "/" + FUNCTION_KEY_PREFIX + functionKey,
                         input, args,
                         jsonAdapter,
@@ -204,7 +207,7 @@ public class TransformerFunctions<JE, JA extends Iterable<JE>, JO extends JE> im
         return null;
     }
 
-    public FunctionMatchResult<Object> matchInline(String path, String value, ParameterResolver resolver, JsonTransformerFunction<JE> transformer) {
+    public FunctionMatchResult<Object> matchInline(String path, String value, ParameterResolver resolver, JsonTransformerFunction transformer) {
         if (value == null) return null;
         var context = tryParseInlineFunction(path, value, resolver, transformer);
         if (context == null) {
@@ -221,7 +224,7 @@ public class TransformerFunctions<JE, JA extends Iterable<JE>, JO extends JE> im
         return new FunctionMatchResult<>(null, resolvedPath);
     }
 
-    public Map<String, TransformerFunction<JE, JA, JO>> getFunctions() {
+    public Map<String, TransformerFunction> getFunctions() {
         return functions;
     }
 

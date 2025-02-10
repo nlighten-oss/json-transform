@@ -7,20 +7,20 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.TransformerFunctions;
 import com.google.gson.*;
 
-public class GsonJsonTransformer extends JsonTransformer<JsonElement, JsonArray, JsonObject> {
+public class GsonJsonTransformer extends JsonTransformer {
 
     public static final JsonAdapter<JsonElement, JsonArray, JsonObject> ADAPTER = new GsonJsonAdapter();
-    public static final TransformerFunctions<JsonElement, JsonArray, JsonObject> FUNCTIONS = new TransformerFunctions<>(ADAPTER);
+    public static final TransformerFunctions FUNCTIONS = new TransformerFunctions(ADAPTER);
 
-    public GsonJsonTransformer(final JsonElement definition) {
+    public GsonJsonTransformer(final Object definition) {
         this(definition, FUNCTIONS);
     }
 
-    public GsonJsonTransformer(final JsonElement definition, TransformerFunctionsAdapter<JsonElement, JsonArray, JsonObject> functionsAdapter) {
-        super(ADAPTER, definition, functionsAdapter);
+    public GsonJsonTransformer(final Object definition, TransformerFunctionsAdapter functionsAdapter) {
+        super(definition, ADAPTER, functionsAdapter);
     }
 
-    public static DebuggableTransformerFunctions<JsonElement, JsonArray, JsonObject> getDebuggableAdapter() {
-        return new DebuggableTransformerFunctions<>(ADAPTER);
+    public static DebuggableTransformerFunctions getDebuggableAdapter() {
+        return new DebuggableTransformerFunctions(ADAPTER);
     }
 }

@@ -1,6 +1,5 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import co.nlighten.jsontransform.formats.formurlencoded.FormUrlEncodedFormat;
@@ -14,44 +13,45 @@ import java.net.URISyntaxException;
  * For tests
  * @see TransformerFunctionUriParseTest
  */
-public class TransformerFunctionUriParse<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
+public class TransformerFunctionUriParse extends TransformerFunction {
     static final Logger log = LoggerFactory.getLogger(TransformerFunctionUriParse.class);
-    private final FormUrlEncodedFormat<JE, JA, JO> formUrlFormat;
 
-    public TransformerFunctionUriParse(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
-        this.formUrlFormat = new FormUrlEncodedFormat<>(adapter);
+    public TransformerFunctionUriParse() {
+        super();
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var str = context.getString(null);
         if (str == null) {
             return null;
         }
         try {
-            var result = jObject.create();
+            var adapter = context.getAdapter();
+            var result = adapter.createObject();
             URI uri = new URI(str);
-            jObject.add(result, "scheme", uri.getScheme());
+            adapter.add(result, "scheme", uri.getScheme());
             var userInfo = uri.getUserInfo();
             if (userInfo != null) {
-                jObject.add(result, "user_info", userInfo);
+                adapter.add(result, "user_info", userInfo);
             }
-            jObject.add(result, "authority", uri.getAuthority());
+            adapter.add(result, "authority", uri.getAuthority());
             var port = uri.getPort();
-            jObject.add(result, "host", port > -1 ? uri.getHost() + ":" + port : uri.getHost());
-            jObject.add(result, "hostname", uri.getHost());
+            adapter.add(result, "host", port > -1 ? uri.getHost() + ":" + port : uri.getHost());
+            adapter.add(result, "hostname", uri.getHost());
             if (port > -1) {
-                jObject.add(result, "port", port);
+                adapter.add(result, "port", port);
             }
-            jObject.add(result, "path", uri.getPath());
+            adapter.add(result, "path", uri.getPath());
             var queryString = uri.getQuery();
             if (queryString != null) {
-                jObject.add(result, "query", formUrlFormat.deserialize(queryString));
-                jObject.add(result, "query_raw", queryString);
+                // TODO: how to create the format once?
+                var formUrlFormat = new FormUrlEncodedFormat(adapter);
+                adapter.add(result, "query", formUrlFormat.deserialize(queryString));
+                adapter.add(result, "query_raw", queryString);
             }
             var fragment = uri.getFragment();
             if (fragment != null) {
-                jObject.add(result, "fragment", fragment);
+                adapter.add(result, "fragment", fragment);
             }
             return result;
         } catch (URISyntaxException e) {

@@ -1,29 +1,30 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
+import co.nlighten.jsontransform.functions.common.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Map;
 
 /*
  * For tests
  * @see TransformerFunctionUrlDecodeTest
  */
-@ArgumentType(value = "charset", type = ArgType.Enum, position = 0, defaultEnum = "UTF-8")
-public class TransformerFunctionUrlDecode<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
+public class TransformerFunctionUrlDecode extends TransformerFunction {
     static final Logger log = LoggerFactory.getLogger(TransformerFunctionUrlDecode.class);
 
-    public TransformerFunctionUrlDecode(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+    public TransformerFunctionUrlDecode() {
+        super(FunctionDescription.of(
+            Map.of(
+            "charset", ArgumentType.of(ArgType.Enum).position(0).defaultEnum("UTF-8")
+            )
+        ));
     }
+
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var str = context.getString(null);
         if (str == null) {
             return null;

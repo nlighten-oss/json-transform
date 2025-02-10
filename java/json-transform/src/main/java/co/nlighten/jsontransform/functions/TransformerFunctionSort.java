@@ -1,30 +1,29 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.common.CompareBy;
+import co.nlighten.jsontransform.functions.common.*;
 import co.nlighten.jsontransform.JsonElementStreamer;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Map;
 
 /*
  * For tests
  * @see TransformerFunctionSortTest
  */
-@ArgumentType(value = "by", type = ArgType.Transformer, position = 0)
-@ArgumentType(value = "order", type = ArgType.Enum, position = 1, defaultEnum = "ASC")
-@ArgumentType(value = "type", type = ArgType.Enum, position = 2, defaultEnum = "AUTO")
-@ArgumentType(value = "then", type = ArgType.Array, position = 3, defaultIsNull = true)
-public class TransformerFunctionSort<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
-    public TransformerFunctionSort(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+public class TransformerFunctionSort extends TransformerFunction {
+    public TransformerFunctionSort() {
+        super(FunctionDescription.of(
+                Map.of(
+                        "by", ArgumentType.of(ArgType.Transformer).position(0),
+                        "order", ArgumentType.of(ArgType.Enum).position(1).defaultEnum("ASC"),
+                        "type", ArgumentType.of(ArgType.Enum).position(2).defaultEnum("AUTO"),
+                        "then", ArgumentType.of(ArgType.Array).position(3).defaultIsNull(true)
+                )
+        ));
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var arr = context.getJsonElementStreamer(null);
         if (arr == null) {
             return null;
@@ -33,9 +32,10 @@ public class TransformerFunctionSort<JE, JA extends Iterable<JE>, JO extends JE>
         var order = context.getEnum("order");
         var descending = "DESC".equals(order);
 
+        var adapter = context.getAdapter();
         if (!context.has("by")) {
             // does not have sort "by" (can sort inside the stream)
-            Comparator<JE> comparator = type == null || "AUTO".equals(type)
+            Comparator<Object> comparator = type == null || "AUTO".equals(type)
                              ? adapter.comparator()
                              : switch (type) {
                                   case "NUMBER" -> Comparator.comparing(adapter::getNumberAsBigDecimal);
@@ -48,7 +48,7 @@ public class TransformerFunctionSort<JE, JA extends Iterable<JE>, JO extends JE>
                                                             );
         } else {
             var by = context.getJsonElement( "by", false);
-            var chain = new ArrayList<JE>();
+            var chain = new ArrayList<>();
 
             var comparator = CompareBy.createByComparator(adapter, 0, type);
             if (descending) comparator = comparator.reversed();
@@ -56,26 +56,26 @@ public class TransformerFunctionSort<JE, JA extends Iterable<JE>, JO extends JE>
 
             var thenArr = context.has("then") ? context.getJsonArray("then", false) : null;
             if (thenArr != null) {
-                var size = jArray.size(thenArr);
+                var size = adapter.size(thenArr);
                 for (var i = 0; i < size; i++) {
-                    var thenObj = jObject.convert(jArray.get(thenArr, i));
-                    var thenType = jObject.has(thenObj, "type") ? context.getAsString(jObject.get(thenObj, "type")).trim() : null;
-                    var thenOrder = jObject.get(thenObj,"order");
+                    var thenObj = adapter.get(thenArr, i);
+                    var thenType = adapter.has(thenObj, "type") ? context.getAsString(adapter.get(thenObj, "type")).trim() : null;
+                    var thenOrder = adapter.get(thenObj,"order");
                     var thenComparator = CompareBy.createByComparator(adapter,i + 1, thenType);
                     var thenDescending = !adapter.isNull(thenOrder) && context.getAsString(thenOrder).equalsIgnoreCase("DESC");
                     if (thenDescending) {
                         thenComparator = thenComparator.reversed();
                     }
                     comparator = comparator.thenComparing(thenComparator);
-                    chain.add(jObject.get(thenObj,"by"));
+                    chain.add(adapter.get(thenObj,"by"));
                 }
             }
 
             return JsonElementStreamer.fromTransformedStream(context, arr.stream()
                 .map(item -> {
-                    var cb = new CompareBy<>(item);
+                    var cb = new CompareBy(item);
                     cb.by = new ArrayList<>();
-                    for (JE jsonElement : chain) {
+                    for (var jsonElement : chain) {
                         cb.by.add(context.transformItem(jsonElement, item));
                     }
                     return cb;

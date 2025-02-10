@@ -8,15 +8,15 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.StringTokenizer;
 
-public class FormUrlEncodedFormat<JE, JA extends Iterable<JE>, JO extends JE> implements FormatSerializer, FormatDeserializer<JE> {
+public class FormUrlEncodedFormat implements FormatSerializer, FormatDeserializer {
 
-    private final JsonAdapter<JE, JA, JO> adapter;
+    private final JsonAdapter<?, ?, ?> adapter;
 
-    public FormUrlEncodedFormat(JsonAdapter<JE, JA, JO> adapter) {
+    public FormUrlEncodedFormat(JsonAdapter<?, ?, ?> adapter) {
         this.adapter = adapter;
     }
 
-    private void appendEntry(StringBuilder sb, String origKey, JE jeValue) {
+    private void appendEntry(StringBuilder sb, String origKey, Object jeValue) {
         var key = URLEncoder.encode(origKey, StandardCharsets.UTF_8);
         sb.append('&').append(key);
         var originalValue = adapter.getAsString(jeValue);
@@ -31,19 +31,24 @@ public class FormUrlEncodedFormat<JE, JA extends Iterable<JE>, JO extends JE> im
         try {
             if (payload == null) return null;
 
-            var jsonObject = adapter.jObject.convert(payload);
+            var wrapped = adapter.wrap(payload);
+            if (!adapter.isJsonObject(wrapped)) {
+                return null;
+            }
 
             var sb = new StringBuilder();
-            for (var kv : adapter.jObject.entrySet(jsonObject)) {
+            for (var kv : adapter.entrySet(wrapped)) {
                 var key = kv.getKey();
                 var value = kv.getValue();
-                if (adapter.jArray.is(value)) {
-                    ((JA)value).forEach(jeValue -> appendEntry(sb, key, jeValue));
+                if (adapter.isJsonArray(value)) {
+                    for (var jeValue : adapter.asIterable(value)) {
+                        appendEntry(sb, key, jeValue);
+                    }
                 } else {
                     appendEntry(sb, key, value);
                 }
             }
-            return sb.length() > 0 ? sb.substring(1) : "";
+            return !sb.isEmpty() ? sb.substring(1) : "";
         }
         catch (Throwable te) {
             throw new RuntimeException(te);
@@ -83,11 +88,11 @@ public class FormUrlEncodedFormat<JE, JA extends Iterable<JE>, JO extends JE> im
     }
 
     @Override
-    public JE deserialize(String input) {
+    public Object deserialize(String input) {
         if (input == null) {
             throw new IllegalArgumentException();
         }
-        var jo = adapter.jObject.create();
+        var jo = adapter.createObject();
         StringBuilder sb = new StringBuilder();
         StringTokenizer st = new StringTokenizer(input, "&");
         while (st.hasMoreTokens()) {
@@ -100,11 +105,11 @@ public class FormUrlEncodedFormat<JE, JA extends Iterable<JE>, JO extends JE> im
             } else {
                 val = "true";
             }
-            if (!adapter.jObject.has(jo, key)) {
-                adapter.jObject.add(jo, key, val);
-                adapter.jObject.add(jo, key + "$$", (JE)adapter.jArray.create());
+            if (!adapter.has(jo, key)) {
+                adapter.add(jo, key, val);
+                adapter.add(jo, key + "$$", adapter.createArray());
             }
-            adapter.jArray.add((JA)adapter.jObject.get(jo, key + "$$"), val);
+            adapter.add(adapter.get(jo, key + "$$"), val);
         }
         return jo;
     }

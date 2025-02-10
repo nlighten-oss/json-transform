@@ -1,11 +1,8 @@
 package co.nlighten.jsontransform.functions;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.functions.common.ArgType;
-import co.nlighten.jsontransform.functions.common.FunctionContext;
-import co.nlighten.jsontransform.functions.common.TransformerFunction;
-import co.nlighten.jsontransform.functions.annotations.ArgumentType;
+import co.nlighten.jsontransform.functions.common.*;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -13,16 +10,21 @@ import java.util.stream.Collectors;
  * For tests
  * @see TransformerFunctionJoinTest
  */
-@ArgumentType(value = "delimiter", type = ArgType.String, position = 0, defaultString = "", aliases = { "$$delimiter "})
-@ArgumentType(value = "prefix", type = ArgType.String, position = 1, defaultString = "")
-@ArgumentType(value = "suffix", type = ArgType.String, position = 2, defaultString = "")
-@ArgumentType(value = "keep_nulls", type = ArgType.Boolean, position = 3, defaultBoolean = false)
-public class TransformerFunctionJoin<JE, JA extends Iterable<JE>, JO extends JE> extends TransformerFunction<JE, JA, JO> {
-    public TransformerFunctionJoin(JsonAdapter<JE, JA, JO> adapter) {
-        super(adapter);
+public class TransformerFunctionJoin extends TransformerFunction {
+    public TransformerFunctionJoin() {
+        super(FunctionDescription.of(
+            Map.of(
+            "delimiter", ArgumentType.of(ArgType.String).position(0).defaultString(""),
+            "prefix", ArgumentType.of(ArgType.String).position(1).defaultString(""),
+            "suffix", ArgumentType.of(ArgType.String).position(2).defaultString(""),
+            "keep_nulls", ArgumentType.of(ArgType.Boolean).position(3).defaultBoolean(false),
+            // backward compatability
+            "$$delimiter", ArgumentType.of(ArgType.String).position(0).defaultIsNull(true)
+            )
+        ));
     }
     @Override
-    public Object apply(FunctionContext<JE, JA, JO> context) {
+    public Object apply(FunctionContext context) {
         var arr = context.getJsonElementStreamer(null);
         var delimiter = context.getString("$$delimiter"); // backwards compat.
         if (delimiter == null) {
