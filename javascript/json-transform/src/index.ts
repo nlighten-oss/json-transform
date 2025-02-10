@@ -6,7 +6,7 @@ import { ParameterResolver } from "./ParameterResolver";
 import { Transformer, RAW as RawTransformer } from "./Transformer";
 
 // Functions API
-import { TransformerFunctions } from "./transformerFunctions";
+import { TransformerFunctions } from "./TransformerFunctions";
 import DebuggableTransformerFunctions from "./DebuggableTransformerFunctions";
 import { ArgType } from "./functions/common/ArgType";
 import { ArgumentType } from "./functions/common/ArgumentType";

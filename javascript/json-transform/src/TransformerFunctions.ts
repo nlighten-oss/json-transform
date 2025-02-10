@@ -49,15 +49,15 @@ export class TransformerFunctions implements TransformerFunctionsAdapter {
   public static readonly ESCAPE_DOLLAR = "\\$";
   public static readonly ESCAPE_HASH = "\\#";
 
-  private functions: Record<string, TransformerFunction> = {};
+  private static readonly functions: Record<string, TransformerFunction> = {};
 
-  constructor() {
-    this.registerFunctions(embeddedFunctions);
+  static {
+    TransformerFunctions.registerFunctions(embeddedFunctions);
   }
 
-  public registerFunctions(moreFunctions: Record<string, TransformerFunction>) {
+  public static registerFunctions(moreFunctions: Record<string, TransformerFunction>) {
     const additions = Object.entries(moreFunctions).filter(([key, value]) => {
-      if (Object.prototype.hasOwnProperty.call(this.functions, key)) {
+      if (Object.prototype.hasOwnProperty.call(TransformerFunctions.functions, key)) {
         console.debug(`Skipping registering function $$${key} (already exists)`);
         return false;
       }
@@ -66,7 +66,7 @@ export class TransformerFunctions implements TransformerFunctionsAdapter {
     if (additions.length) {
       console.debug(`Registering functions: $$${additions.map(([key, _]) => key).join(", $$")}`);
       additions.forEach(add => {
-        this.functions[add[0]] = add[1];
+        TransformerFunctions.functions[add[0]] = add[1];
       });
     }
   }
@@ -77,9 +77,9 @@ export class TransformerFunctions implements TransformerFunctionsAdapter {
     }
     // look for an object function
     // (precedence is all internal functions sorted alphabetically first, then client added ones second, by registration order)
-    for (const key in this.functions) {
+    for (const key in TransformerFunctions.functions) {
       if (Object.prototype.hasOwnProperty.call(definition, TransformerFunctions.FUNCTION_KEY_PREFIX + key)) {
-        const func = this.functions[key];
+        const func = TransformerFunctions.functions[key];
         const context = await ObjectFunctionContext.createAsync(
           path,
           definition,
@@ -111,8 +111,8 @@ export class TransformerFunctions implements TransformerFunctionsAdapter {
     const match = value.match(TransformerFunctions.inlineFunctionRegex);
     if (match) {
       const functionKey = match[1];
-      if (this.functions[functionKey]) {
-        const _function = this.functions[functionKey];
+      if (TransformerFunctions.functions[functionKey]) {
+        const _function = TransformerFunctions.functions[functionKey];
         const argsString = match[3];
         const args: (string | null | undefined)[] = [];
         if (argsString) {
@@ -163,7 +163,7 @@ export class TransformerFunctions implements TransformerFunctionsAdapter {
     // at this point we detected an inline function, we must return a match result
     const resolvedPath = context.getPathFor(null);
     try {
-      const func = this.functions[context.getAlias()];
+      const func = TransformerFunctions.functions[context.getAlias()];
       const result = await func.apply(context);
       return new FunctionMatchResult(result, resolvedPath);
     } catch (ex) {

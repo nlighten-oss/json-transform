@@ -2,7 +2,7 @@ import { Transformer } from "./Transformer";
 import { JsonTransformerFunction } from "./JsonTransformerFunction";
 import { ParameterResolver } from "./ParameterResolver";
 import { createPayloadResolver, isNullOrUndefined, toObjectFieldPath } from "./JsonHelpers";
-import transformerFunctions, { TransformerFunctionsAdapter } from "./transformerFunctions";
+import transformerFunctions, { TransformerFunctionsAdapter } from "./TransformerFunctions";
 import JsonElementStreamer from "./JsonElementStreamer";
 import BigNumber from "bignumber.js";
 import { BigDecimal } from "./functions/common/FunctionHelpers";

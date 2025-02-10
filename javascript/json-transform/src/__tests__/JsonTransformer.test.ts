@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import JsonTransformer from "../JsonTransformer";
 import { assertFailTransformation, assertTransformation } from "./BaseTransformationTest";
-import transformerFunctions from "../transformerFunctions";
+import { TransformerFunctions } from "../TransformerFunctions";
 import TransformerFunction from "../functions/common/TransformerFunction";
 import FunctionContext from "../functions/common/FunctionContext";
 import { ArgType } from "../functions/common/ArgType";
@@ -112,7 +112,6 @@ describe("JsonTransformer", () => {
         a: "#null",
       },
       {
-        a: null,
         b: "B",
       },
     );
@@ -236,7 +235,7 @@ describe("JsonTransformer", () => {
         return context.get(null);
       }
     }
-    transformerFunctions.registerFunctions({ c: new ImmediateEvaluationTest() });
+    TransformerFunctions.registerFunctions({ c: new ImmediateEvaluationTest() });
 
     callCount.value = 0;
     await assertTransformation(
@@ -355,7 +354,7 @@ describe("JsonTransformer", () => {
   }
 
   test("inlineArgsParsingTest", async () => {
-    transformerFunctions.registerFunctions({ argstest: new TransformerFunctionArgsTest() });
+    TransformerFunctions.registerFunctions({ argstest: new TransformerFunctionArgsTest() });
     await assertTransformation(null, "$$argstest(,):", "[],[]");
 
     await assertTransformation(null, "$$argstest", "N/A");
@@ -407,7 +406,7 @@ describe("JsonTransformer", () => {
   }
 
   test("inlineValueParsingTest", async () => {
-    transformerFunctions.registerFunctions({ valtest: new TransformerFunctionValTest() });
+    TransformerFunctions.registerFunctions({ valtest: new TransformerFunctionValTest() });
 
     await assertTransformation(null, "$$valtest", "NULL");
     await assertTransformation(null, "$$valtest:", "");

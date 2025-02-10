@@ -1,4 +1,4 @@
-import { FunctionMatchResult, TransformerFunctions } from "./transformerFunctions";
+import { FunctionMatchResult, TransformerFunctions } from "./TransformerFunctions";
 import JsonElementStreamer from "./JsonElementStreamer";
 import { ParameterResolver } from "./ParameterResolver";
 import { JsonTransformerFunction } from "./JsonTransformerFunction";
