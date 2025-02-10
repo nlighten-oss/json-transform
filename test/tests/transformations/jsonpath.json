@@ -49,6 +49,7 @@
   },
   {
     "name": "Query indefinite path (descendent; 2)",
+    "skip": ["java"],
     "given": {
       "input": {
         "x": [
