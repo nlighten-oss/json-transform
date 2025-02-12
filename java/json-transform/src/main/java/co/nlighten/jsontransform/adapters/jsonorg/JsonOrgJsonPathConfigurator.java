@@ -1,5 +1,6 @@
 package co.nlighten.jsontransform.adapters.jsonorg;
 
+import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.Option;
 import com.jayway.jsonpath.spi.json.JsonOrgJsonProvider;
 import com.jayway.jsonpath.spi.json.JsonProvider;
@@ -41,8 +42,9 @@ class JsonOrgJsonPathConfigurator {
     }
 
     private static com.jayway.jsonpath.Configuration.Defaults configurationDefaults = new JaywayJsonOrgConfiguration();
+    private static com.jayway.jsonpath.Configuration configuration = createConfiguration();
 
-    public static void setup() {
+    public static synchronized void setup() {
         if (initialized) return;
         log.info("Setting com.jayway.jsonpath defaults with {}", configurationDefaults.getClass());
         com.jayway.jsonpath.Configuration.setDefaults(configurationDefaults);
@@ -52,8 +54,20 @@ class JsonOrgJsonPathConfigurator {
     /**
      * Override the default com.jayway.jsonpath configuration (and reset initialization)
      */
-    public static void setConfigurationDefaults(com.jayway.jsonpath.Configuration.Defaults configurationDefaults) {
-        JsonOrgJsonPathConfigurator.configurationDefaults = configurationDefaults;
+    public static synchronized void setConfigurationDefaults(com.jayway.jsonpath.Configuration.Defaults defaults) {
+        configurationDefaults = defaults;
+        configuration = createConfiguration();
         initialized = false;
+    }
+
+    public static com.jayway.jsonpath.Configuration createConfiguration() {
+        return new Configuration.ConfigurationBuilder().jsonProvider(configurationDefaults.jsonProvider())
+                .mappingProvider(configurationDefaults.mappingProvider())
+                .options(configurationDefaults.options())
+                .build();
+    }
+
+    public static com.jayway.jsonpath.Configuration configuration() {
+        return configuration;
     }
 }

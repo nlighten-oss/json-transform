@@ -14,7 +14,8 @@
         ["a", 1],
         ["b", true],
         ["c", "C"]
-      ]
+      ],
+      "ignoreOrder": true
     }
   },
   {
@@ -46,7 +47,8 @@
         ["a", 1],
         ["b", true],
         ["c", "C"]
-      ]
+      ],
+      "ignoreOrder": true
     }
   },
   {
@@ -79,7 +81,8 @@
         ["b", true],
         ["c", "C"],
         ["d", 0.5]
-      ]
+      ],
+      "ignoreOrder": true
     }
   }
 ]

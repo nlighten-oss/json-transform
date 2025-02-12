@@ -49,7 +49,7 @@
   },
   {
     "name": "Query indefinite path (descendent; 2)",
-    "skip": ["java"],
+    "skip": ["javaGson", "javaJsonOrg"],
     "given": {
       "input": {
         "x": [

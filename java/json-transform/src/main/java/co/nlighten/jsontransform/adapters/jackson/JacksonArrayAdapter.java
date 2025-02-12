@@ -1,6 +1,5 @@
 package co.nlighten.jsontransform.adapters.jackson;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.adapters.JsonArrayAdapter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -13,11 +12,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class JacksonArrayAdapter extends JsonArrayAdapter<JsonNode, ArrayNode, ObjectNode> {
-
-
-    public JacksonArrayAdapter(JsonAdapter<JsonNode, ArrayNode, ObjectNode> adapter) {
-        super(ArrayNode.class, adapter);
-    }
 
     @Override
     public ArrayNode create() {

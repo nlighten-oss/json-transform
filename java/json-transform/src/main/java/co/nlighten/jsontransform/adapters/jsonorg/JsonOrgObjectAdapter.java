@@ -1,6 +1,5 @@
 package co.nlighten.jsontransform.adapters.jsonorg;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.adapters.JsonObjectAdapter;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -10,11 +9,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 class JsonOrgObjectAdapter extends JsonObjectAdapter<Object, JSONArray, JSONObject> {
-
-    public JsonOrgObjectAdapter(JsonAdapter<Object, JSONArray, JSONObject> adapter) {
-        super(JSONObject.class, adapter);
-    }
-
     @Override
     public JSONObject create() {
         return new JSONObject();
@@ -62,7 +56,7 @@ class JsonOrgObjectAdapter extends JsonObjectAdapter<Object, JSONArray, JSONObje
 
     @Override
     public Object get(JSONObject object, String key) {
-        return object.get(key);
+        return object.has(key) ? object.get(key) : null;
     }
 
     @Override
@@ -73,13 +67,6 @@ class JsonOrgObjectAdapter extends JsonObjectAdapter<Object, JSONArray, JSONObje
     @Override
     public boolean is(Object value) {
         return value instanceof JSONObject;
-    }
-    
-    @Override
-    public JSONObject convert(Object value) {
-        if (value instanceof JSONObject jo) return jo;
-        var je = adapter.wrap(value);
-        return je instanceof JSONObject jo ? jo : null;
     }
 
     @Override

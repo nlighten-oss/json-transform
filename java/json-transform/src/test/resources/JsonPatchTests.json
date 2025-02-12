@@ -443,7 +443,7 @@
     { "comment": "duplicate ops",
         "doc": { "foo": "bar" },
         "patch": [ { "op": "add", "path": "/baz", "value": "qux",
-            "op": "move", "from":"/foo" } ],
+            "x-op": "move", "from":"/foo" } ],
         "error": "patch has two 'op' members",
         "disabled": true },
 

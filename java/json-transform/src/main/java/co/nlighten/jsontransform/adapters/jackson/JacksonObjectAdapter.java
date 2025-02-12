@@ -14,11 +14,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class JacksonObjectAdapter extends JsonObjectAdapter<JsonNode, ArrayNode, ObjectNode> {
-
-    public JacksonObjectAdapter(JsonAdapter<JsonNode, ArrayNode, ObjectNode> adapter) {
-        super(ObjectNode.class, adapter);
-    }
-
     @Override
     public ObjectNode create() {
         return JsonNodeFactory.instance.objectNode();
@@ -93,11 +88,6 @@ public class JacksonObjectAdapter extends JsonObjectAdapter<JsonNode, ArrayNode,
     @Override
     public boolean is(Object value) {
         return value instanceof ObjectNode;
-    }
-
-    @Override
-    public ObjectNode convert(Object value) {
-        return (ObjectNode) value;
     }
 
     @Override

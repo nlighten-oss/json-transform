@@ -251,6 +251,7 @@
   },
   {
     "name": "assert in not in",
+    "skip": ["javaJsonOrg"],
     "given": {
       "input": null,
       "definition": { "$$is": [{ "a": 1 }], "in": [[{ "a": 4 }], [{ "a": 1 }], [{ "a": 3 }]] }

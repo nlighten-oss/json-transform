@@ -56,7 +56,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 </html>
 """;
 
-        Assertions.assertEquals(expect, result);
+        assertEquals(expect, result);
     }
 
     @Test
@@ -89,7 +89,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         var expect = """
 <html><body><h2>Hello World</h2><table><tr><th>Number</th></tr><tr><td>1</td></tr><tr><td>2</td></tr></table></body></html>""";
 
-        Assertions.assertEquals(expect, result);
+        assertEquals(expect, result);
     }
 
     @Test
@@ -97,7 +97,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         var result = new XmlFormat(adapter).deserialize("""
                                                    <root>
                                                    </root>""");
-        Assertions.assertEquals(adapter.parse("""
+        assertEquals(adapter.parse("""
                                                              {
                                                                "root": ""
                                                              }"""), result);
@@ -109,7 +109,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
                                                         <hi />
                                                       </hello>
                                                     </root>""");
-        Assertions.assertEquals(adapter.parse("""
+        assertEquals(adapter.parse("""
                                                              {
                                                                "root": {
                                                                  "hello": {

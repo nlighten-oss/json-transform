@@ -1,29 +1,29 @@
-package co.nlighten.jsontransform.adapters.jackson;
+package co.nlighten.jsontransform.adapters.pojo;
 
+import co.nlighten.jsontransform.adapters.jackson.JacksonJsonPathConfigurator;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.Option;
-import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
+import com.jayway.jsonpath.internal.DefaultsImpl;
 import com.jayway.jsonpath.spi.json.JsonProvider;
-import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import com.jayway.jsonpath.spi.mapper.MappingProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
-public class JacksonJsonPathConfigurator {
+public class PojoJsonPathConfigurator {
 
-    private static final Logger log = LoggerFactory.getLogger(JacksonJsonPathConfigurator.class);
+    private static final Logger log = LoggerFactory.getLogger(PojoJsonPathConfigurator.class);
 
     private static boolean initialized = false;
 
-    private static class JaywayJacksonConfiguration implements com.jayway.jsonpath.Configuration.Defaults {
+    private static class JaywayPojoConfiguration implements com.jayway.jsonpath.Configuration.Defaults {
 
-        private static final JsonProvider jsonProvider = new JacksonJsonNodeJsonProvider();
+        private static final JsonProvider jsonProvider = DefaultsImpl.INSTANCE.jsonProvider();
         private static final Set<Option> options = Set.of(
                 Option.SUPPRESS_EXCEPTIONS
         );
-        private static final MappingProvider mappingProvider = new JacksonMappingProvider(JacksonHelpers.mapper());
+        private static final MappingProvider mappingProvider = DefaultsImpl.INSTANCE.mappingProvider();
 
         @Override
         public JsonProvider jsonProvider() {
@@ -41,10 +41,10 @@ public class JacksonJsonPathConfigurator {
         }
     }
 
-    private static com.jayway.jsonpath.Configuration.Defaults configurationDefaults = new JaywayJacksonConfiguration();
+    private static com.jayway.jsonpath.Configuration.Defaults configurationDefaults = new JaywayPojoConfiguration();
     private static com.jayway.jsonpath.Configuration configuration = createConfiguration();
 
-    public synchronized static void setup() {
+    public static synchronized void setup() {
         if (initialized) return;
         log.info("Setting com.jayway.jsonpath defaults with {}", configurationDefaults.getClass());
         com.jayway.jsonpath.Configuration.setDefaults(configurationDefaults);

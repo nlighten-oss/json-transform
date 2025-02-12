@@ -1,6 +1,5 @@
 package co.nlighten.jsontransform.adapters.jsonorg;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.adapters.JsonArrayAdapter;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -9,11 +8,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 class JsonOrgArrayAdapter extends JsonArrayAdapter<Object, JSONArray, JSONObject> {
-
-    public JsonOrgArrayAdapter(JsonAdapter<Object, JSONArray, JSONObject> adapter) {
-        super(JSONArray.class, adapter);
-    }
-
     @Override
     public JSONArray create() {
         return new JSONArray();

@@ -19,6 +19,21 @@ export const JSONBig = {
   stringify: (value: any): string => stringify(value, null, undefined, BigDecimalStringifiers) ?? "undefined",
 };
 
+function areURLSearchParamsEqual(params1: URLSearchParams, params2: URLSearchParams): boolean {
+  if (params1.toString() === params2.toString()) {
+    return true;
+  }
+
+  const keys1 = Array.from(params1.keys()).sort();
+  const keys2 = Array.from(params2.keys()).sort();
+
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+
+  return keys1.every(key => params1.getAll(key).sort().toString() === params2.getAll(key).sort().toString());
+}
+
 // import * as JsonBigInt from "json-bigint";
 //
 // export const JSONBig = (JsonBigInt as any).default({
@@ -29,8 +44,10 @@ const hasOwn = Object.prototype.hasOwnProperty;
 
 const PODS = {
   javascript: "http://localhost:10002/api/v1/transform",
-  java: "http://localhost:10000/api/v1/transform",
-  javaJackson: "http://localhost:10000/api/v1/transform/jackson"
+  javaGson: "http://localhost:10000/api/v1/transform/gson",
+  javaJackson: "http://localhost:10000/api/v1/transform/jackson",
+  javaJsonOrg: "http://localhost:10000/api/v1/transform/jsonorg",
+  javaPojo: "http://localhost:10000/api/v1/transform/pojo"
 }
 
 const callTransform = async (given: any, platformToTest: keyof typeof PODS) => {
@@ -60,7 +77,16 @@ export const assertTransformation = async (t: any, platform: keyof typeof PODS) 
         expect(data.result ?? null, message).toBeNull();
       }
       if (hasOwn.call(t.expect, "equal")) {
-        expect(data.result, message).toEqual(t.expect.equal);
+        if (t.expect.ignoreOrder && Array.isArray(t.expect.equal)) {
+          expect(data.result, message).toHaveLength(t.expect.equal.length);
+          expect(data.result, message).toEqual(expect.arrayContaining(t.expect.equal));
+        } else if (t.expect.urlSearchParams === true && typeof t.expect.equal === "string" && typeof data.result === "string") {
+          const expectedParams = new URLSearchParams(t.expect.equal);
+          const resultParams = new URLSearchParams(data.result);
+          expect(areURLSearchParamsEqual(expectedParams, resultParams), message).toBeTruthy();
+        } else{
+          expect(data.result, message).toEqual(t.expect.equal);
+        }
       }
       if (hasOwn.call(t.expect, "notEqual")) {
         expect(data.result, message).not.toEqual(t.expect.notEqual);

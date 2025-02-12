@@ -35,7 +35,7 @@ public class TransformerFunctionUuid extends TransformerFunction {
                             : namespaceValue instanceof UUID uu
                               ? uu
                               : UUID.fromString(context.getAsString(namespaceValue));
-            return UuidConverter.namedByVersion("V3".equals(format) ? 3 : 5, namespace, name);
+            return UuidConverter.namedByVersion("V3".equals(format) ? 3 : 5, namespace, name).toString();
         }
         var uuid = value instanceof UUID uu ? uu : UUID.fromString(context.getAsString(value));
         return switch (format) {

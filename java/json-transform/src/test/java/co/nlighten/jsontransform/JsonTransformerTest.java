@@ -77,13 +77,13 @@ public class JsonTransformerTest extends BaseTest {
     @Test
     void testMacroUUID() {
         var result = transform(null, "#uuid",  null);
-        Assertions.assertDoesNotThrow(() -> UUID.fromString((String)(adapter.unwrap(adapter.type.cast(result), false))));
+        Assertions.assertDoesNotThrow(() -> UUID.fromString((String)(adapter.unwrap(result))));
     }
 
     @Test
     void testMacroNow() {
         var result = transform(null, "#now",  null);
-        Assertions.assertDoesNotThrow(() -> DateTimeFormatter.ISO_INSTANT.parse((String)(adapter.unwrap(adapter.type.cast(result), false))));
+        Assertions.assertDoesNotThrow(() -> DateTimeFormatter.ISO_INSTANT.parse((String)(adapter.unwrap(result))));
     }
 
     @Test

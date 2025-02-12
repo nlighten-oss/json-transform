@@ -1,6 +1,7 @@
 package co.nlighten.jsontransform.adapters.jsonorg;
 
 import co.nlighten.jsontransform.adapters.JsonAdapter;
+import com.jayway.jsonpath.DocumentContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONString;
@@ -12,7 +13,12 @@ import java.math.BigInteger;
 class JsonOrgJsonAdapter extends JsonAdapter<Object, JSONArray, JSONObject> {
 
     public JsonOrgJsonAdapter() {
-        super(Object.class, JsonOrgObjectAdapter::new, JsonOrgArrayAdapter::new);
+        super(JsonOrgObjectAdapter::new, JsonOrgArrayAdapter::new);
+    }
+
+    @Override
+    public String getName() {
+        return "jsonorg";
     }
 
     @Override
@@ -63,11 +69,17 @@ class JsonOrgJsonAdapter extends JsonAdapter<Object, JSONArray, JSONObject> {
 
     @Override
     public Object unwrap(Object value, boolean reduceBigDecimals) {
+        if (JSONObject.NULL.equals(value)) {
+            return null;
+        }
         if (value instanceof JSONObject jo) {
             return jo.toMap();
         }
         if (value instanceof JSONArray ja) {
             return ja.toList();
+        }
+        if (value instanceof JSONString ja) {
+            return ja.toString();
         }
         return value;
     }
@@ -104,13 +116,27 @@ class JsonOrgJsonAdapter extends JsonAdapter<Object, JSONArray, JSONObject> {
 
     @Override
     public Number getNumber(Object value) {
-        return value instanceof Number ? (Number) value : null;
+        if (value instanceof Number n) {
+            return n;
+        }
+        if (value instanceof JSONString || value instanceof String) {
+            return new BigDecimal(value.toString());
+        }
+        return null;
     }
 
     @Override
     public BigDecimal getNumberAsBigDecimal(Object value) {
-        var n = getNumber(value);
-        return n instanceof BigDecimal bd ? bd : new BigDecimal(n.toString());
+        if (value instanceof BigDecimal bd) {
+            return bd;
+        }
+        if (value instanceof Number n) {
+            return new BigDecimal(n.toString());
+        }
+        if (value instanceof JSONString || value instanceof String) {
+            return new BigDecimal(value.toString());
+        }
+        return null;
     }
 
     @Override
@@ -124,14 +150,22 @@ class JsonOrgJsonAdapter extends JsonAdapter<Object, JSONArray, JSONObject> {
     }
 
     @Override
+    public DocumentContext getDocumentContext(Object payload) {
+        if (isNull(payload)) {
+            return JsonOrgNullDocumentContext.INSTANCE;
+        }
+        return super.getDocumentContext(payload);
+    }
+
+    @Override
     public String toString(Object value) {
-        if (value instanceof JSONObject jo) {
-            return jo.toString();
+        var provider = JsonOrgJsonPathConfigurator.configuration().jsonProvider();
+        if (value instanceof String) {
+            var arr = provider.createArray();
+            provider.setArrayIndex(arr, 0, value);
+            var strInArr = provider.toJson(arr);
+            return strInArr.substring(1, strInArr.length() - 1);
         }
-        if (value instanceof JSONArray ja) {
-            return ja.toString();
-        }
-        // IMPORTANT: this may cause an infinite loop
-        return getAsString(value);
+        return provider.toJson(JSONObject.wrap(value));
     }
 }

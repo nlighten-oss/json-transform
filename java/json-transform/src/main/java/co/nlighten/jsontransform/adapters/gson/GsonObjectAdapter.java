@@ -1,6 +1,5 @@
 package co.nlighten.jsontransform.adapters.gson;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.adapters.JsonObjectAdapter;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -10,11 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class GsonObjectAdapter extends JsonObjectAdapter<JsonElement, JsonArray, JsonObject> {
-
-    public GsonObjectAdapter(JsonAdapter<JsonElement, JsonArray, JsonObject> adapter) {
-        super(JsonObject.class, adapter);
-    }
-
     @Override
     public JsonObject create() {
         return new JsonObject();
@@ -73,13 +67,6 @@ public class GsonObjectAdapter extends JsonObjectAdapter<JsonElement, JsonArray,
     @Override
     public boolean is(Object value) {
         return value instanceof JsonObject;
-    }
-    
-    @Override
-    public JsonObject convert(Object value) {
-        if (value instanceof JsonObject jo) return jo;
-        var je = adapter.wrap(value);
-        return je instanceof JsonObject jo ? jo : null;
     }
 
     @Override

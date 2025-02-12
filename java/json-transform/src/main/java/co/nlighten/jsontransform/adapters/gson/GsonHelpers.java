@@ -15,6 +15,7 @@ public class GsonHelpers {
 
     public static void setGson(Supplier<Gson> supplier) {
         GsonHelpers.threadSafeGsonBuilder = ThreadLocal.withInitial(supplier);
+        GsonJsonPathConfigurator.setConfigurationDefaults(new GsonJsonPathConfigurator.JaywayGSONConfiguration(GSON()));
     }
 
     public static JsonElement wrap(final Object value) {

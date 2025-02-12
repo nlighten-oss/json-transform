@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,16 +30,15 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
 
     private final JsonObjectAdapter<JE, JA, JO> jObject;
     private final JsonArrayAdapter<JE, JA, JO> jArray;
-    public final Class<JE> type;
 
     public JsonAdapter(
-            Class<JE> jsonElementType,
-            Function<JsonAdapter<JE, JA, JO>, JsonObjectAdapter<JE, JA, JO>> objectAdapterSupplier,
-            Function<JsonAdapter<JE, JA, JO>, JsonArrayAdapter<JE, JA, JO>> arrayAdapterSupplier) {
-        this.jObject = objectAdapterSupplier.apply(this);
-        this.jArray = arrayAdapterSupplier.apply(this);
-        this.type = jsonElementType;
+            Supplier<JsonObjectAdapter<JE, JA, JO>> objectAdapterSupplier,
+            Supplier<JsonArrayAdapter<JE, JA, JO>> arrayAdapterSupplier) {
+        this.jObject = objectAdapterSupplier.get();
+        this.jArray = arrayAdapterSupplier.get();
     }
+
+    public abstract String getName();
 
     /**
      * Checks if the given object is a Json element
@@ -621,7 +619,7 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
                     res = json.read(name);
                 }
                 if (unwrap) {
-                    res = unwrap(type.cast(res), true);
+                    res = unwrap(res, true);
                 }
                 return res;
             }

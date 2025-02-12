@@ -2,7 +2,6 @@ package co.nlighten.jsontransform.adapters.jackson;
 
 import co.nlighten.jsontransform.adapters.JsonAdapter;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +26,12 @@ public class JacksonJsonAdapter extends JsonAdapter<JsonNode, ArrayNode, ObjectN
     }
 
     public JacksonJsonAdapter() {
-        super(JsonNode.class, JacksonObjectAdapter::new, JacksonArrayAdapter::new);
+        super(JacksonObjectAdapter::new, JacksonArrayAdapter::new);
+    }
+
+    @Override
+    public String getName() {
+        return "jackson";
     }
 
     @Override
@@ -81,15 +85,11 @@ public class JacksonJsonAdapter extends JsonAdapter<JsonNode, ArrayNode, ObjectN
 
     @Override
     public JsonNode parse(String value) {
-        try {
-            if (value != null && value.startsWith("'") && value.endsWith("'") && value.length() > 2) {
-                return JacksonHelpers.mapper().readValue(
-                        singleQuotedStringToDoubleQuoted(value), JsonNode.class);
-            }
-            return JacksonHelpers.mapper().readValue(value, JsonNode.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        var provider = JacksonJsonPathConfigurator.configuration().jsonProvider();
+        if (value != null && value.startsWith("'") && value.endsWith("'") && value.length() > 2) {
+            return (JsonNode) provider.parse(singleQuotedStringToDoubleQuoted(value));
         }
+        return (JsonNode) provider.parse(value);
     }
 
     @Override
@@ -140,10 +140,9 @@ public class JacksonJsonAdapter extends JsonAdapter<JsonNode, ArrayNode, ObjectN
     }
     @Override
     public String toString(Object value) {
-        try {
-            return JacksonHelpers.mapper().writeValueAsString(value);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        var config = JacksonJsonPathConfigurator.configuration();
+        var mapper = config.mappingProvider();
+        var provider = config.jsonProvider();
+        return provider.toJson(mapper.map(value, JsonNode.class, config));
     }
 }

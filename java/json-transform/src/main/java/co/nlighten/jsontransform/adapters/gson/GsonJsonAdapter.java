@@ -1,11 +1,17 @@
 package co.nlighten.jsontransform.adapters.gson;
 
 import co.nlighten.jsontransform.adapters.JsonAdapter;
+import co.nlighten.jsontransform.adapters.gson.adapters.ISODateAdapter;
+import co.nlighten.jsontransform.adapters.gson.adapters.InstantTypeAdapter;
+import co.nlighten.jsontransform.adapters.gson.adapters.LocalDateTypeAdapter;
 import com.google.gson.*;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Date;
 
 public class GsonJsonAdapter extends JsonAdapter<JsonElement, JsonArray, JsonObject> {
 
@@ -14,12 +20,20 @@ public class GsonJsonAdapter extends JsonAdapter<JsonElement, JsonArray, JsonObj
     public static GsonBuilder gsonBuilder() {
         return new GsonBuilder()
                 .setDateFormat(ISO_DATETIME_FORMAT)
+                .registerTypeAdapter(Date.class, new ISODateAdapter())
+                .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+                .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
                 .setNumberToNumberStrategy(ToNumberPolicy.BIG_DECIMAL)
                 .setObjectToNumberStrategy(ToNumberPolicy.BIG_DECIMAL);
     }
 
     public GsonJsonAdapter() {
-        super(JsonElement.class, GsonObjectAdapter::new, GsonArrayAdapter::new);
+        super(GsonObjectAdapter::new, GsonArrayAdapter::new);
+    }
+
+    @Override
+    public String getName() {
+        return "gson";
     }
 
     @Override
@@ -64,7 +78,7 @@ public class GsonJsonAdapter extends JsonAdapter<JsonElement, JsonArray, JsonObj
 
     @Override
     public JsonElement parse(String value) {
-        return GsonHelpers.GSON().fromJson(value, JsonElement.class);
+        return (JsonElement)GsonJsonPathConfigurator.configuration().jsonProvider().parse(value);
     }
 
     @Override
@@ -103,6 +117,6 @@ public class GsonJsonAdapter extends JsonAdapter<JsonElement, JsonArray, JsonObj
     }
     @Override
     public String toString(Object value) {
-        return GsonHelpers.GSON().toJson(value);
+        return GsonJsonPathConfigurator.configuration().jsonProvider().toJson(value);
     }
 }

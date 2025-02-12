@@ -10,7 +10,8 @@
       "definition": "$$form:$"
     },
     "expect": {
-      "equal": "a=1&b=B&c=true"
+      "equal": "a=1&b=B&c=true",
+      "urlSearchParams": true
     }
   },
   {
@@ -23,7 +24,8 @@
       "definition": "$$form:$"
     },
     "expect": {
-      "equal": "a=1&a=2&c=true"
+      "equal": "a=1&a=2&c=true",
+      "urlSearchParams": true
     }
   },
   {
@@ -37,7 +39,8 @@
       "definition": { "$$form": "$" }
     },
     "expect": {
-      "equal": "a=1&b=B&c=true"
+      "equal": "a=1&b=B&c=true",
+      "urlSearchParams": true
     }
   },
   {
@@ -50,7 +53,8 @@
       "definition": { "$$form": "$" }
     },
     "expect": {
-      "equal": "a=1&a=2&c=true"
+      "equal": "a=1&a=2&c=true",
+      "urlSearchParams": true
     }
   }
 ]

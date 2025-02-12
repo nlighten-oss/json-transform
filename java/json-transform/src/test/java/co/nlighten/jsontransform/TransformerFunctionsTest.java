@@ -85,7 +85,7 @@ public class TransformerFunctionsTest extends BaseTest {
 }
 """), "B");
         // assert that "c" was called twice (check A, check B, break)
-        Assertions.assertEquals(2, callCount.get());
+        assertEquals(2, callCount.get());
 
         callCount.set(0);
         assertTransformation(null, fromJson("""
@@ -95,7 +95,7 @@ public class TransformerFunctionsTest extends BaseTest {
 }
 """), true);
         // assert that "c" was called twice (check a, check b, break)
-        Assertions.assertEquals(2, callCount.get());
+        assertEquals(2, callCount.get());
 
         callCount.set(0);
         assertTransformation(false, fromJson("""
@@ -104,7 +104,7 @@ public class TransformerFunctionsTest extends BaseTest {
 }
 """), false);
         // assert that "c" was called once (check false, break)
-        Assertions.assertEquals(1, callCount.get());
+        assertEquals(1, callCount.get());
 
         callCount.set(0);
         assertTransformation(false, fromJson("""
@@ -113,7 +113,7 @@ public class TransformerFunctionsTest extends BaseTest {
 }
 """), true);
         // assert that "c" was called once (check true, break)
-        Assertions.assertEquals(1, callCount.get());
+        assertEquals(1, callCount.get());
 
         callCount.set(0);
         assertTransformation(false, fromJson("""
@@ -125,7 +125,7 @@ public class TransformerFunctionsTest extends BaseTest {
 }
 """), fromJson("1"));
         // assert that "c" was called once (mapped first, break)
-        Assertions.assertEquals(1, callCount.get());
+        assertEquals(1, callCount.get());
 
         callCount.set(0);
         assertTransformation(null, fromJson("""
@@ -135,7 +135,7 @@ public class TransformerFunctionsTest extends BaseTest {
 }
 """), "c");
         // assert that "c" was called once (skipped 2, break)
-        Assertions.assertEquals(1, callCount.get());
+        assertEquals(1, callCount.get());
 
 
         callCount.set(0);
@@ -147,7 +147,7 @@ public class TransformerFunctionsTest extends BaseTest {
 }
 """), fromJson("[\"b\",\"c\"]"));
         // assert that "c" was called twice (skipped 1, eval 2, break)
-        Assertions.assertEquals(2, callCount.get());
+        assertEquals(2, callCount.get());
     }
 
     private static class TransformerFunctionArgsTest extends TransformerFunction {
@@ -252,7 +252,7 @@ public class TransformerFunctionsTest extends BaseTest {
                 ["#null"]"""), null);
         var listWithNull = new LinkedList<String>();
         listWithNull.add(null);
-        Assertions.assertEquals(adapter.wrap(listWithNull), result);
+        assertEquals(adapter.wrap(listWithNull), result);
 
         var result2 = transform(null, fromJson("""
                 ["#now"]"""), null);

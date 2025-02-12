@@ -10,8 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class PlaygroundApplication {
 
 	public static void main(String[] args) {
-		JsonTransformerConfiguration.set(new GsonJsonTransformerConfiguration());
-		//JsonTransformerConfiguration.set(new JacksonJsonTransformerConfiguration());
         SpringApplication.run(PlaygroundApplication.class, args);
 	}
 }

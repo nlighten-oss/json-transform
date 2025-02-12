@@ -57,7 +57,7 @@ public class JsonPatchTest extends BaseTest {
             var actual = jsonPatch.patch(patch, doc);
             var message = adapter.get(test, "comment");
             var expected = adapter.get(test, "expected");
-            Assertions.assertEquals(expected, actual, message == null ? "unexpected" : adapter.getAsString(message));
+            assertEquals(expected, actual, message == null ? "unexpected" : adapter.getAsString(message));
         }
     }
 }

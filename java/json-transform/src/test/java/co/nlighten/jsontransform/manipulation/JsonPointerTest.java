@@ -3,7 +3,6 @@ package co.nlighten.jsontransform.manipulation;
 import co.nlighten.jsontransform.BaseTest;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class JsonPointerTest extends BaseTest {

@@ -15,7 +15,7 @@ public class CsvFormatTest extends BaseTest {
         assertOutputFrom(input, output, names, null);
     }
     private void assertOutputFrom(String input, String output, List<String> names, Boolean forceQuote) {
-        Assertions.assertEquals(output, new CsvFormat(adapter, names, null, forceQuote, null)
+        assertEquals(output, new CsvFormat(adapter, names, null, forceQuote, null)
                 .serialize(adapter.parse(input)));
     }
 
@@ -105,13 +105,13 @@ t",1
         assertDeserializationOutputFrom(input, output, null);
     }
     private void assertDeserializationOutputFrom(String input, String output, List<String> names) {
-        Assertions.assertEquals(
+        assertEquals(
                 adapter.parse(output),
                 new CsvFormat(adapter, names, null, null, null).deserialize(input)
                                );
     }
     private void assertDeserializationOutputFrom(String input, String output, boolean noHeaders, List<String> names) {
-        Assertions.assertEquals(
+        assertEquals(
                 adapter.parse(output),
                 new CsvFormat(adapter, names, noHeaders, null, null).deserialize(input)
                                );

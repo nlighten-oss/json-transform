@@ -3,13 +3,6 @@ package co.nlighten.jsontransform.adapters;
 import java.util.stream.Stream;
 
 public abstract class JsonArrayAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
-    public final Class<JA> type;
-    protected JsonAdapter<JE, JA, JO> adapter;
-
-    public JsonArrayAdapter(Class<JA> type, JsonAdapter<JE, JA, JO> adapter) {
-        this.type = type;
-        this.adapter = adapter;
-    }
 
     public abstract JA create();
     public abstract JA create(int capacity);

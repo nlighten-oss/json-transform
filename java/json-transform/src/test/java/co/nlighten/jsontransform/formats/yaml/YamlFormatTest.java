@@ -67,7 +67,7 @@ items:
     @Test
     void testDeserialize() {
         var result = new YamlFormat(adapter).deserialize(YAML);
-        Assertions.assertEquals(adapter.parse(JSON), result);
+        assertEquals(adapter.parse(JSON), result);
     }
 
     @Test
@@ -81,6 +81,6 @@ items:
         var outputYaml = new YamlFormat(adapter).serialize(inputJsonElement);
         var result = new YamlFormat(adapter).deserialize(outputYaml);
         // check that reconstructed correctly
-        Assertions.assertEquals(inputJsonElement, result);
+        assertEquals(inputJsonElement, result);
     }
 }

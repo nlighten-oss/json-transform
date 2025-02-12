@@ -1,6 +1,5 @@
 package co.nlighten.jsontransform.adapters.gson;
 
-import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.adapters.JsonArrayAdapter;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -10,11 +9,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class GsonArrayAdapter extends JsonArrayAdapter<JsonElement, JsonArray, JsonObject> {
-
-    public GsonArrayAdapter(JsonAdapter<JsonElement, JsonArray, JsonObject> adapter) {
-        super(JsonArray.class, adapter);
-    }
-
     @Override
     public JsonArray create() {
         return new JsonArray();

@@ -37,6 +37,7 @@
   },
   {
     "name": "objects with duplicates",
+    "skip": ["javaJsonOrg"],
     "given": {
       "input": [{ "a": 1 }, { "a": 1 }, { "a": 1 }],
       "definition": {
@@ -49,6 +50,7 @@
   },
   {
     "name": "arrays with duplicates",
+    "skip": ["javaJsonOrg"],
     "given": {
       "input": [["a", 1], ["a", 2], ["a", 1], ["a", 1]],
       "definition": {

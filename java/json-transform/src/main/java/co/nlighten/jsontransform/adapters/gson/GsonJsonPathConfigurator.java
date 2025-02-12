@@ -1,5 +1,7 @@
 package co.nlighten.jsontransform.adapters.gson;
 
+import com.google.gson.Gson;
+import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.Option;
 import com.jayway.jsonpath.spi.json.GsonJsonProvider;
 import com.jayway.jsonpath.spi.json.JsonProvider;
@@ -16,13 +18,19 @@ public class GsonJsonPathConfigurator {
 
     private static boolean initialized = false;
 
-    private static class JaywayGSONConfiguration implements com.jayway.jsonpath.Configuration.Defaults {
+    public static class JaywayGSONConfiguration implements com.jayway.jsonpath.Configuration.Defaults {
 
-        private static final JsonProvider jsonProvider = new GsonJsonProvider();
-        private static final Set<Option> options = Set.of(
-                Option.SUPPRESS_EXCEPTIONS
-        );
-        private static final MappingProvider mappingProvider = new GsonMappingProvider();
+        private final JsonProvider jsonProvider;
+        private final Set<Option> options;
+        private final MappingProvider mappingProvider;
+
+        public JaywayGSONConfiguration(Gson gson) {
+            jsonProvider = new GsonJsonProvider(gson);
+            options = Set.of(
+                    Option.SUPPRESS_EXCEPTIONS
+            );
+            mappingProvider = new GsonMappingProvider();
+        }
 
         @Override
         public JsonProvider jsonProvider() {
@@ -40,9 +48,10 @@ public class GsonJsonPathConfigurator {
         }
     }
 
-    private static com.jayway.jsonpath.Configuration.Defaults configurationDefaults = new JaywayGSONConfiguration();
+    private static com.jayway.jsonpath.Configuration.Defaults configurationDefaults = new JaywayGSONConfiguration(GsonHelpers.GSON());
+    private static com.jayway.jsonpath.Configuration configuration = createConfiguration();
 
-    public static void setup() {
+    public static synchronized void setup() {
         if (initialized) return;
         log.info("Setting com.jayway.jsonpath defaults with {}", configurationDefaults.getClass());
         com.jayway.jsonpath.Configuration.setDefaults(configurationDefaults);
@@ -52,8 +61,20 @@ public class GsonJsonPathConfigurator {
     /**
      * Override the default com.jayway.jsonpath configuration (and reset initialization)
      */
-    public static void setConfigurationDefaults(com.jayway.jsonpath.Configuration.Defaults configurationDefaults) {
-        GsonJsonPathConfigurator.configurationDefaults = configurationDefaults;
+    public static synchronized void setConfigurationDefaults(com.jayway.jsonpath.Configuration.Defaults defaults) {
+        configurationDefaults = defaults;
+        configuration = createConfiguration();
         initialized = false;
+    }
+
+    public static com.jayway.jsonpath.Configuration createConfiguration() {
+        return new Configuration.ConfigurationBuilder().jsonProvider(configurationDefaults.jsonProvider())
+                .mappingProvider(configurationDefaults.mappingProvider())
+                .options(configurationDefaults.options())
+                .build();
+    }
+
+    public static com.jayway.jsonpath.Configuration configuration() {
+        return configuration;
     }
 }

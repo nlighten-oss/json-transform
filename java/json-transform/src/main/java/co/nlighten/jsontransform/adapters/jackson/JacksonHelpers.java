@@ -1,9 +1,6 @@
 package co.nlighten.jsontransform.adapters.jackson;
 
-import co.nlighten.jsontransform.adapters.gson.GsonHelpers;
-import co.nlighten.jsontransform.adapters.gson.GsonJsonAdapter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 
 import java.util.function.Supplier;
 
