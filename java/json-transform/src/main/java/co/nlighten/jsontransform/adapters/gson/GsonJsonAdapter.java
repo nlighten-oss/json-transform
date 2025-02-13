@@ -1,39 +1,22 @@
 package co.nlighten.jsontransform.adapters.gson;
 
 import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.adapters.gson.adapters.ISODateAdapter;
-import co.nlighten.jsontransform.adapters.gson.adapters.InstantTypeAdapter;
-import co.nlighten.jsontransform.adapters.gson.adapters.LocalDateTypeAdapter;
 import com.google.gson.*;
-import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.Date;
+import java.math.BigInteger;
+import java.util.function.Supplier;
 
 public class GsonJsonAdapter extends JsonAdapter<JsonElement, JsonArray, JsonObject> {
-
-    public static final String ISO_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-
-    public static GsonBuilder gsonBuilder() {
-        return new GsonBuilder()
-                .setDateFormat(ISO_DATETIME_FORMAT)
-                .registerTypeAdapter(Date.class, new ISODateAdapter())
-                .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
-                .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
-                .setNumberToNumberStrategy(ToNumberPolicy.BIG_DECIMAL)
-                .setObjectToNumberStrategy(ToNumberPolicy.BIG_DECIMAL);
+    public GsonJsonAdapter(Supplier<Gson> gsonSupplier) {
+        super(
+                GsonObjectAdapter::new,
+                GsonArrayAdapter::new,
+                GsonHelpers.setFactoryAndReturnJsonPathConfig(gsonSupplier)
+        );
     }
-
     public GsonJsonAdapter() {
-        super(GsonObjectAdapter::new, GsonArrayAdapter::new);
-    }
-
-    @Override
-    public String getName() {
-        return "gson";
+        this(null);
     }
 
     @Override
@@ -66,9 +49,28 @@ public class GsonJsonAdapter extends JsonAdapter<JsonElement, JsonArray, JsonObj
         return JsonNull.INSTANCE;
     }
 
+    private static BigDecimal toBigDecimal(Number number) {
+        // try to be as specific as possible in precision
+        if (number instanceof BigDecimal bd) {
+            return bd;
+        }
+        if (number instanceof Double || number instanceof Float) {
+            return BigDecimal.valueOf(number.doubleValue());
+        }
+        if (number instanceof BigInteger bi) {
+            return new BigDecimal(bi);
+        }
+        return BigDecimal.valueOf(number.longValue());
+    }
+
     @Override
     public JsonElement wrap(Object value) {
-        return GsonHelpers.wrap(value);
+        if (value instanceof JsonElement je) return je;
+        if (value instanceof Character c) return new JsonPrimitive(c);
+        if (value instanceof String s) return new JsonPrimitive(s);
+        if (value instanceof Boolean b) return new JsonPrimitive(b);
+        if (value instanceof Number n) return new JsonPrimitive(toBigDecimal(n));
+        return GsonHelpers.GSON().toJsonTree(value);
     }
 
     @Override
@@ -78,7 +80,7 @@ public class GsonJsonAdapter extends JsonAdapter<JsonElement, JsonArray, JsonObj
 
     @Override
     public JsonElement parse(String value) {
-        return (JsonElement)GsonJsonPathConfigurator.configuration().jsonProvider().parse(value);
+        return GsonHelpers.GSON().fromJson(value, JsonElement.class);
     }
 
     @Override
@@ -102,21 +104,7 @@ public class GsonJsonAdapter extends JsonAdapter<JsonElement, JsonArray, JsonObj
     }
 
     @Override
-    public void setupJsonPath() {
-        GsonJsonPathConfigurator.setup();
-    }
-
-    @Override
-    public DocumentContext getDocumentContext(Object payload) {
-        GsonJsonPathConfigurator.setup();
-        Object document = payload;
-        if (!(payload instanceof JsonElement)) {
-            document = wrap(payload);
-        }
-        return JsonPath.parse(document);
-    }
-    @Override
     public String toString(Object value) {
-        return GsonJsonPathConfigurator.configuration().jsonProvider().toJson(value);
+        return GsonHelpers.GSON().toJson(value);
     }
 }

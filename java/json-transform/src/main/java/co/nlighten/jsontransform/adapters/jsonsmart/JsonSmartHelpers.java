@@ -1,4 +1,15 @@
-package co.nlighten.jsontransform.adapters.pojo;
+package co.nlighten.jsontransform.adapters.jsonsmart;
+
+import co.nlighten.jsontransform.adapters.pojo.PojoNull;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.Option;
+import com.jayway.jsonpath.internal.DefaultsImpl;
+import com.jayway.jsonpath.spi.json.JsonOrgJsonProvider;
+import com.jayway.jsonpath.spi.json.JsonSmartJsonProvider;
+import com.jayway.jsonpath.spi.mapper.JsonOrgMappingProvider;
+import com.jayway.jsonpath.spi.mapper.JsonSmartMappingProvider;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -6,30 +17,40 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class PojoMapper {
+public class JsonSmartHelpers {
+
+    static Configuration getJsonPathConfig() {
+        return new Configuration.ConfigurationBuilder()
+                .jsonProvider(new JsonSmartJsonProvider())
+                .mappingProvider(new JsonSmartMappingProvider())
+                .options(Set.of(
+                        Option.SUPPRESS_EXCEPTIONS
+                ))
+                .build();
+    }
 
     private static Stream<Field> getAllFields(Class<?> clazz) {
         if (clazz == null) return Stream.empty();
         return Stream.concat(
-            getAllFields(clazz.getSuperclass()),
-            Arrays.stream(clazz.getDeclaredFields())
-                .filter(f ->
-                    !Modifier.isStatic(f.getModifiers()) && (
-                        Modifier.isPublic(f.getModifiers()) ||
-                        Modifier.isProtected(f.getModifiers())
-                    )
-                )
+                getAllFields(clazz.getSuperclass()),
+                Arrays.stream(clazz.getDeclaredFields())
+                        .filter(f ->
+                                !Modifier.isStatic(f.getModifiers()) && (
+                                        Modifier.isPublic(f.getModifiers()) ||
+                                                Modifier.isProtected(f.getModifiers())
+                                )
+                        )
         );
     }
 
     /**
-     * Wraps and unwraps values for PojoJsonAdapter processing
+     * Wraps and unwraps values for JsonSmartJsonAdapter processing
      * @param object object to convert
      * @param unwrap if true, will convert PojoNull to null, otherwise will convert null values to PojoNull
      */
     public static Object convert(Object object, boolean unwrap) {
-        if (object == null || object instanceof PojoNull) {
-            return unwrap ? null : PojoNull.INSTANCE;
+        if (object == null) {
+            return null;
         }
         // number | boolean | string
         if (object instanceof Number ||
@@ -43,13 +64,13 @@ public class PojoMapper {
         }
         // array
         if (object instanceof Iterable<?> i) {
-            var result = new ArrayList<>();
+            var result = unwrap ? new ArrayList<>() : new JSONArray();
             for (var item : i) {
                 result.add(convert(item, unwrap));
             }
             return result;
         } else if (object.getClass().isArray()) {
-            var result = new ArrayList<>();
+            var result = unwrap ? new ArrayList<>() : new JSONArray();
             var length = Array.getLength(object);
             for (var i = 0; i < length; i++) {
                 result.add(convert(Array.get(object, i), unwrap));
@@ -57,7 +78,7 @@ public class PojoMapper {
             return result;
         }
         // object
-        var result = new HashMap<String, Object>();
+        var result = unwrap ? new HashMap<String, Object>() : new JSONObject();
         if (object instanceof Map<?, ?> m) {
             // - map
             for (var entry : m.entrySet()) {
@@ -75,9 +96,5 @@ public class PojoMapper {
             });
         }
         return result;
-    }
-
-    public static Object deepClone(Object value) {
-        return convert(value, false);
     }
 }

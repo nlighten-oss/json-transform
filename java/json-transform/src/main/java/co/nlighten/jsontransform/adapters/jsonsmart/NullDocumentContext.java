@@ -1,10 +1,10 @@
-package co.nlighten.jsontransform.adapters.pojo;
+package co.nlighten.jsontransform.adapters.jsonsmart;
 
 import com.jayway.jsonpath.*;
 
-public class PojoNullDocumentContext implements DocumentContext {
-    private static final Object NULL_INSTANCE = PojoNull.INSTANCE;
-    public static final PojoNullDocumentContext INSTANCE = new PojoNullDocumentContext();
+public class NullDocumentContext implements DocumentContext {
+    private static final Object NULL_INSTANCE = null;
+    public static final NullDocumentContext INSTANCE = new NullDocumentContext();
 
     @Override
     public Configuration configuration() {

@@ -47,6 +47,7 @@ const PODS = {
   javaGson: "http://localhost:10000/api/v1/transform/gson",
   javaJackson: "http://localhost:10000/api/v1/transform/jackson",
   javaJsonOrg: "http://localhost:10000/api/v1/transform/jsonorg",
+  javaJsonSmart: "http://localhost:10000/api/v1/transform/jsonsmart",
   javaPojo: "http://localhost:10000/api/v1/transform/pojo"
 }
 

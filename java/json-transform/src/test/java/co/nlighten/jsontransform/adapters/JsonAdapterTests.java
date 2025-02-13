@@ -1,51 +1,54 @@
 package co.nlighten.jsontransform.adapters;
 
-import co.nlighten.jsontransform.BaseTest;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import co.nlighten.jsontransform.MultiAdapterBaseTest;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
 
-public class JsonAdapterTests extends BaseTest {
-    
-    @Test
-    void testAsString_BigDecimal() {
+public class JsonAdapterTests extends MultiAdapterBaseTest {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testAsString_BigDecimal(JsonAdapter<?,?,?> adapter) {
         var x = BigDecimal.valueOf(3);
-        assertEquals("3", adapter.getAsString(x));
+        assertEquals(adapter, "3", adapter.getAsString(x));
         x = BigDecimal.valueOf(0.5);
-        assertEquals("0.5", adapter.getAsString(x));
+        assertEquals(adapter, "0.5", adapter.getAsString(x));
         x = BigDecimal.valueOf(Double.MAX_VALUE);
-        assertEquals(String.format("%.0f",x), adapter.getAsString(x));
+        assertEquals(adapter, String.format("%.0f",x), adapter.getAsString(x));
         var str = "98765432101234567890000000000000.9876543210123456789";
         x = new BigDecimal(str);
-        assertEquals(str, adapter.getAsString(x));
+        assertEquals(adapter, str, adapter.getAsString(x));
         str = "1.5E+50";
         x = new BigDecimal(str);
-        assertEquals(x.toPlainString(), adapter.getAsString(x));
+        assertEquals(adapter, x.toPlainString(), adapter.getAsString(x));
     }
 
-    @Test
-    void testAsString_Float() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testAsString_Float(JsonAdapter<?,?,?> adapter) {
         float f = 3.0f;
-        assertEquals("3", adapter.getAsString(f));
+        assertEquals(adapter, "3", adapter.getAsString(f));
         f = 0.5f;
-        assertEquals("0.5", adapter.getAsString(f));
+        assertEquals(adapter, "0.5", adapter.getAsString(f));
         f = Float.MAX_VALUE;
-        assertEquals(String.format("%.0f",f), adapter.getAsString(f));
+        assertEquals(adapter, String.format("%.0f",f), adapter.getAsString(f));
     }
 
-    @Test
-    void testAsString_Double() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testAsString_Double(JsonAdapter<?,?,?> adapter) {
         double d = 3.0d;
-        assertEquals("3", adapter.getAsString(d));
+        assertEquals(adapter, "3", adapter.getAsString(d));
         d = 0.5f;
-        assertEquals("0.5", adapter.getAsString(d));
+        assertEquals(adapter, "0.5", adapter.getAsString(d));
         d = Double.MAX_VALUE;
-        assertEquals(String.format("%.0f",d), adapter.getAsString(d));
+        assertEquals(adapter, String.format("%.0f",d), adapter.getAsString(d));
     }
 
-    @Test
-    void testMergeIntoGivenMutuallyExclusiveKeysWithDot() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testMergeIntoGivenMutuallyExclusiveKeysWithDot(JsonAdapter<?,?,?> adapter) {
         var root = adapter.parse("""
 {
     "numbers.roman": { "I": 1, "II": 2 }
@@ -62,11 +65,12 @@ public class JsonAdapterTests extends BaseTest {
     "numbers.exist": true
 }
 """);
-        assertEquals(expected, adapter.mergeInto(root, mergee, null));
+        assertEquals(adapter, expected, adapter.mergeInto(root, mergee, null));
     }
 
-    @Test
-    void testMergeIntoGivenNoPath() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testMergeIntoGivenNoPath(JsonAdapter<?,?,?> adapter) {
         var root = adapter.parse("""
 {
     "a.b.c[0]": "foovalue"
@@ -82,11 +86,12 @@ public class JsonAdapterTests extends BaseTest {
     "a": { "z": "barvalue" }, "a.b.c[0]": "foovalue"
 }
 """);
-        assertEquals(expected, adapter.mergeInto(root, mergee, null));
+        assertEquals(adapter, expected, adapter.mergeInto(root, mergee, null));
     }
 
-    @Test
-    void testMergeIntoGivenMutuallyExclusiveKeysAndDollarPath() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testMergeIntoGivenMutuallyExclusiveKeysAndDollarPath(JsonAdapter<?,?,?> adapter) {
         var root = adapter.parse("""
 {
     "roman": { "I": 1, "II": 2 }
@@ -105,6 +110,6 @@ public class JsonAdapterTests extends BaseTest {
     "symbols": ["I", "V", "X", "L", "C", "D", "M"]
 }
 """);
-        assertEquals(expected, adapter.mergeInto(root, mergee, "$"));
+        assertEquals(adapter, expected, adapter.mergeInto(root, mergee, "$"));
     }
 }

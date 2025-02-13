@@ -1,7 +1,9 @@
 package co.nlighten.jsontransform;
 
-public interface TransformerFunctionsAdapter {
-    TransformerFunctions.FunctionMatchResult<Object> matchInline(String path, String value, ParameterResolver resolver, JsonTransformerFunction transformer);
+import co.nlighten.jsontransform.adapters.JsonAdapter;
 
-    TransformerFunctions.FunctionMatchResult<Object> matchObject(String path, Object definition, ParameterResolver resolver, JsonTransformerFunction transformer);
+public interface TransformerFunctionsAdapter {
+    TransformerFunctions.FunctionMatchResult<Object> matchInline(JsonAdapter<?,?,?> adapter, String path, String value, ParameterResolver resolver, JsonTransformerFunction transformer);
+
+    TransformerFunctions.FunctionMatchResult<Object> matchObject(JsonAdapter<?,?,?> adapter, String path, Object definition, ParameterResolver resolver, JsonTransformerFunction transformer);
 }

@@ -104,7 +104,7 @@ public class JsonPatch {
             }
             case "test" -> {
                 var value = getRequiredValueArgument(operation, op);
-                if (!Objects.equals(jsonPointer.get(doc, path), value)) {
+                if (!adapter.areEqual(jsonPointer.get(doc, path), value)) {
                     throw new RuntimeException("test - The value does not equal value from path");
                 }
             }

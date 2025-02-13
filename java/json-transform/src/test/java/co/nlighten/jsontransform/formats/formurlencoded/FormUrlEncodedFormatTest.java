@@ -1,18 +1,21 @@
 package co.nlighten.jsontransform.formats.formurlencoded;
 
-import co.nlighten.jsontransform.BaseTest;
+import co.nlighten.jsontransform.MultiAdapterBaseTest;
+import co.nlighten.jsontransform.adapters.JsonAdapter;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-public class FormUrlEncodedFormatTest extends BaseTest {
+public class FormUrlEncodedFormatTest extends MultiAdapterBaseTest {
 
     public static class FUETest {
         public String title = "Hello World";
         public int[] numbers = new int[] { 1, 2};
     }
 
-    @Test
-    void testSerialize() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testSerialize(JsonAdapter<?,?,?> adapter) {
         var xbt = new FormUrlEncodedFormat(adapter);
         var result = xbt.serialize(new FUETest());
 
@@ -34,11 +37,12 @@ public class FormUrlEncodedFormatTest extends BaseTest {
 
     }
 
-    @Test
-    void testDeserialize() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testDeserialize(JsonAdapter<?,?,?> adapter) {
         var xbt = new FormUrlEncodedFormat(adapter);
-        var result = adapter.unwrap(xbt.deserialize("a=1&b=hello&c"), false);
-        assertEquals(fromJson("""
+        var result = xbt.deserialize("a=1&b=hello&c");
+        assertEquals(adapter, adapter.parse("""
                                                              {
                                                                "a": "1",
                                                                "a$$": ["1"],
@@ -48,8 +52,8 @@ public class FormUrlEncodedFormatTest extends BaseTest {
                                                                "c$$": ["true"]
                                                              }"""), result);
 
-        var result2 = adapter.unwrap(xbt.deserialize("a=one&b=a&b=b&b=c"), false);
-        assertEquals(fromJson("""
+        var result2 = xbt.deserialize("a=one&b=a&b=b&b=c");
+        assertEquals(adapter, adapter.parse("""
                                                              {
                                                                "a": "one",
                                                                "a$$": ["one"],
@@ -57,8 +61,8 @@ public class FormUrlEncodedFormatTest extends BaseTest {
                                                                "b$$": ["a","b","c"]
                                                              }"""), result2);
 
-        var result3 = adapter.unwrap(xbt.deserialize("c&c&d=Hello+World&title=not+url%2Bsafe%3F%3Dx%26b%3Dpath%2Fpath"), false);
-        assertEquals(fromJson("""
+        var result3 = xbt.deserialize("c&c&d=Hello+World&title=not+url%2Bsafe%3F%3Dx%26b%3Dpath%2Fpath");
+        assertEquals(adapter, adapter.parse("""
                                                              {
                                                                "c":"true",
                                                                "c$$": ["true","true"],

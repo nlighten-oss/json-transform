@@ -1,37 +1,24 @@
 package co.nlighten.jsontransform.adapters.jackson;
 
 import co.nlighten.jsontransform.adapters.JsonAdapter;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.DeserializationFeature;
+import co.nlighten.jsontransform.adapters.JsonAdapterHelpers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.cfg.JsonNodeFeature;
 import com.fasterxml.jackson.databind.node.*;
-import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
+import java.util.function.Supplier;
 
 public class JacksonJsonAdapter extends JsonAdapter<JsonNode, ArrayNode, ObjectNode> {
-
-    public static final String ISO_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-
-    public static ObjectMapper mapperBuilder() {
-        return new ObjectMapper()
-                .setDateFormat(new SimpleDateFormat(ISO_DATETIME_FORMAT))
-                .configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true)
-                .configure(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN, true)
-                .configure(JsonNodeFeature.STRIP_TRAILING_BIGDECIMAL_ZEROES, true);
+    public JacksonJsonAdapter(Supplier<ObjectMapper> jacksonSupplier) {
+        super(
+                JacksonObjectAdapter::new,
+                JacksonArrayAdapter::new,
+                JacksonHelpers.setFactoryAndReturnJsonPathConfig(jacksonSupplier)
+        );
     }
-
     public JacksonJsonAdapter() {
-        super(JacksonObjectAdapter::new, JacksonArrayAdapter::new);
-    }
-
-    @Override
-    public String getName() {
-        return "jackson";
+        this(null);
     }
 
     @Override
@@ -74,20 +61,13 @@ public class JacksonJsonAdapter extends JsonAdapter<JsonNode, ArrayNode, ObjectN
         return JacksonJsonElementUnwrapper.unwrap(value, false, reduceBigDecimals);
     }
 
-    private static final String BACKSLASH = "\\";
-    private String singleQuotedStringToDoubleQuoted(String value) {
-        return "\"" +
-                value.substring(1, value.length() - 1)
-                .replace("\"", BACKSLASH + "\"")
-                .replace(BACKSLASH + "'", "'") +
-                "\"";
-    }
-
     @Override
     public JsonNode parse(String value) {
-        var provider = JacksonJsonPathConfigurator.configuration().jsonProvider();
+        var provider = jsonPathConfiguration.jsonProvider();
         if (value != null && value.startsWith("'") && value.endsWith("'") && value.length() > 2) {
-            return (JsonNode) provider.parse(singleQuotedStringToDoubleQuoted(value));
+            return (JsonNode) provider.parse(
+                JsonAdapterHelpers.singleQuotedStringToDoubleQuoted(value)
+            );
         }
         return (JsonNode) provider.parse(value);
     }
@@ -125,24 +105,9 @@ public class JacksonJsonAdapter extends JsonAdapter<JsonNode, ArrayNode, ObjectN
     }
 
     @Override
-    public void setupJsonPath() {
-        JacksonJsonPathConfigurator.setup();
-    }
-
-    @Override
-    public DocumentContext getDocumentContext(Object payload) {
-        JacksonJsonPathConfigurator.setup();
-        Object document = payload;
-        if (!(payload instanceof JsonNode)) {
-            document = wrap(payload);
-        }
-        return JsonPath.parse(document);
-    }
-    @Override
     public String toString(Object value) {
-        var config = JacksonJsonPathConfigurator.configuration();
-        var mapper = config.mappingProvider();
-        var provider = config.jsonProvider();
-        return provider.toJson(mapper.map(value, JsonNode.class, config));
+        var mapper = jsonPathConfiguration.mappingProvider();
+        var provider = jsonPathConfiguration.jsonProvider();
+        return provider.toJson(mapper.map(value, JsonNode.class, jsonPathConfiguration));
     }
 }

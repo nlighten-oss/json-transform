@@ -4,6 +4,7 @@ import com.jayway.jsonpath.*;
 import org.json.JSONObject;
 
 public class JsonOrgNullDocumentContext implements DocumentContext {
+    private static final Object NULL_INSTANCE = JSONObject.NULL;
     public static final JsonOrgNullDocumentContext INSTANCE = new JsonOrgNullDocumentContext();
 
     @Override
@@ -13,7 +14,7 @@ public class JsonOrgNullDocumentContext implements DocumentContext {
 
     @Override
     public <T> T json() {
-        return (T) JSONObject.NULL;
+        return (T) NULL_INSTANCE;
     }
 
     @Override
@@ -83,32 +84,32 @@ public class JsonOrgNullDocumentContext implements DocumentContext {
 
     @Override
     public <T> T read(String s, Predicate... predicates) {
-        return (T)JSONObject.NULL;
+        return (T)NULL_INSTANCE;
     }
 
     @Override
     public <T> T read(String s, Class<T> aClass, Predicate... predicates) {
-        return (T)JSONObject.NULL;
+        return (T)NULL_INSTANCE;
     }
 
     @Override
     public <T> T read(JsonPath jsonPath) {
-        return (T)JSONObject.NULL;
+        return (T)NULL_INSTANCE;
     }
 
     @Override
     public <T> T read(JsonPath jsonPath, Class<T> aClass) {
-        return (T)JSONObject.NULL;
+        return (T)NULL_INSTANCE;
     }
 
     @Override
     public <T> T read(JsonPath jsonPath, TypeRef<T> typeRef) {
-        return (T)JSONObject.NULL;
+        return (T)NULL_INSTANCE;
     }
 
     @Override
     public <T> T read(String s, TypeRef<T> typeRef) {
-        return (T)JSONObject.NULL;
+        return (T)NULL_INSTANCE;
     }
 
     @Override

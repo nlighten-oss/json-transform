@@ -23,6 +23,8 @@
     }
 ```
 
+- See available adapters [here](https://github.com/nlighten-oss/json-transform/tree/main/java/json-transform/src/main/java/co/nlighten/jsontransform/adapters)
+
 Then in the code where you want to transform JSON objects:
 
 ```java
@@ -32,4 +34,14 @@ Then in the code where you want to transform JSON objects:
     // 'input' - The input of the transformer (referred as '$')
     // 'additionalContext' - (optional) Map of additional inputs to refer during transformation 
     Object transformed = transformer.transform(input, additionalContext);
+```
+
+### JavaScript
+
+```js
+    // 'definition' is the spec of the transformer    
+    const transformer = new JsonTransformer(definition);
+    // 'input' - The input of the transformer (referred as '$')
+    // 'additionalContext' - (optional) Map of additional inputs to refer during transformation 
+    const result = await transformer.transform(input, additionalContext);
 ```

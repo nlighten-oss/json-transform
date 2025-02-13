@@ -1,10 +1,11 @@
 package co.nlighten.jsontransform.formats.yaml;
 
-import co.nlighten.jsontransform.BaseTest;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import co.nlighten.jsontransform.MultiAdapterBaseTest;
+import co.nlighten.jsontransform.adapters.JsonAdapter;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-public class YamlFormatTest extends BaseTest {
+public class YamlFormatTest extends MultiAdapterBaseTest {
 
         public final static String YAML = """
 title: Mr.
@@ -64,14 +65,16 @@ items:
   } ]
 }""";
 
-    @Test
-    void testDeserialize() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testDeserialize(JsonAdapter<?,?,?> adapter) {
         var result = new YamlFormat(adapter).deserialize(YAML);
-        assertEquals(adapter.parse(JSON), result);
+        assertEquals(adapter, adapter.parse(JSON), result);
     }
 
-    @Test
-    void testSerializeAndDeserializeViaJsonElement() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testSerializeAndDeserializeViaJsonElement(JsonAdapter<?,?,?> adapter) {
         // we check back and forth serialization because the output yaml is not guaranteed to be in the same order
         // so, we convert back to JsonElement to do deep comparison
 
@@ -81,6 +84,6 @@ items:
         var outputYaml = new YamlFormat(adapter).serialize(inputJsonElement);
         var result = new YamlFormat(adapter).deserialize(outputYaml);
         // check that reconstructed correctly
-        assertEquals(inputJsonElement, result);
+        assertEquals(adapter, inputJsonElement, result);
     }
 }

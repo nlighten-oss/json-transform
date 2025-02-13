@@ -2,8 +2,7 @@ package co.nlighten.jsontransform.adapters;
 
 import co.nlighten.jsontransform.ParameterResolver;
 import com.google.gson.JsonPrimitive;
-import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.*;
 
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
@@ -31,14 +30,18 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
     private final JsonObjectAdapter<JE, JA, JO> jObject;
     private final JsonArrayAdapter<JE, JA, JO> jArray;
 
+    protected final ParseContext jsonPath;
+    protected final com.jayway.jsonpath.Configuration jsonPathConfiguration;
+
     public JsonAdapter(
             Supplier<JsonObjectAdapter<JE, JA, JO>> objectAdapterSupplier,
-            Supplier<JsonArrayAdapter<JE, JA, JO>> arrayAdapterSupplier) {
+            Supplier<JsonArrayAdapter<JE, JA, JO>> arrayAdapterSupplier,
+            com.jayway.jsonpath.Configuration jsonPathConfiguration) {
         this.jObject = objectAdapterSupplier.get();
         this.jArray = arrayAdapterSupplier.get();
+        this.jsonPathConfiguration = jsonPathConfiguration;
+        this.jsonPath = JsonPath.using(jsonPathConfiguration);
     }
-
-    public abstract String getName();
 
     /**
      * Checks if the given object is a Json element
@@ -400,22 +403,55 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
     }
 
     /**
-     * Setup JsonPath using specific provider for it
-     */
-    public abstract void setupJsonPath();
-
-    /**
      * Returns a document context for the given payload (Using JsonPath)
      * @param payload the payload to create a document context for
      * @return a document context
      */
-    public DocumentContext getDocumentContext(Object payload) {
-        setupJsonPath();
+    public DocumentContext getDocumentContext(Object payload, Iterable<String> options) {
         Object document = payload;
         if (!is(payload)) {
             document = wrap(payload);
         }
-        return JsonPath.parse(document);
+        var parseContext = jsonPath;
+        if (options != null) {
+            var opts = new HashSet<Option>();
+            for (var option : options) {
+                opts.add(Option.valueOf(option));
+            }
+            parseContext = JsonPath.using(new Configuration.ConfigurationBuilder()
+                    .jsonProvider(jsonPathConfiguration.jsonProvider())
+                    .mappingProvider(jsonPathConfiguration.mappingProvider())
+                    .options(opts)
+                    .build());
+        }
+        return parseContext.parse(document);
+    }
+
+    public DocumentContext getDocumentContext(Object payload) {
+        return getDocumentContext(payload, null);
+    }
+
+    public boolean nodesComparable() {
+        return true;
+    }
+
+    /**
+     * Checks if the given objects are equal based on Json implementation
+     * @param value the first object
+     * @param other the second object
+     * @return true if the objects are equal
+     */
+    public boolean areEqual(Object value, Object other) {
+        return Objects.equals(value, other);
+    }
+
+    /**
+     * Returns the hash code of the given object
+     * @param value the object to get the hash code for
+     * @return the hash code of the object
+     */
+    public int hashCode(Object value) {
+        return value == null ? 0 : value.hashCode();
     }
 
     /**

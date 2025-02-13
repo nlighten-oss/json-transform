@@ -1,13 +1,17 @@
 package co.nlighten.jsontransform;
 
+import co.nlighten.jsontransform.adapters.JsonAdapter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Map;
 
-public class JsonTransformerUtilsTest extends BaseTest {
-    @Test
-    void objects() {
+public class JsonTransformerUtilsTest extends MultiAdapterBaseTest {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void objects(JsonAdapter<?,?,?> adapter) {
         var result = JsonTransformerUtils.findAllVariableUses(adapter, adapter.parse("""
 {
   "x": "$.input0",
@@ -16,7 +20,7 @@ public class JsonTransformerUtilsTest extends BaseTest {
     "$.input2"
   ]
 }"""));
-        Assertions.assertEquals(Map.of(
+        assertEquals(adapter, Map.of(
                 "$.input0", "$.x",
                 "$.input1", "$.b[0]",
                 "$.input2", "$.b[1]"
@@ -30,34 +34,36 @@ public class JsonTransformerUtilsTest extends BaseTest {
     "$$function($.input2):const"
   ]
 }"""));
-        Assertions.assertEquals(Map.of(
+        assertEquals(adapter, Map.of(
                 "$.input0", "$.x",
                 "$.input1", "$.b[0]",
                 "$.input2", "$.b[1]"
         ), result);
     }
 
-    @Test
-    void objects_destruct() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void objects_destruct(JsonAdapter<?,?,?> adapter) {
         var result = JsonTransformerUtils.findAllVariableUses(adapter, adapter.parse("""
                 {
                   "*": "$.input0",
                   "a": "$.input1"
                 }"""));
-        Assertions.assertEquals(Map.of(
+        assertEquals(adapter, Map.of(
                 "$.input0", "$",
                 "$.input1", "$.a"
         ), result);
     }
 
-        @Test
-    void arrays() {
+        @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void arrays(JsonAdapter<?,?,?> adapter) {
         var result = JsonTransformerUtils.findAllVariableUses(adapter, adapter.parse("""
 [
   "$.input1",
   "$.input2"
 ]"""));
-        Assertions.assertEquals(Map.of(
+        assertEquals(adapter, Map.of(
                 "$.input1", "$[0]",
                 "$.input2", "$[1]"
         ), result);
@@ -67,18 +73,19 @@ public class JsonTransformerUtilsTest extends BaseTest {
   "$$function(arg1):$.input1",
   "$$function($.input2):const"
 ]"""));
-        Assertions.assertEquals(Map.of(
+        assertEquals(adapter, Map.of(
                 "$.input1", "$[0]",
                 "$.input2", "$[1]"
         ), result);
     }
 
-    @Test
-    void strings() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void strings(JsonAdapter<?,?,?> adapter) {
         var result = JsonTransformerUtils.findAllVariableUses(adapter, adapter.parse("""
 "$.input0"
 """));
-        Assertions.assertEquals(Map.of(
+        assertEquals(adapter, Map.of(
                 "$.input0", "$"
         ), result);
 
@@ -86,26 +93,26 @@ public class JsonTransformerUtilsTest extends BaseTest {
         result = JsonTransformerUtils.findAllVariableUses(adapter, adapter.parse("""
 "\\\\$.input0"
 """));
-        Assertions.assertEquals(Map.of(), result);
+        assertEquals(adapter, Map.of(), result);
 
         result = JsonTransformerUtils.findAllVariableUses(adapter, adapter.parse("""
 "#now"
 """));
-        Assertions.assertEquals(Map.of(
+        assertEquals(adapter, Map.of(
                 "#now", "$"
         ), result);
 
         result = JsonTransformerUtils.findAllVariableUses(adapter, adapter.parse("""
 "$$function(arg1):$.input1"
 """));
-        Assertions.assertEquals(Map.of(
+        assertEquals(adapter, Map.of(
                 "$.input1", "$"
         ), result);
 
         result = JsonTransformerUtils.findAllVariableUses(adapter, adapter.parse("""
 "$$function($.input2,#now):$.input1"
 """));
-        Assertions.assertEquals(Map.of(
+        assertEquals(adapter, Map.of(
                 "$.input1", "$",
                 "$.input2", "$",
                 "#now", "$"
@@ -122,7 +129,7 @@ public class JsonTransformerUtilsTest extends BaseTest {
                   }
                 }
 """));
-        Assertions.assertEquals(Map.of(
+        assertEquals(adapter, Map.of(
                 "$.parameters.locked$$", "$.filters.locked",
                 "$.parameters.x_source", "$.filters.locked"
         ), result);

@@ -1,28 +1,29 @@
-package co.nlighten.jsontransform.adapters.pojo;
+package co.nlighten.jsontransform.adapters.jsonsmart;
 
 import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.adapters.JsonAdapterHelpers;
 import com.jayway.jsonpath.DocumentContext;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONAware;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 
 import java.math.BigDecimal;
-import java.util.AbstractList;
-import java.util.Map;
 
-public class PojoJsonAdapter extends JsonAdapter<Object, AbstractList<Object>, Map<String, Object>> {
+public class JsonSmartJsonAdapter extends JsonAdapter<Object, JSONArray, JSONObject> {
 
-    public PojoJsonAdapter() {
+    public JsonSmartJsonAdapter() {
         super(
-                PojoObjectAdapter::new,
-                PojoArrayAdapter::new,
-                PojoHelpers.getJsonPathConfig()
+                JsonSmartObjectAdapter::new,
+                JsonSmartArrayAdapter::new,
+                JsonSmartHelpers.getJsonPathConfig()
         );
     }
 
     @Override
     public boolean is(Object value) {
-        return value instanceof PojoNull ||
-                value instanceof AbstractList<?> ||
-                value instanceof Map<?, ?> ||
+        return value == null ||
+                value instanceof JSONAware ||
                 value instanceof String ||
                 value instanceof Number ||
                 value instanceof Boolean;
@@ -45,37 +46,32 @@ public class PojoJsonAdapter extends JsonAdapter<Object, AbstractList<Object>, M
 
     @Override
     public boolean isNull(Object value) {
-        return value == null || value instanceof PojoNull;
+        return value == null;
     }
 
     @Override
     public Object jsonNull() {
-        return PojoNull.INSTANCE;
+        return null;
     }
 
     @Override
     public Object wrap(Object value) {
-        return PojoMapper.convert(value, false);
+        return JsonSmartHelpers.convert(value, false);
     }
 
     @Override
     public Object unwrap(Object value, boolean reduceBigDecimals) {
-        return PojoMapper.convert(value, true);
+        return JsonSmartHelpers.convert(value, true);
     }
 
     @Override
     public Object parse(String value) {
-        if (value != null && value.startsWith("'") && value.endsWith("'") && value.length() > 2) {
-            return PojoMapper.convert(PojoHelpers.parse(
-                JsonAdapterHelpers.singleQuotedStringToDoubleQuoted(value)
-            ), false);
-        }
-        return PojoMapper.convert(PojoHelpers.parse(value), false);
+        return JSONValue.parse(value);
     }
 
     @Override
     public Object clone(Object value) {
-        return PojoMapper.deepClone(value);
+        return wrap(value);
     }
 
     @Override
@@ -117,7 +113,7 @@ public class PojoJsonAdapter extends JsonAdapter<Object, AbstractList<Object>, M
     @Override
     public DocumentContext getDocumentContext(Object payload, Iterable<String> options) {
         if (isNull(payload)) {
-            return PojoNullDocumentContext.INSTANCE;
+            return NullDocumentContext.INSTANCE;
         }
         return super.getDocumentContext(payload, options);
     }
@@ -127,9 +123,9 @@ public class PojoJsonAdapter extends JsonAdapter<Object, AbstractList<Object>, M
         if (value instanceof String) {
             var arr = createArray(1);
             add(arr, value);
-            var strInArr = PojoHelpers.toJson(arr);
+            var strInArr = JSONValue.toJSONString(arr);
             return strInArr.substring(1, strInArr.length() - 1);
         }
-        return PojoHelpers.toJson(PojoMapper.convert(value, true));
+        return JSONValue.toJSONString(value);
     }
 }

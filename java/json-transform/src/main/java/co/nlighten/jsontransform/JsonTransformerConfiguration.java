@@ -35,12 +35,4 @@ public abstract class JsonTransformerConfiguration {
     public JsonAdapter<?, ?, ?> getAdapter() {
         return this.adapter;
     }
-
-    public DebuggableTransformerFunctions getDebuggableAdapter() {
-        return new DebuggableTransformerFunctions(this.adapter);
-    }
-
-    public TransformerFunctionsAdapter getFunctionsAdapter() {
-        return new TransformerFunctions(this.adapter);
-    }
 }

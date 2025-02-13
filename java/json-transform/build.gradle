@@ -9,7 +9,7 @@ plugins {
 }
 
 group 'co.nlighten'
-version = '0.8.0'
+version = '0.9.0'
 
 ext {
     gsonVersion = "2.10.1"
@@ -17,6 +17,7 @@ ext {
     jsonPathVersion = "2.9.0"
     jmhVersion = "1.36"
     jacksonBindVersion = "2.17.1"
+    jsonSmartVersion = "2.5.2"
     snakeYamlVersion = "2.7"
     coNlightenShortUuidVersion = "0.1.1"
     slf4jVersion = "2.0.11"
@@ -39,6 +40,7 @@ dependencies {
     /** JSON **/
     compileOnly "com.google.code.gson:gson:${gsonVersion}"
     compileOnly "com.fasterxml.jackson.core:jackson-databind:${jacksonBindVersion}"
+    compileOnly "net.minidev:json-smart:${jsonSmartVersion}"
     implementation "org.json:json:${jsonVersion}" // for XML conversion
     implementation "com.jayway.jsonpath:json-path:${jsonPathVersion}"
 
@@ -52,6 +54,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation "com.google.code.gson:gson:${gsonVersion}"
     testImplementation "com.fasterxml.jackson.core:jackson-databind:${jacksonBindVersion}"
+    testImplementation "net.minidev:json-smart:${jsonSmartVersion}"
 }
 
 jar { archiveClassifier = '' }

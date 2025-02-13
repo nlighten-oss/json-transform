@@ -1,24 +1,21 @@
 package co.nlighten.jsontransform.adapters.jsonorg;
 
 import co.nlighten.jsontransform.adapters.JsonAdapter;
+import co.nlighten.jsontransform.adapters.pojo.PojoMapper;
 import com.jayway.jsonpath.DocumentContext;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONString;
-import org.json.JSONTokener;
+import org.json.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-class JsonOrgJsonAdapter extends JsonAdapter<Object, JSONArray, JSONObject> {
+public class JsonOrgJsonAdapter extends JsonAdapter<Object, JSONArray, JSONObject> {
 
     public JsonOrgJsonAdapter() {
-        super(JsonOrgObjectAdapter::new, JsonOrgArrayAdapter::new);
-    }
-
-    @Override
-    public String getName() {
-        return "jsonorg";
+        super(
+                JsonOrgObjectAdapter::new,
+                JsonOrgArrayAdapter::new,
+                JsonOrgHelpers.getJsonPathConfig()
+        );
     }
 
     @Override
@@ -64,7 +61,7 @@ class JsonOrgJsonAdapter extends JsonAdapter<Object, JSONArray, JSONObject> {
 
     @Override
     public Object wrap(Object value) {
-        return JSONObject.wrap(value);
+        return JSONObject.wrap(JsonOrgHelpers.simplifyBeforeWrap(value));
     }
 
     @Override
@@ -145,27 +142,53 @@ class JsonOrgJsonAdapter extends JsonAdapter<Object, JSONArray, JSONObject> {
     }
 
     @Override
-    public void setupJsonPath() {
-        JsonOrgJsonPathConfigurator.setup();
-    }
-
-    @Override
-    public DocumentContext getDocumentContext(Object payload) {
+    public DocumentContext getDocumentContext(Object payload, Iterable<String> options) {
         if (isNull(payload)) {
             return JsonOrgNullDocumentContext.INSTANCE;
         }
-        return super.getDocumentContext(payload);
+        return super.getDocumentContext(payload, options);
+    }
+
+    @Override
+    public boolean nodesComparable() {
+        return false;
+    }
+
+    @Override
+    public boolean areEqual(Object value, Object other) {
+        if (value instanceof JSONObject jo) {
+            return other instanceof JSONObject o && jo.toMap().equals(o.toMap());
+        }
+        if (value instanceof JSONArray ja) {
+            if (!(other instanceof JSONArray o) || o.length() != ja.length()) {
+                return false;
+            }
+            for (var i = 0 ; i < ja.length() ; i++) {
+                if (!areEqual(ja.get(i), o.get(i))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        if (value instanceof JSONString) {
+            return other instanceof JSONString && value.toString().equals(other.toString());
+        }
+        return super.areEqual(value, other);
+    }
+
+    @Override
+    public int hashCode(Object value) {
+        return JsonOrgHelpers.getContentsHashCode(value);
     }
 
     @Override
     public String toString(Object value) {
-        var provider = JsonOrgJsonPathConfigurator.configuration().jsonProvider();
         if (value instanceof String) {
-            var arr = provider.createArray();
-            provider.setArrayIndex(arr, 0, value);
-            var strInArr = provider.toJson(arr);
+            var arr = createArray(1);
+            add(arr, value);
+            var strInArr = arr.toString();
             return strInArr.substring(1, strInArr.length() - 1);
         }
-        return provider.toJson(JSONObject.wrap(value));
+        return wrap(value).toString();
     }
 }

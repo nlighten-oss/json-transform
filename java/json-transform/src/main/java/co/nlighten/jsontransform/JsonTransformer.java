@@ -16,6 +16,7 @@ public class JsonTransformer implements Transformer {
     private final JsonAdapter<?, ?, ?> adapter;
     protected final Object definition;
 
+    private static final TransformerFunctionsAdapter DEFAULT_TRANSFORMER_FUNCTIONS = new TransformerFunctions();
     private final JsonTransformerFunction JSON_TRANSFORMER;
     private final TransformerFunctionsAdapter transformerFunctions;
 
@@ -24,7 +25,7 @@ public class JsonTransformer implements Transformer {
             final JsonAdapter<?, ?, ?> adapter,
             final TransformerFunctionsAdapter functionsAdapter) {
         this.adapter = adapter != null ? adapter : JsonTransformerConfiguration.get().getAdapter();
-        this.transformerFunctions = functionsAdapter != null ? functionsAdapter : JsonTransformerConfiguration.get().getFunctionsAdapter();
+        this.transformerFunctions = functionsAdapter != null ? functionsAdapter : DEFAULT_TRANSFORMER_FUNCTIONS;
         this.definition = this.adapter.wrap(definition);
         this.JSON_TRANSFORMER = this::fromJsonElement;
     }
@@ -42,9 +43,13 @@ public class JsonTransformer implements Transformer {
     }
 
     public JsonTransformer(final Object definition) {
-        this(definition, JsonTransformerConfiguration.get().getFunctionsAdapter());
+        this(definition, DEFAULT_TRANSFORMER_FUNCTIONS);
     }
 
+    public Object transform(Object payload, Map<String, Object> additionalContext, boolean allowReturningStreams, boolean unwrap) {
+        var result = transform(payload, additionalContext, allowReturningStreams);
+        return unwrap ? adapter.unwrap(result) : result;
+    }
 
     public Object transform(Object payload, Map<String, Object> additionalContext, boolean allowReturningStreams) {
         if (definition == null) {
@@ -60,7 +65,7 @@ public class JsonTransformer implements Transformer {
         try {
             var val = adapter.getAsString(definition);
             // test for inline function (e.g. $$function:...)
-            var match = transformerFunctions.matchInline(path, val, resolver, JSON_TRANSFORMER);
+            var match = transformerFunctions.matchInline(adapter, path, val, resolver, JSON_TRANSFORMER);
             if (match != null) {
                 var matchResult = match.result();
                 if (matchResult instanceof JsonElementStreamer streamer) {
@@ -79,7 +84,7 @@ public class JsonTransformer implements Transformer {
 
 
     protected Object fromJsonObject(String path, Object definition, co.nlighten.jsontransform.ParameterResolver resolver, boolean allowReturningStreams) {
-        var match = transformerFunctions.matchObject(path, definition, resolver, JSON_TRANSFORMER);
+        var match = transformerFunctions.matchObject(adapter, path, definition, resolver, JSON_TRANSFORMER);
         if (match != null) {
             var res = match.result();
             return res instanceof JsonElementStreamer s

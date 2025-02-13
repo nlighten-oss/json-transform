@@ -10,8 +10,7 @@ public class DebuggableTransformerFunctions extends TransformerFunctions{
 
     public record TransformerDebugInfo(Object result) {}
 
-    public DebuggableTransformerFunctions(JsonAdapter<?, ?, ?> adapter) {
-        super(adapter);
+    public DebuggableTransformerFunctions() {
         debugResults = new HashMap<>();
     }
 
@@ -30,12 +29,12 @@ public class DebuggableTransformerFunctions extends TransformerFunctions{
         return matchResult;
     }
 
-    public TransformerFunctions.FunctionMatchResult<Object> matchObject(String path, Object definition, ParameterResolver resolver, JsonTransformerFunction transformer) {
-        return auditAndReturn(path, super.matchObject(path, definition, resolver, transformer));
+    public TransformerFunctions.FunctionMatchResult<Object> matchObject(JsonAdapter<?,?,?> adapter, String path, Object definition, ParameterResolver resolver, JsonTransformerFunction transformer) {
+        return auditAndReturn(path, super.matchObject(adapter, path, definition, resolver, transformer));
     }
 
-    public TransformerFunctions.FunctionMatchResult<Object> matchInline(String path, String value, ParameterResolver resolver, JsonTransformerFunction transformer) {
-        return auditAndReturn(path, super.matchInline(path, value, resolver, transformer));
+    public TransformerFunctions.FunctionMatchResult<Object> matchInline(JsonAdapter<?,?,?> adapter, String path, String value, ParameterResolver resolver, JsonTransformerFunction transformer) {
+        return auditAndReturn(path, super.matchInline(adapter, path, value, resolver, transformer));
     }
 
     public Map<String, TransformerDebugInfo> getDebugResults() {

@@ -24,9 +24,7 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
     public static final String ESCAPE_DOLLAR = "\\$";
     public static final String ESCAPE_HASH = "\\#";
 
-
     private static Map<String, TransformerFunction> functions = Map.of();
-    private final JsonAdapter<?, ?, ?> jsonAdapter;
 
     static {
         registerFunctions(
@@ -113,10 +111,6 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
         );
     }
 
-    public TransformerFunctions(JsonAdapter<?, ?, ?> adapter) {
-        this.jsonAdapter = adapter;
-    }
-
     @SafeVarargs
     public synchronized static void registerFunctions(Map.Entry<String, TransformerFunction>... moreFunctions) {
         var additions = Arrays.stream(moreFunctions).filter(x -> {
@@ -138,19 +132,19 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
     /**
      * Checks the context for a registered object function and returns the result if matched
      */
-    public FunctionMatchResult<Object> matchObject(String path, Object definition, co.nlighten.jsontransform.ParameterResolver resolver, JsonTransformerFunction transformer) {
+    public FunctionMatchResult<Object> matchObject(JsonAdapter<?,?,?> adapter, String path, Object definition, co.nlighten.jsontransform.ParameterResolver resolver, JsonTransformerFunction transformer) {
         if (definition == null) {
             return null;
         }
         // look for an object function
         // (precedence is all internal functions sorted alphabetically first, then client added ones second, by registration order)
         for (String key : functions.keySet()) {
-            if (jsonAdapter.has(definition, FUNCTION_KEY_PREFIX + key)) {
+            if (adapter.has(definition, FUNCTION_KEY_PREFIX + key)) {
                 var func = functions.get(key);
                 var context = new ObjectFunctionContext(
                         path,
                         definition,
-                        jsonAdapter,
+                        adapter,
                         FUNCTION_KEY_PREFIX + key,
                         func, resolver, transformer);
                 var resolvedPath = path + "." + FUNCTION_KEY_PREFIX + key;
@@ -166,7 +160,7 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
         return null;
     }
 
-    private InlineFunctionContext tryParseInlineFunction(String path, String value, co.nlighten.jsontransform.ParameterResolver resolver,
+    private InlineFunctionContext tryParseInlineFunction(JsonAdapter<?,?,?> adapter, String path, String value, co.nlighten.jsontransform.ParameterResolver resolver,
                                                                      JsonTransformerFunction transformer) {
         var matcher = inlineFunctionRegex.matcher(value);
         if (matcher.find()) {
@@ -182,7 +176,7 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
                         var arg = argMatcher.group(1);
                         var trimmed = argMatcher.group(1).trim();
                         if (trimmed.startsWith(QUOTE_APOS) && trimmed.endsWith(QUOTE_APOS) && trimmed.length() > 1) {
-                            arg = jsonAdapter.getAsString(jsonAdapter.parse(trimmed));
+                            arg = adapter.getAsString(adapter.parse(trimmed));
                             //otherwise, take the whole argument as-is
                         }
                         args.add(arg);
@@ -198,7 +192,7 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
                 return new InlineFunctionContext(
                         path + "/" + FUNCTION_KEY_PREFIX + functionKey,
                         input, args,
-                        jsonAdapter,
+                        adapter,
                         functionKey,
                         function,
                         resolver, transformer);
@@ -207,9 +201,9 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
         return null;
     }
 
-    public FunctionMatchResult<Object> matchInline(String path, String value, ParameterResolver resolver, JsonTransformerFunction transformer) {
+    public FunctionMatchResult<Object> matchInline(JsonAdapter<?,?,?> adapter, String path, String value, ParameterResolver resolver, JsonTransformerFunction transformer) {
         if (value == null) return null;
-        var context = tryParseInlineFunction(path, value, resolver, transformer);
+        var context = tryParseInlineFunction(adapter, path, value, resolver, transformer);
         if (context == null) {
             return null;
         }

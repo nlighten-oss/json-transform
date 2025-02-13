@@ -1,18 +1,20 @@
 package co.nlighten.jsontransform.formats.xml;
 
-import co.nlighten.jsontransform.BaseTest;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import co.nlighten.jsontransform.MultiAdapterBaseTest;
+import co.nlighten.jsontransform.adapters.JsonAdapter;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-public class XmlFormatTest extends BaseTest {
+public class XmlFormatTest extends MultiAdapterBaseTest {
 
     public static class XMLTest {
         public String title = "Hello World";
         public int[] numbers = new int[] { 1, 2};
     }
 
-    @Test
-    void testJSON2XML() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testJSON2XML(JsonAdapter<?,?,?> adapter) {
         var xbt = new XmlFormat(adapter, """
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
@@ -56,11 +58,12 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 </html>
 """;
 
-        assertEquals(expect, result);
+        assertEquals(adapter, expect, result);
     }
 
-    @Test
-    void testJSON2XMLUglify() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testJSON2XMLUglify(JsonAdapter<?,?,?> adapter) {
         var xbt = new XmlFormat(adapter, """
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
@@ -89,15 +92,16 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         var expect = """
 <html><body><h2>Hello World</h2><table><tr><th>Number</th></tr><tr><td>1</td></tr><tr><td>2</td></tr></table></body></html>""";
 
-        assertEquals(expect, result);
+        assertEquals(adapter, expect, result);
     }
 
-    @Test
-    void testParseXML() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testParseXML(JsonAdapter<?,?,?> adapter) {
         var result = new XmlFormat(adapter).deserialize("""
                                                    <root>
                                                    </root>""");
-        assertEquals(adapter.parse("""
+        assertEquals(adapter, adapter.parse("""
                                                              {
                                                                "root": ""
                                                              }"""), result);
@@ -109,7 +113,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
                                                         <hi />
                                                       </hello>
                                                     </root>""");
-        assertEquals(adapter.parse("""
+        assertEquals(adapter, adapter.parse("""
                                                              {
                                                                "root": {
                                                                  "hello": {

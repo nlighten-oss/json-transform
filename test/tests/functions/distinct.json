@@ -37,7 +37,6 @@
   },
   {
     "name": "objects with duplicates",
-    "skip": ["javaJsonOrg"],
     "given": {
       "input": [{ "a": 1 }, { "a": 1 }, { "a": 1 }],
       "definition": {
@@ -50,11 +49,39 @@
   },
   {
     "name": "arrays with duplicates",
-    "skip": ["javaJsonOrg"],
     "given": {
       "input": [["a", 1], ["a", 2], ["a", 1], ["a", 1]],
       "definition": {
         "$$distinct": "$"
+      }
+    },
+    "expect": {
+      "equal": [
+        ["a", 1],
+        ["a", 2]
+      ]
+    }
+  },
+  {
+    "name": "objects with duplicates with by",
+    "given": {
+      "input": [{ "a": 1 }, { "a": 1 }, { "a": 1 }],
+      "definition": {
+        "$$distinct": "$",
+        "by": "##current"
+      }
+    },
+    "expect": {
+      "equal": [{ "a": 1 }]
+    }
+  },
+  {
+    "name": "arrays with duplicates with by",
+    "given": {
+      "input": [["a", 1], ["a", 2], ["a", 1], ["a", 1]],
+      "definition": {
+        "$$distinct": "$",
+        "by": "##current"
       }
     },
     "expect": {

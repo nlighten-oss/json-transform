@@ -1,15 +1,16 @@
 package co.nlighten.jsontransform.manipulation;
 
-import co.nlighten.jsontransform.BaseTest;
-import org.junit.jupiter.api.Test;
+import co.nlighten.jsontransform.MultiAdapterBaseTest;
+import co.nlighten.jsontransform.adapters.JsonAdapter;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class JsonPointerTest extends BaseTest {
+public class JsonPointerTest extends MultiAdapterBaseTest {
 
-    JsonPointer jsonPointer = new JsonPointer(adapter);
 
-    Object getEl() {
+    Object getEl(JsonAdapter<?, ?, ?> adapter) {
         return adapter.parse("""
 {
     "a": {
@@ -26,114 +27,140 @@ public class JsonPointerTest extends BaseTest {
 """);
     }
 
-    @Test
-    public void get_Simple() {
-        var source = getEl();
-        assertEquals("Hello", adapter.unwrap(jsonPointer.get(source, "/b/2/e")));
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    public void get_Simple(JsonAdapter<?,?,?> adapter) {
+        var source = getEl(adapter);
+        var jsonPointer = new JsonPointer(adapter);
+        assertEquals(adapter, "Hello", adapter.unwrap(jsonPointer.get(source, "/b/2/e")));
     }
 
-    @Test
-    public void get_KeyIsNumber() {
-        var source = getEl();
-        assertEquals("ONE", adapter.unwrap(jsonPointer.get(source, "/a/1")));
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    public void get_KeyIsNumber(JsonAdapter<?,?,?> adapter) {
+        var source = getEl(adapter);
+        var jsonPointer = new JsonPointer(adapter);
+        assertEquals(adapter, "ONE", adapter.unwrap(jsonPointer.get(source, "/a/1")));
     }
 
-    @Test
-    public void get_NotExists() {
-        var source = getEl();
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    public void get_NotExists(JsonAdapter<?,?,?> adapter) {
+        var source = getEl(adapter);
+        var jsonPointer = new JsonPointer(adapter);
         assertNull(jsonPointer.get(source, "/not/exists"));
     }
 
-    @Test
-    public void set_InObject() {
-        var source = getEl();
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    public void set_InObject(JsonAdapter<?,?,?> adapter) {
+        var source = getEl(adapter);
         var value = adapter.wrap("World");
+        var jsonPointer = new JsonPointer(adapter);
         jsonPointer.set(source, "/b/2/e", value);
-        assertEquals(value, jsonPointer.get(source, "/b/2/e"));
+        assertEquals(adapter, value, jsonPointer.get(source, "/b/2/e"));
     }
 
-    @Test
-    public void set_InArray() {
-        var source = getEl();
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    public void set_InArray(JsonAdapter<?,?,?> adapter) {
+        var source = getEl(adapter);
         var value = adapter.wrap("e");
+        var jsonPointer = new JsonPointer(adapter);
         jsonPointer.set(source, "/b/2", value);
-        assertEquals(value, jsonPointer.get(source, "/b/2"));
+        assertEquals(adapter, value, jsonPointer.get(source, "/b/2"));
     }
 
-    @Test
-    public void set_PushToArray() {
-        var source = getEl();
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    public void set_PushToArray(JsonAdapter<?,?,?> adapter) {
+        var source = getEl(adapter);
         var value = adapter.wrap("e");
+        var jsonPointer = new JsonPointer(adapter);
         jsonPointer.set(source, "/b/-", value);
-        assertEquals(value, jsonPointer.get(source, "/b/3"));
+        assertEquals(adapter, value, jsonPointer.get(source, "/b/3"));
     }
 
-    @Test
-    public void set_CreatePathOneKey() {
-        var source = getEl();
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    public void set_CreatePathOneKey(JsonAdapter<?,?,?> adapter) {
+        var source = getEl(adapter);
         var value = adapter.wrap("TWO");
+        var jsonPointer = new JsonPointer(adapter);
         jsonPointer.set(source, "/a/2", value);
-        assertEquals(value, jsonPointer.get(source, "/a/2"));
+        assertEquals(adapter, value, jsonPointer.get(source, "/a/2"));
     }
 
-    @Test
-    public void set_CreatePathComposite() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    public void set_CreatePathComposite(JsonAdapter<?,?,?> adapter) {
         var source = adapter.parse("""
         {"foo": 1, "baz": [{"qux": "hello"}]}
         """);
         var value = adapter.wrap("world");
+        var jsonPointer = new JsonPointer(adapter);
         jsonPointer.set(source, "/baz/0/foo", value);
-        assertEquals(adapter.parse("""
+        assertEquals(adapter, adapter.parse("""
             {"foo": 1, "baz": [{"qux": "hello", "foo": "world"}]}"""), source);
     }
 
-    @Test
-    public void set_InsertInside() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    public void set_InsertInside(JsonAdapter<?,?,?> adapter) {
         var source = adapter.parse("""
         ["foo","bar"]
         """);
         var value = adapter.wrap("world");
+        var jsonPointer = new JsonPointer(adapter);
         jsonPointer.set(source, "/1", value, true);
-        assertEquals(adapter.parse("""
+        assertEquals(adapter, adapter.parse("""
         ["foo","world","bar"]"""), source);
     }
 
-    @Test
-    public void set_CreatePathOneKeyEmpty() {
-        var source = getEl();
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    public void set_CreatePathOneKeyEmpty(JsonAdapter<?,?,?> adapter) {
+        var source = getEl(adapter);
         var value = adapter.wrap("TWO");
+        var jsonPointer = new JsonPointer(adapter);
         jsonPointer.set(source, "/a/", value);
-        assertEquals(value, adapter.get(adapter.get(source, "a"), ""));
-        assertEquals(value, jsonPointer.get(source, "/a/"));
+        assertEquals(adapter, value, adapter.get(adapter.get(source, "a"), ""));
+        assertEquals(adapter, value, jsonPointer.get(source, "/a/"));
     }
 
-    @Test
-    public void set_CreatePath() {
-        var source = getEl();
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    public void set_CreatePath(JsonAdapter<?,?,?> adapter) {
+        var source = getEl(adapter);
         var value = adapter.wrap("e");
+        var jsonPointer = new JsonPointer(adapter);
         jsonPointer.set(source, "/a/b/c/3/d", value);
-        assertEquals(value, jsonPointer.get(source, "/a/b/c/3/d"));
+        assertEquals(adapter, value, jsonPointer.get(source, "/a/b/c/3/d"));
     }
 
-    @Test
-    public void remove() {
-        var source = getEl();
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    public void remove(JsonAdapter<?,?,?> adapter) {
+        var source = getEl(adapter);
+        var jsonPointer = new JsonPointer(adapter);
         var res = jsonPointer.remove(source, "/b/2/e", false);
-        assertEquals(adapter.wrap("Hello"), res);
+        assertEquals(adapter, adapter.wrap("Hello"), res);
 
-        var expected = getEl();
+        var expected = getEl(adapter);
         adapter.remove(adapter.get(adapter.get(expected, "b"), 2), "e");
-        assertEquals(expected, source);
+        assertEquals(adapter, expected, source);
     }
 
-    @Test
-    public void removeReturnDoc() {
-        var source = getEl();
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    public void removeReturnDoc(JsonAdapter<?,?,?> adapter) {
+        var source = getEl(adapter);
+        var jsonPointer = new JsonPointer(adapter);
         var res = jsonPointer.remove(source, "/b/2/e");
 
-        var expected = getEl();
+        var expected = getEl(adapter);
         adapter.remove(adapter.get(adapter.get(expected, "b"), 2), "e");
-        assertEquals(expected, res);
-        assertEquals(expected, source);
+        assertEquals(adapter, expected, res);
+        assertEquals(adapter, expected, source);
     }
 }

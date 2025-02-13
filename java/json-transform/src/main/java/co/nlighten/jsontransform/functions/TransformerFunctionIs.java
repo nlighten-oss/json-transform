@@ -4,7 +4,6 @@ import co.nlighten.jsontransform.functions.common.*;
 
 import java.math.BigDecimal;
 import java.util.Map;
-import java.util.Objects;
 
 /*
  * For tests
@@ -41,7 +40,7 @@ public class TransformerFunctionIs extends TransformerFunction {
             var op = context.getEnum("op");
             Object that = null;
             // if operator is not in/nin then prepare the "that" argument which is a JsonElement
-            if (!Objects.equals(op, "IN") && !Objects.equals(op, "NIN")) {
+            if (!"IN".equals(op) && !"NIN".equals(op)) {
                 that = adapter.isJsonNumber(value)
                        ? nullableBigDecimalJsonPrimitive(context, context.getBigDecimal("that"))
                        : context.getJsonElement("that");
@@ -49,11 +48,11 @@ public class TransformerFunctionIs extends TransformerFunction {
             return switch (op) {
                 case "IN" -> {
                     var in = context.getJsonElementStreamer("that");
-                    yield in != null && in.stream().anyMatch(value::equals);
+                    yield in != null && in.stream().anyMatch(other -> adapter.areEqual(value, other));
                 }
                 case "NIN" -> {
                     var nin = context.getJsonElementStreamer("that");
-                    yield nin != null && nin.stream().noneMatch(value::equals);
+                    yield nin != null && nin.stream().noneMatch(other -> adapter.areEqual(value, other));
                 }
                 case "GT",">" -> {
                     var comparison = adapter.compareTo(value, that);
@@ -71,19 +70,19 @@ public class TransformerFunctionIs extends TransformerFunction {
                     var comparison = adapter.compareTo(value, that);
                     yield comparison != null && comparison <= 0;
                 }
-                case "EQ","=","==" -> Objects.equals(value, that);
-                case "NEQ","!=","<>" -> !Objects.equals(value, that);
+                case "EQ","=","==" -> adapter.areEqual(value, that);
+                case "NEQ","!=","<>" -> !adapter.areEqual(value, that);
                 default -> false;
             };
         }
         var result = true;
         if (context.has("in")) {
             var in = context.getJsonElementStreamer("in");
-            result = in != null && in.stream().anyMatch(value::equals);
+            result = in != null && in.stream().anyMatch(other -> adapter.areEqual(value, other));
         }
         if (result && context.has("nin")) {
             var nin = context.getJsonElementStreamer("nin");
-            result = nin != null && nin.stream().noneMatch(value::equals);
+            result = nin != null && nin.stream().noneMatch(other -> adapter.areEqual(value, other));
         }
         if (result && context.has("gt")) {
             var gt = context.getJsonElement("gt");
@@ -107,11 +106,11 @@ public class TransformerFunctionIs extends TransformerFunction {
         }
         if (result && context.has("eq")) {
             var eq = context.getJsonElement("eq");
-            result = Objects.equals(value, eq);
+            result = adapter.areEqual(value, eq);
         }
         if (result && context.has("neq")) {
             var neq = context.getJsonElement("neq");
-            result = !Objects.equals(value, neq);
+            result = !adapter.areEqual(value, neq);
         }
         return result;
     }

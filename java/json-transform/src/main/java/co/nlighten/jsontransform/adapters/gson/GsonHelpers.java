@@ -1,44 +1,61 @@
 package co.nlighten.jsontransform.adapters.gson;
 
+import co.nlighten.jsontransform.JsonTransformerConfiguration;
+import co.nlighten.jsontransform.adapters.gson.adapters.ISODateAdapter;
+import co.nlighten.jsontransform.adapters.gson.adapters.InstantTypeAdapter;
+import co.nlighten.jsontransform.adapters.gson.adapters.LocalDateTypeAdapter;
 import com.google.gson.*;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.Option;
+import com.jayway.jsonpath.spi.json.GsonJsonProvider;
+import com.jayway.jsonpath.spi.mapper.GsonMappingProvider;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class GsonHelpers {
-    private static ThreadLocal<Gson> threadSafeGsonBuilder = ThreadLocal.withInitial(() -> GsonJsonAdapter.gsonBuilder().create());
 
-    public static Gson GSON() {
-        return threadSafeGsonBuilder.get();
+    public static final String ISO_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
+    public static GsonBuilder gsonBuilder() {
+        return new GsonBuilder()
+                .setDateFormat(ISO_DATETIME_FORMAT)
+                .registerTypeAdapter(Date.class, new ISODateAdapter())
+                .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+                .registerTypeAdapter(Instant.class, new InstantTypeAdapter())
+                .setNumberToNumberStrategy(ToNumberPolicy.BIG_DECIMAL)
+                .setObjectToNumberStrategy(ToNumberPolicy.BIG_DECIMAL);
     }
 
+    private static final Supplier<Gson> DEFAULT_GSON_SUPPLIER = () -> gsonBuilder().create();
+
+    private static ThreadLocal<Gson> threadSafeFactory = ThreadLocal.withInitial(DEFAULT_GSON_SUPPLIER);
+
+    static Gson GSON() {
+        return threadSafeFactory.get();
+    }
+
+    static com.jayway.jsonpath.Configuration setFactoryAndReturnJsonPathConfig(Supplier<Gson> gsonSupplier) {
+        if (gsonSupplier != null) {
+            threadSafeFactory = ThreadLocal.withInitial(gsonSupplier);
+        }
+        return new Configuration.ConfigurationBuilder()
+                .jsonProvider(new GsonJsonProvider(threadSafeFactory.get()))
+                .mappingProvider(new GsonMappingProvider(() -> threadSafeFactory.get()))
+                .options(Set.of(
+                        Option.SUPPRESS_EXCEPTIONS
+                ))
+                .build();
+    }
+
+    /**
+     * Please use <code>JsonTransformerConfiguration.set(new GsonJsonTransformerConfiguration(supplier))</code> instead
+     */
+    @Deprecated(forRemoval = true)
     public static void setGson(Supplier<Gson> supplier) {
-        GsonHelpers.threadSafeGsonBuilder = ThreadLocal.withInitial(supplier);
-        GsonJsonPathConfigurator.setConfigurationDefaults(new GsonJsonPathConfigurator.JaywayGSONConfiguration(GSON()));
+        JsonTransformerConfiguration.set(new GsonJsonTransformerConfiguration(supplier));
     }
-
-    public static JsonElement wrap(final Object value) {
-        if (value instanceof JsonElement je) return je;
-        if (value instanceof Character c) return new JsonPrimitive(c);
-        if (value instanceof String s) return new JsonPrimitive(s);
-        if (value instanceof Boolean b) return new JsonPrimitive(b);
-        if (value instanceof Number n) return new JsonPrimitive(toBigDecimal(n));
-        return GSON().toJsonTree(value);
-    }
-
-    public static BigDecimal toBigDecimal(Number number) {
-        // try to be as specific as possible in precision
-        if (number instanceof BigDecimal bd) {
-            return bd;
-        }
-        if (number instanceof Double || number instanceof Float) {
-            return BigDecimal.valueOf(number.doubleValue());
-        }
-        if (number instanceof BigInteger bi) {
-            return new BigDecimal(bi);
-        }
-        return BigDecimal.valueOf(number.longValue());
-    }
-
 }

@@ -1,6 +1,7 @@
 package co.nlighten.jsontransform.manipulation;
 
-import co.nlighten.jsontransform.BaseTest;
+import co.nlighten.jsontransform.MultiAdapterBaseTest;
+import co.nlighten.jsontransform.adapters.JsonAdapter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -13,9 +14,7 @@ import java.util.stream.Stream;
 /**
  * Taken from https://github.com/egerardus/simple-json-patch/blob/main/src/test/resources/testPatches.json
  */
-public class JsonPatchTest extends BaseTest {
-
-    JsonPatch jsonPatch = new JsonPatch(adapter);
+public class JsonPatchTest extends MultiAdapterBaseTest {
 
     public static String read(final String filename) throws FileNotFoundException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -33,17 +32,40 @@ public class JsonPatchTest extends BaseTest {
         }
     }
 
-    private static Stream<?> tests() throws FileNotFoundException {
+    private record AdapterAndTest(JsonAdapter<?, ?, ?> adapter, Object test) {}
+
+    private static Stream<AdapterAndTest> tests() throws FileNotFoundException {
         String json = read("JsonPatchTests.json");
-        return adapter.stream(adapter.parse(json), true);
+        var streams = MultiAdapterBaseTest.provideJsonAdapters()
+                .map(adapter -> {
+                    var tests = adapter.parse(json);
+                    return adapter.stream(tests).map(t -> new AdapterAndTest(adapter, t));
+                }).toArray(Stream[]::new);
+        return Stream.of(streams)
+                .reduce(Stream::concat)
+                .orElseGet(Stream::empty);
     }
 
     @MethodSource("tests")
     @ParameterizedTest
-    void test(final Object test) {
+    void test(final AdapterAndTest aat) {
+        var adapter = aat.adapter;
+        var test = aat.test;
+        var jsonPatch = new JsonPatch(adapter);
         if (adapter.has(test, "disabled") && adapter.getBoolean(adapter.get(test, "disabled"))) {
             // skip
             return;
+        }
+        if (adapter.has(test, "skipFor")) {
+            var skipFor = adapter.get(test, "skipFor");
+            if (adapter.isJsonArray(skipFor)) {
+                for (var skip : adapter.asIterable(skipFor)) {
+                    if (adapter.isJsonString(skip) && adapter.getClass().getName().contains(adapter.getAsString(skip))) {
+                        // skip
+                        return;
+                    }
+                }
+            }
         }
 
         var doc = adapter.get(test, "doc");
@@ -57,7 +79,7 @@ public class JsonPatchTest extends BaseTest {
             var actual = jsonPatch.patch(patch, doc);
             var message = adapter.get(test, "comment");
             var expected = adapter.get(test, "expected");
-            assertEquals(expected, actual, message == null ? "unexpected" : adapter.getAsString(message));
+            assertEquals(adapter, expected, actual, message == null ? "unexpected" : adapter.getAsString(message));
         }
     }
 }

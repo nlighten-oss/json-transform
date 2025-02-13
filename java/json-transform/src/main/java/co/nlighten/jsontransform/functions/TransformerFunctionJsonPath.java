@@ -1,11 +1,8 @@
 package co.nlighten.jsontransform.functions;
 
 import co.nlighten.jsontransform.functions.common.*;
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.Option;
 
-import java.util.Map;
+import java.util.*;
 
 /*
  * For tests
@@ -31,15 +28,14 @@ public class TransformerFunctionJsonPath extends TransformerFunction {
             return null;
         }
         var adapter = context.getAdapter();
-        adapter.setupJsonPath();
         var optionsArray = context.getJsonArray("options");
+        List<String> options = null;
         if (optionsArray != null && !adapter.isEmpty(optionsArray)) {
-            var conf = Configuration.defaultConfiguration();
+            options = new ArrayList<>();
             for (var option : adapter.asIterable(optionsArray)) {
-                conf = conf.addOptions(Option.valueOf(adapter.getAsString(option)));
+                options.add(adapter.getAsString(option));
             }
-            return JsonPath.using(conf).parse(source).read(path);
         }
-        return JsonPath.read(source, path);
+        return adapter.getDocumentContext(source, options).read(path);
     }
 }

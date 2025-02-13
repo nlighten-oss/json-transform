@@ -1,125 +1,139 @@
 package co.nlighten.jsontransform;
 
+import co.nlighten.jsontransform.adapters.JsonAdapter;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class JsonTransformerTest extends BaseTest {
-    @Test
-    void testDontCopyEscaped() {
+public class JsonTransformerTest extends MultiAdapterBaseTest {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testDontCopyEscaped(JsonAdapter<?,?,?> adapter) {
         var text = "text";
-        assertTransformation(text, "\\$", "$");
-        assertTransformation(text, "\\#uuid", "#uuid");
+        assertTransformation(adapter, text, "\\$", "$");
+        assertTransformation(adapter, text, "\\#uuid", "#uuid");
         // regex matches
-        assertTransformation(text, "$0", "$0");
-        assertTransformation(text, "$1", "$1");
+        assertTransformation(adapter, text, "$0", "$0");
+        assertTransformation(adapter, text, "$1", "$1");
     }
 
-    @Test
-    void testDontCopyUnrecognized() {
-        assertTransformation(null, "#unknown", "#unknown");
-        assertTransformation(null, "$$testunknown:#now", "$$testunknown:#now");
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testDontCopyUnrecognized(JsonAdapter<?,?,?> adapter) {
+        assertTransformation(adapter, null, "#unknown", "#unknown");
+        assertTransformation(adapter, null, "$$testunknown:#now", "$$testunknown:#now");
     }
 
-    @Test
-    void testJsonPathCopy() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testJsonPathCopy(JsonAdapter<?,?,?> adapter) {
         var val = "test";
-        assertTransformation(val, "$", val);
-        assertTransformation(fromJson("{\"a\":\"" + val + "\"}"), "$.a", val);
-        assertTransformation(fromJson("[\"" + val + "\"]"), "$[0]", val);
+        assertTransformation(adapter, val, "$", val);
+        assertTransformation(adapter, adapter.parse("{\"a\":\"" + val + "\"}"), "$.a", val);
+        assertTransformation(adapter, adapter.parse("[\"" + val + "\"]"), "$[0]", val);
     }
 
-    @Test
-    void testJsonPathCopyInteger() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testJsonPathCopyInteger(JsonAdapter<?,?,?> adapter) {
         var val = 123;
-        assertTransformation(val, "$", val);
+        assertTransformation(adapter, val, "$", val);
     }
 
-    @Test
-    void testJsonPathCopyBoolean() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testJsonPathCopyBoolean(JsonAdapter<?,?,?> adapter) {
         var val = true;
-        assertTransformation(val, "$", val);
+        assertTransformation(adapter, val, "$", val);
     }
 
-    @Test
-    void testJsonPathCopyString() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testJsonPathCopyString(JsonAdapter<?,?,?> adapter) {
         var text = "text";
-        assertTransformation(text, "$", text);
+        assertTransformation(adapter, text, "$", text);
     }
 
-    @Test
-    void testJsonPathCopyNull() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testJsonPathCopyNull(JsonAdapter<?,?,?> adapter) {
         Object val = null;
-        assertTransformation(val, "$", val);
+        assertTransformation(adapter, val, "$", val);
     }
 
-    @Test
-    void testJsonPathCopyFromAdditionalRoot() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testJsonPathCopyFromAdditionalRoot(JsonAdapter<?,?,?> adapter) {
         var val = "text";
         var additionalContext = new HashMap<String, Object>() {{
-            put("$extra", fromJson("{ \"y\": \"text\" }"));
+            put("$extra", adapter.parse("{ \"y\": \"text\" }"));
         }};
-        assertTransformation(val, "$extra.y", adapter.wrap(val), additionalContext);
+        assertTransformation(adapter, val, "$extra.y", adapter.wrap(val), additionalContext);
 
         // array
         var additionalContext2 = new HashMap<String, Object>() {{
-            put("$extra", fromJson("[1,2]"));
+            put("$extra", adapter.parse("[1,2]"));
         }};
-        assertTransformation(val, "$extra[0]", adapter.wrap(1), additionalContext2);
+        assertTransformation(adapter, val, "$extra[0]", adapter.wrap(1), additionalContext2);
 
         // unrecognized root
-        assertTransformation(val, "$extra2.y", adapter.wrap("$extra2.y"), additionalContext);
+        assertTransformation(adapter, val, "$extra2.y", adapter.wrap("$extra2.y"), additionalContext);
     }
 
-    @Test
-    void testMacroUUID() {
-        var result = transform(null, "#uuid",  null);
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testMacroUUID(JsonAdapter<?,?,?> adapter) {
+        var result = transform(adapter, null, "#uuid",  null);
         Assertions.assertDoesNotThrow(() -> UUID.fromString((String)(adapter.unwrap(result))));
     }
 
-    @Test
-    void testMacroNow() {
-        var result = transform(null, "#now",  null);
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testMacroNow(JsonAdapter<?,?,?> adapter) {
+        var result = transform(adapter, null, "#now",  null);
         Assertions.assertDoesNotThrow(() -> DateTimeFormatter.ISO_INSTANT.parse((String)(adapter.unwrap(result))));
     }
 
-    @Test
-    void testInputExtractorSpread() {
-        var m1 = fromJson("""
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testInputExtractorSpread(JsonAdapter<?,?,?> adapter) {
+        var m1 = adapter.parse("""
 {
   "a": "A",
   "b": "B"
 }
 """);
-        var t1 = fromJson("""
+        var t1 = adapter.parse("""
 {
   "*": "$",
   "a": "AA"
 }
 """);
-        var e1 = fromJson("""
+        var e1 = adapter.parse("""
 {
   "a": "AA",
   "b": "B"
 }
 """);
-        assertTransformation(m1, t1, e1);
+        assertTransformation(adapter, m1, t1, e1);
 
         // check bad case
-        assertFailTransformation(m1, t1, t1);
+        assertFailTransformation(adapter, m1, t1, t1);
     }
 
-    @Test
-    void testInputExtractorSpreadRemoveByHashNull() {
-        assertTransformation(fromJson("""
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testInputExtractorSpreadRemoveByHashNull(JsonAdapter<?,?,?> adapter) {
+        assertTransformation(adapter, adapter.parse("""
 {
   "a": "A",
   "b": "B"
 }
-"""), fromJson("""
+"""), adapter.parse("""
 {
   "*": "$",
   "a": "#null"
@@ -131,9 +145,10 @@ public class JsonTransformerTest extends BaseTest {
 """));
     }
 
-    @Test
-    void testInputExtractorSpreadArray() {
-        var m1 = fromJson("""
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testInputExtractorSpreadArray(JsonAdapter<?,?,?> adapter) {
+        var m1 = adapter.parse("""
 {
   "X": {
     "a": "A",
@@ -145,14 +160,14 @@ public class JsonTransformerTest extends BaseTest {
   }
 }
 """);
-        var t1 = fromJson("""
+        var t1 = adapter.parse("""
 {
   "*": [ "$.X", "$.Y" ],
   "a": "AA",
   "c": "CC"
 }
 """);
-        var e1 = fromJson("""
+        var e1 = adapter.parse("""
 {
   "a": "AA",
   "b": "B",
@@ -160,15 +175,16 @@ public class JsonTransformerTest extends BaseTest {
   "d": "D"
 }
 """);
-        assertTransformation(m1, t1, e1);
+        assertTransformation(adapter, m1, t1, e1);
 
         // check bad case
-        assertFailTransformation(m1, t1, t1);
+        assertFailTransformation(adapter, m1, t1, t1);
     }
 
-    @Test
-    public void testInputExtractorSpreadArray2() {
-        var m1 = fromJson("""
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    public void testInputExtractorSpreadArray2(JsonAdapter<?,?,?> adapter) {
+        var m1 = adapter.parse("""
 {
   "X": {
     "a": "A",
@@ -181,38 +197,40 @@ public class JsonTransformerTest extends BaseTest {
   }
 }
 """);
-        var t1 = fromJson("""
+        var t1 = adapter.parse("""
 {
   "*": [ "$.X", "$.Y" ],
   "a": true
 }
 """);
-        var e1 = fromJson("""
+        var e1 = adapter.parse("""
 {
   "a": true,
   "b": 2,
   "c": "C"
 }
 """);
-        assertTransformation(m1, t1, e1);
+        assertTransformation(adapter, m1, t1, e1);
 
         // check bad case
-        assertFailTransformation(m1, t1, t1);
+        assertFailTransformation(adapter, m1, t1, t1);
     }
 
-    @Test
-    public void testInputExtractorTransformObjectInput() {
-        assertTransformation(fromJson("""
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    public void testInputExtractorTransformObjectInput(JsonAdapter<?,?,?> adapter) {
+        assertTransformation(adapter, adapter.parse("""
 {
   "x": "foo"
-}"""), "$", fromJson("""
+}"""), "$", adapter.parse("""
 {
   "x": "foo"
 }"""));
     }
 
-    @Test
-    public void testInputExtractorTransformDefinitionJsonArray() {
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    public void testInputExtractorTransformDefinitionJsonArray(JsonAdapter<?,?,?> adapter) {
         // Given input is an object and InputExtractor definition is an array
         var definition = adapter.createArray();;
         adapter.add(definition, "element1");
@@ -224,7 +242,7 @@ public class JsonTransformerTest extends BaseTest {
         adapter.add(nestedJson, "nested", "*");
         adapter.add(definition, nestedJson);
 
-        assertTransformation(fromJson("""
+        assertTransformation(adapter, adapter.parse("""
 {
   "x": "foo"
 }"""), definition, definition);
