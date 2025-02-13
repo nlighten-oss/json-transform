@@ -24,10 +24,6 @@ class JsonTransformer implements Transformer {
     };
   }
 
-  public static getDebuggableAdapter() {
-    return new DebuggableTransformerFunctions();
-  }
-
   async transform(payload: any = null, additionalContext: Record<string, any> = {}) {
     if (isNullOrUndefined(this.definition)) {
       return null;

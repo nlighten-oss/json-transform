@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useState} from "react";
 import  { } from "@docusaurus/BrowserOnly"
 import { JSONSchemaUtils } from '@nlighten/json-schema-utils'
 import {jsonpathJoin} from "@nlighten/json-transform-core";
-import {JsonTransformer} from "@nlighten/json-transform";
+import {DebuggableTransformerFunctions, JsonTransformer} from "@nlighten/json-transform";
 import {useLocation, useHistory} from "@docusaurus/router";
 import MonacoEditor from "./monaco/MonacoEditor";
 import {setSuggestions} from "./monaco/suggestionsProvider";
@@ -39,7 +39,7 @@ const DEFAULT_INPUT_VALUE = `{
 }`;
 
 const transformAsync = async (input: any, definition: any) => {
-  const adapter = JsonTransformer.getDebuggableAdapter();
+  const adapter = new DebuggableTransformerFunctions();
   const transformer = new JsonTransformer(definition, adapter);
   const result = await transformer.transform(input);
   return {

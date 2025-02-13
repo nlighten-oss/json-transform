@@ -3,6 +3,7 @@ import { parse as urlParse, type UrlWithParsedQuery } from "url";
 import { createServer, type IncomingMessage, type ServerResponse } from "http";
 import JsonTransformer from "../src/JsonTransformer";
 import { HTMLHeaders, JSONHeaders, parseBody, send, JSONBig } from "./serverUtils";
+import { DebuggableTransformerFunctions } from "../src";
 
 const PORT = 10002;
 
@@ -21,7 +22,7 @@ const api: Record<string, (req: IncomingMessage, res: ServerResponse, url: UrlWi
     "POST /api/v1/transform": async (req, res) => {
       const body = await parseBody(req);
       console.log("called with " + JSONBig.stringify(body));
-      let functionsAdapter = body.debug ? JsonTransformer.getDebuggableAdapter() : undefined;
+      let functionsAdapter = body.debug ? new DebuggableTransformerFunctions() : undefined;
       const t = new JsonTransformer(body.definition, functionsAdapter);
       try {
         const result = await t.transform(body.input, body.additionalContext);
