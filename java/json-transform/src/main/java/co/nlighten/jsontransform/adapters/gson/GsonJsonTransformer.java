@@ -6,19 +6,21 @@ import co.nlighten.jsontransform.TransformerFunctionsAdapter;
 
 public class GsonJsonTransformer extends JsonTransformer {
 
-    private static GsonJsonAdapter getGsonAdapter() {
+    public static GsonJsonAdapter DEFAULT_ADAPTER = new GsonJsonAdapter();
+
+    public static GsonJsonAdapter getAdapter() {
         var currentAdapter = JsonTransformerConfiguration.get().getAdapter();
         if (currentAdapter instanceof GsonJsonAdapter gja) {
             return gja;
         }
-        return new GsonJsonAdapter();
+        return DEFAULT_ADAPTER;
     }
 
     public GsonJsonTransformer(final Object definition) {
-        super(definition, getGsonAdapter());
+        super(definition, getAdapter());
     }
 
     public GsonJsonTransformer(final Object definition, TransformerFunctionsAdapter functionsAdapter) {
-        super(definition, getGsonAdapter(), functionsAdapter);
+        super(definition, getAdapter(), functionsAdapter);
     }
 }

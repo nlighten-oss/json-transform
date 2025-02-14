@@ -6,19 +6,21 @@ import co.nlighten.jsontransform.TransformerFunctionsAdapter;
 
 public class JsonOrgJsonTransformer extends JsonTransformer {
 
-    private static JsonOrgJsonAdapter getJsonOrgAdapter() {
+    public static JsonOrgJsonAdapter DEFAULT_ADAPTER = new JsonOrgJsonAdapter();
+
+    public static JsonOrgJsonAdapter getAdapter() {
         var currentAdapter = JsonTransformerConfiguration.get().getAdapter();
         if (currentAdapter instanceof JsonOrgJsonAdapter joa) {
             return joa;
         }
-        return new JsonOrgJsonAdapter();
+        return DEFAULT_ADAPTER;
     }
 
     public JsonOrgJsonTransformer(final Object definition) {
-        super(definition, getJsonOrgAdapter());
+        super(definition, getAdapter());
     }
 
     public JsonOrgJsonTransformer(final Object definition, TransformerFunctionsAdapter functionsAdapter) {
-        super(definition, getJsonOrgAdapter(), functionsAdapter);
+        super(definition, getAdapter(), functionsAdapter);
     }
 }

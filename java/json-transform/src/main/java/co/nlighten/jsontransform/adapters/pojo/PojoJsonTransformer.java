@@ -6,19 +6,21 @@ import co.nlighten.jsontransform.TransformerFunctionsAdapter;
 
 public class PojoJsonTransformer extends JsonTransformer {
 
-    private static PojoJsonAdapter getPojoAdapter() {
+    public static PojoJsonAdapter DEFAULT_ADAPTER = new PojoJsonAdapter();
+
+    public static PojoJsonAdapter getAdapter() {
         var currentAdapter = JsonTransformerConfiguration.get().getAdapter();
         if (currentAdapter instanceof PojoJsonAdapter pja) {
             return pja;
         }
-        return new PojoJsonAdapter();
+        return DEFAULT_ADAPTER;
     }
 
     public PojoJsonTransformer(final Object definition) {
-        super(definition, getPojoAdapter());
+        super(definition, getAdapter());
     }
 
     public PojoJsonTransformer(final Object definition, TransformerFunctionsAdapter functionsAdapter) {
-        super(definition, getPojoAdapter(), functionsAdapter);
+        super(definition, getAdapter(), functionsAdapter);
     }
 }
