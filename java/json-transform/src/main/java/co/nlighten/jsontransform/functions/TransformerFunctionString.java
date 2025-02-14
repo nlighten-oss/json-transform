@@ -4,10 +4,6 @@ import co.nlighten.jsontransform.functions.common.*;
 
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionStringTest
- */
 public class TransformerFunctionString extends TransformerFunction {
     public TransformerFunctionString() {
         super(FunctionDescription.of(
@@ -17,7 +13,7 @@ public class TransformerFunctionString extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var value = context.getUnwrapped(null);
         if (context.getBoolean("json")) {
             // although gson.toJson will return "null" eventually, this is quicker

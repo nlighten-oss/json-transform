@@ -4,6 +4,9 @@ import co.nlighten.jsontransform.adapters.JsonAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
 
 public class DebuggableTransformerFunctions extends TransformerFunctions{
     private final Map<String, TransformerDebugInfo> debugResults;
@@ -29,12 +32,20 @@ public class DebuggableTransformerFunctions extends TransformerFunctions{
         return matchResult;
     }
 
-    public TransformerFunctions.FunctionMatchResult<Object> matchObject(JsonAdapter<?,?,?> adapter, String path, Object definition, ParameterResolver resolver, JsonTransformerFunction transformer) {
-        return auditAndReturn(path, super.matchObject(adapter, path, definition, resolver, transformer));
+    public CompletionStage<TransformerFunctions.FunctionMatchResult<Object>> matchObject(JsonAdapter<?,?,?> adapter, String path, Object definition, ParameterResolver resolver, JsonTransformerFunction transformer) {
+        return super.matchObject(adapter, path, definition, resolver, transformer)
+            .thenApply(match -> {
+                auditAndReturn(path, match);
+                return match;
+            });
     }
 
-    public TransformerFunctions.FunctionMatchResult<Object> matchInline(JsonAdapter<?,?,?> adapter, String path, String value, ParameterResolver resolver, JsonTransformerFunction transformer) {
-        return auditAndReturn(path, super.matchInline(adapter, path, value, resolver, transformer));
+    public CompletionStage<TransformerFunctions.FunctionMatchResult<Object>> matchInline(JsonAdapter<?,?,?> adapter, String path, String value, ParameterResolver resolver, JsonTransformerFunction transformer) {
+        return super.matchInline(adapter, path, value, resolver, transformer)
+            .thenApply(match -> {
+                auditAndReturn(path, match);
+                return match;
+            });
     }
 
     public Map<String, TransformerDebugInfo> getDebugResults() {

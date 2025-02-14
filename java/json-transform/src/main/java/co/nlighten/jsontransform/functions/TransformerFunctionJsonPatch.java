@@ -5,10 +5,6 @@ import co.nlighten.jsontransform.manipulation.JsonPatch;
 
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionJsonPatchTest
- */
 public class TransformerFunctionJsonPatch extends TransformerFunction {
 
     public TransformerFunctionJsonPatch() {
@@ -20,7 +16,7 @@ public class TransformerFunctionJsonPatch extends TransformerFunction {
     }
 
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var source = context.getJsonElement(null);
         if (source == null) {
             return null;

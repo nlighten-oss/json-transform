@@ -8,11 +8,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
+import java.util.concurrent.CompletionStage;
 
-/*
- * For tests
- * @see TransformerFunctionBase64Test
- */
 public class TransformerFunctionBase64 extends TransformerFunction {
 
     static final Logger log = LoggerFactory.getLogger(TransformerFunctionBase64.class);
@@ -29,7 +26,7 @@ public class TransformerFunctionBase64 extends TransformerFunction {
     }
 
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var str = context.getString(null);
         if (str == null) {
             return null;

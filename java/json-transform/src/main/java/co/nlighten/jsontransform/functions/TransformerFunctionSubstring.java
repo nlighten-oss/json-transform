@@ -4,10 +4,6 @@ import co.nlighten.jsontransform.functions.common.*;
 
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionSubstringTest
- */
 public class TransformerFunctionSubstring extends TransformerFunction {
     public TransformerFunctionSubstring() {
         super(FunctionDescription.of(
@@ -18,7 +14,7 @@ public class TransformerFunctionSubstring extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var str = context.getString(null);
         if (str == null) {
             return null;

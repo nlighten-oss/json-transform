@@ -7,10 +7,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionSortTest
- */
 public class TransformerFunctionSort extends TransformerFunction {
     public TransformerFunctionSort() {
         super(FunctionDescription.of(
@@ -23,7 +19,7 @@ public class TransformerFunctionSort extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var arr = context.getJsonElementStreamer(null);
         if (arr == null) {
             return null;

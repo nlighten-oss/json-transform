@@ -6,10 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/*
- * For tests
- * @see TransformerFunctionJoinTest
- */
 public class TransformerFunctionJoin extends TransformerFunction {
     public TransformerFunctionJoin() {
         super(FunctionDescription.of(
@@ -24,7 +20,7 @@ public class TransformerFunctionJoin extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var arr = context.getJsonElementStreamer(null);
         var delimiter = context.getString("$$delimiter"); // backwards compat.
         if (delimiter == null) {

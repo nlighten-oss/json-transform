@@ -9,10 +9,6 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionMathTest
- */
 public class TransformerFunctionMath extends TransformerFunction {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionMath.class);
 
@@ -26,7 +22,7 @@ public class TransformerFunctionMath extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var value = context.getJsonArray(null);
         String parsedOp;
         MathOp op;

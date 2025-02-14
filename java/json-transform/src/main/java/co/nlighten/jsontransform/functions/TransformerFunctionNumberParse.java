@@ -7,10 +7,6 @@ import java.math.BigInteger;
 import java.util.Locale;
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionNumberParseTest
- */
 public class TransformerFunctionNumberParse extends TransformerFunction {
     public TransformerFunctionNumberParse() {
         super(FunctionDescription.of(
@@ -24,7 +20,7 @@ public class TransformerFunctionNumberParse extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var str = context.getString(null);
         if (str == null) {
             return null;

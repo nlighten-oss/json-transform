@@ -16,7 +16,7 @@ public class TransformerFunctionFlatten extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var jeTarget = context.getJsonElement("target");
         Object target;
         var adapter = context.getAdapter();

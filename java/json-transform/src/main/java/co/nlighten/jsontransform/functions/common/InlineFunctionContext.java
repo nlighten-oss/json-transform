@@ -5,6 +5,8 @@ import co.nlighten.jsontransform.ParameterResolver;
 import co.nlighten.jsontransform.adapters.JsonAdapter;
 
 import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class InlineFunctionContext extends FunctionContext {
     protected final String stringInput;
@@ -27,19 +29,21 @@ public class InlineFunctionContext extends FunctionContext {
     }
 
     @Override
-    public Object get(String name, boolean transform) {
+    public CompletionStage<Object> get(String name, boolean transform) {
         var argument = function.getArgument(name);
         if (name != null && (argument == null || argument.position < 0 || args == null || args.size() <= argument.position)) {
-            return function.getDefaultValue(name);
+            return CompletableFuture.completedStage(function.getDefaultValue(name));
         }
         var argValue = name == null ? stringInput : args.get(argument.position);
         if (argValue instanceof String s && transform) {
             return extractor.transform(getPathFor(name), adapter.wrap(s), resolver, true);
         }
         if (adapter.is(argValue)) {
-            return transform ? extractor.transform(getPathFor(name), argValue, resolver, true) : argValue;
+            return transform
+                    ? extractor.transform(getPathFor(name), argValue, resolver, true)
+                    : CompletableFuture.completedStage(argValue);
         }
-        return argValue;
+        return CompletableFuture.completedStage(argValue);
     }
 
     @Override

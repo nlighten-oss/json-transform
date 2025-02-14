@@ -4,10 +4,6 @@ import co.nlighten.jsontransform.functions.common.*;
 
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionContainsTest
- */
 public class TransformerFunctionContains extends TransformerFunction {
     public TransformerFunctionContains() {
         super(FunctionDescription.of(
@@ -17,7 +13,7 @@ public class TransformerFunctionContains extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var streamer = context.getJsonElementStreamer(null);
         if (streamer == null) return null;
         var that = context.getJsonElement( "that");

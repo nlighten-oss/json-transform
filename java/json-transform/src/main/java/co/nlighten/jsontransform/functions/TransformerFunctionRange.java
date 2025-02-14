@@ -6,10 +6,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionRangeTest
- */
 public class TransformerFunctionRange extends TransformerFunction {
     public TransformerFunctionRange() {
         super(FunctionDescription.of(
@@ -21,7 +17,7 @@ public class TransformerFunctionRange extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var start = context.getBigDecimal("start");
         var end = context.getBigDecimal("end");
         if (start == null || end == null) {

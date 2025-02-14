@@ -5,10 +5,6 @@ import co.nlighten.jsontransform.JsonElementStreamer;
 
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionSliceTest
- */
 public class TransformerFunctionSlice extends TransformerFunction {
     public TransformerFunctionSlice() {
         super(FunctionDescription.of(
@@ -19,7 +15,7 @@ public class TransformerFunctionSlice extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var adapter = context.getAdapter();
         var value = context.getJsonElementStreamer(null);
         var begin = context.getInteger("begin");

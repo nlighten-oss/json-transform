@@ -5,6 +5,9 @@ import co.nlighten.jsontransform.JsonTransformerFunction;
 import co.nlighten.jsontransform.ParameterResolver;
 import co.nlighten.jsontransform.adapters.JsonAdapter;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+
 public class ObjectFunctionContext extends FunctionContext {
     private final Object definition;
 
@@ -24,12 +27,14 @@ public class ObjectFunctionContext extends FunctionContext {
     }
 
     @Override
-    public Object get(String name, boolean transform) {
+    public CompletionStage<Object> get(String name, boolean transform) {
         var el = adapter.get(definition, name == null ? alias : name);
         if (adapter.isNull(el)) {
-            return function.getDefaultValue(name);
+            return CompletableFuture.completedStage(function.getDefaultValue(name));
         }
-        return transform ? extractor.transform(getPathFor(name), el, resolver, true) : el;
+        return transform
+                ? extractor.transform(getPathFor(name), el, resolver, true)
+                : CompletableFuture.completedStage(el);
     }
 
     @Override

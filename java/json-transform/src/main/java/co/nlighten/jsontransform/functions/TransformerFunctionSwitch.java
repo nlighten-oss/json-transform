@@ -6,10 +6,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionSwitchTest
- */
 public class TransformerFunctionSwitch extends TransformerFunction {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionSwitch.class);
 
@@ -22,7 +18,7 @@ public class TransformerFunctionSwitch extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var alias = context.getAlias();
         var value = context.getString(null);
         var adapter = context.getAdapter();

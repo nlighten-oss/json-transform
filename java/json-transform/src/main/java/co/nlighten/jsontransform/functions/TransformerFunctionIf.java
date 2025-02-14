@@ -4,10 +4,6 @@ import co.nlighten.jsontransform.functions.common.*;
 
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionIfTest
- */
 public class TransformerFunctionIf extends TransformerFunction {
     public TransformerFunctionIf() {
         super(FunctionDescription.of(
@@ -18,7 +14,7 @@ public class TransformerFunctionIf extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         boolean condition;
         var adapter = context.getAdapter();
         if (context.has("then")) {

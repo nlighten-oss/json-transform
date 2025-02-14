@@ -7,10 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/*
- * For tests
- * @see TransformerFunctionLookupTest
- */
 public class TransformerFunctionLookup extends TransformerFunction {
     public TransformerFunctionLookup() {
         super(FunctionDescription.of(
@@ -33,7 +29,7 @@ public class TransformerFunctionLookup extends TransformerFunction {
     }
 
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var streamer = context.getJsonElementStreamer(null);
         if (streamer == null)
             return null;

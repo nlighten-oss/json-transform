@@ -6,10 +6,6 @@ import co.nlighten.jsontransform.JsonElementStreamer;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/*
- * For tests
- * @see TransformerFunctionFilterTest
- */
 public class TransformerFunctionFilter extends TransformerFunction {
     public TransformerFunctionFilter() {
         super(FunctionDescription.of(
@@ -19,7 +15,7 @@ public class TransformerFunctionFilter extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var streamer = context.getJsonElementStreamer(null);
         if (streamer == null)
             return null;

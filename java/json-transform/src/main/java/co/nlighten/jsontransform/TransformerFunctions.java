@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -132,7 +134,7 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
     /**
      * Checks the context for a registered object function and returns the result if matched
      */
-    public FunctionMatchResult<Object> matchObject(JsonAdapter<?,?,?> adapter, String path, Object definition, co.nlighten.jsontransform.ParameterResolver resolver, JsonTransformerFunction transformer) {
+    public CompletionStage<FunctionMatchResult<Object>> matchObject(JsonAdapter<?,?,?> adapter, String path, Object definition, co.nlighten.jsontransform.ParameterResolver resolver, JsonTransformerFunction transformer) {
         if (definition == null) {
             return null;
         }
@@ -149,10 +151,10 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
                         func, resolver, transformer);
                 var resolvedPath = path + "." + FUNCTION_KEY_PREFIX + key;
                 try {
-                    return new FunctionMatchResult<>(func.apply(context), resolvedPath);
+                    return func.apply(context).thenApply(result -> new FunctionMatchResult<>(result, resolvedPath));
                 } catch (Throwable ex) {
                     log.warn("Failed running object function (at {})", resolvedPath, ex);
-                    return new FunctionMatchResult<>(null, resolvedPath);
+                    return CompletableFuture.completedStage(new FunctionMatchResult<>(null, resolvedPath));
                 }
             }
         }
@@ -201,7 +203,7 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
         return null;
     }
 
-    public FunctionMatchResult<Object> matchInline(JsonAdapter<?,?,?> adapter, String path, String value, ParameterResolver resolver, JsonTransformerFunction transformer) {
+    public CompletionStage<FunctionMatchResult<Object>> matchInline(JsonAdapter<?,?,?> adapter, String path, String value, ParameterResolver resolver, JsonTransformerFunction transformer) {
         if (value == null) return null;
         var context = tryParseInlineFunction(adapter, path, value, resolver, transformer);
         if (context == null) {
@@ -210,12 +212,12 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
         // at this point we detected an inline function, we must return a match result
         var resolvedPath = context.getPathFor(null);
         try {
-            var result = functions.get(context.getAlias()).apply(context);
-            return new FunctionMatchResult<>(result, resolvedPath);
+            return functions.get(context.getAlias()).apply(context)
+                    .thenApply(result -> new FunctionMatchResult<>(result, resolvedPath));
         } catch (Throwable ex) {
             log.warn("Failed running inline function (at {})", resolvedPath, ex);
         }
-        return new FunctionMatchResult<>(null, resolvedPath);
+        return CompletableFuture.completedStage(new FunctionMatchResult<>(null, resolvedPath));
     }
 
     public Map<String, TransformerFunction> getFunctions() {

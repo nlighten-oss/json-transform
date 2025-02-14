@@ -26,7 +26,7 @@ public class TransformerFunctionCsvParse extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var csv = context.getString(null);
         try {
             if (csv == null)

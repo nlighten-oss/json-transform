@@ -1,5 +1,6 @@
 package co.nlighten.jsontransform.adapters;
 
+import co.nlighten.jsontransform.AsyncJsonElementStreamer;
 import co.nlighten.jsontransform.MultiAdapterBaseTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -111,5 +112,14 @@ public class JsonAdapterTests extends MultiAdapterBaseTest {
 }
 """);
         assertEquals(adapter, expected, adapter.mergeInto(root, mergee, "$"));
+    }
+
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testArraySetOnOutOfBoundsIndex(JsonAdapter<?,?,?> adapter) {
+        var array = adapter.createArray(4);
+        var el = adapter.wrap("string");
+        adapter.set(array, 10, el);
+        assertEquals(adapter, el, adapter.get(array, 10));
     }
 }

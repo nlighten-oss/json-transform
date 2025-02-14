@@ -8,10 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
-/*
- * For tests
- * @see TransformerFunctionGroupTest
- */
 public class TransformerFunctionGroup extends TransformerFunction {
 
     public TransformerFunctionGroup() {
@@ -52,7 +48,7 @@ public class TransformerFunctionGroup extends TransformerFunction {
     }
 
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var adapter = context.getAdapter();
         var value = context.getJsonElementStreamer(null);
         if (value == null) {

@@ -3,10 +3,8 @@ package co.nlighten.jsontransform.functions;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 
-/*
- * For tests
- * @see TransformerFunctionCoalesceTest
- */
+import java.util.concurrent.CompletionStage;
+
 public class TransformerFunctionCoalesce extends TransformerFunction {
 
     public TransformerFunctionCoalesce() {
@@ -14,13 +12,14 @@ public class TransformerFunctionCoalesce extends TransformerFunction {
     }
 
     @Override
-    public Object apply(FunctionContext context) {
-        var streamer = context.getJsonElementStreamer(null);
-        if (streamer == null || streamer.knownAsEmpty()) return null;
-        var adapter = context.getAdapter();
-        return streamer.stream()
-                .filter(itm -> !adapter.isNull(itm))
-                .findFirst()
-                .orElse(null);
+    public CompletionStage<Object> apply(FunctionContext context) {
+        return context.getJsonElementStreamer(null).thenApply(streamer -> {
+            if (streamer == null || streamer.knownAsEmpty()) return null;
+            var adapter = context.getAdapter();
+            return streamer.stream()
+                    .filter(itm -> !adapter.isNull(itm))
+                    .findFirst()
+                    .orElse(null);
+        });
     }
 }

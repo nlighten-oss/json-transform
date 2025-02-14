@@ -7,10 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionXmlTest
- */
 public class TransformerFunctionXml extends TransformerFunction {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionXml.class);
 
@@ -25,7 +21,7 @@ public class TransformerFunctionXml extends TransformerFunction {
     }
 
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var obj = context.getJsonElement(null);
         if (obj == null)
             return null;

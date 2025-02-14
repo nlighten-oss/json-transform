@@ -3,11 +3,8 @@ package co.nlighten.jsontransform.functions;
 import co.nlighten.jsontransform.functions.common.*;
 
 import java.util.Map;
+import java.util.concurrent.CompletionStage;
 
-/*
- * For tests
- * @see TransformerFunctionBooleanTest
- */
 public class TransformerFunctionBoolean extends TransformerFunction {
     public TransformerFunctionBoolean() {
         super(FunctionDescription.of(
@@ -18,9 +15,12 @@ public class TransformerFunctionBoolean extends TransformerFunction {
     }
 
     @Override
-    public Object apply(FunctionContext context) {
-        var jsStyle = "JS".equals(context.getEnum("style"));
-        var adapter = context.getAdapter();
-        return adapter.isTruthy(context.getUnwrapped(null), jsStyle);
+    public CompletionStage<Object> apply(FunctionContext context) {
+        return context.getEnum("style").thenApply(style -> {
+            var jsStyle = "JS".equals(style);
+            var adapter = context.getAdapter();
+            return context.getUnwrapped(null).thenApply(value ->
+                    adapter.isTruthy(value, jsStyle));
+        });
     }
 }

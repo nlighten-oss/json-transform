@@ -7,10 +7,6 @@ import java.util.Currency;
 import java.util.Locale;
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionNumberFormatTest
- */
 public class TransformerFunctionNumberFormat extends TransformerFunction {
     public TransformerFunctionNumberFormat() {
         super(FunctionDescription.of(
@@ -27,7 +23,7 @@ public class TransformerFunctionNumberFormat extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var type = context.getEnum("type");
         var input = context.getBigDecimal(null);
 

@@ -8,10 +8,6 @@ import java.util.Base64;
 import java.util.HexFormat;
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionDigestTest
- */
 public class TransformerFunctionDigest extends TransformerFunction {
     public TransformerFunctionDigest() {
         super(FunctionDescription.of(
@@ -22,7 +18,7 @@ public class TransformerFunctionDigest extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var str = context.getString(null);
         if (str == null) {
             return null;

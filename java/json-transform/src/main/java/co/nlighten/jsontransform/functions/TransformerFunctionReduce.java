@@ -6,10 +6,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-/*
- * For tests
- * @see TransformerFunctionReduceTest
- */
 public class TransformerFunctionReduce extends TransformerFunction {
     public TransformerFunctionReduce() {
         super(FunctionDescription.of(
@@ -20,7 +16,7 @@ public class TransformerFunctionReduce extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var streamer = context.getJsonElementStreamer(null);
         if (streamer == null)
             return null;

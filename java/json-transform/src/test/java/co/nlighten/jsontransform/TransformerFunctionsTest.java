@@ -76,7 +76,7 @@ public class TransformerFunctionsTest extends MultiAdapterBaseTest {
         var callCount = new AtomicInteger();
         TransformerFunctions.registerFunctions(Map.entry(funcName, new TransformerFunction() {
             @Override
-            public Object apply(FunctionContext context) {
+            public CompletionStage<Object> apply(FunctionContext context) {
                 callCount.incrementAndGet();
                 return context.get(null);
             }
@@ -169,7 +169,7 @@ public class TransformerFunctionsTest extends MultiAdapterBaseTest {
         }
 
         @Override
-        public Object apply(FunctionContext context) {
+        public CompletionStage<Object> apply(FunctionContext context) {
             if (!context.has("a"))
                 return "N/A";
             var lst = new ArrayList<>();
@@ -235,7 +235,7 @@ public class TransformerFunctionsTest extends MultiAdapterBaseTest {
 
     private static class TransformerFunctionValTest extends TransformerFunction {
         @Override
-        public Object apply(FunctionContext context) {
+        public CompletionStage<Object> apply(FunctionContext context) {
             var value = context.getUnwrapped(null);
             if (value == null)
                 return "NULL";

@@ -16,7 +16,7 @@ public class TransformerFunctionLength extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var type = context.getEnum("type");
         var defaultZero = context.getBoolean("default_zero");
         var adapter = context.getAdapter();

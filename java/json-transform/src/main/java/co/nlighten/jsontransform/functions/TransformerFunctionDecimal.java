@@ -5,10 +5,6 @@ import co.nlighten.jsontransform.functions.common.*;
 import java.math.RoundingMode;
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionDecimalTest
- */
 public class TransformerFunctionDecimal extends TransformerFunction {
     public TransformerFunctionDecimal() {
         super(FunctionDescription.of(
@@ -19,7 +15,7 @@ public class TransformerFunctionDecimal extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var result = context.getBigDecimal(null);
         if (result == null) return null;
         var scale = context.getInteger("scale");

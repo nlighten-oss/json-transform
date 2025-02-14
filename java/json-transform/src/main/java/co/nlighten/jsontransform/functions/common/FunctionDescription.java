@@ -1,6 +1,5 @@
 package co.nlighten.jsontransform.functions.common;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class FunctionDescription {

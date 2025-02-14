@@ -6,10 +6,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/*
- * For tests
- * @see TransformerFunctionPartitionTest
- */
 public class TransformerFunctionPartition extends TransformerFunction {
     public TransformerFunctionPartition() {
         super(FunctionDescription.of(
@@ -19,7 +15,7 @@ public class TransformerFunctionPartition extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var value = context.getJsonArray(null);
         if (value == null) {
             return null;

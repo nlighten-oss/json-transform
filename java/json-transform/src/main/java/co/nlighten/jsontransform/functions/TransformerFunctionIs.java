@@ -5,10 +5,6 @@ import co.nlighten.jsontransform.functions.common.*;
 import java.math.BigDecimal;
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionIsTest
- */
 public class TransformerFunctionIs extends TransformerFunction {
 
     public TransformerFunctionIs() {
@@ -33,7 +29,7 @@ public class TransformerFunctionIs extends TransformerFunction {
     }
 
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var value = context.getJsonElement(null);
         var adapter = context.getAdapter();
         if (context.has("op")) {

@@ -3,22 +3,21 @@ package co.nlighten.jsontransform.functions;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 
-/*
- * For tests
- * @see TransformerFunctionAndTest
- */
+import java.util.concurrent.CompletionStage;
+
 public class TransformerFunctionAnd extends TransformerFunction {
     public TransformerFunctionAnd() {
         super();
     }
 
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var adapter = context.getAdapter();
-        var value = context.getJsonElementStreamer(null);
-        if (value == null) {
-            return false;
-        }
-        return value.stream().allMatch(adapter::isTruthy);
+        return context.getJsonElementStreamer(null).thenApply(value -> {
+            if (value == null) {
+                return false;
+            }
+            return value.stream().allMatch(adapter::isTruthy);
+        });
     }
 }

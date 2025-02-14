@@ -6,16 +6,12 @@ import co.nlighten.jsontransform.functions.common.TransformerFunction;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-/*
- * For tests
- * @see TransformerFunctionEntriesTest
- */
 public class TransformerFunctionEntries extends TransformerFunction {
     public TransformerFunctionEntries() {
         super();
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var input = context.getJsonElement(null);
         var adapter = context.getAdapter();
         if (adapter.isJsonArray(input)) {

@@ -2,15 +2,18 @@ package co.nlighten.jsontransform;
 
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-public class JsonElementStreamer {
+public class AsyncJsonElementStreamer {
     private final FunctionContext context;
     private final boolean transformed;
     private Object value;
     private final Stream<?> stream;
 
-    private JsonElementStreamer(FunctionContext context, Stream<?> stream, Object arr, boolean transformed) {
+    private AsyncJsonElementStreamer(FunctionContext context, Stream<?> stream, Object arr, boolean transformed) {
         this.context = context;
         this.value = arr;
         this.transformed = transformed;
@@ -41,33 +44,40 @@ public class JsonElementStreamer {
             valueStream = valueStream.limit(limit);
         }
         if (!transformed) {
-            valueStream = valueStream.map(item ->
-                context.transform(item).toCompletableFuture().join()
-            );
+            valueStream = valueStream.map(context::transform);
         }
         return valueStream;
     }
 
-    public static JsonElementStreamer fromJsonArray(
+    public static AsyncJsonElementStreamer fromJsonArray(
             FunctionContext context, Object array, boolean transformed) {
-        return new JsonElementStreamer(context, null, array, transformed);
+        return new AsyncJsonElementStreamer(context, null, array, transformed);
     }
 
-    public static JsonElementStreamer fromTransformedStream(
-            FunctionContext context, Stream<?> stream) {
-        return new JsonElementStreamer(context, stream, null, true);
+    public static AsyncJsonElementStreamer fromTransformedStream(
+            FunctionContext context, Stream<CompletionStage<?>> stream) {
+        return new AsyncJsonElementStreamer(context, stream, null, true);
     }
 
-    public Object toJsonArray() {
+    public CompletionStage<Object> toJsonArray() {
         if (value != null) {
-            return value;
+            return CompletableFuture.completedStage(value);
         }
         var adapter = context.getAdapter();
-        var ja = adapter.createArray();
-        if (stream != null) {
-            stream.forEach(item -> adapter.add(ja, item));
-        }
-        value = ja;
-        return ja;
+
+        var result = adapter.createArray();
+        var index = new AtomicInteger(0);
+        return CompletableFuture.allOf(
+            stream.map(d -> {
+                var i = index.getAndIncrement();
+                return d.thenApply(item -> {
+                    adapter.set(result, i, item);
+                    return null;
+                }).toCompletableFuture();
+            }).toArray(CompletableFuture[]::new)
+        ).thenApply(v -> {
+            this.value = result;
+            return result;
+        });
     }
 }

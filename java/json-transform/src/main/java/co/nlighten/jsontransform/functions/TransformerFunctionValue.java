@@ -14,7 +14,7 @@ public class TransformerFunctionValue extends TransformerFunction {
         super();
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var result = context.get(null, true);
         if (result instanceof JsonElementStreamer streamer) {
             result = streamer.toJsonArray();

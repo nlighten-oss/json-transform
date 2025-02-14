@@ -9,10 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Base64;
 
-/*
- * For tests
- * @see TransformerFunctionJwtParseTest
- */
 public class TransformerFunctionJwtParse extends TransformerFunction {
 
     private static final Logger logger = LoggerFactory.getLogger(TransformerFunctionJwtParse.class);
@@ -21,7 +17,7 @@ public class TransformerFunctionJwtParse extends TransformerFunction {
         super();
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var jwt = context.getString(null);
         try {
             final int dot1 = jwt.indexOf(".");

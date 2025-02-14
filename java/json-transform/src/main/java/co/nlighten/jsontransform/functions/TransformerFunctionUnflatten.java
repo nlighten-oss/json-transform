@@ -15,7 +15,7 @@ public class TransformerFunctionUnflatten extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         Object target;
         var adapter = context.getAdapter();
         var targetValue = context.getJsonElement("target");

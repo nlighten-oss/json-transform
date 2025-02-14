@@ -18,7 +18,7 @@ public class TransformerFunctionMin extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var streamer = context.getJsonElementStreamer(null);
         if (streamer == null || streamer.knownAsEmpty())
             return null;

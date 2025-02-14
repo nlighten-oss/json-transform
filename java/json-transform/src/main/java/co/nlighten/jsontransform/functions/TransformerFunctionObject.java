@@ -3,16 +3,12 @@ package co.nlighten.jsontransform.functions;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 
-/*
- * For tests
- * @see TransformerFunctionObjectTest
- */
 public class TransformerFunctionObject extends TransformerFunction {
     public TransformerFunctionObject() {
         super();
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var streamer = context.getJsonElementStreamer(null);
         var adapter = context.getAdapter();
         var result = adapter.createObject();

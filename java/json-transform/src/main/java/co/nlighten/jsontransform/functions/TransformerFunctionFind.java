@@ -5,10 +5,6 @@ import co.nlighten.jsontransform.functions.common.*;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/*
- * For tests
- * @see TransformerFunctionFindTest
- */
 public class TransformerFunctionFind extends TransformerFunction {
     public TransformerFunctionFind() {
         super(FunctionDescription.of(
@@ -17,7 +13,7 @@ public class TransformerFunctionFind extends TransformerFunction {
             )));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var streamer = context.getJsonElementStreamer(null);
         if (streamer == null)
             return null;

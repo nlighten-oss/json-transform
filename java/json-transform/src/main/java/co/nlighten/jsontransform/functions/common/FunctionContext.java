@@ -1,14 +1,13 @@
 package co.nlighten.jsontransform.functions.common;
 
-import co.nlighten.jsontransform.JsonTransformerUtils;
-import co.nlighten.jsontransform.ParameterResolver;
+import co.nlighten.jsontransform.*;
 import co.nlighten.jsontransform.adapters.JsonAdapter;
-import co.nlighten.jsontransform.JsonElementStreamer;
-import co.nlighten.jsontransform.JsonTransformerFunction;
 
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public abstract class FunctionContext {
@@ -104,9 +103,9 @@ public abstract class FunctionContext {
 
     public abstract boolean has(String name);
 
-    public abstract Object get(String name, boolean transform);
+    public abstract CompletionStage<Object> get(String name, boolean transform);
 
-    public Object get(String name) {
+    public CompletionStage<Object> get(String name) {
         return get(name, true);
     }
 
@@ -125,149 +124,167 @@ public abstract class FunctionContext {
         return adapter.getAsString(value);
     }
 
-    public Object getUnwrapped(String name, boolean reduceBigDecimals) {
-        var value = get(name, true);
-        if (value instanceof JsonElementStreamer streamer) {
-            value = streamer.toJsonArray();
-        }
-        return adapter.unwrap(value, reduceBigDecimals);
+    public CompletionStage<Object> getUnwrapped(String name, boolean reduceBigDecimals) {
+        return get(name, true)
+            .thenApply(value -> {
+                if (value instanceof JsonElementStreamer streamer) {
+                    value = streamer.toJsonArray();
+                }
+                return adapter.unwrap(value, reduceBigDecimals);
+            });
     }
 
-    public Object getUnwrapped(String name) {
+    public CompletionStage<Object> getUnwrapped(String name) {
         return getUnwrapped(name, false);
     }
 
-    public Object getJsonElement(String name, boolean transform) {
-        var value = get(name, transform);
-        if (value instanceof JsonElementStreamer streamer) {
-            value = streamer.toJsonArray();
-        }
-        return adapter.wrap(value);
+    public CompletionStage<Object> getJsonElement(String name, boolean transform) {
+        return get(name, transform)
+            .thenApply(value -> {
+                if (value instanceof JsonElementStreamer streamer) {
+                    value = streamer.toJsonArray();
+                }
+                return adapter.wrap(value);
+            });
     }
 
-    public Object getJsonElement(String name) {
+    public CompletionStage<Object> getJsonElement(String name) {
         return getJsonElement(name, true);
     }
 
-    public Boolean getBoolean(String name, boolean transform) {
-        var value = get(name, transform);
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof Boolean b) {
-            return b;
-        }
-        var str = getAsString(value);
-        if (str == null) return null;
-        return Boolean.parseBoolean(str.trim());
+    public CompletionStage<Boolean> getBoolean(String name, boolean transform) {
+        return get(name, transform)
+            .thenApply(value -> {
+                if (value == null) {
+                    return null;
+                }
+                if (value instanceof Boolean b) {
+                    return b;
+                }
+                var str = getAsString(value);
+                if (str == null) return null;
+                return Boolean.parseBoolean(str.trim());
+            });
     }
 
-    public Boolean getBoolean(String name) {
+    public CompletionStage<Boolean> getBoolean(String name) {
         return getBoolean(name, true);
     }
 
-    public String getString(String name, boolean transform) {
-        var value = get(name, transform);
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof JsonElementStreamer streamer) {
-            value = streamer.toJsonArray();
-        }
-        return getAsString(value);
+    public CompletionStage<String> getString(String name, boolean transform) {
+        return get(name, transform)
+            .thenApply(value -> {
+                if (value == null) {
+                    return null;
+                }
+                if (value instanceof JsonElementStreamer streamer) {
+                    value = streamer.toJsonArray();
+                }
+                return getAsString(value);
+            });
     }
 
-    public String getString(String name) {
+    public CompletionStage<String> getString(String name) {
         return getString(name, true);
     }
 
-    public String getEnum(String name, boolean transform) {
-        var value = getString(name, transform);
-        if (value == null) return null;
-        return value.trim().toUpperCase();
+    public CompletionStage<String> getEnum(String name, boolean transform) {
+        return getString(name, transform)
+            .thenApply(value -> {
+                if (value == null) return null;
+                return value.trim().toUpperCase();
+            });
     }
 
-    public String getEnum(String name) {
+    public CompletionStage<String> getEnum(String name) {
         return getEnum(name, true);
     }
 
-    public Integer getInteger(String name, boolean transform) {
-        var value = get(name, transform);
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof Number n) {
-            return n.intValue();
-        }
-        if (adapter.isJsonNumber(value)) {
-            return adapter.getNumber(value).intValue();
-        }
-        var str = getAsString(value);
-        if (str == null) return null;
-        str = str.trim();
-        if (str.isEmpty()) return null;
-        return new BigDecimal(str).intValue();
+    public CompletionStage<Integer> getInteger(String name, boolean transform) {
+        return get(name, transform)
+            .thenApply(value -> {
+                if (value == null) {
+                    return null;
+                }
+                if (value instanceof Number n) {
+                    return n.intValue();
+                }
+                if (adapter.isJsonNumber(value)) {
+                    return adapter.getNumber(value).intValue();
+                }
+                var str = getAsString(value);
+                if (str == null) return null;
+                str = str.trim();
+                if (str.isEmpty()) return null;
+                return new BigDecimal(str).intValue();
+            });
     }
 
-    public Integer getInteger(String name){
+    public CompletionStage<Integer> getInteger(String name){
         return getInteger(name, true);
     }
 
-    public Long getLong(String name, boolean transform) {
-        var value = get(name, transform);
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof Number n) {
-            return n.longValue();
-        }
-        if (adapter.isJsonNumber(value)) {
-            return adapter.getNumber(value).longValue();
-        }
-        var str = getAsString(value);
-        if (str == null) return null;
-        str = str.trim();
-        if (str.isEmpty()) return null;
-        return new BigDecimal(str).longValue();
+    public CompletionStage<Long> getLong(String name, boolean transform) {
+        return get(name, transform)
+            .thenApply(value -> {
+                if (value == null) {
+                    return null;
+                }
+                if (value instanceof Number n) {
+                    return n.longValue();
+                }
+                if (adapter.isJsonNumber(value)) {
+                    return adapter.getNumber(value).longValue();
+                }
+                var str = getAsString(value);
+                if (str == null) return null;
+                str = str.trim();
+                if (str.isEmpty()) return null;
+                return new BigDecimal(str).longValue();
+            });
     }
 
-    public Long getLong(String name){
+    public CompletionStage<Long> getLong(String name){
         return getLong(name, true);
     }
 
-    public BigDecimal getBigDecimal(String name, boolean transform) {
-        var value = get(name, transform);
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof BigDecimal b) {
-            return b;
-        }
-        if (adapter.isJsonNumber(value)) {
-            return adapter.getNumberAsBigDecimal(value);
-        }
-        var str = getAsString(value);
-        if (str == null) return null;
-        str = str.trim();
-        if (str.isEmpty()) return null;
-        return new BigDecimal(str);
+    public CompletionStage<BigDecimal> getBigDecimal(String name, boolean transform) {
+        return get(name, transform)
+            .thenApply(value -> {
+                if (value == null) {
+                    return null;
+                }
+                if (value instanceof BigDecimal b) {
+                    return b;
+                }
+                if (adapter.isJsonNumber(value)) {
+                    return adapter.getNumberAsBigDecimal(value);
+                }
+                var str = getAsString(value);
+                if (str == null) return null;
+                str = str.trim();
+                if (str.isEmpty()) return null;
+                return new BigDecimal(str);
+            });
     }
 
-    public BigDecimal getBigDecimal(String name){
+    public CompletionStage<BigDecimal> getBigDecimal(String name){
         return getBigDecimal(name, true);
     }
 
-    public Object getJsonArray(String name, boolean transform) {
-        var value = get(name, transform);
-        if (value instanceof JsonElementStreamer jes) {
-            return jes.toJsonArray();
-        }
-        var el = adapter.wrap(value);
-        if (!adapter.isJsonArray(el)) return null;
-        return el;
+    public CompletionStage<Object> getJsonArray(String name, boolean transform) {
+        return get(name, transform)
+            .thenApply(value -> {
+                if (value instanceof JsonElementStreamer jes) {
+                    return jes.toJsonArray();
+                }
+                var el = adapter.wrap(value);
+                if (!adapter.isJsonArray(el)) return null;
+                return el;
+            });
     }
 
-    public Object getJsonArray(String name) {
+    public CompletionStage<Object> getJsonArray(String name) {
         return getJsonArray(name, true);
     }
 
@@ -279,42 +296,46 @@ public abstract class FunctionContext {
      * - It lazy transforms the array elements, so if there is short-circuiting, some transformations might be prevented
      * @return JsonElementStreamer
      */
-    public JsonElementStreamer getJsonElementStreamer(String name) {
-        var transformed = false;
-        var value = get(name, false);
-        if (value instanceof JsonElementStreamer jes) {
-            return jes;
-        }
-        // in case val is already an array we don't transform it to prevent evaluation of its result values
-        // so if is not an array, we must transform it and check after-wards (not lazy anymore)
-        if (!adapter.isJsonArray(value)) {
-            value = extractor.transform(getPathFor(name), adapter.wrap(value), resolver, true);
-            if (value instanceof JsonElementStreamer jes) {
-                return jes;
-            }
-            transformed = true;
-        }
-        // check if initially or after transformation we got an array
-        if (adapter.isJsonArray(value)) {
-            return JsonElementStreamer.fromJsonArray(this, value, transformed);
-        }
-        return null;
+    public CompletionStage<JsonElementStreamer> getJsonElementStreamer(String name) {
+        var transformed = new AtomicBoolean(false);
+        return get(name, false)
+                .thenApply(value -> {
+                    if (value instanceof JsonElementStreamer jes) {
+                        return jes;
+                    }
+                    // in case val is already an array we don't transform it to prevent evaluation of its result values
+                    // so if is not an array, we must transform it and check after-wards (not lazy anymore)
+                    if (!adapter.isJsonArray(value)) {
+                        transformed.set(true);
+                        return extractor.transform(getPathFor(name), adapter.wrap(value), resolver, true);
+                    }
+                    return value;
+                }).thenApply(value -> {
+                    if (value instanceof JsonElementStreamer jes) {
+                        return jes;
+                    }
+                    // check if initially or after transformation we got an array
+                    if (adapter.isJsonArray(value)) {
+                        return JsonElementStreamer.fromJsonArray(this, value, transformed.get());
+                    }
+                    return null;
+                });
     }
 
     // TODO: replace this with something
-    public Object transform(Object definition){
+    public CompletionStage<Object> transform(Object definition){
         return extractor.transform(path, definition, resolver, false);
     }
 
-    public Object transform(String path, Object definition){
+    public CompletionStage<Object> transform(String path, Object definition){
         return extractor.transform(path, definition, resolver, false);
     }
 
-    public Object transform(String path, Object definition, boolean allowReturningStreams){
+    public CompletionStage<Object> transform(String path, Object definition, boolean allowReturningStreams){
         return extractor.transform(path, definition, resolver, allowReturningStreams);
     }
 
-    public Object transformItem(Object definition, Object current) {
+    public CompletionStage<Object> transformItem(Object definition, Object current) {
         var currentContext = adapter.getDocumentContext(current);
         ParameterResolver itemResolver = name ->
                 pathOfVar(DOUBLE_HASH_CURRENT, name)
@@ -323,7 +344,7 @@ public abstract class FunctionContext {
         return extractor.transform("$", definition, itemResolver, false);
     }
 
-    public Object transformItem(Object definition, Object current, Integer index) {
+    public CompletionStage<Object> transformItem(Object definition, Object current, Integer index) {
         var currentContext = adapter.getDocumentContext(current);
         ParameterResolver itemResolver = name ->
                 DOUBLE_HASH_INDEX.equals(name)
@@ -334,7 +355,7 @@ public abstract class FunctionContext {
         return extractor.transform("$", definition, itemResolver, false);
     }
 
-    public Object transformItem(Object definition, Object current, Integer index, String additionalName, Object additional) {
+    public CompletionStage<Object> transformItem(Object definition, Object current, Integer index, String additionalName, Object additional) {
         var currentContext = adapter.getDocumentContext(current);
         var additionalContext = adapter.getDocumentContext(additional);
         ParameterResolver itemResolver = name ->
@@ -348,7 +369,7 @@ public abstract class FunctionContext {
         return extractor.transform("$", definition, itemResolver, false);
     }
 
-    public Object transformItem(Object definition, Object current, Integer index, Map<String, Object> additionalContexts) {
+    public CompletionStage<Object> transformItem(Object definition, Object current, Integer index, Map<String, Object> additionalContexts) {
         var currentContext = adapter.getDocumentContext(current);
         var addCtx = additionalContexts.keySet().stream().collect(
                 Collectors.toMap(key -> key, key -> adapter.getDocumentContext(additionalContexts.get(key))));

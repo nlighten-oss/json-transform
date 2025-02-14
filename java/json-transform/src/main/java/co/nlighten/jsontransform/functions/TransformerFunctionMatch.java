@@ -5,10 +5,6 @@ import co.nlighten.jsontransform.functions.common.*;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-/*
- * For tests
- * @see TransformerFunctionMatchTest
- */
 public class TransformerFunctionMatch extends TransformerFunction {
     public TransformerFunctionMatch() {
         super(FunctionDescription.of(
@@ -19,7 +15,7 @@ public class TransformerFunctionMatch extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var str = context.getString(null);
         if (str == null) {
             return null;

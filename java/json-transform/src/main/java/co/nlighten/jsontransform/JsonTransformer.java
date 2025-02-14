@@ -3,6 +3,8 @@ package co.nlighten.jsontransform;
 import co.nlighten.jsontransform.adapters.JsonAdapter;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -46,36 +48,49 @@ public class JsonTransformer implements Transformer {
         this(definition, DEFAULT_TRANSFORMER_FUNCTIONS);
     }
 
-    public Object transform(Object payload, Map<String, Object> additionalContext, boolean allowReturningStreams, boolean unwrap) {
+    public CompletionStage<Object> transform(Object payload, Map<String, Object> additionalContext, boolean allowReturningStreams, boolean unwrap) {
         var result = transform(payload, additionalContext, allowReturningStreams);
-        return unwrap ? adapter.unwrap(result) : result;
+        return unwrap ? result.thenApply(adapter::unwrap) : result;
     }
 
-    public Object transform(Object payload, Map<String, Object> additionalContext, boolean allowReturningStreams) {
+    public CompletionStage<Object> transform(Object payload, Map<String, Object> additionalContext, boolean allowReturningStreams) {
         if (definition == null) {
-            return adapter.jsonNull();
+            return CompletableFuture.completedStage(adapter.jsonNull());
         }
         var resolver = adapter.createPayloadResolver(payload, additionalContext, false);
         return fromJsonElement("$", definition, resolver, allowReturningStreams);
     }
 
-    protected Object fromJsonPrimitive(String path, Object definition, co.nlighten.jsontransform.ParameterResolver resolver, boolean allowReturningStreams) {
+    private CompletionStage<Object> extractMatch(CompletionStage<TransformerFunctions.FunctionMatchResult<Object>> match, boolean allowReturningStreams) {
+        return match.thenCompose(x -> {
+            var r = x.result();
+            if (r instanceof AsyncJsonElementStreamer streamer) {
+                return allowReturningStreams
+                        ? CompletableFuture.completedStage(streamer)
+                        : streamer.toJsonArray();
+            }
+            if (r instanceof JsonElementStreamer streamer) {
+                return CompletableFuture.completedStage(allowReturningStreams
+                        ? streamer
+                        : streamer.toJsonArray());
+            }
+            return CompletableFuture.completedStage(adapter.wrap(r));
+        });
+    }
+
+    protected CompletionStage<Object> fromJsonPrimitive(String path, Object definition, co.nlighten.jsontransform.ParameterResolver resolver, boolean allowReturningStreams) {
         if (!adapter.isJsonString(definition))
-            return definition;
+            return CompletableFuture.completedStage(definition);
         try {
             var val = adapter.getAsString(definition);
             // test for inline function (e.g. $$function:...)
             var match = transformerFunctions.matchInline(adapter, path, val, resolver, JSON_TRANSFORMER);
             if (match != null) {
-                var matchResult = match.result();
-                if (matchResult instanceof JsonElementStreamer streamer) {
-                    return allowReturningStreams ? streamer : streamer.toJsonArray();
-                }
-                return adapter.wrap(matchResult);
+                return extractMatch(match, allowReturningStreams);
             }
             // jsonpath / context
             var value = resolver.get(val);
-            return adapter.wrap(value);
+            return CompletableFuture.completedStage(adapter.wrap(value));
         } catch (Exception ee) {
             //logger.trace("Failed getting value for " + definition, ee);
             return null;
@@ -83,13 +98,10 @@ public class JsonTransformer implements Transformer {
     }
 
 
-    protected Object fromJsonObject(String path, Object definition, co.nlighten.jsontransform.ParameterResolver resolver, boolean allowReturningStreams) {
+    protected CompletionStage<Object> fromJsonObject(String path, Object definition, co.nlighten.jsontransform.ParameterResolver resolver, boolean allowReturningStreams) {
         var match = transformerFunctions.matchObject(adapter, path, definition, resolver, JSON_TRANSFORMER);
         if (match != null) {
-            var res = match.result();
-            return res instanceof JsonElementStreamer s
-                    ? (allowReturningStreams ? s : s.toJsonArray())
-                    : adapter.wrap(res);
+            return extractMatch(match, allowReturningStreams);
         }
 
         var result = adapter.createObject();
@@ -133,25 +145,40 @@ public class JsonTransformer implements Transformer {
             }
         }
 
-        return result;
+        return CompletableFuture.completedStage(result);
     }
 
-    protected Object fromJsonElement(String path, Object definition, ParameterResolver resolver, boolean allowReturningStreams) {
+    protected CompletionStage<Object> fromJsonElement(String path, Object definition, ParameterResolver resolver, boolean allowReturningStreams) {
         if (adapter.isNull(definition))
-            return adapter.jsonNull();
+            return CompletableFuture.completedStage(adapter.jsonNull());
         if (adapter.isJsonArray(definition)) {
-            var result = adapter.createArray();
+            /*
+             if (Array.isArray(definition)) {
+               return Promise.all(definition.map((d: any, i) => this.fromJsonElement(`${path}[${i}]`, d, resolver, false)));
+             }
+             */
+            var size = adapter.size(definition);
+            var result = adapter.createArray(size);
             var index = new AtomicInteger(0);
-            adapter.stream(definition, false)
-                    .map(d -> fromJsonElement(path + "[" + index.getAndIncrement() + "]", d, resolver, false))
-                    .forEachOrdered(item -> adapter.add(result, item));
-            return result;
+            return CompletableFuture.allOf(
+                adapter.stream(definition, false)
+                    .map(d -> {
+                        var i = index.getAndIncrement();
+                        return fromJsonElement(path + "[" + i + "]", d, resolver, false)
+                                .thenApply(item -> {
+                                    adapter.set(result, i, item);
+                                    return null;
+                                }).toCompletableFuture();
+                    }).toArray(CompletableFuture[]::new)
+            ).thenApply(v -> result);
         }
         if (adapter.isJsonObject(definition)) {
             return fromJsonObject(path, definition, resolver, allowReturningStreams);
         }
         return fromJsonPrimitive(path, definition, resolver, allowReturningStreams);
     }
+
+    private record ElementWithTargetIndex(CompletionStage<Object> element, int targetIndex) {}
 
     public Object getDefinition() {
         return definition;

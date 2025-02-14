@@ -8,10 +8,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionUrlEncodeTest
- */
 public class TransformerFunctionUrlEncode extends TransformerFunction {
     static final Logger log = LoggerFactory.getLogger(TransformerFunctionUrlEncode.class);
 
@@ -23,7 +19,7 @@ public class TransformerFunctionUrlEncode extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var str = context.getString(null);
         if (str == null) {
             return null;

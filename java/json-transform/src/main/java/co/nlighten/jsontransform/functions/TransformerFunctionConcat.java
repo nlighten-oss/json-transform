@@ -6,16 +6,12 @@ import co.nlighten.jsontransform.JsonElementStreamer;
 
 import java.util.stream.Stream;
 
-/*
- * For tests
- * @see TransformerFunctionConcatTest
- */
 public class TransformerFunctionConcat extends TransformerFunction {
     public TransformerFunctionConcat() {
         super();
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var streamer = context.getJsonElementStreamer(null);
         if (streamer == null) return null;
 

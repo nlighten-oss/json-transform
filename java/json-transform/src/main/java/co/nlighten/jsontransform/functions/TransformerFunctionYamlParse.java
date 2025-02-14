@@ -4,10 +4,6 @@ import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import co.nlighten.jsontransform.formats.yaml.YamlFormat;
 
-/*
- * For tests
- * @see TransformerFunctionYamlParseTest
- */
 public class TransformerFunctionYamlParse extends TransformerFunction {
 
     public TransformerFunctionYamlParse() {
@@ -15,7 +11,7 @@ public class TransformerFunctionYamlParse extends TransformerFunction {
     }
 
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         return new YamlFormat(context.getAdapter()).deserialize(context.getString(null));
     }
 }

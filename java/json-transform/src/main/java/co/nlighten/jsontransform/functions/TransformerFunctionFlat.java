@@ -7,16 +7,12 @@ import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-/*
- * For tests
- * @see TransformerFunctionFlatTest
- */
 public class TransformerFunctionFlat extends TransformerFunction {
     public TransformerFunctionFlat() {
         super();
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var streamer = context.getJsonElementStreamer(null);
         if (streamer == null) return null;
 

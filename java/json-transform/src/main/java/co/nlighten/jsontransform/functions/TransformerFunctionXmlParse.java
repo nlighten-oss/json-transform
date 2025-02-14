@@ -8,10 +8,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/*
- * For tests
- * @see TransformerFunctionXmlParseTest
- */
 public class TransformerFunctionXmlParse extends TransformerFunction {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionXmlParse.class);
     public TransformerFunctionXmlParse() {
@@ -25,7 +21,7 @@ public class TransformerFunctionXmlParse extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var xml = context.getString(null);
         if (xml == null)
             return null;

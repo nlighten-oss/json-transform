@@ -1,9 +1,11 @@
 package co.nlighten.jsontransform.functions.common;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * Base class for all transformer functions.
@@ -44,7 +46,7 @@ public abstract class TransformerFunction {
      * @param context the context
      * @return the result of the function
      */
-    public abstract Object apply(FunctionContext context);
+    public abstract CompletionStage<Object> apply(FunctionContext context);
 
     /**
      * Get the argument type for the given name.

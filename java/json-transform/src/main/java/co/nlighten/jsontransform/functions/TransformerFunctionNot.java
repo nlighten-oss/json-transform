@@ -4,10 +4,6 @@ import co.nlighten.jsontransform.functions.common.*;
 
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionNotTest
- */
 public class TransformerFunctionNot extends TransformerFunction {
     public TransformerFunctionNot() {
         super(FunctionDescription.of(
@@ -17,7 +13,7 @@ public class TransformerFunctionNot extends TransformerFunction {
         ));
     }
     @Override
-    public Object apply(FunctionContext context) {
+    public CompletionStage<Object> apply(FunctionContext context) {
         var jsStyle = "JS".equals(context.getEnum("style"));
         var adapter = context.getAdapter();
         return !adapter.isTruthy(context.get(null), jsStyle);
