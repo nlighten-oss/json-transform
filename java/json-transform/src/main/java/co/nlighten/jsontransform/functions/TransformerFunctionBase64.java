@@ -9,10 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionBase64Test
- */
 public class TransformerFunctionBase64 extends TransformerFunction {
 
     static final Logger log = LoggerFactory.getLogger(TransformerFunctionBase64.class);

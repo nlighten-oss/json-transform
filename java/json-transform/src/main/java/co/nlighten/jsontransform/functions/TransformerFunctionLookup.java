@@ -7,10 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/*
- * For tests
- * @see TransformerFunctionLookupTest
- */
 public class TransformerFunctionLookup extends TransformerFunction {
     public TransformerFunctionLookup() {
         super(FunctionDescription.of(

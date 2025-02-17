@@ -6,9 +6,8 @@ import transformerFunctions, { TransformerFunctionsAdapter } from "./Transformer
 import JsonElementStreamer from "./JsonElementStreamer";
 import BigNumber from "bignumber.js";
 import { BigDecimal } from "./functions/common/FunctionHelpers";
-import DebuggableTransformerFunctions from "./DebuggableTransformerFunctions";
 
-class JsonTransformer implements Transformer {
+export class JsonTransformer implements Transformer {
   static readonly OBJ_DESTRUCT_KEY = "*";
   static readonly NULL_VALUE = "#null";
 
@@ -16,7 +15,7 @@ class JsonTransformer implements Transformer {
   private definition: any;
   private JSON_TRANSFORMER: JsonTransformerFunction;
 
-  constructor(definition: any, functionsAdapter?: TransformerFunctionsAdapter) {
+  public constructor(definition: any, functionsAdapter?: TransformerFunctionsAdapter) {
     this.transformerFunctions = functionsAdapter ?? transformerFunctions;
     this.definition = definition;
     this.JSON_TRANSFORMER = {
@@ -32,7 +31,7 @@ class JsonTransformer implements Transformer {
     return this.fromJsonElement("$", this.definition, resolver, false);
   }
 
-  async fromJsonPrimitive(
+  protected async fromJsonPrimitive(
     path: string,
     definition: any,
     resolver: ParameterResolver,
@@ -59,7 +58,7 @@ class JsonTransformer implements Transformer {
     }
   }
 
-  async fromJsonObject(
+  protected async fromJsonObject(
     path: string,
     definition: any,
     resolver: ParameterResolver,
@@ -113,7 +112,7 @@ class JsonTransformer implements Transformer {
     return result;
   }
 
-  async fromJsonElement(
+  protected async fromJsonElement(
     path: string,
     definition: any,
     resolver: ParameterResolver,
@@ -135,5 +134,3 @@ class JsonTransformer implements Transformer {
     return this.definition;
   }
 }
-
-export default JsonTransformer;

@@ -6,10 +6,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionSwitchTest
- */
 public class TransformerFunctionSwitch extends TransformerFunction {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionSwitch.class);
 

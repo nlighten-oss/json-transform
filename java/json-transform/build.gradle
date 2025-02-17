@@ -9,7 +9,7 @@ plugins {
 }
 
 group 'co.nlighten'
-version = '0.9.1'
+version = '0.9.2'
 
 ext {
     gsonVersion = "2.10.1"
@@ -35,7 +35,7 @@ dependencies {
     implementation "co.nlighten:short-uuid:${coNlightenShortUuidVersion}"
 
     /** Logging **/
-    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    compileOnly "org.slf4j:slf4j-api:${slf4jVersion}"
 
     /** JSON **/
     compileOnly "com.google.code.gson:gson:${gsonVersion}"
@@ -51,6 +51,8 @@ dependencies {
     jmhAnnotationProcessor "org.openjdk.jmh:jmh-generator-annprocess:${jmhVersion}"
 
     testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    testImplementation "org.slf4j:slf4j-simple:${slf4jVersion}"
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation "com.google.code.gson:gson:${gsonVersion}"
     testImplementation "com.fasterxml.jackson.core:jackson-databind:${jacksonBindVersion}"

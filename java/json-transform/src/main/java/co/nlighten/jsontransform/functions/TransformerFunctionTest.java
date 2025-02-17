@@ -5,10 +5,6 @@ import co.nlighten.jsontransform.functions.common.*;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-/*
- * For tests
- * @see TransformerFunctionTestTest
- */
 public class TransformerFunctionTest extends TransformerFunction {
     public TransformerFunctionTest() {
         super(FunctionDescription.of(

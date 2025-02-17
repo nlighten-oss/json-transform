@@ -6,10 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/*
- * For tests
- * @see TransformerFunctionJoinTest
- */
 public class TransformerFunctionJoin extends TransformerFunction {
     public TransformerFunctionJoin() {
         super(FunctionDescription.of(

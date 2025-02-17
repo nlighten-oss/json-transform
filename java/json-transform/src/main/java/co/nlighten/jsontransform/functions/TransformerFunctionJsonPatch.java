@@ -5,10 +5,6 @@ import co.nlighten.jsontransform.manipulation.JsonPatch;
 
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionJsonPatchTest
- */
 public class TransformerFunctionJsonPatch extends TransformerFunction {
 
     public TransformerFunctionJsonPatch() {

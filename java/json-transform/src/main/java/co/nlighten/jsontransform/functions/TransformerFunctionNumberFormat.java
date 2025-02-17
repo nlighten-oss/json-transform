@@ -7,10 +7,6 @@ import java.util.Currency;
 import java.util.Locale;
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionNumberFormatTest
- */
 public class TransformerFunctionNumberFormat extends TransformerFunction {
     public TransformerFunctionNumberFormat() {
         super(FunctionDescription.of(

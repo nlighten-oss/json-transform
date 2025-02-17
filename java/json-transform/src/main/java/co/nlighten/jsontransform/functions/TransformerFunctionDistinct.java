@@ -7,10 +7,6 @@ import co.nlighten.jsontransform.JsonElementStreamer;
 import java.util.Map;
 import java.util.Objects;
 
-/*
- * For tests
- * @see TransformerFunctionDistinctTest
- */
 public class TransformerFunctionDistinct extends TransformerFunction {
     public TransformerFunctionDistinct() {
         super(FunctionDescription.of(

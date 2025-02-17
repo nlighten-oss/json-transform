@@ -4,10 +4,6 @@ import co.nlighten.jsontransform.functions.common.*;
 
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionBooleanTest
- */
 public class TransformerFunctionBoolean extends TransformerFunction {
     public TransformerFunctionBoolean() {
         super(FunctionDescription.of(

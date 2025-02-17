@@ -2,6 +2,7 @@ package co.nlighten.jsontransform.adapters.jsonsmart;
 
 import co.nlighten.jsontransform.adapters.pojo.PojoNull;
 import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 import com.jayway.jsonpath.internal.DefaultsImpl;
 import com.jayway.jsonpath.spi.json.JsonOrgJsonProvider;
@@ -10,6 +11,8 @@ import com.jayway.jsonpath.spi.mapper.JsonOrgMappingProvider;
 import com.jayway.jsonpath.spi.mapper.JsonSmartMappingProvider;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
+import net.minidev.json.parser.JSONParser;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -21,7 +24,7 @@ public class JsonSmartHelpers {
 
     static Configuration getJsonPathConfig() {
         return new Configuration.ConfigurationBuilder()
-                .jsonProvider(new JsonSmartJsonProvider())
+                .jsonProvider(new JsonSmartJsonProvider(JSONParser.MODE_PERMISSIVE, JSONValue.defaultReader.DEFAULT))
                 .mappingProvider(new JsonSmartMappingProvider())
                 .options(Set.of(
                         Option.SUPPRESS_EXCEPTIONS

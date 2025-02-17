@@ -6,10 +6,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-/*
- * For tests
- * @see TransformerFunctionMatchTest
- */
 public class TransformerFunctionMatchAll extends TransformerFunction {
     public TransformerFunctionMatchAll() {
         super(FunctionDescription.of(

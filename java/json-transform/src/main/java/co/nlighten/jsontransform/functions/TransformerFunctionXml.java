@@ -7,10 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionXmlTest
- */
 public class TransformerFunctionXml extends TransformerFunction {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionXml.class);
 

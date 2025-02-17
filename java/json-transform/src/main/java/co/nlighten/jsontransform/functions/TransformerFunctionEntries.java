@@ -6,10 +6,6 @@ import co.nlighten.jsontransform.functions.common.TransformerFunction;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-/*
- * For tests
- * @see TransformerFunctionEntriesTest
- */
 public class TransformerFunctionEntries extends TransformerFunction {
     public TransformerFunctionEntries() {
         super();

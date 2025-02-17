@@ -60,6 +60,7 @@ import TransformerFunctionString from "./TransformerFunctionString";
 import TransformerFunctionSubstring from "./TransformerFunctionSubstring";
 import TransformerFunctionSum from "./TransformerFunctionSum";
 import TransformerFunctionSwitch from "./TransformerFunctionSwitch";
+import TransformerFunctionTemplate from "./TransformerFunctionTemplate";
 import TransformerFunctionTest from "./TransformerFunctionTest";
 import TransformerFunctionTransform from "./TransformerFunctionTransform";
 import TransformerFunctionTrim from "./TransformerFunctionTrim";
@@ -141,6 +142,7 @@ export default {
   substring: new TransformerFunctionSubstring(),
   sum: new TransformerFunctionSum(),
   switch: new TransformerFunctionSwitch(),
+  template: new TransformerFunctionTemplate(),
   test: new TransformerFunctionTest(),
   transform: new TransformerFunctionTransform(),
   trim: new TransformerFunctionTrim(),

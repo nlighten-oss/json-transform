@@ -12,10 +12,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionDateTest
- */
 public class TransformerFunctionDate extends TransformerFunction {
     public static final DateTimeFormatter ISO_INSTANT_0 = new DateTimeFormatterBuilder().appendInstant(0).toFormatter();
     public static final DateTimeFormatter ISO_INSTANT_3 = new DateTimeFormatterBuilder().appendInstant(3).toFormatter();

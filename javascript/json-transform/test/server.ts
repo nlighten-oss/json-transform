@@ -1,9 +1,8 @@
 import { readFileSync } from "fs";
 import { parse as urlParse, type UrlWithParsedQuery } from "url";
 import { createServer, type IncomingMessage, type ServerResponse } from "http";
-import JsonTransformer from "../src/JsonTransformer";
 import { HTMLHeaders, JSONHeaders, parseBody, send, JSONBig } from "./serverUtils";
-import { DebuggableTransformerFunctions } from "../src";
+import { JsonTransformer, DebuggableTransformerFunctions } from "../src";
 
 const PORT = 10002;
 

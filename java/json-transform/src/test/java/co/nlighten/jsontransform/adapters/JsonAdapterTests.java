@@ -112,4 +112,13 @@ public class JsonAdapterTests extends MultiAdapterBaseTest {
 """);
         assertEquals(adapter, expected, adapter.mergeInto(root, mergee, "$"));
     }
+
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testArraySetOnOutOfBoundsIndex(JsonAdapter<?,?,?> adapter) {
+        var array = adapter.createArray(4);
+        var el = adapter.wrap("string");
+        adapter.set(array, 3, el);
+        assertEquals(adapter, el, adapter.get(array, 3));
+    }
 }

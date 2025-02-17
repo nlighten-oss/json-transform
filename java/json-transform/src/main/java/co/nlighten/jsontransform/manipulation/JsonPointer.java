@@ -108,9 +108,6 @@ public class JsonPointer {
                 int intTok = Integer.parseUnsignedInt(tok);
                 if (adapter.size(ja) <= intTok) {
                     obj = IndexPattern.matcher(nextTok).matches() ? adapter.createArray() : adapter.createObject();
-                    while (adapter.size(ja) <= intTok) {
-                        adapter.add(ja, adapter.jsonNull());
-                    }
                     adapter.set(ja, intTok, obj);
                 } else {
                     obj = adapter.get(obj, intTok);
@@ -125,10 +122,6 @@ public class JsonPointer {
                 adapter.add(ja, value);
             } else {
                 var intTok = Integer.parseUnsignedInt(nextTok);
-                // make sure target array is in the right size
-                while (adapter.size(ja) < intTok) {
-                    adapter.add(ja, adapter.jsonNull());
-                }
                 if (insert) {
                     adapter.add(ja, adapter.jsonNull());
                     // move over all elements starting from intTok
@@ -185,9 +178,6 @@ public class JsonPointer {
                 int intTok = Integer.parseUnsignedInt(tok);
                 if (adapter.size(ja) <= intTok) {
                     obj = IndexPattern.matcher(nextTok).matches() ? adapter.createArray() : adapter.createObject();
-                    while (adapter.size(ja) <= intTok) {
-                        adapter.add(ja, adapter.jsonNull());
-                    }
                     adapter.set(ja, intTok, obj);
                 } else {
                     obj = adapter.get(ja, intTok);

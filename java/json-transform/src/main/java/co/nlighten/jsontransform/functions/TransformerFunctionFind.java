@@ -5,10 +5,6 @@ import co.nlighten.jsontransform.functions.common.*;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/*
- * For tests
- * @see TransformerFunctionFindTest
- */
 public class TransformerFunctionFind extends TransformerFunction {
     public TransformerFunctionFind() {
         super(FunctionDescription.of(

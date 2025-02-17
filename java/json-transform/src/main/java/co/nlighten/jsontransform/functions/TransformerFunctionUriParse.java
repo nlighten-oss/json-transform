@@ -9,10 +9,6 @@ import org.slf4j.LoggerFactory;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-/*
- * For tests
- * @see TransformerFunctionUriParseTest
- */
 public class TransformerFunctionUriParse extends TransformerFunction {
     static final Logger log = LoggerFactory.getLogger(TransformerFunctionUriParse.class);
 

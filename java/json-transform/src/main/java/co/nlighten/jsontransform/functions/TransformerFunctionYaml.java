@@ -4,10 +4,6 @@ import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import co.nlighten.jsontransform.formats.yaml.YamlFormat;
 
-/*
- * For tests
- * @see TransformerFunctionYamlTest
- */
 public class TransformerFunctionYaml extends TransformerFunction {
 
     public TransformerFunctionYaml() {

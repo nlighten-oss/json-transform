@@ -4,10 +4,6 @@ import co.nlighten.jsontransform.functions.common.*;
 
 import java.util.*;
 
-/*
- * For tests
- * @see TransformerFunctionJsonPathTest
- */
 public class TransformerFunctionJsonPath extends TransformerFunction {
     public TransformerFunctionJsonPath() {
         super(FunctionDescription.of(

@@ -6,10 +6,6 @@ import co.nlighten.jsontransform.JsonElementStreamer;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/*
- * For tests
- * @see TransformerFunctionFilterTest
- */
 public class TransformerFunctionFilter extends TransformerFunction {
     public TransformerFunctionFilter() {
         super(FunctionDescription.of(

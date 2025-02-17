@@ -1,5 +1,6 @@
 package co.nlighten.jsontransform.adapters.jsonsmart;
 
+import co.nlighten.jsontransform.adapters.JsonAdapterHelpers;
 import co.nlighten.jsontransform.adapters.JsonArrayAdapter;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -49,7 +50,9 @@ public class JsonSmartArrayAdapter extends JsonArrayAdapter<Object, JSONArray, J
 
     @Override
     public void set(JSONArray array, int index, Object value) {
-        array.set(index, value);
+        if (array.size() > index || JsonAdapterHelpers.trySetArrayAtOOB(this, array, index, value, null)) {
+            array.set(index, value);
+        }
     }
 
     @Override

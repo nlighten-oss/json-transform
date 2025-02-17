@@ -6,10 +6,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/*
- * For tests
- * @see TransformerFunctionPartitionTest
- */
 public class TransformerFunctionPartition extends TransformerFunction {
     public TransformerFunctionPartition() {
         super(FunctionDescription.of(

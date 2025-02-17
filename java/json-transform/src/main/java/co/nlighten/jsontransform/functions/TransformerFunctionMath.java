@@ -9,10 +9,6 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionMathTest
- */
 public class TransformerFunctionMath extends TransformerFunction {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionMath.class);
 

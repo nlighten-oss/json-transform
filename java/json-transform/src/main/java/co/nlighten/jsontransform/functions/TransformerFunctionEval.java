@@ -3,10 +3,6 @@ package co.nlighten.jsontransform.functions;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 
-/*
- * For tests
- * @see TransformerFunctionEvalTest
- */
 public class TransformerFunctionEval extends TransformerFunction {
 
     public TransformerFunctionEval() {

@@ -1,8 +1,8 @@
-import JsonTransformer from "./JsonTransformer";
+import { JsonTransformer } from "./JsonTransformer";
 import DocumentContext from "./DocumentContext";
 import JsonElementStreamer from "./JsonElementStreamer";
 import { JsonTransformerFunction } from "./JsonTransformerFunction";
-import { ParameterResolver } from "./ParameterResolver";
+import { ParameterResolver, isParameterResolver, parameterResolverFromMap } from "./ParameterResolver";
 import { Transformer, RAW as RawTransformer } from "./Transformer";
 
 // Functions API
@@ -29,6 +29,14 @@ import CsvFormat from "./formats/csv/CsvFormat";
 import FormUrlEncodedFormat from "./formats/formurlencoded/FormUrlEncodedFormat";
 import { FormatDeserializer } from "./formats/FormatDeserializer";
 import { FormatSerializer } from "./formats/FormatSerializer";
+// TextTemplate
+import TextTemplate from "./template/TextTemplate";
+import { TextTemplateJsonTransformFunctionInstance } from "./template/TextTemplateJsonTransformer";
+import { setCurrentJsonTransformFunction } from "./template/TextTemplateJsonTransformFunction";
+import ParameterDefaultResolveOptions from "./template/ParameterDefaultResolveOptions";
+import TemplateParameter from "./template/TemplateParameter";
+
+setCurrentJsonTransformFunction(TextTemplateJsonTransformFunctionInstance);
 
 export {
   JsonTransformer,
@@ -36,6 +44,8 @@ export {
   JsonElementStreamer,
   JsonTransformerFunction,
   ParameterResolver,
+  isParameterResolver,
+  parameterResolverFromMap,
   Transformer,
   RawTransformer,
   TransformerFunctions,
@@ -59,4 +69,7 @@ export {
   FormUrlEncodedFormat,
   FormatDeserializer,
   FormatSerializer,
+  TextTemplate,
+  ParameterDefaultResolveOptions,
+  TemplateParameter,
 };

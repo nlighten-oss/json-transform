@@ -5,10 +5,6 @@ import co.nlighten.jsontransform.manipulation.JsonPointer;
 
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionJsonPointerTest
- */
 public class TransformerFunctionJsonPointer extends TransformerFunction {
     public TransformerFunctionJsonPointer() {
         super(FunctionDescription.of(

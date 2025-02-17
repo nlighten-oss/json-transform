@@ -1,0 +1,81 @@
+[
+  {
+    "name": "inline - simple template",
+    "given": {
+      "input": {
+        "name": "World"
+      },
+      "definition": "$$template:Hello {$.name}"
+    },
+    "expect": {
+      "equal": "Hello World"
+    }
+  },
+  {
+    "name": "inline - use payload",
+    "given": {
+      "input": {
+        "name": "World"
+      },
+      "definition": "$$template($):Hello {##current.name}"
+    },
+    "expect": {
+      "equal": "Hello World"
+    }
+  },
+  {
+    "name": "inline - use function",
+    "given": {
+      "input": {
+        "text": "HELLO"
+      },
+      "definition": "$$template:{$$lower:$.text}"
+    },
+    "expect": {
+      "equal": "hello"
+    }
+  },
+  {
+    "name": "object - simple template",
+    "given": {
+      "input": {
+        "name": "World"
+      },
+      "definition": {
+        "$$template": "Hello {$.name}"
+      }
+    },
+    "expect": {
+      "equal": "Hello World"
+    }
+  },
+  {
+    "name": "object - use payload",
+    "given": {
+      "input": {
+        "name": "World"
+      },
+      "definition": {
+        "$$template": "Hello {##current.name}",
+        "payload": "$"
+      }
+    },
+    "expect": {
+      "equal": "Hello World"
+    }
+  },
+  {
+    "name": "object - use function",
+    "given": {
+      "input": {
+        "text": "HELLO"
+      },
+      "definition": {
+        "$$template": "{$$lower:$.text}"
+      }
+    },
+    "expect": {
+      "equal": "hello"
+    }
+  }
+]

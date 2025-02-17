@@ -8,10 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
-/*
- * For tests
- * @see TransformerFunctionGroupTest
- */
 public class TransformerFunctionGroup extends TransformerFunction {
 
     public TransformerFunctionGroup() {

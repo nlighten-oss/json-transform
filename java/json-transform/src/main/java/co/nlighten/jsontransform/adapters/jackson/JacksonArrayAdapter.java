@@ -1,9 +1,11 @@
 package co.nlighten.jsontransform.adapters.jackson;
 
+import co.nlighten.jsontransform.adapters.JsonAdapterHelpers;
 import co.nlighten.jsontransform.adapters.JsonArrayAdapter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.math.BigDecimal;
@@ -71,7 +73,9 @@ public class JacksonArrayAdapter extends JsonArrayAdapter<JsonNode, ArrayNode, O
 
     @Override
     public void set(ArrayNode array, int index, JsonNode value) {
-        array.set(index, value);
+        if (array.size() > index || JsonAdapterHelpers.trySetArrayAtOOB(this, array, index, value, NullNode.getInstance())) {
+            array.set(index, value);
+        }
     }
 
     @Override

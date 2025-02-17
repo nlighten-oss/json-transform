@@ -1,5 +1,6 @@
 package co.nlighten.jsontransform.adapters.pojo;
 
+import co.nlighten.jsontransform.adapters.JsonAdapterHelpers;
 import co.nlighten.jsontransform.adapters.JsonArrayAdapter;
 
 import java.util.AbstractList;
@@ -50,7 +51,9 @@ public class PojoArrayAdapter extends JsonArrayAdapter<Object, AbstractList<Obje
 
     @Override
     public void set(AbstractList<Object> array, int index, Object value) {
-        array.set(index, value);
+        if (array.size() > index || JsonAdapterHelpers.trySetArrayAtOOB(this, array, index, value, null)) {
+            array.set(index, value);
+        }
     }
 
     @Override

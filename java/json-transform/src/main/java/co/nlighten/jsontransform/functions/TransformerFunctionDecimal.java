@@ -5,10 +5,6 @@ import co.nlighten.jsontransform.functions.common.*;
 import java.math.RoundingMode;
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionDecimalTest
- */
 public class TransformerFunctionDecimal extends TransformerFunction {
     public TransformerFunctionDecimal() {
         super(FunctionDescription.of(

@@ -7,10 +7,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-/*
- * For tests
- * @see TransformerFunctionNormalizeTest
- */
 public class TransformerFunctionNormalize extends TransformerFunction {
     // * source strings (ends with _S) are after decomposition and removal of marks
     // ** if target character is more than one letter,

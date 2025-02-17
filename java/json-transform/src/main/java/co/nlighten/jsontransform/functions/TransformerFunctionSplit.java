@@ -4,10 +4,6 @@ import co.nlighten.jsontransform.functions.common.*;
 
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionSplitTest
- */
 public class TransformerFunctionSplit extends TransformerFunction {
     public TransformerFunctionSplit() {
         super(FunctionDescription.of(

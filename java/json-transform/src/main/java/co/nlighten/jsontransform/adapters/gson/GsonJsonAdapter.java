@@ -65,6 +65,7 @@ public class GsonJsonAdapter extends JsonAdapter<JsonElement, JsonArray, JsonObj
 
     @Override
     public JsonElement wrap(Object value) {
+        if (value == null) return JsonNull.INSTANCE;
         if (value instanceof JsonElement je) return je;
         if (value instanceof Character c) return new JsonPrimitive(c);
         if (value instanceof String s) return new JsonPrimitive(s);

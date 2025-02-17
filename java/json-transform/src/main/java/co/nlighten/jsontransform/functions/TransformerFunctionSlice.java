@@ -5,10 +5,6 @@ import co.nlighten.jsontransform.JsonElementStreamer;
 
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionSliceTest
- */
 public class TransformerFunctionSlice extends TransformerFunction {
     public TransformerFunctionSlice() {
         super(FunctionDescription.of(

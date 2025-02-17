@@ -4,10 +4,6 @@ import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import co.nlighten.jsontransform.formats.formurlencoded.FormUrlEncodedFormat;
 
-/*
- * For tests
- * @see TransformerFunctionFormParseTest
- */
 public class TransformerFunctionFormParse extends TransformerFunction {
 
     public TransformerFunctionFormParse() {

@@ -1,8 +1,10 @@
 package co.nlighten.jsontransform.adapters.gson;
 
+import co.nlighten.jsontransform.adapters.JsonAdapterHelpers;
 import co.nlighten.jsontransform.adapters.JsonArrayAdapter;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 
 import java.util.stream.Stream;
@@ -51,7 +53,9 @@ public class GsonArrayAdapter extends JsonArrayAdapter<JsonElement, JsonArray, J
 
     @Override
     public void set(JsonArray array, int index, JsonElement value) {
-        array.set(index, value);
+        if (array.size() > index || JsonAdapterHelpers.trySetArrayAtOOB(this, array, index, value, JsonNull.INSTANCE)) {
+            array.set(index, value);
+        }
     }
 
     @Override

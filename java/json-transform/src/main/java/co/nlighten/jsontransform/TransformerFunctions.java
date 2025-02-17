@@ -92,6 +92,7 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
                 Map.entry("substring", new TransformerFunctionSubstring()),
                 Map.entry("sum",new TransformerFunctionSum()),
                 Map.entry("switch", new TransformerFunctionSwitch()),
+                Map.entry("template", new TransformerFunctionTemplate()),
                 Map.entry("test", new TransformerFunctionTest()),
                 Map.entry("transform", new TransformerFunctionTransform()),
                 Map.entry("trim", new TransformerFunctionTrim()),
@@ -214,8 +215,8 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
             return new FunctionMatchResult<>(result, resolvedPath);
         } catch (Throwable ex) {
             log.warn("Failed running inline function (at {})", resolvedPath, ex);
+            return new FunctionMatchResult<>(null, resolvedPath);
         }
-        return new FunctionMatchResult<>(null, resolvedPath);
     }
 
     public Map<String, TransformerFunction> getFunctions() {

@@ -8,10 +8,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionUrlEncodeTest
- */
 public class TransformerFunctionUrlEncode extends TransformerFunction {
     static final Logger log = LoggerFactory.getLogger(TransformerFunctionUrlEncode.class);
 

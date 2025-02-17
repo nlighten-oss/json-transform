@@ -7,10 +7,6 @@ import co.nlighten.shortuuid.UuidConverter;
 import java.util.Map;
 import java.util.UUID;
 
-/*
- * For tests
- * @see TransformerFunctionUuidTest
- */
 public class TransformerFunctionUuid extends TransformerFunction {
     public TransformerFunctionUuid() {
         super(FunctionDescription.of(

@@ -59,7 +59,7 @@ public class JsonTransformer implements Transformer {
         return fromJsonElement("$", definition, resolver, allowReturningStreams);
     }
 
-    protected Object fromJsonPrimitive(String path, Object definition, co.nlighten.jsontransform.ParameterResolver resolver, boolean allowReturningStreams) {
+    protected Object fromJsonPrimitive(String path, Object definition, ParameterResolver resolver, boolean allowReturningStreams) {
         if (!adapter.isJsonString(definition))
             return definition;
         try {
@@ -78,12 +78,12 @@ public class JsonTransformer implements Transformer {
             return adapter.wrap(value);
         } catch (Exception ee) {
             //logger.trace("Failed getting value for " + definition, ee);
-            return null;
+            return adapter.jsonNull();
         }
     }
 
 
-    protected Object fromJsonObject(String path, Object definition, co.nlighten.jsontransform.ParameterResolver resolver, boolean allowReturningStreams) {
+    protected Object fromJsonObject(String path, Object definition, ParameterResolver resolver, boolean allowReturningStreams) {
         var match = transformerFunctions.matchObject(adapter, path, definition, resolver, JSON_TRANSFORMER);
         if (match != null) {
             var res = match.result();

@@ -4,10 +4,6 @@ import co.nlighten.jsontransform.functions.common.*;
 
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionWrapTest
- */
 public class TransformerFunctionWrap extends TransformerFunction {
     public TransformerFunctionWrap() {
         super(FunctionDescription.of(

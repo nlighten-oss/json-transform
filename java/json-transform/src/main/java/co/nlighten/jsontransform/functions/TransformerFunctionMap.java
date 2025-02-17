@@ -9,10 +9,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-/*
- * For tests
- * @see TransformerFunctionMapTest
- */
 public class TransformerFunctionMap extends TransformerFunction {
     static final Logger logger = LoggerFactory.getLogger(TransformerFunctionMap.class);
 

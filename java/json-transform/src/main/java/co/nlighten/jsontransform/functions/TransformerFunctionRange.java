@@ -6,10 +6,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionRangeTest
- */
 public class TransformerFunctionRange extends TransformerFunction {
     public TransformerFunctionRange() {
         super(FunctionDescription.of(

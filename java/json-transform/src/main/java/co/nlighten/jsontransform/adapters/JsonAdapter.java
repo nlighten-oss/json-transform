@@ -272,27 +272,60 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
         }
     }
 
+    /**
+     * Creates a Json object
+     * @return a Json object
+     */
     public JO createObject() {
         return jObject.create();
     }
+
+    /**
+     * Checks if the given object contains the specified key.
+     * @param obj the object to check
+     * @param key the key to check for
+     * @return true if the object contains the key
+     */
     public boolean has(Object obj, String key) {
         if (!jObject.is(obj)) {
             throw new IllegalArgumentException("obj is not a Json object");
         }
         return jObject.has((JO)obj, key);
     }
+
+    /**
+     * Returns the value of the specified key in the object.
+     * @param obj the object to get the value from
+     * @param key the key to get the value for
+     * @return the value of the key in the object
+     */
     public JE get(Object obj, String key) {
         if (!jObject.is(obj)) {
             throw new IllegalArgumentException("obj is not a Json object");
         }
         return jObject.get((JO)obj, key);
     }
+
+    /**
+     * Returns a set of members key values.
+     *
+     * @return a set of member keys as Strings
+     */
     public Set<String> keySet(Object value) {
         return jObject.keySet((JO)value);
     }
+
+    /**
+     * Returns a set of members of this object. The set is ordered, and the order is in which the
+     * elements were added.
+     *
+     * @return a set of members of this object.
+     */
     public Set<Map. Entry<String, JE>> entrySet(Object value) {
         return jObject.entrySet((JO)value);
     }
+
+
     public void add(Object obj, String key, Object value) {
         if (!jObject.is(obj)) {
             throw new IllegalArgumentException("obj is not a Json object");
@@ -348,6 +381,11 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
             throw new IllegalArgumentException("value is not a Json element");
         }
     }
+
+    /**
+     * Sets the value at the given index in the array.
+     * If the index is over bounds, the array will be expanded with nulls.
+     */
     public void set(Object arr, int index, Object value) {
         if (!jArray.is(arr)) {
             throw new IllegalArgumentException("arr is not a Json array");

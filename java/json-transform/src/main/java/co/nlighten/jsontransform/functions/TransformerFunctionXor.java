@@ -3,10 +3,6 @@ package co.nlighten.jsontransform.functions;
 import co.nlighten.jsontransform.functions.common.FunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 
-/*
- * For tests
- * @see TransformerFunctionXorTest
- */
 public class TransformerFunctionXor extends TransformerFunction {
     public TransformerFunctionXor() {
         super();

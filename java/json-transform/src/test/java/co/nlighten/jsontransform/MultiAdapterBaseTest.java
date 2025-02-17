@@ -7,11 +7,15 @@ import co.nlighten.jsontransform.adapters.jsonorg.JsonOrgJsonAdapter;
 import co.nlighten.jsontransform.adapters.jsonsmart.JsonSmartJsonAdapter;
 import co.nlighten.jsontransform.adapters.pojo.PojoJsonAdapter;
 import org.junit.jupiter.api.Assertions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.stream.Stream;
 
 public class MultiAdapterBaseTest {
+
+    private static final Logger log = LoggerFactory.getLogger(MultiAdapterBaseTest.class);
 
     protected static Stream<JsonAdapter<?,?,?>> provideJsonAdapters() {
         return Stream.of(
@@ -35,7 +39,7 @@ public class MultiAdapterBaseTest {
     }
 
     protected Object transform(JsonAdapter<?,?,?> adapter, Object input, Object definition, Map<String, Object> additionalContext) {
-        return new JsonTransformer(adapter.wrap(definition), adapter).transform(input, additionalContext);
+        return new JsonTransformer(definition, adapter).transform(input, additionalContext);
     }
 
     protected void assertTransformation(JsonAdapter<?,?,?> adapter, Object input, Object definition, Object expect) {

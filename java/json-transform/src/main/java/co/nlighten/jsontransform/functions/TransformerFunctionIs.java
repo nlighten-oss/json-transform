@@ -5,10 +5,6 @@ import co.nlighten.jsontransform.functions.common.*;
 import java.math.BigDecimal;
 import java.util.Map;
 
-/*
- * For tests
- * @see TransformerFunctionIsTest
- */
 public class TransformerFunctionIs extends TransformerFunction {
 
     public TransformerFunctionIs() {
