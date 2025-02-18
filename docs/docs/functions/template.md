@@ -20,7 +20,7 @@ Renders a specified text template with the given input or specified payload.
 |--------------------|----------|-------------------------------------|-------------------------------|------------------------------------------------------------------|
 | Primary            | `String` |                                     | Yes                           | The text template to render                                      |
 | `payload`          |          |                                     |                               | Additional context, referred to as `##current` from the template |
-| `default_resolve`* | `Enum`   | `UNIQUE`/`FIRST_VALUE`/`LAST_VALUE` | `UNIQUE`                      | Default resolve option for the template                          |
+| `default_resolve`* | `Enum`   | `UNIQUE`/`FIRST_VALUE`/`LAST_VALUE` | `UNIQUE`                      | Resolve default value based on previous default values or not    |
 
 #### * Different Types of default parameter resolving options
 | Type               | Description                                                      |

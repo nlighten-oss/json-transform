@@ -1445,6 +1445,27 @@ export const embeddedFunctions: Record<EmbeddedTransformerFunction, FunctionDesc
       { name: "cases", description: "A map of cases (string to value)", type: "object", position: 0, required: true },
     ],
   },
+  template: {
+    description: "Renders a specified text template with the given input or specified payload.",
+    inputSchema: { type: "string" },
+    outputSchema: { type: "string" },
+    arguments: [
+      {
+        name: "payload",
+        description: "Additional context, referred to as `##current` from the template",
+        type: "any",
+        position: 0,
+      },
+      {
+        name: "default_resolve",
+        description: "Resolve default value based on previous default values or not",
+        type: "Enum",
+        position: 1,
+        enum: ["UNIQUE", "FIRST_VALUE", "LAST_VALUE"],
+        default: "UNIQUE",
+      },
+    ],
+  },
   test: {
     description: "Checks if a string matches a certain pattern",
     inputSchema: { type: "string" },
