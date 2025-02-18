@@ -65,6 +65,7 @@ export enum EmbeddedTransformerFunction {
   substring = "substring", // string
   sum = "sum", // number
   switch = "switch", // #SPECIAL
+  template = "template", // string
   test = "test", // boolean
   transform = "transform", // #SPECIAL
   trim = "trim", // string
