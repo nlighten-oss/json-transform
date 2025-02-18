@@ -16,7 +16,8 @@ public class TransformerFunctionTemplate extends TransformerFunction {
         super(FunctionDescription.of(
                 Map.of(
                     "payload", ArgumentType.of(ArgType.Any).position(0).defaultIsNull(true),
-                    "default_resolve", ArgumentType.of(ArgType.Enum).position(1).defaultEnum(ParameterDefaultResolveOptions.UNIQUE.name())
+                    "default_resolve", ArgumentType.of(ArgType.Enum).position(1).defaultEnum(ParameterDefaultResolveOptions.UNIQUE.name()),
+                    "url_encode", ArgumentType.of(ArgType.Boolean).position(2).defaultBoolean(false)
                 )
         ));
     }
@@ -30,6 +31,8 @@ public class TransformerFunctionTemplate extends TransformerFunction {
 
         var defaultResolveValue = context.getEnum("default_resolve");
         var defaultResolver = ParameterDefaultResolveOptions.valueOf(defaultResolveValue);
+
+        var urlEncode = context.getBoolean("url_encode");
 
         var currentResolver = context.getResolver();
         ParameterResolver resolver = currentResolver;
@@ -45,6 +48,6 @@ public class TransformerFunctionTemplate extends TransformerFunction {
         }
 
         var tt = TextTemplate.get(input, defaultResolver);
-        return tt.render(resolver, adapter);
+        return tt.render(resolver, adapter, urlEncode);
     }
 }

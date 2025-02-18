@@ -12,6 +12,7 @@ class TransformerFunctionTemplate extends TransformerFunction {
       arguments: {
         payload: { type: ArgType.Any, position: 0, defaultIsNull: true },
         default_resolve: { type: ArgType.Enum, position: 1, defaultEnum: "UNIQUE" },
+        url_encode: { type: ArgType.Boolean, position: 2, defaultBoolean: false },
       },
     });
   }
@@ -23,6 +24,8 @@ class TransformerFunctionTemplate extends TransformerFunction {
     }
 
     const defaultResolver = (await context.getEnum("default_resolve")) as ParameterDefaultResolveOptions;
+
+    const urlEncode = await context.getBoolean("url_encode");
 
     let currentResolver = context.getResolver();
     let resolver = currentResolver;
@@ -40,7 +43,7 @@ class TransformerFunctionTemplate extends TransformerFunction {
     }
 
     const tt = TextTemplate.get(input, defaultResolver);
-    return tt.render(resolver);
+    return tt.render(resolver, urlEncode);
   }
 }
 

@@ -77,5 +77,33 @@
     "expect": {
       "equal": "hello"
     }
+  },
+  {
+    "name": "inline - default value and escaping",
+    "given": {
+      "input": {
+        "id": "1"
+      },
+      "definition": "$$template:{$.id} \\{type: {$.type,Unknown}}"
+    },
+    "expect": {
+      "equal": "1 {type: Unknown}"
+    }
+  },
+  {
+    "name": "object - url encode",
+    "given": {
+      "input": {
+        "href": "https://example.com/"
+      },
+      "definition": {
+        "$$template": "href={$.href}",
+        "payload": "$",
+        "url_encode": true
+      }
+    },
+    "expect": {
+      "equal": "href=https%3A%2F%2Fexample.com%2F"
+    }
   }
 ]

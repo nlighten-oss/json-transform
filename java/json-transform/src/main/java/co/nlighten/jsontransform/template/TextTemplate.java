@@ -4,6 +4,8 @@ import co.nlighten.jsontransform.JsonTransformerConfiguration;
 import co.nlighten.jsontransform.ParameterResolver;
 import co.nlighten.jsontransform.adapters.JsonAdapter;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -170,14 +172,16 @@ public class TextTemplate {
             values.add(buffer.toString());
     }
 
-    String internalRender(ParameterResolver resolver, JsonAdapter<?,?,?> adapter) {
+    String internalRender(ParameterResolver resolver, JsonAdapter<?,?,?> adapter, Boolean urlEncodeParameters) {
         StringBuilder sb = new StringBuilder();
         for (Object value : values) {
             if (value instanceof String s) {
                 sb.append(s);
             } else if (value instanceof TemplateParameter param) {
-                // escape param value
-                sb.append(param.getStringValue(resolver, adapter));
+                var renderedValue = param.getStringValue(resolver, adapter);
+                sb.append(Boolean.TRUE.equals(urlEncodeParameters)
+                        ? URLEncoder.encode(renderedValue, StandardCharsets.UTF_8)
+                        : renderedValue);
             }
         }
         return sb.toString();
@@ -187,19 +191,29 @@ public class TextTemplate {
      * Renders the template after inserting the parameters
      *
      * @param resolver A resolver to extract parameter values
+     * @param adapter  The adapter to use for rendering
+     * @param urlEncodeParameters if true, the parameters will be URL encoded
      * @return a string with its parameters replaced
      */
-    public String render(ParameterResolver resolver, JsonAdapter<?,?,?> adapter) {
-        var res = internalRender(resolver, adapter);
+    public String render(ParameterResolver resolver, JsonAdapter<?,?,?> adapter, Boolean urlEncodeParameters) {
+        var res = internalRender(resolver, adapter, urlEncodeParameters);
         while (UNESCAPED_OPEN_CURLY_BRACKET.matcher(res).find()) {
-            res = get(res, defaultResolver).internalRender(resolver, adapter);
+            res = get(res, defaultResolver).internalRender(resolver, adapter, urlEncodeParameters);
         }
         // unescape
         return res.replace("\\{", "{").replace("\\}", "}");
     }
 
     public String render(ParameterResolver resolver) {
-        return render(resolver, JsonTransformerConfiguration.get().getAdapter());
+        return render(resolver, JsonTransformerConfiguration.get().getAdapter(), false);
+    }
+
+    public String render(ParameterResolver resolver, JsonAdapter<?,?,?> adapter) {
+        return render(resolver, adapter, false);
+    }
+
+    public String render(ParameterResolver resolver, Boolean urlEncodeParameters) {
+        return render(resolver, JsonTransformerConfiguration.get().getAdapter(), urlEncodeParameters);
     }
 
     public static Map<String, String> mapOf(String... parameters){
@@ -235,20 +249,28 @@ public class TextTemplate {
         return render(ParameterResolver.fromMap(resolver));
     }
 
-    public static String render(String template, ParameterResolver resolver, ParameterDefaultResolveOptions defaultResolver) {
-        return get(template, defaultResolver).render(resolver);
+    public static String render(String template, ParameterResolver resolver, ParameterDefaultResolveOptions defaultResolver, Boolean urlEncodeParameters) {
+        return get(template, defaultResolver).render(resolver, urlEncodeParameters);
     }
 
     public static String render(String template, Map<String, ?> resolver, ParameterDefaultResolveOptions defaultResolver) {
-        return render(template, ParameterResolver.fromMap(resolver), defaultResolver);
+        return render(template, ParameterResolver.fromMap(resolver), defaultResolver, false);
+    }
+
+    public static String render(String template, ParameterResolver resolver, Boolean urlEncodeParameters) {
+        return render(template, resolver, ParameterDefaultResolveOptions.UNIQUE, urlEncodeParameters);
+    }
+
+    public static String render(String template, Map<String, ?> resolver, Boolean urlEncodeParameters) {
+        return render(template, ParameterResolver.fromMap(resolver), ParameterDefaultResolveOptions.UNIQUE, urlEncodeParameters);
     }
 
     public static String render(String template, ParameterResolver resolver) {
-        return render(template, resolver, ParameterDefaultResolveOptions.UNIQUE);
+        return render(template, resolver, ParameterDefaultResolveOptions.UNIQUE, false);
     }
 
     public static String render(String template, Map<String, ?> resolver) {
-        return render(template, ParameterResolver.fromMap(resolver), ParameterDefaultResolveOptions.UNIQUE);
+        return render(template, ParameterResolver.fromMap(resolver), ParameterDefaultResolveOptions.UNIQUE, false);
     }
 
 }

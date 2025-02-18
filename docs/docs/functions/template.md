@@ -4,23 +4,25 @@ Renders a specified text template with the given input or specified payload.
 
 ### Usage
 ```transformers
-"$$template([payload],[default_resolve]):{input}"
+"$$template([payload],[default_resolve],[url_encode]):{input}"
 ```
 ```transformers
 {
   "$$template": /* template */,
   "payload": /* any */,
-  "default_resolve": "UNIQUE"
+  "default_resolve": "UNIQUE",
+  "url_encode": false
 }
 ```
 ### Returns
 `string`
 ### Arguments
-| Argument           | Type     | Values                              | Required / Default&nbsp;Value | Description                                                      |
-|--------------------|----------|-------------------------------------|-------------------------------|------------------------------------------------------------------|
-| Primary            | `String` |                                     | Yes                           | The text template to render                                      |
-| `payload`          |          |                                     |                               | Additional context, referred to as `##current` from the template |
-| `default_resolve`* | `Enum`   | `UNIQUE`/`FIRST_VALUE`/`LAST_VALUE` | `UNIQUE`                      | Resolve default value based on previous default values or not    |
+| Argument           | Type      | Values                              | Required / Default&nbsp;Value | Description                                                      |
+|--------------------|-----------|-------------------------------------|-------------------------------|------------------------------------------------------------------|
+| Primary            | `String`  |                                     | Yes                           | The text template to render                                      |
+| `payload`          |           |                                     |                               | Additional context, referred to as `##current` from the template |
+| `default_resolve`* | `Enum`    | `UNIQUE`/`FIRST_VALUE`/`LAST_VALUE` | `UNIQUE`                      | Resolve default value based on previous default values or not    |
+| `url_encode`       | `Boolean` |                                     | `false`                       | URL encode parameters                                            |
 
 #### * Different Types of default parameter resolving options
 | Type               | Description                                                      |
@@ -80,6 +82,35 @@ Renders a specified text template with the given input or specified payload.
 ```json
 "hello"
 ```
+
+```json
+{
+  "id": "1"
+}
+```
+```transformers
+"$$template:{$.id} \\{type: {$.type,Unknown}}"
+```
+```json
+"1 {type: Unknown}"
+```
+
+```json
+{
+  "href": "https://example.com/"
+}
+```
+```transformers
+{
+    "$$template": "href={$.href}",
+    "payload": "$",
+    "url_encode": true
+}
+```
+```json
+"href=https%3A%2F%2Fexample.com%2F"
+```
+
 
 ```mdx-code-block
 </div>

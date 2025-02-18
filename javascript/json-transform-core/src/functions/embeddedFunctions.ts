@@ -1469,6 +1469,13 @@ export const embeddedFunctions: Record<EmbeddedTransformerFunction, FunctionDesc
           enum: ["UNIQUE", "FIRST_VALUE", "LAST_VALUE"],
           default: "UNIQUE",
         },
+        {
+          name: "url_encode",
+          description: "URL encode parameters",
+          type: "boolean",
+          position: 2,
+          default: false,
+        },
       ],
     },
     test: {

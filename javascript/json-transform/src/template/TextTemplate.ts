@@ -103,7 +103,7 @@ export default class TextTemplate {
               // close off
               switch (state) {
                 case STATE_PARAM_NAME:
-                  pName = buffer.replace("\\{", "{");
+                  pName = buffer.replace(/\\\{/g, "{");
                   break;
                 case STATE_PARAM_DEFAULT:
                   pValue = buffer;
@@ -150,14 +150,14 @@ export default class TextTemplate {
     if (buffer) this.values.push(buffer);
   }
 
-  private async internalRender(resolver: ParameterResolver) {
+  private async internalRender(resolver: ParameterResolver, urlEncodeParameters?: boolean | null) {
     let sb = "";
     for (const value of this.values) {
       if (typeof value === "string") {
         sb += value;
       } else if (value instanceof TemplateParameter) {
-        // escape param value
-        sb += await value.getStringValue(resolver);
+        const renderedValue = await value.getStringValue(resolver);
+        sb += urlEncodeParameters ? encodeURIComponent(renderedValue.replace()) : renderedValue;
       }
     }
     return sb;
@@ -167,23 +167,25 @@ export default class TextTemplate {
    * Renders the template after inserting the parameters
    *
    * @param resolver A resolver to extract parameter values
+   * @param urlEncodeParameters if true, the parameters will be URL encoded
    * @return a string with its parameters replaced
    */
-  public async render(resolver: Record<string, string> | ParameterResolver) {
+  public async render(resolver: Record<string, string> | ParameterResolver, urlEncodeParameters?: boolean | null) {
     const resl = isParameterResolver(resolver) ? resolver : parameterResolverFromMap(resolver);
-    let res = await this.internalRender(resl);
+    let res = await this.internalRender(resl, urlEncodeParameters);
     while (UNESCAPED_OPEN_CURLY_BRACKET.test(res)) {
-      res = await TextTemplate.get(res, this.defaultResolver).internalRender(resl);
+      res = await TextTemplate.get(res, this.defaultResolver).internalRender(resl, urlEncodeParameters);
     }
     // unescape
-    return res.replace("\\{", "{").replace("\\}", "}");
+    return res.replace(/\\\{/g, "{").replace(/\\}/g, "}");
   }
 
   public static render(
     template: string,
     resolver: Record<string, string> | ParameterResolver,
     defaultResolver = ParameterDefaultResolveOptions.UNIQUE,
+    urlEncodeParameters = false,
   ) {
-    return TextTemplate.get(template, defaultResolver).render(resolver);
+    return TextTemplate.get(template, defaultResolver).render(resolver, urlEncodeParameters);
   }
 }

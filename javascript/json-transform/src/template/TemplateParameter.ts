@@ -28,6 +28,6 @@ export default class TemplateParameter {
       val = await getCurrentJsonTransformFunction().call(null, this.name, resolver);
     }
 
-    return val == null ? this.mDefault : val.replace("{", "\\{");
+    return val == null ? this.mDefault : val.replace(/\{/g, "\\{");
   }
 }

@@ -117,4 +117,17 @@ public class TextTemplateTests extends MultiAdapterBaseTest {
         var def = new TextTemplate("{b,\\{a}}").render(resolver);
         Assertions.assertEquals("{a}", def);
     }
+
+    @Test
+    void urlEncode() {
+        var resolver = ParameterResolver.fromMap(Map.of(
+            "href", "https://example.com/"
+        ));
+        // true
+        var def = new TextTemplate("href={href}").render(resolver, true);
+        Assertions.assertEquals("href=https%3A%2F%2Fexample.com%2F", def);
+        // false
+        def = new TextTemplate("href={href}").render(resolver);
+        Assertions.assertEquals("href=https://example.com/", def);
+    }
 }

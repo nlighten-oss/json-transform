@@ -98,7 +98,7 @@ const getRootFromPath = (path: string) => {
   return endOfKeyIndex < 0 ? path : path.substring(0, endOfKeyIndex);
 };
 
-const createPayloadResolver = (payload: any, additionalContext: Record<string, any>) => {
+const createPayloadResolver = (payload: any, additionalContext?: Record<string, any>) => {
   const json = getDocumentContext(payload);
   const additionalJsons = !additionalContext
     ? {}
