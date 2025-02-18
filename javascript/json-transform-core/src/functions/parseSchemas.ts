@@ -1,8 +1,8 @@
 import { JSONSchemaUtils } from "@nlighten/json-schema-utils";
 import { FunctionDescriptor } from "./types";
 
-function parseSchemas<F extends Record<T, FunctionDescriptor>, T extends string>(
-  functions: F,
+function parseSchemas<T extends string>(
+  functions: Record<T, FunctionDescriptor>,
   custom?: boolean,
 ): Record<T, FunctionDescriptor> {
   for (const f in functions) {
