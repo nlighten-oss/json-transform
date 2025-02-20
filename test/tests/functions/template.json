@@ -105,5 +105,21 @@
     "expect": {
       "equal": "href=https%3A%2F%2Fexample.com%2F"
     }
+  },
+  {
+    "name": "object - url encode with fallback",
+    "given": {
+      "input": {
+        "href": "https://example.com/"
+      },
+      "definition": {
+        "$$template": "href={$.url,{$.href}}",
+        "payload": "$",
+        "url_encode": true
+      }
+    },
+    "expect": {
+      "equal": "href=https%3A%2F%2Fexample.com%2F"
+    }
   }
 ]

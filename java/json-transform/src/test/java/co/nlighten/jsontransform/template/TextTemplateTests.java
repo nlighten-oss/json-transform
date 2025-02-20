@@ -95,8 +95,6 @@ public class TextTemplateTests extends MultiAdapterBaseTest {
         ));
         var def = new TextTemplate("{b,{a}}").render(resolver);
         Assertions.assertEquals("A", def);
-        def = new TextTemplate("{b,\\{a}}").render(resolver);
-        Assertions.assertEquals("{a}", def);
     }
 
     @Test
@@ -114,7 +112,7 @@ public class TextTemplateTests extends MultiAdapterBaseTest {
         var resolver = ParameterResolver.fromMap(Map.of(
                 "a", "A"
         ));
-        var def = new TextTemplate("{b,\\{a}}").render(resolver);
+        var def = new TextTemplate("{b,\\{a\\}}").render(resolver);
         Assertions.assertEquals("{a}", def);
     }
 
@@ -129,5 +127,18 @@ public class TextTemplateTests extends MultiAdapterBaseTest {
         // false
         def = new TextTemplate("href={href}").render(resolver);
         Assertions.assertEquals("href=https://example.com/", def);
+    }
+
+    @Test
+    void urlEncodeWithFallback() {
+        var resolver = ParameterResolver.fromMap(Map.of(
+                "href", "https://example.com/"
+        ));
+        // default value is a template
+        var def = new TextTemplate("href={url,{href}}").render(resolver, true);
+        Assertions.assertEquals("href=https%3A%2F%2Fexample.com%2F", def);
+        // default value escaped
+        def = new TextTemplate("href={url,\\{href\\}}").render(resolver, true);
+        Assertions.assertEquals("href=%7Bhref%7D", def);
     }
 }

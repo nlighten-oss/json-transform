@@ -103,6 +103,11 @@ public class TextTemplate {
                             buffer.append("\\{");
                             continue;
                         }
+                        if (nextChar == '}' && state != STATE_TEXT) {
+                            i++; // skip backslash
+                            buffer.append("\\}");
+                            continue;
+                        }
                     }
                     break;
                 case '{':
@@ -179,7 +184,8 @@ public class TextTemplate {
                 sb.append(s);
             } else if (value instanceof TemplateParameter param) {
                 var renderedValue = param.getStringValue(resolver, adapter);
-                sb.append(Boolean.TRUE.equals(urlEncodeParameters)
+                sb.append(
+                        Boolean.TRUE.equals(urlEncodeParameters) && !UNESCAPED_OPEN_CURLY_BRACKET.matcher(renderedValue).find()
                         ? URLEncoder.encode(renderedValue, StandardCharsets.UTF_8)
                         : renderedValue);
             }
@@ -201,7 +207,9 @@ public class TextTemplate {
             res = get(res, defaultResolver).internalRender(resolver, adapter, urlEncodeParameters);
         }
         // unescape
-        return res.replace("\\{", "{").replace("\\}", "}");
+        return urlEncodeParameters
+                ? res.replace("%5C%7B", "%7B").replace("%5C%7D", "%7D")
+                : res.replace("\\{", "{").replace("\\}", "}");
     }
 
     public String render(ParameterResolver resolver) {

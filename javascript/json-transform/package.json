@@ -1,7 +1,7 @@
 {
   "name": "@nlighten/json-transform",
   "description": "JSON transformers JavaScript implementation",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "main": "dist/json-transform.js",
   "umd:main": "dist/json-transform.umd.js",
   "module": "dist/json-transform.module.js",

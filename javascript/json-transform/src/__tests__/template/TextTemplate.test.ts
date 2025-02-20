@@ -70,10 +70,8 @@ describe("TextTemplate", () => {
     const resolver = parameterResolverFromMap({
       a: "A",
     });
-    let def = await new TextTemplate("{b,{a}}").render(resolver);
+    const def = await new TextTemplate("{b,{a}}").render(resolver);
     expect(def).toEqual("A");
-    def = await new TextTemplate("{b,\\{a}}").render(resolver);
-    expect(def).toEqual("{a}");
   });
 
   test("recursiveWithEscapedTemplateParameterDefaultValue2", async () => {
@@ -88,7 +86,7 @@ describe("TextTemplate", () => {
     const resolver = parameterResolverFromMap({
       a: "A",
     });
-    const def = await new TextTemplate("{b,\\{a}}").render(resolver);
+    const def = await new TextTemplate("{b,\\{a\\}}").render(resolver);
     expect(def).toEqual("{a}");
   });
 
@@ -102,5 +100,15 @@ describe("TextTemplate", () => {
     // false
     def = await new TextTemplate("href={href}").render(resolver);
     expect(def).toEqual("href=https://example.com/");
+  });
+
+  test("urlEncodeWithFallback", async () => {
+    const resolver = parameterResolverFromMap({
+      href: "https://example.com/",
+    });
+    let def = await new TextTemplate("href={url,{href}}").render(resolver, true);
+    expect(def).toEqual("href=https%3A%2F%2Fexample.com%2F");
+    def = await new TextTemplate("href={url,\\{href\\}}").render(resolver, true);
+    expect(def).toEqual("href=%7Bhref%7D");
   });
 });

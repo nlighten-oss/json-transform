@@ -78,6 +78,11 @@ export default class TextTemplate {
               buffer += "\\{";
               continue;
             }
+            if (nextChar == "}" && state !== STATE_TEXT) {
+              i++; // skip backslash
+              buffer += "\\}";
+              continue;
+            }
           }
           break;
         case "{":
@@ -157,7 +162,10 @@ export default class TextTemplate {
         sb += value;
       } else if (value instanceof TemplateParameter) {
         const renderedValue = await value.getStringValue(resolver);
-        sb += urlEncodeParameters ? encodeURIComponent(renderedValue.replace()) : renderedValue;
+        sb +=
+          urlEncodeParameters && !UNESCAPED_OPEN_CURLY_BRACKET.test(renderedValue)
+            ? encodeURIComponent(renderedValue)
+            : renderedValue;
       }
     }
     return sb;
@@ -177,7 +185,9 @@ export default class TextTemplate {
       res = await TextTemplate.get(res, this.defaultResolver).internalRender(resl, urlEncodeParameters);
     }
     // unescape
-    return res.replace(/\\\{/g, "{").replace(/\\}/g, "}");
+    return urlEncodeParameters
+      ? res.replace(/%5C%7B/g, "%7B").replace(/%5C%7D/g, "%7D")
+      : res.replace(/\\\{/g, "{").replace(/\\}/g, "}");
   }
 
   public static render(
