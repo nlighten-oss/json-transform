@@ -1,7 +1,7 @@
 import { loader, type Monaco } from "@monaco-editor/react";
 import * as monaco from 'monaco-editor';
 import type { IRange, languages } from "monaco-editor";
-import { functions, getFunctionInlineSignature, getFunctionObjectSignature } from "@nlighten/json-transform-core";
+import { functionsParser, getFunctionInlineSignature, getFunctionObjectSignature } from "@nlighten/json-transform-core";
 import {formatSchemaType} from "@nlighten/json-schema-utils";
 import jsonVariablesTokensProvider from "./jsonVariablesTokensProvider";
 import registerHoverProvider from "./jsonHoverProvider";
@@ -50,7 +50,7 @@ const initMonaco = (monaco: Monaco) => {
     let kind = monaco.languages.CompletionItemKind.Field;
     let tags: any = undefined;
     if (inline && v[0] === "$" && v[1] === "$") {
-      const inlineFunction = functions.get(v.substring(2));
+      const inlineFunction = functionsParser.get(v.substring(2));
       if (inlineFunction) {
         if (inlineFunction.deprecated) {
           tags = [monaco.languages.CompletionItemTag.Deprecated];
@@ -68,7 +68,7 @@ const initMonaco = (monaco: Monaco) => {
         documentation = inlineFunction.description;
       }
     } else if (!inline && v[0] === "$" && v[1] === "$") {
-      const objectFunction = functions.get(v.substring(2));
+      const objectFunction = functionsParser.get(v.substring(2));
       if (objectFunction) {
         let counter = 1;
         label = v + " (object)";
@@ -93,8 +93,8 @@ const initMonaco = (monaco: Monaco) => {
       tags,
     };
   };
-  const functionSuggestions = functions.getNames()
-    .filter(x => !functions.get(x).deprecated)
+  const functionSuggestions = functionsParser.getNames()
+    .filter(x => !functionsParser.get(x).deprecated)
     .map(x => `$$${x}`);
 
   monaco.languages.registerCompletionItemProvider("json", {
@@ -124,7 +124,7 @@ const initMonaco = (monaco: Monaco) => {
   });
 
   monaco.editor.registerCommand("docs", function (accessor: any, arg: any) {
-    window.open(functions.resolveDocsUrl(arg.func, arg.type), "_blank");
+    window.open(functionsParser.resolveDocsUrl(arg.func, arg.type), "_blank");
   });
 
   registerHoverProvider(monaco, { resolveSuggestions });

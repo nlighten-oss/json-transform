@@ -1,7 +1,9 @@
 import { Argument, EmbeddedTransformerFunction, EmbeddedTransformerFunctions, FunctionDescriptor } from "./types";
 import parseSchemas from "./parseSchemas";
-import { embeddedFunctions } from "./embeddedFunctions";
 import { HandleFunctionMethod } from "../ParseContext";
+import definitions from "./definitions";
+
+const embeddedDefinitions = parseSchemas(definitions);
 
 type ObjectFunctionMatchResult = {
   name: string;
@@ -42,7 +44,7 @@ export const getFunctionObjectSignature = (name: string, func: FunctionDescripto
   }}`;
 };
 
-class Functions {
+class FunctionsParser {
   private clientFunctions: Record<string, FunctionDescriptor>;
   private allFunctionsNames: string[];
   private objectFunctionRegex: RegExp;
@@ -93,7 +95,7 @@ class Functions {
   }
 
   get(name: string) {
-    return this.clientFunctions?.[name] ?? embeddedFunctions[name as EmbeddedTransformerFunction];
+    return this.clientFunctions?.[name] ?? embeddedDefinitions[name as EmbeddedTransformerFunction];
   }
 
   getNames() {
@@ -127,13 +129,18 @@ class Functions {
       return null;
     }
     const funcName = m[1] as EmbeddedTransformerFunction;
-    let func = functions.get(funcName);
+    let func = functionsParser.get(funcName);
     if (!func) return null;
-    if (func.argBased || callback) {
+    if (func.overrides || callback) {
       const argsWithoutParenthesis = m[3];
       const args = parseArgs(func, argsWithoutParenthesis);
-      if (func.argBased) {
-        func = func.argBased(args); // replace func instance based on args
+      if (func.overrides) {
+        for (const override of func.overrides) {
+          if (override.if.every(c => args[c.argument]?.toString().toUpperCase() === c.equals)) {
+            func = { ...func, ...override.then }; // replace func instance based on args
+            break;
+          }
+        }
       }
       if (callback) {
         const inlineFunctionValue = m[5];
@@ -153,10 +160,18 @@ class Functions {
           const match = this.matchObject(value, true);
           if (match) return match;
         }
-        const fd = this.get(funcName);
+        let func = this.get(funcName);
+        if (func.overrides) {
+          for (const override of func.overrides) {
+            if (override.if.every(c => data[c.argument]?.toString().toUpperCase() === c.equals)) {
+              func = { ...func, ...override.then }; // replace func instance based on args
+              break;
+            }
+          }
+        }
         return {
           name: funcName,
-          func: fd.argBased?.call(fd, data) ?? fd,
+          func,
           value,
           spec: data,
         };
@@ -172,7 +187,7 @@ class Functions {
   }
 }
 
-export const functions = new Functions();
+export const functionsParser = new FunctionsParser();
 
 export const parseArgs = (func: FunctionDescriptor, args?: string) => {
   if (!args) return {};

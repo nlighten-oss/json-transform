@@ -1,6 +1,6 @@
 import type { Monaco } from "@monaco-editor/react";
 import { formatSchemaType, type TypeSchema } from "@nlighten/json-schema-utils";
-import { functions, getFunctionInlineSignature, parseArgs, transformUtils } from "@nlighten/json-transform-core";
+import { functionsParser, getFunctionInlineSignature, parseArgs, transformUtils } from "@nlighten/json-transform-core";
 
 const registerHoverProvider = (
   monaco: Monaco,
@@ -31,16 +31,18 @@ const registerHoverProvider = (
             endColumn: word.endColumn + 1,
           });
           const funcName = word.word.match(/^\$\$([^:(]+)/)?.[1];
-          if (!funcName || !functions.get(funcName)) return;
+          if (!funcName || !functionsParser.get(funcName)) return;
           const funcType = charBefore === '"' && charAfter === '"' ? "object" : "inline";
-          let func = functions.get(funcName);
+          let func = functionsParser.get(funcName);
           if (!func) return;
-          if (func.argBased) {
-            const argBasedType =
-              funcType === "inline"
-                ? func.argBased(parseArgs(func, word.word.match(/\(([^)]*)/)?.[1] ?? ""))
-                : func.argBased({}); // TODO: is there a way to get the definition?
-            if (argBasedType) func = argBasedType;
+          if (func.overrides && funcType === "inline") { // TODO: is there a way to get the definition for object?
+            const args = parseArgs(func, word.word.match(/\(([^)]*)/)?.[1] ?? "");
+            for (const override of func.overrides) {
+              if (override.if.every(c => args[c.argument]?.toString().toUpperCase() === c.equals)) {
+                func = { ...func, ...override.then }; // replace func instance based on args
+                break;
+              }
+            }
           }
           const sig = getFunctionInlineSignature(funcName, func);
           return resolve({

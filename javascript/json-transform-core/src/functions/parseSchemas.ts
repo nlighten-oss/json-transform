@@ -1,4 +1,4 @@
-import { JSONSchemaUtils } from "@nlighten/json-schema-utils";
+import { JSONSchemaUtils, TypeSchema } from "@nlighten/json-schema-utils";
 import { FunctionDescriptor } from "./types";
 
 function parseSchemas<T extends string>(
@@ -12,6 +12,13 @@ function parseSchemas<T extends string>(
     }
     if (custom) {
       func.custom = true;
+    }
+    if (Array.isArray(func.overrides)) {
+      func.overrides.forEach(o => {
+        if (o.then.outputSchema) {
+          o.then.parsedOutputSchema = JSONSchemaUtils.parse(o.then.outputSchema);
+        }
+      });
     }
   }
   return functions;

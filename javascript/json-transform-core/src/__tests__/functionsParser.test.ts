@@ -1,14 +1,8 @@
-import assert from "node:assert";
 import { describe, expect, test } from "vitest";
 import { cleanParsedSchemaProperty, type TypeSchema } from "@nlighten/json-schema-utils";
 import { EmbeddedTransformerFunction, EmbeddedTransformerFunctions } from "../functions/types";
 import { parseTransformer } from "../parse";
-import { functions } from "../functions/functions";
-import {
-  CsvParseFunctionArgBasedSchemas,
-  DateFunctionArgBasedSchemas,
-  DigestFunctionArgBasedSchemas,
-} from "../functions/embeddedFunctions";
+import { functionsParser } from "../functions/functionsParser";
 
 const transformerResult = (
   transformer: Record<string, string | Record<string, any>>,
@@ -44,7 +38,7 @@ const NULL: TypeSchema = { type: "null" },
 
 describe("functions schema detection", () => {
   for (const funcName of EmbeddedTransformerFunctions) {
-    const func = functions.get(funcName);
+    const func = functionsParser.get(funcName);
     const alias = `$$${funcName}`;
     const outputSchema = func.outputSchema;
 
@@ -613,64 +607,65 @@ describe("functions schema detection", () => {
           );
           break;
         }
-        // static arg based
-        case EmbeddedTransformerFunction.csvparse:
-        case EmbeddedTransformerFunction.digest:
-        case EmbeddedTransformerFunction.date: {
-          const paramName = func.arguments?.find(p => p.position === 0)?.name ?? "";
-          const expected: Record<string, TypeSchema> = {};
-          const outputProperties: Record<string, TypeSchema> = {};
-          const schemas =
-            funcName === EmbeddedTransformerFunction.date
-              ? DateFunctionArgBasedSchemas
-              : funcName === EmbeddedTransformerFunction.digest
-                ? DigestFunctionArgBasedSchemas
-                : funcName === EmbeddedTransformerFunction.csvparse
-                  ? CsvParseFunctionArgBasedSchemas
-                  : {};
-          const transformer = Object.entries(schemas).reduce((a, kv) => {
-            a["inline_" + kv[0]] = `${alias}(${kv[0]}):irrelevant`;
-            a["object_" + kv[0]] = {
-              [alias]: "irrelevant",
-              [paramName]: kv[0],
-            };
-            if (kv[1].outputSchema) {
-              expected["$.inline_" + kv[0]] = kv[1].outputSchema;
-              outputProperties["inline_" + kv[0]] = kv[1].outputSchema;
-              expected["$.object_" + kv[0]] = kv[1].outputSchema;
-              outputProperties["object_" + kv[0]] = kv[1].outputSchema;
-              if (kv[1].outputSchema.type === "array" && kv[1].outputSchema.items) {
-                const firstLevelItems = kv[1].outputSchema.items as TypeSchema;
-                expected["$.inline_" + kv[0] + "[]"] = firstLevelItems;
-                expected["$.object_" + kv[0] + "[]"] = firstLevelItems;
-                if (firstLevelItems.type === "array" && firstLevelItems.items) {
-                  expected["$.inline_" + kv[0] + "[][]"] = firstLevelItems.items as TypeSchema;
-                  expected["$.object_" + kv[0] + "[][]"] = firstLevelItems.items as TypeSchema;
-                }
-              }
-            }
-            return a;
-          }, {} as any);
-          expect(transformerResult(transformer)).toStrictEqual(
-            createFlowTraversalResult({
-              paths: {
-                $: {
-                  additionalProperties: false,
-                  properties: outputProperties,
-                  type: "object",
-                },
-                ...expected,
-              },
-            }),
-          );
-          break;
-        }
         // static output schema
         default: {
-          assert(outputSchema);
-          assert(!func.argBased, "missing object arg based check");
+          if (func.overrides) {
+            // static conditional
+            const paramName = func.arguments?.find(p => p.position === 0)?.name ?? "";
+            const expected: Record<string, TypeSchema> = {};
+            const outputProperties: Record<string, TypeSchema> = {};
+            const transformer = func.overrides.reduce((a, kv) => {
+              const argValue = kv.if[0].equals; // TODO: this is not generic
+              a["inline_" + argValue] = `${alias}(${argValue}):irrelevant`;
+              a["object_" + argValue] = {
+                [alias]: "irrelevant",
+                [paramName]: argValue,
+              };
+              const argOutputSchema = kv.then.outputSchema;
+              if (argOutputSchema) {
+                expected["$.inline_" + argValue] = argOutputSchema;
+                outputProperties["inline_" + argValue] = argOutputSchema;
+                expected["$.object_" + argValue] = argOutputSchema;
+                outputProperties["object_" + argValue] = argOutputSchema;
+                if (
+                  argOutputSchema.type === "array" &&
+                  argOutputSchema.items &&
+                  !Array.isArray(argOutputSchema.items)
+                ) {
+                  const firstLevelItems = argOutputSchema.items;
+                  expected["$.inline_" + argValue + "[]"] = firstLevelItems;
+                  expected["$.object_" + argValue + "[]"] = firstLevelItems;
+                  if (
+                    firstLevelItems.type === "array" &&
+                    firstLevelItems.items &&
+                    !Array.isArray(firstLevelItems.items)
+                  ) {
+                    expected["$.inline_" + argValue + "[][]"] = firstLevelItems.items;
+                    expected["$.object_" + argValue + "[][]"] = firstLevelItems.items;
+                  }
+                }
+              }
+              return a;
+            }, {} as any);
+            expect(transformerResult(transformer)).toStrictEqual(
+              createFlowTraversalResult({
+                paths: {
+                  $: {
+                    additionalProperties: false,
+                    properties: outputProperties,
+                    type: "object",
+                  },
+                  ...expected,
+                },
+              }),
+            );
+            break;
+          }
+
+          // static output schema
+          expect(outputSchema).toBeTruthy();
           const expected: Record<string, TypeSchema> = {};
-          const funcOutputPaths = functions.get(funcName).parsedOutputSchema?.paths ?? [];
+          const funcOutputPaths = functionsParser.get(funcName).parsedOutputSchema?.paths ?? [];
 
           funcOutputPaths.forEach(p => {
             const suffix = !p.$path ? "" : (p.$path[0] === "[" ? "" : ".") + p.$path;

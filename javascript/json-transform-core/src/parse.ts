@@ -5,7 +5,7 @@ import {
   type TypeSchema,
 } from "@nlighten/json-schema-utils";
 import { EmbeddedTransformerFunction } from "./functions/types";
-import { functions } from "./functions/functions";
+import { functionsParser } from "./functions/functionsParser";
 import { matchJsonPathFunction } from "./jsonpath/jsonpathFunctions";
 import { jsonpathJoin, VALID_ID_REGEXP } from "./jsonpath/jsonpathJoin";
 import ParseContext, { HandleFunctionMethod, ParseMethod } from "./ParseContext";
@@ -62,7 +62,7 @@ class TransformerParser {
       });
   }
 
-  static isCustomJsonPath(data: any) {
+  static isCustomJsonPath(data: any, context: ParseContext) {
     return typeof data === "string" && (data.startsWith("$.") || data.startsWith("#") || data === "$");
   }
 
@@ -124,7 +124,7 @@ class TransformerParser {
     }
 
     // definition is string and custom JsonPath (e.g. $ / $. / # / ##)
-    if (TransformerParser.isCustomJsonPath(definition)) {
+    if (context.isJsonPathReference(definition)) {
       // check if jsonpath is using a function (e.g. $.concat())
       const jsonPathFunctionSchema = matchJsonPathFunction(definition);
       if (jsonPathFunctionSchema) {
@@ -148,7 +148,7 @@ class TransformerParser {
     }
 
     if (
-      functions.matchInline(definition, (funcName, func, value, args) => {
+      functionsParser.matchInline(definition, (funcName, func, value, args) => {
         TransformerParser.handleFunction(
           "inline",
           funcName,
@@ -168,7 +168,7 @@ class TransformerParser {
     }
 
     if (definition && typeof definition === "object" && !Array.isArray(definition)) {
-      const objFunc = functions.matchObject(definition, true);
+      const objFunc = functionsParser.matchObject(definition, true);
       if (objFunc) {
         TransformerParser.handleFunction(
           "object",
@@ -186,7 +186,7 @@ class TransformerParser {
         // definition is plain object
         for (const p in definition) {
           if (p === "*") {
-            if (TransformerParser.isCustomJsonPath(definition["*"])) {
+            if (context.isJsonPathReference(definition["*"])) {
               TransformerParser.copySubPathsOnWalk(
                 definition["*"],
                 targetPath,
@@ -198,7 +198,7 @@ class TransformerParser {
             } else if (Array.isArray(definition["*"])) {
               definition["*"].forEach(
                 pc =>
-                  TransformerParser.isCustomJsonPath(pc) &&
+                  context.isJsonPathReference(pc) &&
                   TransformerParser.copySubPathsOnWalk(pc, targetPath, localPath, previousPaths, paths, context),
               );
             }
@@ -547,7 +547,7 @@ class TransformerParser {
       }
       default: {
         if (
-          functions.handleClientFunction?.call(
+          functionsParser.handleClientFunction?.call(
             null,
             detectedAs,
             funcName,
@@ -601,6 +601,6 @@ export function parseTransformer(
   typesMap?: Record<string, TypeSchema>,
   additionalContext?: Record<string, TypeSchema>,
 ) {
-  const context = new ParseContext(typesMap, additionalContext);
+  const context = new ParseContext(typesMap, additionalContext, previousPaths);
   return TransformerParser.parse(definition, targetPath, "", previousPaths, paths, context);
 }

@@ -1,5 +1,10 @@
 export { ContextVariablesSchemas } from "./functions/context";
-export { getFunctionInlineSignature, getFunctionObjectSignature, functions, parseArgs } from "./functions/functions";
+export {
+  getFunctionInlineSignature,
+  getFunctionObjectSignature,
+  functionsParser,
+  parseArgs,
+} from "./functions/functionsParser";
 export {
   type Argument,
   type FunctionDescriptor,

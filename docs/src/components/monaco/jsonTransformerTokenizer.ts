@@ -1,4 +1,4 @@
-import { functions, JsonPathFunctionRegex, transformUtils } from "@nlighten/json-transform-core";
+import { functionsParser, JsonPathFunctionRegex, transformUtils } from "@nlighten/json-transform-core";
 
 const FunctionContextRegExp = /##([a-z]+[a-z_\d]*)(((\.(?![-\w$]+\()[-\w$]+)|(\[[^\]\n]+]))+|(?=[^\w.]|$))/g;
 const InlineFunctionArgsPunctuationRegExp = /^\(|,\s*|\)$/g;
@@ -35,14 +35,14 @@ export type TokenizationState = {
 
 export const tokenizeLine = (line: string, lineNumber: number, ts: TokenizationState) => {
   // OBJECT FUNCTIONS
-  let iter: IterableIterator<RegExpMatchArray> = functions.matchAllObjectFunctionsInLine(line);
+  let iter: IterableIterator<RegExpMatchArray> = functionsParser.matchAllObjectFunctionsInLine(line);
   for (
     let iterResult = iter.next(), match: RegExpMatchArray | null = iterResult.value;
     !iterResult.done;
     iterResult = iter.next(), match = iterResult.value as RegExpMatchArray | null
   ) {
     if (!match || typeof match.index === "undefined") continue;
-    const func = functions.get(match[1])
+    const func = functionsParser.get(match[1])
     const deprecated = func?.deprecated;
 
     ts.tokens.push({
@@ -54,14 +54,14 @@ export const tokenizeLine = (line: string, lineNumber: number, ts: TokenizationS
     });
   }
   // INLINE FUNCTIONS (name and args symbols)
-  iter = functions.matchAllInlineFunctionsInLine(line);
+  iter = functionsParser.matchAllInlineFunctionsInLine(line);
   for (
     let iterResult = iter.next(), match: RegExpMatchArray | null = iterResult.value;
     !iterResult.done;
     iterResult = iter.next(), match = iterResult.value as RegExpMatchArray | null
   ) {
     if (!match || typeof match.index === "undefined") continue;
-    const func = functions.get(match[1]);
+    const func = functionsParser.get(match[1]);
     const deprecated = func?.deprecated;
 
     ts.tokens.push({

@@ -43,7 +43,7 @@ class TransformerFunctionDigest extends TransformerFunction {
       ? new ArrayBuffer(0)
       : algorithm === "MD5"
         ? md5(str)
-        : await globalCrypto.subtle.digest({ name: algorithm }, TextEncoding.encode(str, "ISO-8859-1"));
+        : await globalCrypto.subtle.digest({ argument: algorithm }, TextEncoding.encode(str, "ISO-8859-1"));
     switch (await context.getEnum("format")) {
       case "BASE64":
         return Base64.encode(new Uint8Array(digest), "basic");

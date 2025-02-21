@@ -1,5 +1,5 @@
 import {IPureNode} from "markmap-common";
-import { functions } from "@nlighten/json-transform-core";
+import { functionsParser } from "@nlighten/json-transform-core";
 
 const valueStringify = (value: any) => {
   return `<b>${JSON.stringify(value)}</b>`;
@@ -33,7 +33,7 @@ export default function transformerToMarkmap(value: any, key: string): IPureNode
   if (typeof value === "string") {
     if (value.startsWith("$$")) {
       let foundFunc: string, foundInlineFunctionValue: string, foundArgs: Record<string, any>;
-      functions.matchInline(value, (funcName, func, inlineFunctionValue, args) => {
+      functionsParser.matchInline(value, (funcName, func, inlineFunctionValue, args) => {
         foundFunc = funcName;
         foundInlineFunctionValue = inlineFunctionValue;
         foundArgs = args;
@@ -59,7 +59,7 @@ export default function transformerToMarkmap(value: any, key: string): IPureNode
       return transformerToMarkmap(item, `[${index}]`);
     });
   } else if (typeof value === "object" && value !== null) {
-    const func = functions.matchObject(value);
+    const func = functionsParser.matchObject(value);
     if (func) {
       for (const key in value) {
         if (key === "$$" + func.name) continue;

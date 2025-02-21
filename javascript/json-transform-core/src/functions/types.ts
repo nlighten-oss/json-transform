@@ -29,7 +29,6 @@ export enum EmbeddedTransformerFunction {
   is = "is", // boolean
   isnull = "isnull", // boolean
   join = "join", // string
-  json = "json", // object ??
   jsonparse = "jsonparse", // object ??
   jsonpatch = "jsonpatch", // object ??
   jsonpath = "jsonpath", // object ??
@@ -97,6 +96,16 @@ export type Argument = {
   $comment?: string;
 };
 
+export type ArgumentCondition = {
+  argument: string;
+  equals: string;
+};
+
+export type ConditionalOverrides = {
+  if: ArgumentCondition[]; // AND relationship
+  then: Partial<FunctionDescriptor>;
+};
+
 export type FunctionDescriptor = {
   aliasTo?: string;
   inputSchema?: Argument;
@@ -104,13 +113,13 @@ export type FunctionDescriptor = {
   description: string;
   notes?: string;
   outputSchema?: TypeSchema;
+  overrides?: ConditionalOverrides[];
   /** For documentation purposes when output schema is calculated */
   outputSchemaTemplate?: TypeSchema;
   deprecated?: string;
   /** If set, this function does not alter the type of its primary argument */
   pipedType?: boolean;
   custom?: boolean;
-  argBased?: (args: Record<string, any>) => FunctionDescriptor;
   /** (when outputSchema) Parsed in advance to get all possible paths */
   parsedOutputSchema?: ParsedSchema;
 };

@@ -1,6 +1,7 @@
 import {expect} from "vitest";
 import BigNumber from "bignumber.js";
 import { parse, stringify } from "lossless-json";
+import {Implementation, ImplUrls} from "./implementations";
 
 // export const JSONBig = (JSONBigInt as any).default({
 //   alwaysParseAsBig: true,
@@ -42,17 +43,8 @@ function areURLSearchParamsEqual(params1: URLSearchParams, params2: URLSearchPar
 
 const hasOwn = Object.prototype.hasOwnProperty;
 
-const PODS = {
-  javascript: "http://localhost:10002/api/v1/transform",
-  javaGson: "http://localhost:10000/api/v1/transform/gson",
-  javaJackson: "http://localhost:10000/api/v1/transform/jackson",
-  javaJsonOrg: "http://localhost:10000/api/v1/transform/jsonorg",
-  javaJsonSmart: "http://localhost:10000/api/v1/transform/jsonsmart",
-  javaPojo: "http://localhost:10000/api/v1/transform/pojo"
-}
-
-const callTransform = async (given: any, platformToTest: keyof typeof PODS) => {
-  return fetch(PODS[platformToTest], {
+const callTransform = async (given: any, impl: Implementation) => {
+  return fetch(ImplUrls[impl], {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -68,8 +60,8 @@ const getTypeOf = (value: any) => {
   return typeof value;
 }
 
-export const assertTransformation = async (t: any, platform: keyof typeof PODS) => {
-  return callTransform(t.given, platform)
+export const assertTransformation = async (t: any, impl: Implementation) => {
+  return callTransform(t.given, impl)
     .then(res => res.text())
     .then(d => {
       const data = JSONBig.parse(d);
