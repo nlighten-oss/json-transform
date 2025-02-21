@@ -33,17 +33,17 @@ export type TokenizationState = {
   tokens: Token[];
 };
 
-export const tokenizeLine = (line: string, lineNumber: number, ts: TokenizationState) => {
+export default function tokenizeLine(line: string, lineNumber: number, ts: TokenizationState) {
   // OBJECT FUNCTIONS
   let iter: IterableIterator<RegExpMatchArray> = functionsParser.matchAllObjectFunctionsInLine(line);
   for (
-    let iterResult = iter.next(), match: RegExpMatchArray | null = iterResult.value;
+    let iterResult = iter.next(), match: RegExpMatchArray | null | undefined = iterResult.value;
     !iterResult.done;
-    iterResult = iter.next(), match = iterResult.value as RegExpMatchArray | null
+    iterResult = iter.next(), match = iterResult.value as RegExpMatchArray | null | undefined
   ) {
     if (!match || typeof match.index === "undefined") continue;
-    const func = functionsParser.get(match[1])
-    const deprecated = func?.deprecated;
+    const func = functionsParser.get(match[1]);
+    const deprecated = func?.deprecatedInFavorOf;
 
     ts.tokens.push({
       line: lineNumber,
@@ -53,16 +53,17 @@ export const tokenizeLine = (line: string, lineNumber: number, ts: TokenizationS
       modifier: TokenModifier.DECLARATION,
     });
   }
+
   // INLINE FUNCTIONS (name and args symbols)
   iter = functionsParser.matchAllInlineFunctionsInLine(line);
   for (
-    let iterResult = iter.next(), match: RegExpMatchArray | null = iterResult.value;
+    let iterResult = iter.next(), match: RegExpMatchArray | null | undefined = iterResult.value;
     !iterResult.done;
-    iterResult = iter.next(), match = iterResult.value as RegExpMatchArray | null
+    iterResult = iter.next(), match = iterResult.value as RegExpMatchArray | null | undefined
   ) {
     if (!match || typeof match.index === "undefined") continue;
     const func = functionsParser.get(match[1]);
-    const deprecated = func?.deprecated;
+    const deprecated = func?.deprecatedInFavorOf;
 
     ts.tokens.push({
       line: lineNumber,
@@ -87,9 +88,9 @@ export const tokenizeLine = (line: string, lineNumber: number, ts: TokenizationS
       const argsIndex = match.index + 2 + match[1].length;
       const puncIter = match[2].matchAll(InlineFunctionArgsPunctuationRegExp);
       for (
-        let puncIterResult = puncIter.next(), puncMatch: RegExpMatchArray | null = puncIterResult.value;
+        let puncIterResult = puncIter.next(), puncMatch: RegExpMatchArray | null | undefined = puncIterResult.value;
         !puncIterResult.done;
-        puncIterResult = puncIter.next(), puncMatch = puncIterResult.value as RegExpMatchArray | null
+        puncIterResult = puncIter.next(), puncMatch = puncIterResult.value as RegExpMatchArray | null | undefined
       ) {
         if (!puncMatch || typeof puncMatch.index === "undefined") continue;
         ts.tokens.push({
@@ -102,12 +103,13 @@ export const tokenizeLine = (line: string, lineNumber: number, ts: TokenizationS
       }
     }
   }
+
   // FUNCTION CONTEXT (##current)
   iter = line.matchAll(FunctionContextRegExp);
   for (
-    let iterResult = iter.next(), match: RegExpMatchArray | null = iterResult.value;
+    let iterResult = iter.next(), match: RegExpMatchArray | null | undefined = iterResult.value;
     !iterResult.done;
-    iterResult = iter.next(), match = iterResult.value as RegExpMatchArray | null
+    iterResult = iter.next(), match = iterResult.value as RegExpMatchArray | null | undefined
   ) {
     if (!match || typeof match.index === "undefined") continue;
     ts.tokens.push({
@@ -122,9 +124,9 @@ export const tokenizeLine = (line: string, lineNumber: number, ts: TokenizationS
   // VARIABLES ($. #...)
   iter = line.matchAll(transformUtils.variableDetectionRegExp);
   for (
-    let iterResult = iter.next(), match: RegExpMatchArray | null = iterResult.value;
+    let iterResult = iter.next(), match: RegExpMatchArray | null | undefined = iterResult.value;
     !iterResult.done;
-    iterResult = iter.next(), match = iterResult.value as RegExpMatchArray | null
+    iterResult = iter.next(), match = iterResult.value as RegExpMatchArray | null | undefined
   ) {
     if (!match || typeof match.index === "undefined") continue;
     let type = TokenType.VARIABLE;
@@ -185,12 +187,13 @@ export const tokenizeLine = (line: string, lineNumber: number, ts: TokenizationS
       }
     }
   }
+
   // COMMENTS
   iter = line.matchAll(FindCommentsRegex);
   for (
-    let iterResult = iter.next(), match: RegExpMatchArray | null = iterResult.value;
+    let iterResult = iter.next(), match: RegExpMatchArray | null | undefined = iterResult.value;
     !iterResult.done;
-    iterResult = iter.next(), match = iterResult.value as RegExpMatchArray | null
+    iterResult = iter.next(), match = iterResult.value as RegExpMatchArray | null | undefined
   ) {
     if (!match || typeof match.index === "undefined") continue;
     ts.tokens.push({
@@ -201,4 +204,4 @@ export const tokenizeLine = (line: string, lineNumber: number, ts: TokenizationS
       modifier: TokenModifier.DECLARATION,
     });
   }
-};
+}

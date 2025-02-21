@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from "react";
 import  { } from "@docusaurus/BrowserOnly"
 import { JSONSchemaUtils } from '@nlighten/json-schema-utils'
-import {jsonpathJoin} from "@nlighten/json-transform-core";
+import {ContextVariablesSchemas, jsonpathJoin} from "@nlighten/json-transform-core";
 import {DebuggableTransformerFunctions, JsonTransformer} from "@nlighten/json-transform";
 import {useLocation, useHistory} from "@docusaurus/router";
 import MonacoEditor from "./monaco/MonacoEditor";
@@ -71,7 +71,7 @@ const TransformerTester = () => {
       const generatedSchema = JSONSchemaUtils.generate(parsedInput);
       const result = JSONSchemaUtils.parse(generatedSchema);
       setSuggestions("/transformer",
-        ["#now", "#null", "#uuid"].concat(
+        Object.keys(ContextVariablesSchemas).concat(
           result?.paths.map(x => jsonpathJoin("$", x.$path)) ?? []
         ),
         result?.paths.reduce((a, c) => {
@@ -79,7 +79,7 @@ const TransformerTester = () => {
           return a;
         }, {} as any),)
     } else {
-      setSuggestions("/transformer", ["#now", "#null", "#uuid"], {});
+      setSuggestions("/transformer", Object.keys(ContextVariablesSchemas), {});
     }
   }, [parsedInput]);
 
