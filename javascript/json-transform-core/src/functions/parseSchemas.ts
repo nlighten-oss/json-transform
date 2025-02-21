@@ -1,5 +1,18 @@
-import { JSONSchemaUtils, TypeSchema } from "@nlighten/json-schema-utils";
-import { FunctionDescriptor } from "./types";
+import { JSONSchemaUtils } from "@nlighten/json-schema-utils";
+import { Argument, FunctionDescriptor } from "./types";
+
+const getDefaultValues = (args?: Argument[]) => {
+  const defaultValues: Record<string, any> = {};
+  if (Array.isArray(args)) {
+    for (let i = 0; i < args.length; i++) {
+      const arg = args[i];
+      if (arg.default !== undefined) {
+        defaultValues[arg.name] = arg.default;
+      }
+    }
+  }
+  return defaultValues;
+};
 
 function parseSchemas<T extends string>(
   functions: Record<T, FunctionDescriptor>,
@@ -10,6 +23,8 @@ function parseSchemas<T extends string>(
     if (func.outputSchema) {
       func.parsedOutputSchema = JSONSchemaUtils.parse(func.outputSchema);
     }
+    func.defaultValues = getDefaultValues(func.arguments);
+
     if (custom) {
       func.custom = true;
     }
@@ -17,9 +32,14 @@ function parseSchemas<T extends string>(
       for (let i = 0; i < func.overrides.length; i++) {
         const schemaOverride = func.overrides[i].then.outputSchema;
         func.overrides[i] = {
-          ...func,
-          overrides: null,
-          parsedOutputSchema: schemaOverride && JSONSchemaUtils.parse(schemaOverride),
+          if: func.overrides[i].if,
+          then: {
+            ...func,
+            ...func.overrides[i].then,
+            overrides: undefined,
+            parsedOutputSchema: schemaOverride && JSONSchemaUtils.parse(schemaOverride),
+            defaultValues: getDefaultValues(func.overrides[i].then.arguments),
+          },
         };
       }
     }

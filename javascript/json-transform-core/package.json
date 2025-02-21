@@ -1,7 +1,7 @@
 {
   "name": "@nlighten/json-transform-core",
   "description": "Core types and utilities for handling JSON transformers",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "main": "dist/json-transform-core.js",
   "umd:main": "dist/json-transform-core.umd.js",
   "module": "dist/json-transform-core.module.js",
@@ -40,10 +40,10 @@
   },
   "homepage": "https://github.com/nlighten-oss/json-transform#readme",
   "peerDependencies": {
-    "@nlighten/json-schema-utils": "^1.0.2"
+    "@nlighten/json-schema-utils": "^1.0.3"
   },
   "devDependencies": {
-    "@nlighten/json-schema-utils": "^1.0.2",
+    "@nlighten/json-schema-utils": "^1.0.3",
     "microbundle": "^0.15.1",
     "prettier": "3.1.1",
     "typescript": "^5.3.3",

@@ -3,9 +3,9 @@ import { ContextVariablesSchemas } from "./functions/context";
 import { FunctionDescriptor } from "./functions/types";
 
 export class ParseContext {
-  paths?: Record<string, TypeSchema> = {};
-  additionalContext?: Record<string, TypeSchema>;
-  knownVariables: Set<string>;
+  private readonly paths?: Record<string, TypeSchema>;
+  private readonly additionalContext?: Record<string, TypeSchema>;
+  private knownVariables: Set<string>;
 
   constructor(
     paths?: Record<string, TypeSchema>,
@@ -13,7 +13,7 @@ export class ParseContext {
     previousPaths?: string[],
   ) {
     this.paths = paths;
-    this.additionalContext = additionalContext ?? ContextVariablesSchemas;
+    this.additionalContext = additionalContext;
     this.knownVariables = new Set();
     if (paths) {
       for (const path in paths) {
@@ -35,14 +35,46 @@ export class ParseContext {
     }
   }
 
-  resolve(key: string) {
-    return this.additionalContext?.[key] ?? this.paths?.[key];
+  hasPaths() {
+    return Boolean(this.paths);
   }
 
-  isJsonPathReference(path: any): boolean {
-    if (typeof path !== "string") return false;
+  hasPath(path: string) {
+    return typeof this.paths?.[path] !== "undefined";
+  }
+
+  /**
+   * If you are about to change the result, use this and not 'resolve()'
+   * @param path
+   */
+  getPath(path: string) {
+    return this.paths?.[path];
+  }
+
+  setPath(path: string, type: TypeSchema) {
+    if (!this.paths) return;
+    this.paths[path] = type;
     const v = path.split(/[.[]/, 1)[0];
-    return path === v || path.startsWith(v + ".") || path.startsWith(v + "[");
+    this.knownVariables.add(v);
+  }
+
+  removePaths(paths: string[], variableToRemove?: string) {
+    for (const path of paths) {
+      delete this.paths?.[path];
+    }
+    if (variableToRemove) {
+      this.knownVariables.delete(variableToRemove);
+    }
+  }
+
+  resolve(key: string) {
+    return ContextVariablesSchemas[key] ?? this.additionalContext?.[key] ?? this.paths?.[key];
+  }
+
+  isReferencingKnownVariable(path: any): boolean {
+    if (typeof path !== "string" || path.startsWith("$$")) return false;
+    const v = path.split(/[.[]/, 1)[0];
+    return this.knownVariables.has(v) && (path === v || path.startsWith(v + ".") || path.startsWith(v + "["));
   }
 }
 

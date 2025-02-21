@@ -94,7 +94,7 @@ class FunctionsParser {
     this.handleClientFunction = handler;
   }
 
-  get(name: string) {
+  get(name: string, args?: Record<string, any>) {
     return this.clientFunctions?.[name] ?? embeddedDefinitions[name as EmbeddedTransformerFunction];
   }
 
@@ -134,14 +134,7 @@ class FunctionsParser {
     if (func.overrides || callback) {
       const argsWithoutParenthesis = m[3];
       const args = parseArgs(func, argsWithoutParenthesis);
-      if (func.overrides) {
-        for (const override of func.overrides) {
-          if (override.if.every(c => args[c.argument]?.toString().toUpperCase() === c.equals)) {
-            func = override.then; // replace func instance based on args
-            break;
-          }
-        }
-      }
+      func = getOverriddenFunction(func, args);
       if (callback) {
         const inlineFunctionValue = m[5];
         callback(funcName, func, inlineFunctionValue, args);
@@ -160,15 +153,7 @@ class FunctionsParser {
           const match = this.matchObject(value, true);
           if (match) return match;
         }
-        let func = this.get(funcName);
-        if (func.overrides) {
-          for (const override of func.overrides) {
-            if (override.if.every(c => data[c.argument]?.toString().toUpperCase() === c.equals)) {
-              func = override.then; // replace func instance based on args
-              break;
-            }
-          }
-        }
+        const func = getOverriddenFunction(this.get(funcName), data);
         return {
           name: funcName,
           func,
@@ -213,4 +198,18 @@ export const parseArgs = (func: FunctionDescriptor, args?: string) => {
         },
         {} as Record<string, any>, // we can't really infer type, and strings are the only ones that matter anyway
       );
+};
+
+export const getOverriddenFunction = (func: FunctionDescriptor, args?: Record<string, any>) => {
+  if (!func.overrides || !args) return func;
+  for (const override of func.overrides) {
+    if (
+      override.if.every(
+        c => (args[c.argument] ?? override.then.defaultValues?.[c.argument])?.toString().toUpperCase() === c.equals,
+      )
+    ) {
+      return override.then; // replace func instance based on args
+    }
+  }
+  return func;
 };

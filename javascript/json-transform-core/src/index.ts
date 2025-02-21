@@ -4,6 +4,7 @@ export {
   getFunctionObjectSignature,
   functionsParser,
   parseArgs,
+  getOverriddenFunction,
 } from "./functions/functionsParser";
 export {
   type Argument,

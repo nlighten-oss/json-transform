@@ -23,16 +23,16 @@ class TransformerParser {
   ) {
     let simplePath = sourcePath.replace(/\[[^\]]+]/g, "[]");
     const sourceIsArray = sourcePath.includes("[*]") || sourcePath.includes("[?(");
-    if (context.paths && sourceIsArray) {
+    if (context.hasPaths() && sourceIsArray) {
       const itemType = context.resolve(sourcePath) ?? context.resolve(simplePath);
-      context.paths[targetPath + localPath] = {
+      context.setPath(targetPath + localPath, {
         type: "array",
         items: itemType
           ? structuredClone(itemType)
           : context.resolve(simplePath.slice(0, -2))
             ? structuredClone(context.resolve(simplePath.slice(0, -2)))
             : undefined,
-      };
+      });
       if (!itemType) {
         simplePath = simplePath.slice(0, -2);
       }
@@ -53,8 +53,8 @@ class TransformerParser {
           prevPath === simplePath || prevPath.startsWith(simplePath + ".") || prevPath.startsWith(simplePath + "[");
         const subPath = baseSubPath + prevPath.substring(detectedBySimple ? simplePath.length : sourcePath.length);
         // copy types
-        if (context.paths && context.resolve(prevPath)) {
-          context.paths[targetPath + subPath] = structuredClone(context.resolve(prevPath)) as TypeSchema;
+        if (context.hasPaths() && context.resolve(prevPath)) {
+          context.setPath(targetPath + subPath, structuredClone(context.resolve(prevPath)) as TypeSchema);
         }
         if (!paths.includes(targetPath + subPath)) {
           paths.push(targetPath + subPath);
@@ -68,8 +68,8 @@ class TransformerParser {
 
   static rawWalkOnObject(targetPath: string, data: any, s: string, paths: string[], context: ParseContext) {
     if (s) paths.push(targetPath + s);
-    if (context.paths && typeof data !== "undefined") {
-      context.paths[targetPath + s] = inferJSONSchemaType(data);
+    if (context.hasPaths() && typeof data !== "undefined") {
+      context.setPath(targetPath + s, inferJSONSchemaType(data));
     }
 
     // definition is Array
@@ -77,7 +77,7 @@ class TransformerParser {
       for (let i = 0; i < data.length; i++) {
         TransformerParser.rawWalkOnObject(targetPath, data[i], s + "[" + i + "]", paths, context);
       }
-      const arrayType = context.paths?.[targetPath + s];
+      const arrayType = context.getPath(targetPath + s);
       if (arrayType && data.length > 0) {
         arrayType.items = data.map((c, i) => structuredClone(context.resolve(targetPath + s + `[${i}]`) as TypeSchema));
       }
@@ -117,31 +117,32 @@ class TransformerParser {
 
     // definition is a reference inside $$map / $$transform functions
     if (definition === "##index") {
-      if (context.paths) {
-        context.paths[targetPath + localPath] = { type: "integer" };
+      if (context.hasPaths()) {
+        context.setPath(targetPath + localPath, { type: "integer" });
       }
       return;
     }
 
     // definition is string and custom JsonPath (e.g. $ / $. / # / ##)
-    if (context.isJsonPathReference(definition)) {
+    if (context.isReferencingKnownVariable(definition)) {
       // check if jsonpath is using a function (e.g. $.concat())
       const jsonPathFunctionSchema = matchJsonPathFunction(definition);
       if (jsonPathFunctionSchema) {
-        if (context.paths) {
-          context.paths[targetPath + localPath] = structuredClone(jsonPathFunctionSchema);
+        if (context.hasPaths()) {
+          context.setPath(targetPath + localPath, structuredClone(jsonPathFunctionSchema));
           if (jsonPathFunctionSchema.type === "array") {
             paths.push(targetPath + localPath + "[]");
-            context.paths[targetPath + localPath + "[]"] = structuredClone(jsonPathFunctionSchema.items) as any;
+            context.setPath(targetPath + localPath + "[]", structuredClone(jsonPathFunctionSchema.items) as any);
           }
         }
       } else {
         // copy all the sub paths of that path object
         TransformerParser.copySubPathsOnWalk(definition, targetPath, localPath, previousPaths, paths, context);
-        if (context.paths && !context.resolve(targetPath + localPath)) {
-          context.paths[targetPath + localPath] = context.resolve(definition)
-            ? structuredClone(context.resolve(definition))
-            : ({} as any);
+        if (context.hasPaths() && !context.resolve(targetPath + localPath)) {
+          context.setPath(
+            targetPath + localPath,
+            context.resolve(definition) ? structuredClone(context.resolve(definition)) : ({} as any),
+          );
         }
       }
       return;
@@ -186,7 +187,7 @@ class TransformerParser {
         // definition is plain object
         for (const p in definition) {
           if (p === "*") {
-            if (context.isJsonPathReference(definition["*"])) {
+            if (context.isReferencingKnownVariable(definition["*"])) {
               TransformerParser.copySubPathsOnWalk(
                 definition["*"],
                 targetPath,
@@ -198,7 +199,7 @@ class TransformerParser {
             } else if (Array.isArray(definition["*"])) {
               definition["*"].forEach(
                 pc =>
-                  context.isJsonPathReference(pc) &&
+                  context.isReferencingKnownVariable(pc) &&
                   TransformerParser.copySubPathsOnWalk(pc, targetPath, localPath, previousPaths, paths, context),
               );
             }
@@ -206,28 +207,31 @@ class TransformerParser {
           }
           const propPath = VALID_ID_REGEXP.test(p) ? "." + p : "[" + (ALL_DIGITS.test(p) ? p : JSON.stringify(p)) + "]";
           TransformerParser.parse(definition[p], targetPath, localPath + propPath, previousPaths, paths, context);
-          if (context.paths) {
-            if (!context.paths[targetPath + localPath]) {
-              context.paths[targetPath + localPath] = { type: "object", additionalProperties: false };
+          if (context.hasPaths()) {
+            if (!context.hasPath(targetPath + localPath)) {
+              context.setPath(targetPath + localPath, { type: "object", additionalProperties: false });
             }
-            const properties = context.paths[targetPath + localPath].properties ?? {};
-            if (context.paths[targetPath + localPath + propPath]) {
-              properties[p] = structuredClone(context.resolve(targetPath + localPath + propPath)) as TypeSchema;
-              context.paths[targetPath + localPath].properties = properties;
+            const objType = context.getPath(targetPath + localPath);
+            const properties = objType?.properties ?? {};
+            const srcType = context.resolve(targetPath + localPath + propPath);
+            if (objType && typeof srcType !== "undefined") {
+              properties[p] = structuredClone(srcType);
+              objType.properties = properties;
             }
           }
         }
       }
     } else if (Array.isArray(definition) && definition.length > 0) {
-      if (context.paths) {
-        context.paths[targetPath + localPath] = { type: "array" };
+      if (context.hasPaths()) {
+        context.setPath(targetPath + localPath, { type: "array" });
       }
       for (let i = 0; i < definition.length; i++) {
         TransformerParser.parse(definition[i], targetPath, localPath + "[" + i + "]", previousPaths, paths, context);
       }
-      if (context.paths) {
+      if (context.hasPaths()) {
         // check if all paths are the same, then compact it
-        const firstType = context.paths[targetPath + localPath + "[0]"];
+        const arrType = context.getPath(targetPath + localPath);
+        const firstType = context.getPath(targetPath + localPath + "[0]");
         const singleType =
           firstType &&
           definition.every((x: any, i: number) =>
@@ -240,9 +244,10 @@ class TransformerParser {
           for (let i = firstIndex; i <= lastIndex; i++) {
             const x = paths[i];
             if (context.resolve(x)) {
-              context.paths[pref + x.slice(pref.length).replace(/^\[\d+]/, "[]")] = structuredClone(
-                context.resolve(x),
-              ) as TypeSchema;
+              context.setPath(
+                pref + x.slice(pref.length).replace(/^\[\d+]/, "[]"),
+                structuredClone(context.resolve(x)) as TypeSchema,
+              );
             }
           }
           Array.prototype.splice.apply(
@@ -251,23 +256,25 @@ class TransformerParser {
               paths.slice(lastIndex).map(x => pref + x.slice(pref.length).replace(/^\[\d+]/, "[]")),
             ) as [start: number, deleteCount: number, ...items: any[]],
           );
-          context.paths[targetPath + localPath].items = structuredClone(context.resolve(targetPath + localPath + "[]"));
-        } else {
-          context.paths[targetPath + localPath].items = definition.map(
+          if (arrType) {
+            arrType.items = structuredClone(context.resolve(targetPath + localPath + "[]"));
+          }
+        } else if (arrType) {
+          arrType.items = definition.map(
             (c, i) => structuredClone(context.resolve(targetPath + localPath + `[${i}]`)) as TypeSchema,
           );
         }
       }
     } else {
       // definition is either unrecognized string (treated as string) or another json type
-      if (context.paths && typeof definition !== "undefined") {
-        context.paths[targetPath + localPath] = inferJSONSchemaType(definition);
+      if (context.hasPaths() && typeof definition !== "undefined") {
+        context.setPath(targetPath + localPath, inferJSONSchemaType(definition));
       }
     }
   };
 
   static findNonNull(value: string, context: ParseContext) {
-    if (!context.paths) return null;
+    if (!context.hasPaths()) return null;
     const items = context.resolve(value)?.items;
     if (!Array.isArray(items)) return null;
     return items.findIndex(x => x.type !== "null");
@@ -287,7 +294,7 @@ class TransformerParser {
     context: ParseContext,
   ) {
     const dataWithResultType = Array.isArray(value)
-      ? (context.paths && value.find((x: any) => context.resolve(x)?.type !== "null")) ??
+      ? (context.hasPaths() && value.find((x: any) => context.resolve(x)?.type !== "null")) ??
         value.find(x => typeof x !== "undefined" && x !== null) ??
         value[0]
       : previousPaths.includes(value + "[0]")
@@ -322,11 +329,11 @@ class TransformerParser {
         TransformerParser.copyArrayItemTypeOnWalk(value, targetPath, localPath, previousPaths, paths, context);
         if (funcName === EmbeddedTransformerFunction.concat || funcName === EmbeddedTransformerFunction.flat) {
           // fix type if not array
-          if (context.paths && context.resolve(targetPath + localPath)?.type !== "array") {
-            context.paths[targetPath + localPath] = {
+          if (context.hasPaths() && context.resolve(targetPath + localPath)?.type !== "array") {
+            context.setPath(targetPath + localPath, {
               type: "array",
               items: context.resolve(targetPath + localPath),
-            };
+            });
           }
         }
         break;
@@ -340,24 +347,27 @@ class TransformerParser {
         TransformerParser.copyArrayItemTypeOnWalk(value, targetPath, localPath + "[]", previousPaths, paths, context);
         if (!paths.includes(targetPath + localPath + "[]")) {
           paths.push(targetPath + localPath + "[]");
-          if (context.paths) {
+          if (context.hasPaths()) {
             if (!context.resolve(targetPath + localPath + "[]")) {
-              context.paths[targetPath + localPath + "[]"] = structuredClone(
-                context.resolve(targetPath + localPath + "[0]") ?? {
-                  type: "object",
-                },
+              context.setPath(
+                targetPath + localPath + "[]",
+                structuredClone(
+                  context.resolve(targetPath + localPath + "[0]") ?? {
+                    type: "object",
+                  },
+                ),
               );
             }
           }
         }
         if (
-          context.paths &&
+          context.hasPaths() &&
           (!context.resolve(targetPath + localPath) || context.resolve(targetPath + localPath)?.type !== "array")
         ) {
-          context.paths[targetPath + localPath] = {
+          context.setPath(targetPath + localPath, {
             type: "array",
             items: structuredClone(context.resolve(targetPath + localPath + "[]")),
-          };
+          });
         }
         break;
       }
@@ -393,18 +403,18 @@ class TransformerParser {
         const typ = args?.type?.toUpperCase();
         switch (typ) {
           case "NUMBER":
-            if (context.paths) {
-              context.paths[targetPath + localPath] = { type: "number" };
+            if (context.hasPaths()) {
+              context.setPath(targetPath + localPath, { type: "number" });
             }
             break;
           case "BOOLEAN":
-            if (context.paths) {
-              context.paths[targetPath + localPath] = { type: "boolean" };
+            if (context.hasPaths()) {
+              context.setPath(targetPath + localPath, { type: "boolean" });
             }
             break;
           case "STRING":
-            if (context.paths) {
-              context.paths[targetPath + localPath] = { type: "string" };
+            if (context.hasPaths()) {
+              context.setPath(targetPath + localPath, { type: "string" });
             }
             break;
           default:
@@ -416,17 +426,17 @@ class TransformerParser {
       case EmbeddedTransformerFunction.partition: {
         paths.push(targetPath + localPath + "[]");
         TransformerParser.copyArrayItemTypeOnWalk(value, targetPath, localPath + "[][]", previousPaths, paths, context);
-        if (context.paths) {
+        if (context.hasPaths()) {
           if (!context.resolve(targetPath + localPath + "[]")) {
-            context.paths[targetPath + localPath + "[]"] = {
+            context.setPath(targetPath + localPath + "[]", {
               type: "array",
               items: structuredClone(context.resolve(targetPath + localPath + "[][]")),
-            };
+            });
           }
-          context.paths[targetPath + localPath] = {
+          context.setPath(targetPath + localPath, {
             type: "array",
             items: structuredClone(context.resolve(targetPath + localPath + "[]")),
-          };
+          });
         }
         break;
       }
@@ -472,15 +482,13 @@ class TransformerParser {
           }
         }
 
-        if (context.paths) {
-          context.paths[targetPath + localPath] = {
+        if (context.hasPaths()) {
+          context.setPath(targetPath + localPath, {
             type: "array",
             items: structuredClone(context.resolve(targetPath + localPath + "[]")),
-          };
+          });
           // remove all ##current and other aliases from paths
-          for (const p of currentPaths) {
-            delete context.paths[p];
-          }
+          context.removePaths(currentPaths, "##current");
         }
         break;
       }
@@ -510,18 +518,16 @@ class TransformerParser {
         TransformerParser.parse(dataWithResultType, targetPath, localPath + targetSuffix, prevPaths, paths, context);
 
         if (funcName === EmbeddedTransformerFunction.map) {
-          if (context.paths) {
-            context.paths[targetPath + localPath] = {
+          if (context.hasPaths()) {
+            context.setPath(targetPath + localPath, {
               type: "array",
               items: structuredClone(context.resolve(targetPath + localPath + "[]")),
-            };
+            });
           }
         }
-        if (context.paths) {
+        if (context.hasPaths()) {
           // remove all ##current from paths
-          for (const p of currentPaths) {
-            delete context.paths[p];
-          }
+          context.removePaths(currentPaths, "##current");
         }
         break;
       }
@@ -539,8 +545,8 @@ class TransformerParser {
             }
           }
           // can't detect type, put object
-          if (context.paths) {
-            context.paths[targetPath + localPath] = { type: "object" };
+          if (context.hasPaths()) {
+            context.setPath(targetPath + localPath, { type: "object" });
           }
         }
         break;
@@ -569,14 +575,14 @@ class TransformerParser {
       }
     }
     if (unhandled && func.parsedOutputSchema) {
-      if (func.outputSchema && context.paths) {
-        context.paths[targetPath + localPath] = structuredClone(func.outputSchema);
+      if (func.outputSchema && context.hasPaths()) {
+        context.setPath(targetPath + localPath, structuredClone(func.outputSchema));
       }
       func.parsedOutputSchema.paths.forEach(p => {
         const key = jsonpathJoin(targetPath + localPath, p.$path);
         paths.push(key);
-        if (context.paths) {
-          context.paths[key] = cleanParsedSchemaProperty(p);
+        if (context.hasPaths()) {
+          context.setPath(key, cleanParsedSchemaProperty(p));
         }
       });
     }

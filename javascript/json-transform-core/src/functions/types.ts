@@ -86,7 +86,7 @@ export enum EmbeddedTransformerFunction {
 export const EmbeddedTransformerFunctions = Object.keys(EmbeddedTransformerFunction) as EmbeddedTransformerFunction[];
 
 export type Argument = {
-  name?: string;
+  name: string;
   type: string;
   description?: string;
   enum?: string[];
@@ -108,7 +108,7 @@ export type ConditionalOverrides = {
 
 export type FunctionDescriptor = {
   aliasTo?: string;
-  inputSchema?: Argument;
+  inputSchema?: Omit<Argument, "name">;
   arguments?: Argument[];
   description: string;
   notes?: string;
@@ -123,4 +123,5 @@ export type FunctionDescriptor = {
   custom?: boolean;
   /** (when outputSchema) Parsed in advance to get all possible paths */
   parsedOutputSchema?: ParsedSchema;
+  defaultValues?: Record<string, any>;
 };
