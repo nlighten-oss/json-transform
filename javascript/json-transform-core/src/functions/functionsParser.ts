@@ -137,7 +137,7 @@ class FunctionsParser {
       if (func.overrides) {
         for (const override of func.overrides) {
           if (override.if.every(c => args[c.argument]?.toString().toUpperCase() === c.equals)) {
-            func = { ...func, ...override.then }; // replace func instance based on args
+            func = override.then; // replace func instance based on args
             break;
           }
         }
@@ -164,7 +164,7 @@ class FunctionsParser {
         if (func.overrides) {
           for (const override of func.overrides) {
             if (override.if.every(c => data[c.argument]?.toString().toUpperCase() === c.equals)) {
-              func = { ...func, ...override.then }; // replace func instance based on args
+              func = override.then; // replace func instance based on args
               break;
             }
           }

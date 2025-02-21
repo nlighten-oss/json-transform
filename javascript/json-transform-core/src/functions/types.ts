@@ -103,7 +103,7 @@ export type ArgumentCondition = {
 
 export type ConditionalOverrides = {
   if: ArgumentCondition[]; // AND relationship
-  then: Partial<FunctionDescriptor>;
+  then: FunctionDescriptor;
 };
 
 export type FunctionDescriptor = {
@@ -116,7 +116,8 @@ export type FunctionDescriptor = {
   overrides?: ConditionalOverrides[];
   /** For documentation purposes when output schema is calculated */
   outputSchemaTemplate?: TypeSchema;
-  deprecated?: string;
+  /** should specify the alternative function that should be used instead **/
+  deprecatedInFavorOf?: string;
   /** If set, this function does not alter the type of its primary argument */
   pipedType?: boolean;
   custom?: boolean;

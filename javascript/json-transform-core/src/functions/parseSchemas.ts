@@ -14,11 +14,14 @@ function parseSchemas<T extends string>(
       func.custom = true;
     }
     if (Array.isArray(func.overrides)) {
-      func.overrides.forEach(o => {
-        if (o.then.outputSchema) {
-          o.then.parsedOutputSchema = JSONSchemaUtils.parse(o.then.outputSchema);
-        }
-      });
+      for (let i = 0; i < func.overrides.length; i++) {
+        const schemaOverride = func.overrides[i].then.outputSchema;
+        func.overrides[i] = {
+          ...func,
+          overrides: null,
+          parsedOutputSchema: schemaOverride && JSONSchemaUtils.parse(schemaOverride),
+        };
+      }
     }
   }
   return functions;
