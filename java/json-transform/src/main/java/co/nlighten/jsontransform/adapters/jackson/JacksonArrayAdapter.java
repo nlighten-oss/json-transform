@@ -72,6 +72,11 @@ public class JacksonArrayAdapter extends JsonArrayAdapter<JsonNode, ArrayNode, O
     }
 
     @Override
+    public void addAll(ArrayNode array, ArrayNode other) {
+        array.addAll(other);
+    }
+
+    @Override
     public void set(ArrayNode array, int index, JsonNode value) {
         if (array.size() > index || JsonAdapterHelpers.trySetArrayAtOOB(this, array, index, value, NullNode.getInstance())) {
             array.set(index, value);

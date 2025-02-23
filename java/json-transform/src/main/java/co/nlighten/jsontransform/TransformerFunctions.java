@@ -71,6 +71,7 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
                 Map.entry("matchall", new TransformerFunctionMatchAll()),
                 Map.entry("math", new TransformerFunctionMath()),
                 Map.entry("max",new TransformerFunctionMax()),
+                Map.entry("merge",new TransformerFunctionMerge()),
                 Map.entry("min",new TransformerFunctionMin()),
                 Map.entry("normalize", new TransformerFunctionNormalize()),
                 Map.entry("not", new TransformerFunctionNot()),

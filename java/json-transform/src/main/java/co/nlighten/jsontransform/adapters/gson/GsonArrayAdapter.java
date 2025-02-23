@@ -52,6 +52,11 @@ public class GsonArrayAdapter extends JsonArrayAdapter<JsonElement, JsonArray, J
     }
 
     @Override
+    public void addAll(JsonArray array, JsonArray other) {
+        array.addAll(other);
+    }
+
+    @Override
     public void set(JsonArray array, int index, JsonElement value) {
         if (array.size() > index || JsonAdapterHelpers.trySetArrayAtOOB(this, array, index, value, JsonNull.INSTANCE)) {
             array.set(index, value);

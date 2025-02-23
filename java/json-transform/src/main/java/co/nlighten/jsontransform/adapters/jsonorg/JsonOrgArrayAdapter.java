@@ -49,6 +49,11 @@ class JsonOrgArrayAdapter extends JsonArrayAdapter<Object, JSONArray, JSONObject
     }
 
     @Override
+    public void addAll(JSONArray array, JSONArray other) {
+        array.putAll(other);
+    }
+
+    @Override
     public void set(JSONArray array, int index, Object value) {
         array.put(index, value);
     }

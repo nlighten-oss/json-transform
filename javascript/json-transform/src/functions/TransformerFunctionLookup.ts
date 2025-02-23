@@ -1,7 +1,7 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
-import { getAsString, isMap, isNullOrUndefined, isTruthy, mergeInto } from "../JsonHelpers";
+import { getAsString, isMap, isNullOrUndefined, isTruthy, merge } from "../JsonHelpers";
 import JsonElementStreamer from "../JsonElementStreamer";
 
 type UsingEntry = {
@@ -75,7 +75,7 @@ class TransformerFunctionLookup extends TransformerFunction {
             let merged = item1;
             for (let val of Object.values(matches)) {
               if (!isMap(val)) continue; // edge case - tried to merge with an item which is not an object
-              merged = mergeInto(merged, val, null);
+              merged = merge(merged, val);
             }
             return merged;
           } else {

@@ -317,6 +317,30 @@ function mergeInto(rootEl: Record<string, any>, value: any, path: string | null)
   return root;
 }
 
+export type JsonMergeOptions = {
+  deep?: boolean;
+  concatArrays?: boolean;
+};
+
+function merge(target: Record<string, any>, source: Record<string, any>, options?: JsonMergeOptions) {
+  for (const updateKey in source) {
+    const updateValue = source[updateKey];
+    if (Object.prototype.hasOwnProperty.call(target, updateKey)) {
+      const targetValue = target[updateKey];
+      if (options?.concatArrays && Array.isArray(targetValue) && Array.isArray(updateValue)) {
+        target[updateKey] = targetValue.concat(updateValue);
+      } else if (options?.deep && isMap(targetValue) && isMap(updateValue)) {
+        merge(targetValue, updateValue, options);
+      } else {
+        target[updateKey] = updateValue;
+      }
+    } else {
+      target[updateKey] = updateValue;
+    }
+  }
+  return target;
+}
+
 const factory = new ComparatorFactory<any>();
 
 function createComparator(type: string | null) {
@@ -382,5 +406,6 @@ export {
   isTruthy,
   isEqual,
   mergeInto,
+  merge,
   toObjectFieldPath,
 };

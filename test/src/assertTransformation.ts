@@ -2,6 +2,7 @@ import {expect} from "vitest";
 import BigNumber from "bignumber.js";
 import { parse, stringify } from "lossless-json";
 import {Implementation, ImplUrls} from "./implementations";
+import { JsonTransformExample } from "@nlighten/json-transform-core"
 
 // export const JSONBig = (JSONBigInt as any).default({
 //   alwaysParseAsBig: true,
@@ -60,7 +61,14 @@ const getTypeOf = (value: any) => {
   return typeof value;
 }
 
-export const assertTransformation = async (t: any, impl: Implementation) => {
+export const assertTransformation = async (t: JsonTransformExample, impl: Implementation) => {
+  //correct given input by format
+  if (t.given.inputFormat){
+    if (t.given.inputFormat === "big-decimal") {
+      t.given.input = BigNumber(t.given.input);
+    }
+  }
+
   return callTransform(t.given, impl)
     .then(res => res.text())
     .then(d => {
@@ -73,34 +81,36 @@ export const assertTransformation = async (t: any, impl: Implementation) => {
         if (t.expect.ignoreOrder && Array.isArray(t.expect.equal)) {
           expect(data.result, message).toHaveLength(t.expect.equal.length);
           expect(data.result, message).toEqual(expect.arrayContaining(t.expect.equal));
-        } else if (t.expect.urlSearchParams === true && typeof t.expect.equal === "string" && typeof data.result === "string") {
+        } else if (t.expect.format === "url-search-params" && typeof t.expect.equal === "string" && typeof data.result === "string") {
           const expectedParams = new URLSearchParams(t.expect.equal);
           const resultParams = new URLSearchParams(data.result);
           expect(areURLSearchParamsEqual(expectedParams, resultParams), message).toBeTruthy();
+        } else if (t.expect.format === "big-decimal" && typeof t.expect.equal === "string") {
+          const expectedValue = BigNumber(t.expect.equal);
+          expect(data.result, message).toEqual(expectedValue);
         } else{
           expect(data.result, message).toEqual(t.expect.equal);
         }
-      }
-      if (hasOwn.call(t.expect, "notEqual")) {
-        expect(data.result, message).not.toEqual(t.expect.notEqual);
-      }
-      if (hasOwn.call(t.expect, "length")) {
-        expect(data.result, message).toHaveLength(t.expect.length);
-      }
-      if (hasOwn.call(t.expect, "type")) {
-        if (t.expect.type === "array") {
-          expect(data.result, message).toBeInstanceOf(Array);
-        } else {
-          expect(data.result, message).toBeTypeOf(t.expect.type);
-        }
-      }
-      if (hasOwn.call(t.expect, "format")) {
+      } else if (typeof t.expect.format !== 'undefined') {
         switch (t.expect.format) {
           case "date-time":
             expect(isNaN(new Date(data.result).getDate()), message).not.toBeTruthy();
             break
           default:
             expect.fail("Unknown format: " + t.expect.format,"", message);
+        }
+      }
+      if (typeof t.expect.notEqual !== 'undefined') {
+        expect(data.result, message).not.toEqual(t.expect.notEqual);
+      }
+      if (typeof t.expect.length !== 'undefined') {
+        expect(data.result, message).toHaveLength(t.expect.length);
+      }
+      if (typeof t.expect.type !== 'undefined') {
+        if (t.expect.type === "array") {
+          expect(data.result, message).toBeInstanceOf(Array);
+        } else {
+          expect(data.result, message).toBeTypeOf(t.expect.type);
         }
       }
     });

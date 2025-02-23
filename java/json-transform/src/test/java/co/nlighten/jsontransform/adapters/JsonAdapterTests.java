@@ -121,4 +121,171 @@ public class JsonAdapterTests extends MultiAdapterBaseTest {
         adapter.set(array, 3, el);
         assertEquals(adapter, el, adapter.get(array, 3));
     }
+
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testMergeAllNew(JsonAdapter<?,?,?> adapter) {
+        assertEquals(adapter, adapter.parse("""
+{
+  "a": "A",
+  "b": "B"
+}
+"""), adapter.merge(adapter.parse("""
+{
+  "a": "A"
+}
+"""), adapter.parse("""
+{
+  "b": "B"
+}
+""")));
+    }
+
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testMergeOverrideExisting(JsonAdapter<?,?,?> adapter) {
+        assertEquals(adapter, adapter.parse("""
+{
+    "a": "A",
+    "b": "BB"
+}
+"""), adapter.merge(adapter.parse("""
+{
+  "a": "A",
+  "b": "B"
+}
+"""), adapter.parse("""
+{
+  "b": "BB"
+}
+""")));
+    }
+
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testMergeOverrideWithNull(JsonAdapter<?,?,?> adapter) {
+        assertEquals(adapter, adapter.parse("""
+{
+  "a": "A",
+  "b": null
+}
+"""), adapter.merge(adapter.parse("""
+{
+  "a": "A",
+  "b": "B"
+}
+"""), adapter.parse("""
+{
+  "b": null
+}
+""")));
+    }
+
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testMergeShallow(JsonAdapter<?,?,?> adapter) {
+        assertEquals(adapter, adapter.parse("""
+{
+  "a": {
+    "aaa": "AAA"
+  },
+  "b": "B"
+}
+"""), adapter.merge(adapter.parse("""
+{
+  "a": {
+    "aa": "AA"
+  },
+  "b": "B"
+}
+"""), adapter.parse("""
+{
+  "a": {
+    "aaa": "AAA"
+  }
+}
+""")));
+    }
+
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testMergeDeep(JsonAdapter<?,?,?> adapter) {
+        assertEquals(adapter, adapter.parse("""
+{
+  "a": {
+    "aa": "AA",
+    "aaa": "AAA"
+  },
+  "b": "B"
+}
+"""), adapter.merge(adapter.parse("""
+{
+  "a": {
+    "aa": "AA"
+  },
+  "b": "B"
+}
+"""), adapter.parse("""
+{
+  "a": {
+    "aaa": "AAA"
+  }
+}
+"""), new JsonAdapter.JsonMergeOptions(true, false)));
+    }
+
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testMergeDeepAndConcatArrays(JsonAdapter<?,?,?> adapter) {
+        assertEquals(adapter, adapter.parse("""
+{
+  "a": {
+    "aa": "AA",
+    "aaa": "AAA"
+  },
+  "c": [1, 2, 3, 4]
+}
+"""), adapter.merge(adapter.parse("""
+{
+  "a": {
+    "aa": "AA"
+  },
+  "c": [1, 2]
+}
+"""), adapter.parse("""
+{
+  "a": {
+    "aaa": "AAA"
+  },
+  "c": [3, 4]
+}
+"""), new JsonAdapter.JsonMergeOptions(true, true)));
+    }
+
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void testMergeConcatArrays(JsonAdapter<?,?,?> adapter) {
+        assertEquals(adapter, adapter.parse("""
+{
+  "a": {
+    "aaa": "AAA"
+  },
+  "c": [1, 2, 3, 4]
+}
+"""), adapter.merge(adapter.parse("""
+{
+  "a": {
+    "aa": "AA"
+  },
+  "c": [1, 2]
+}
+"""), adapter.parse("""
+{
+  "a": {
+    "aaa": "AAA"
+  },
+  "c": [3, 4]
+}
+"""), new JsonAdapter.JsonMergeOptions(false, true)));
+    }
 }

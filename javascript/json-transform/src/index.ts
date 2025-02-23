@@ -4,6 +4,8 @@ import JsonElementStreamer from "./JsonElementStreamer";
 import { JsonTransformerFunction } from "./JsonTransformerFunction";
 import { ParameterResolver, isParameterResolver, parameterResolverFromMap } from "./ParameterResolver";
 import { Transformer, RAW as RawTransformer } from "./Transformer";
+import * as JsonHelpers from "./JsonHelpers";
+import type { JsonMergeOptions } from "./JsonHelpers";
 
 // Functions API
 import { TransformerFunctions } from "./TransformerFunctions";
@@ -36,6 +38,7 @@ import { setCurrentJsonTransformFunction } from "./template/TextTemplateJsonTran
 import ParameterDefaultResolveOptions from "./template/ParameterDefaultResolveOptions";
 import TemplateParameter from "./template/TemplateParameter";
 
+// Dependency Injection
 setCurrentJsonTransformFunction(TextTemplateJsonTransformFunctionInstance);
 
 export {
@@ -48,6 +51,8 @@ export {
   parameterResolverFromMap,
   Transformer,
   RawTransformer,
+  JsonHelpers,
+  JsonMergeOptions,
   TransformerFunctions,
   DebuggableTransformerFunctions,
   ArgType,

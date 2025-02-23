@@ -46,7 +46,8 @@
       "definition": "$$long:$"
     },
     "expect": {
-      "equal": 9223372036854775807
+      "equal": "9223372036854775807",
+      "format": "big-decimal"
     }
   }
 ]

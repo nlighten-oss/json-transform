@@ -1,5 +1,6 @@
 package co.nlighten.jsontransform.adapters;
 
+import java.util.Collection;
 import java.util.stream.Stream;
 
 public abstract class JsonArrayAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
@@ -13,6 +14,16 @@ public abstract class JsonArrayAdapter<JE, JA extends Iterable<JE>, JO extends J
     public abstract void add(JA array, Character value);
     public abstract void add(JA array, JE value);
     public abstract void add(JA array, JA value);
+    public void addAll(JA array, JA other) {
+        if (array instanceof Collection<?> list && other instanceof Collection list2) {
+            list.addAll(list2);
+            return;
+        }
+        for (JE value : other) {
+            add(array, value);
+        }
+    }
+
     public abstract void set(JA array, int index, JE value);
     public abstract JE remove(JA array, int index);
 

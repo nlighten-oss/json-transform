@@ -1,4 +1,4 @@
-import JsonTransformer from "../JsonTransformer";
+import { JsonTransformer } from "../JsonTransformer";
 import { expect } from "vitest";
 
 export const assertTransformation = async (payload: any, definition: any, output: any, additionalContext: any = {}) => {

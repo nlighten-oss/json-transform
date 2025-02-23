@@ -1,0 +1,173 @@
+[
+  {
+    "name": "all new",
+    "given": {
+      "input": {
+        "a": "A"
+      },
+      "definition": {
+        "$$merge": ["$", {
+          "b": "B"
+        }]
+      }
+    },
+    "expect": {
+      "equal": {
+        "a": "A",
+        "b": "B"
+      }
+    }
+  },
+  {
+    "name": "override existing",
+    "given": {
+      "input": {
+        "a": "A",
+        "b": "B"
+      },
+      "definition": {
+        "$$merge": ["$", {
+          "b": "BB"
+        }]
+      }
+    },
+    "expect": {
+      "equal": {
+        "a": "A",
+        "b": "BB"
+      }
+    }
+  },
+  {
+    "name": "override with null",
+    "given": {
+      "input": {
+        "a": "A",
+        "b": "B"
+      },
+      "definition": {
+        "$$merge": ["$", {
+          "b": "#null"
+        }]
+      }
+    },
+    "expect": {
+      "equal": {
+        "a": "A",
+        "b": null
+      }
+    }
+  },
+  {
+    "name": "shallow",
+    "given": {
+      "input": {
+        "a": {
+          "aa": "AA"
+        },
+        "b": "B"
+      },
+      "definition": {
+        "$$merge": ["$", {
+          "a": {
+            "aaa": "AAA"
+          }
+        }]
+      }
+    },
+    "expect": {
+      "equal": {
+        "a": {
+          "aaa": "AAA"
+        },
+        "b": "B"
+      }
+    }
+  },
+  {
+    "name": "deep",
+    "given": {
+      "input": {
+        "a": {
+          "aa": "AA"
+        },
+        "b": "B"
+      },
+      "definition": {
+        "$$merge": ["$", {
+          "a": {
+            "aaa": "AAA"
+          }
+        }],
+        "deep": true
+      }
+    },
+    "expect": {
+      "equal": {
+        "a": {
+          "aa": "AA",
+          "aaa": "AAA"
+        },
+        "b": "B"
+      }
+    }
+  },
+  {
+    "name": "deep and concat arrays",
+    "given": {
+      "input": {
+        "a": {
+          "aa": "AA"
+        },
+        "c": [1, 2]
+      },
+      "definition": {
+        "$$merge": ["$", {
+          "a": {
+            "aaa": "AAA"
+          },
+          "c": [3, 4]
+        }],
+        "deep": true,
+        "arrays": true
+      }
+    },
+    "expect": {
+      "equal": {
+        "a": {
+          "aa": "AA",
+          "aaa": "AAA"
+        },
+        "c": [1, 2, 3, 4]
+      }
+    }
+  },
+  {
+    "name": "concat arrays",
+    "given": {
+      "input": {
+        "a": {
+          "aa": "AA"
+        },
+        "c": [1, 2]
+      },
+      "definition": {
+        "$$merge": ["$", {
+          "a": {
+            "aaa": "AAA"
+          },
+          "c": [3, 4]
+        }],
+        "arrays": true
+      }
+    },
+    "expect": {
+      "equal": {
+        "a": {
+          "aaa": "AAA"
+        },
+        "c": [1, 2, 3, 4]
+      }
+    }
+  }
+]

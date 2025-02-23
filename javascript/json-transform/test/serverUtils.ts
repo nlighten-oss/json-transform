@@ -58,14 +58,7 @@ export const parseBody = (req: IncomingMessage): Promise<any> =>
 export const send = (res: ServerResponse, statusCode: number, headers: Record<string, string>, data?: any) => {
   res.writeHead(statusCode, headers);
   if (typeof data !== "undefined" && headers?.[HEADER_ContentType] === ContentType_JSON) {
-    res.end(
-      JSONBig.stringify(data, (key: string, value: any) => {
-        // omit nulls
-        if (value !== null) {
-          return value;
-        }
-      }),
-    );
+    res.end(JSONBig.stringify(data));
   } else {
     res.end(data);
   }

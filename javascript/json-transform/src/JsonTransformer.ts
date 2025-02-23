@@ -74,7 +74,8 @@ export class JsonTransformer implements Transformer {
     }
 
     let result: Record<string, any> = {};
-    if (Object.prototype.hasOwnProperty.call(definition, JsonTransformer.OBJ_DESTRUCT_KEY)) {
+    var hasObjectDestruction = Object.prototype.hasOwnProperty.call(definition, JsonTransformer.OBJ_DESTRUCT_KEY);
+    if (hasObjectDestruction) {
       const val = definition[JsonTransformer.OBJ_DESTRUCT_KEY];
       const res = await this.fromJsonElement(path + '["*"]', val, resolver, false);
       if (res != null) {
@@ -97,7 +98,13 @@ export class JsonTransformer implements Transformer {
       if (key === JsonTransformer.OBJ_DESTRUCT_KEY) continue;
       const localValue = definition[key];
       if (localValue === JsonTransformer.NULL_VALUE) {
-        delete result[key];
+        if (hasObjectDestruction) {
+          // don't define key if #null was used
+          // might already exist, so try removing it
+          delete result[key];
+        } else {
+          result[key] = null;
+        }
         continue;
       }
       const value = await this.fromJsonElement(path + toObjectFieldPath(key), localValue, resolver, false);

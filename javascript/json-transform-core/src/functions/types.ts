@@ -19,7 +19,6 @@ export enum EmbeddedTransformerFunction {
   eval = "eval", // ?? (it might be possible if we can calculate the containing function, but definitely not always)
   filter = "filter", // #SPECIAL
   find = "find", // #SPECIAL
-  first = "first", // #SPECIAL
   flat = "flat", // #SPECIAL
   flatten = "flatten", // object ??
   form = "form", // string
@@ -43,6 +42,7 @@ export enum EmbeddedTransformerFunction {
   matchall = "matchall", // string[]
   math = "math", // number
   max = "max", // #SPECIAL
+  merge = "merge", // #SPECIAL
   min = "min", // #SPECIAL
   normalize = "normalize", // string
   not = "not", // boolean
@@ -86,15 +86,37 @@ export enum EmbeddedTransformerFunction {
 export const EmbeddedTransformerFunctions = Object.keys(EmbeddedTransformerFunction) as EmbeddedTransformerFunction[];
 
 export type Argument = {
-  name: string;
-  type: string;
+  name: string; // !important for parsing
+  position?: number; // !important for parsing
+  required?: boolean; // !important for parsing
+  default?: any; // !important for parsing
   description?: string;
-  enum?: string[];
-  position?: number;
-  required?: boolean;
-  default?: any;
   $comment?: string;
-};
+} & (
+  | {
+      type:
+        | "boolean"
+        | "string"
+        | "integer"
+        | "long"
+        | "BigDecimal"
+        | "array"
+        | "object"
+        | "transformer"
+        | "string[]"
+        | "any";
+      enum?: undefined;
+      transformerArguments?: undefined;
+    }
+  | {
+      type: "enum";
+      enum: string[];
+    }
+  | {
+      type: "transformer";
+      transformerArguments?: Argument[];
+    }
+);
 
 export type ArgumentCondition = {
   argument: string;
@@ -106,8 +128,28 @@ export type ConditionalOverrides = {
   then: FunctionDescriptor;
 };
 
+export type JsonTransformExample = {
+  name: string;
+  given: {
+    input: any;
+    // big-decimal means that 'input' is written as string but should be parsed as big-decimal
+    inputFormat?: "csv" | "yaml" | "xml" | "big-decimal";
+    definition: any;
+  };
+  expect: {
+    equal?: any;
+    notEqual?: any;
+    isNull?: boolean;
+    length?: number;
+    type?: "array" | "bigint" | "boolean" | "function" | "number" | "object" | "string" | "symbol" | "undefined";
+    ignoreOrder?: boolean;
+    // big-decimal means that 'equal' is written as string but should be parsed as big-decimal
+    format?: "date-time" | "big-decimal" | "url-search-params" | "csv" | "xml" | "yaml";
+  };
+};
+
 export type FunctionDescriptor = {
-  aliasTo?: string;
+  aliases?: string[];
   inputSchema?: Omit<Argument, "name">;
   arguments?: Argument[];
   description: string;
@@ -124,4 +166,5 @@ export type FunctionDescriptor = {
   /** (when outputSchema) Parsed in advance to get all possible paths */
   parsedOutputSchema?: ParsedSchema;
   defaultValues?: Record<string, any>;
+  aliasTo?: string; // filled programmatically
 };

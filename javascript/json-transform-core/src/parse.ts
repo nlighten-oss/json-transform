@@ -324,7 +324,6 @@ class TransformerParser {
       case EmbeddedTransformerFunction.coalesce:
       case EmbeddedTransformerFunction.concat:
       case EmbeddedTransformerFunction.find:
-      case EmbeddedTransformerFunction.first:
       case EmbeddedTransformerFunction.flat: {
         TransformerParser.copyArrayItemTypeOnWalk(value, targetPath, localPath, previousPaths, paths, context);
         if (funcName === EmbeddedTransformerFunction.concat || funcName === EmbeddedTransformerFunction.flat) {
@@ -421,6 +420,22 @@ class TransformerParser {
             TransformerParser.copyArrayItemTypeOnWalk(value, targetPath, localPath, previousPaths, paths, context);
             return true;
         }
+        break;
+      }
+      case EmbeddedTransformerFunction.merge: {
+        //if (args.deep) {
+        // collect all paths from all objects
+        if (Array.isArray(value)) {
+          value.forEach((src: any) => {
+            TransformerParser.parse(src, targetPath, localPath, previousPaths, paths, context);
+          });
+        }
+        /*} else {
+          // TODO: do shallow copy paths
+          value.forEach((src: any) => {
+            TransformerParser.parse(src, targetPath, localPath, previousPaths, paths, context);
+          });
+        }*/
         break;
       }
       case EmbeddedTransformerFunction.partition: {

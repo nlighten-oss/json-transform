@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import JsonTransformer from "../JsonTransformer";
+import { JsonTransformer } from "../JsonTransformer";
 import { assertFailTransformation, assertTransformation } from "./BaseTransformationTest";
 import { TransformerFunctions } from "../TransformerFunctions";
 import TransformerFunction from "../functions/common/TransformerFunction";

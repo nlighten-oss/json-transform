@@ -1,25 +1,13 @@
 {
   "name": "@nlighten/monaco-json-transform",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "JSON Transform language tokenizer (and syntax highlight), hover provider and more",
-  "main": "dist/monaco-json-transform.js",
-  "umd:main": "dist/monaco-json-transform.umd.js",
-  "module": "dist/monaco-json-transform.module.js",
-  "typings": "dist/index.d.ts",
+  "main": "./dist/index.js",
   "source": "src/index.ts",
-  "files": [
-    "dist/"
-  ],
-  "exports": {
-    ".": {
-      "require": "./dist/monaco-json-transform.js",
-      "import": "./dist/monaco-json-transform.module.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
+  "exports": "./dist/index.js",
   "sideEffects": false,
   "scripts": {
-    "build": "microbundle",
+    "build": "tsc --build",
     "test": "echo vitest --no-watch",
     "test:watch": "echo vitest"
   },
@@ -30,6 +18,9 @@
     "type": "git",
     "url": "git+https://github.com/nlighten-oss/json-transform.git"
   },
+  "files": [
+    "dist/"
+  ],
   "keywords": [
     "monaco",
     "monaco-editor",
@@ -51,13 +42,12 @@
   "homepage": "https://github.com/nlighten-oss/json-transform#readme",
   "peerDependencies": {
     "@nlighten/json-schema-utils": "^1.0.3",
-    "@nlighten/json-transform-core": "^1.5.0",
+    "@nlighten/json-transform-core": "^1.6.0",
     "monaco-editor": "^0.51.0"
   },
   "devDependencies": {
     "@nlighten/json-schema-utils": "^1.0.3",
-    "@nlighten/json-transform-core": "^1.5.0",
-    "microbundle": "^0.15.1",
+    "@nlighten/json-transform-core": "^1.6.0",
     "monaco-editor": "^0.51.0",
     "prettier": "3.1.1",
     "typescript": "^5.3.3"

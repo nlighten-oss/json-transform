@@ -593,6 +593,37 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
         return root;
     }
 
+    public record JsonMergeOptions(boolean deep, boolean concatArrays) {}
+
+    public Object merge(Object target, Object source, JsonMergeOptions options) {
+        var iter = this.entrySet(source);
+        if (!jObject.is(target)) {
+            throw new IllegalArgumentException("target is not a Json object");
+        }
+        var targetObj = (JO)target;
+        for (var entry : iter) {
+            var updateKey = entry.getKey();
+            var updateValue = entry.getValue();
+            if (jObject.has(targetObj, updateKey)) {
+                var targetValue = jObject.get(targetObj, updateKey);
+                if (options.concatArrays && jArray.is(targetValue) && jArray.is(updateValue)) {
+                    jArray.addAll((JA)targetValue, (JA)updateValue);
+                } else if (options.deep && jObject.is(targetValue) && jObject.is(updateValue)) {
+                    merge(targetValue, updateValue, options);
+                } else {
+                    jObject.add(targetObj, updateKey, updateValue);
+                }
+            } else {
+                jObject.add(targetObj, updateKey, updateValue);
+            }
+        }
+        return target;
+    }
+
+    public Object merge(Object target, Object source) {
+        return merge(target, source, new JsonMergeOptions(false, false));
+    }
+
     /**
      * Builds a missing paths parent elements. e.g for a path of a.b.c the result would be {@code {a:{b:{c:value}}}}
      *

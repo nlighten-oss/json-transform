@@ -81,3 +81,5 @@ gradle-app.setting
 
 # ignore binaries created by VScode Java plugins
 **/bin/
+
+**/*.tsbuildinfo

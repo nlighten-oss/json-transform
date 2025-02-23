@@ -1,5 +1,5 @@
 import { JSONSchemaUtils } from "@nlighten/json-schema-utils";
-import { Argument, FunctionDescriptor } from "./types";
+import { Argument, EmbeddedTransformerFunction, FunctionDescriptor } from "./types";
 
 const getDefaultValues = (args?: Argument[]) => {
   const defaultValues: Record<string, any> = {};
@@ -17,9 +17,20 @@ const getDefaultValues = (args?: Argument[]) => {
 function parseSchemas<T extends string>(
   functions: Record<T, FunctionDescriptor>,
   custom?: boolean,
-): Record<T, FunctionDescriptor> {
+): Record<string, FunctionDescriptor> {
+  const result = structuredClone(functions) as Record<string, FunctionDescriptor>;
+  const aliasedFunctions: Record<string, FunctionDescriptor> = {};
+
   for (const f in functions) {
-    const func = functions[f];
+    const func = result[f];
+
+    if (func.aliases) {
+      for (let i = 0; i < func.aliases.length; i++) {
+        const aliased = structuredClone(func);
+        aliased.aliasTo = f;
+        aliasedFunctions[func.aliases[i]] = aliased;
+      }
+    }
     if (func.outputSchema) {
       func.parsedOutputSchema = JSONSchemaUtils.parse(func.outputSchema);
     }
@@ -44,7 +55,10 @@ function parseSchemas<T extends string>(
       }
     }
   }
-  return functions;
+  for (const f in aliasedFunctions) {
+    result[f as EmbeddedTransformerFunction] = aliasedFunctions[f];
+  }
+  return result;
 }
 
 export default parseSchemas;

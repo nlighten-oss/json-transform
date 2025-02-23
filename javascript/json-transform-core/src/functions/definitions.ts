@@ -2,20 +2,19 @@ import { EmbeddedTransformerFunction, FunctionDescriptor } from "./types";
 
 export default {
   and: {
-    description: "Evaluates to `true` if all values provided will evaluate to `true` (using the [Truthy logic]).",
-    inputSchema: { type: "array", description: "Values to check" },
+    description: "Evaluates to `true` if all values provided will evaluate to `true` (using the [Truthy logic])",
+    inputSchema: { type: "array", required: true, description: "Values to check" },
     outputSchema: { type: "boolean" },
   },
   at: {
     description: "Retrieves an element from a specific position inside an input array",
-    inputSchema: {
-      type: "array",
-      description: "Array to fetch from",
-    },
+    inputSchema: { type: "array", required: true, description: "Array to fetch from" },
+    outputSchemaTemplate: { type: "object", description: "Same as value at specified index" },
     arguments: [
       {
         name: "index",
-        description: "Index of element to fetch (negative values will be fetch from the end)",
+        description:
+          "The index of element to return, **negative** indices will return element from the end (`-n -> length - n`)",
         type: "integer",
         position: 0,
         required: true,
@@ -24,50 +23,54 @@ export default {
   },
   avg: {
     description: "Returns the average of all values in the array",
-    inputSchema: { type: "array" },
+    inputSchema: { type: "array", required: true, description: "Array to average" },
     outputSchema: { $comment: "BigDecimal", type: "number" },
     arguments: [
       {
         name: "default",
         description: "The default value to use for empty values",
-        type: "bigdecimal",
+        type: "BigDecimal",
         position: 0,
         default: 0.0,
       },
       {
         name: "by",
-        description: "A transformer to extract a property to sum by (using ##current to refer to the current item)",
+        description: "A transformer to extract a property to sum by (using `##current` to refer to the current item)",
         type: "transformer",
         position: 1,
+        default: "##current",
+        transformerArguments: [{ name: "##current", description: "Current element" }],
       },
     ],
   },
   base64: {
     description: "Encode to or decode from base64",
-    inputSchema: { type: "string" },
+    inputSchema: { type: "string", required: true, description: "Value to encode/decode" },
     outputSchema: { type: "string" },
     arguments: [
-      {
-        name: "without_padding",
-        description: "Don\u0027t add padding at the end of the output (The character `\u003d`)",
-        type: "boolean",
-        position: 2,
-        default: false,
-      },
       {
         name: "action",
         description: "Whether to encode or decode input",
         type: "enum",
+        enum: ["ENCODE", "DECODE"],
         position: 0,
         default: "ENCODE",
       },
       {
         name: "rfc",
         description:
-          'Which alphabet to use (BASIC \u003d "The Base64 Alphabet" from RFC-2045, URL \u003d "URL and Filename safe Base64 Alphabet" from RFC-4648, MIME \u003d Same as BASIC but in lines with no more than 76 characters each)',
+          'Which alphabet to use (`BASIC` = "The Base64 Alphabet" from RFC-2045, `URL` = "URL and Filename safe Base64 Alphabet" from RFC-4648, `MIME` = Same as `BASIC` but in lines with no more than 76 characters each)',
         type: "enum",
+        enum: ["BASIC", "URL", "MIME"],
         position: 1,
         default: "BASIC",
+      },
+      {
+        name: "without_padding",
+        description: "Don't add padding at the end of the output (The character `=`)",
+        type: "boolean",
+        position: 2,
+        default: false,
       },
     ],
   },
@@ -79,7 +82,8 @@ export default {
     arguments: [
       {
         name: "style",
-        description: "Style of considering truthy values (JS only relates to string handling; not objects and arrays)",
+        description:
+          "Style of considering truthy values (`JS` only relates to string handling; not objects and arrays)",
         type: "enum",
         enum: ["JAVA", "JS"],
         position: 0,
@@ -88,8 +92,11 @@ export default {
     ],
   },
   coalesce: {
+    aliases: ["first"],
     description: "Returns the first non-null value",
-    inputSchema: { type: "array" },
+    notes: ":::tip\nCoalesce can also be referred to as `$$first` instead of `$$coealesce`\n:::\n",
+    inputSchema: { type: "array", required: true, description: "Array of elements (may include nulls)" },
+    outputSchemaTemplate: { type: "object", description: "Same as first non-null value" },
   },
   concat: {
     description: "Concatenates primary value array with elements or other arrays of elements",
@@ -585,11 +592,6 @@ export default {
       },
     ],
   },
-  first: {
-    description: "Returns the first non-null value",
-    inputSchema: { type: "array" },
-    aliasTo: "coalesce",
-  },
   flat: {
     description:
       "Flatten an array of arrays (non array elements will remain, all `null` elements are removed from result)",
@@ -783,7 +785,7 @@ export default {
         name: "options",
         description:
           "A list of options [by jayway](https://github.com/json-path/JsonPath?tab=readme-ov-file#tweaking-configuration)",
-        type: "arrayofstring",
+        type: "string[]",
         position: 1,
       },
     ],
@@ -919,8 +921,7 @@ export default {
   math: {
     description: "Evaluate a mathematical expression",
     inputSchema: {
-      type: "number",
-      $comment: "BigDecimal",
+      type: "BigDecimal",
       description: "op1 / op / [op1, op, op2] / [op, op1, op2]",
     },
     outputSchema: { $comment: "BigDecimal", type: "number" },
@@ -928,11 +929,11 @@ export default {
       {
         name: "op2",
         description: "Second operand or scale for ROUND/FLOOR/CEIL",
-        type: "bigdecimal",
+        type: "BigDecimal",
         position: 2,
         default: 0.0,
       },
-      { name: "op1", description: "First operand", type: "bigdecimal", position: 0, required: true },
+      { name: "op1", description: "First operand", type: "BigDecimal", position: 0, required: true },
       {
         name: "op",
         description: "",
@@ -968,7 +969,7 @@ export default {
   max: {
     description: "Returns the max of all values in the array",
     inputSchema: { type: "array" },
-    outputSchemaTemplate: { type: "object" },
+    outputSchemaTemplate: { type: "object", description: "Same as value at specified index" },
     arguments: [
       { name: "default", description: "The default value to use for empty values", type: "object", position: 0 },
       {
@@ -987,10 +988,31 @@ export default {
       },
     ],
   },
+  merge: {
+    description: "Merge multiple objects into one. Allows deep merging and array concatenation.",
+    inputSchema: { type: "array", items: { type: "object" } },
+    outputSchema: { type: "object" },
+    arguments: [
+      {
+        name: "deep",
+        description: "Whether to merge objects deeply",
+        type: "boolean",
+        position: 0,
+        default: false,
+      },
+      {
+        name: "arrays",
+        description: "Whether to concatenate arrays",
+        type: "boolean",
+        position: 1,
+        default: false,
+      },
+    ],
+  },
   min: {
     description: "Returns the min of all values in the array",
     inputSchema: { type: "array" },
-    outputSchemaTemplate: { type: "object" },
+    outputSchemaTemplate: { type: "object", description: "Same as value at specified index" },
     arguments: [
       { name: "default", description: "The default value to use for empty values", type: "object", position: 0 },
       {
@@ -1045,6 +1067,7 @@ export default {
         description:
           "Style of considering truthy values (JAVA/JS) (JS only relates to string handling; not objects and arrays)",
         type: "enum",
+        enum: ["JAVA", "JS"],
         position: 0,
         default: "JAVA",
       },
@@ -1052,7 +1075,7 @@ export default {
   },
   numberformat: {
     description: "Formats a number",
-    inputSchema: { $comment: "BigDecimal", type: "number" },
+    inputSchema: { type: "BigDecimal" },
     outputSchema: { type: "string" },
     arguments: [
       {
@@ -1203,18 +1226,18 @@ export default {
     description: "Creates an array with a sequence of numbers starting with `start` up-to `end` in steps of `step`",
     outputSchema: { items: { $comment: "BigDecimal", type: "number" }, type: "array" },
     arguments: [
-      { name: "start", description: "First value", type: "bigdecimal", position: 0, required: true },
+      { name: "start", description: "First value", type: "BigDecimal", position: 0, required: true },
       {
         name: "end",
         description: "Max value to appear in sequence",
-        type: "bigdecimal",
+        type: "BigDecimal",
         position: 1,
         required: true,
       },
       {
         name: "step",
         description: "Step to add on each iteration to the previous value in the sequence",
-        type: "bigdecimal",
+        type: "BigDecimal",
         position: 2,
         default: 1.0,
       },
@@ -1401,7 +1424,7 @@ export default {
       {
         name: "default",
         description: "The default value to use for empty values",
-        type: "bigdecimal",
+        type: "BigDecimal",
         position: 0,
         default: 0.0,
       },
@@ -1652,7 +1675,7 @@ export default {
       {
         name: "force_list",
         description: "Tag names that will always be parsed as arrays",
-        type: "arrayofstring",
+        type: "string[]",
         position: 3,
       },
       {

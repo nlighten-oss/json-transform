@@ -95,7 +95,7 @@ class FunctionsParser {
   }
 
   get(name: string, args?: Record<string, any>) {
-    return this.clientFunctions?.[name] ?? embeddedDefinitions[name as EmbeddedTransformerFunction];
+    return this.clientFunctions?.[name] ?? embeddedDefinitions[name];
   }
 
   getNames() {

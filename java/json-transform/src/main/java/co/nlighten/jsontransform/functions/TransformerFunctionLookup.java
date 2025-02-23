@@ -89,7 +89,7 @@ public class TransformerFunctionLookup extends TransformerFunction {
                     for (var val : matches.values()) {
                         if (!adapter.isJsonObject(val))
                             continue; // edge case - tried to merge with an item which is not an object
-                        merged = adapter.mergeInto(merged, val, null);
+                        merged = adapter.merge(merged, val);
                     }
                     return merged;
                 } else {

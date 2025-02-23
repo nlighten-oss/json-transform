@@ -46,8 +46,7 @@ describe("functions schema detection", () => {
 
     test(`functions - ${funcName} - outputSchema detection`, () => {
       switch (funcName as EmbeddedTransformerFunction) {
-        case EmbeddedTransformerFunction.coalesce:
-        case EmbeddedTransformerFunction.first: {
+        case EmbeddedTransformerFunction.coalesce: {
           const givenTypeMap: Record<string, TypeSchema> = {
             "$.a0": NULL,
             "$.a1": INTEGER,
@@ -386,6 +385,61 @@ describe("functions schema detection", () => {
                 "$.object_str": STRING,
                 "$.object_num": NUMBER,
                 "$.object_bool": BOOLEAN,
+              },
+            }),
+          );
+          break;
+        }
+        case EmbeddedTransformerFunction.merge: {
+          const givenTypeMap: Record<string, TypeSchema> = {
+            "$.a0": OBJECT,
+            "$.a0.id": NUMBER,
+            "$.a0.name": OBJECT,
+            "$.a0.name.first_name": STRING,
+            "$.a1": OBJECT,
+            "$.a1.id": NUMBER,
+            "$.a1.age": INTEGER,
+            "$.a1.name": OBJECT,
+            "$.a1.name.last_name": STRING,
+          };
+          expect(
+            transformerResult(
+              {
+                //inline: `${alias}:$.a0`,
+                object: {
+                  [alias]: ["$.a0", "$.a1"],
+                  deep: true,
+                },
+                object2: {
+                  [alias]: ["$.a0", "$.a1"],
+                },
+              },
+              givenTypeMap,
+            ),
+          ).toStrictEqual(
+            createFlowTraversalResult({
+              paths: {
+                $: {
+                  additionalProperties: false,
+                  properties: {
+                    object: OBJECT,
+                    object2: OBJECT,
+                  },
+                  type: "object",
+                },
+                ...givenTypeMap,
+                "$.object": OBJECT,
+                "$.object.id": NUMBER,
+                "$.object.age": INTEGER,
+                "$.object.name": OBJECT,
+                "$.object.name.first_name": STRING,
+                "$.object.name.last_name": STRING,
+                "$.object2": OBJECT,
+                "$.object2.id": NUMBER,
+                "$.object2.age": INTEGER,
+                "$.object2.name": OBJECT,
+                "$.object2.name.first_name": STRING, // TODO: should not be here
+                "$.object2.name.last_name": STRING,
               },
             }),
           );

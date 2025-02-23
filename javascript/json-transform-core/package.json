@@ -1,22 +1,13 @@
 {
   "name": "@nlighten/json-transform-core",
   "description": "Core types and utilities for handling JSON transformers",
-  "version": "1.5.0",
-  "main": "dist/json-transform-core.js",
-  "umd:main": "dist/json-transform-core.umd.js",
-  "module": "dist/json-transform-core.module.js",
-  "typings": "dist/index.d.ts",
+  "version": "1.6.0",
+  "main": "./dist/index.js",
   "source": "src/index.ts",
-  "exports": {
-    ".": {
-      "require": "./dist/json-transform-core.js",
-      "import": "./dist/json-transform-core.module.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
+  "exports": "./dist/index.js",
   "sideEffects": false,
   "scripts": {
-    "build": "microbundle",
+    "build": "tsc --build",
     "test": "vitest --no-watch",
     "test:watch": "vitest"
   },
@@ -44,7 +35,6 @@
   },
   "devDependencies": {
     "@nlighten/json-schema-utils": "^1.0.3",
-    "microbundle": "^0.15.1",
     "prettier": "3.1.1",
     "typescript": "^5.3.3",
     "vitest": "1.2.2"

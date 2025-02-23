@@ -93,7 +93,8 @@ public class JsonTransformer implements Transformer {
         }
 
         var result = adapter.createObject();
-        if (adapter.has(definition, OBJ_DESTRUCT_KEY)) {
+        var hasObjectDestruction = adapter.has(definition, OBJ_DESTRUCT_KEY);
+        if (hasObjectDestruction) {
             var val = adapter.get(definition, OBJ_DESTRUCT_KEY);
             var res = fromJsonElement(path + "[\"*\"]", val, resolver, false);
             if (res != null) {
@@ -120,9 +121,13 @@ public class JsonTransformer implements Transformer {
             var localKey = kv.getKey();
             var localValue = kv.getValue();
             if (adapter.isJsonString(localValue) && adapter.getAsString(localValue).equals(NULL_VALUE)) {
-                // don't define key if #null was used
-                // might already exist, so try removing it
-                adapter.remove(result, localKey);
+                if (hasObjectDestruction) {
+                    // don't define key if #null was used
+                    // might already exist, so try removing it
+                    adapter.remove(result, localKey);
+                } else {
+                    adapter.add(result, localKey, adapter.jsonNull());
+                }
                 continue;
             }
             var value = fromJsonElement(

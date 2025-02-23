@@ -39,6 +39,7 @@ import TransformerFunctionMatch from "./TransformerFunctionMatch";
 import TransformerFunctionMatchAll from "./TransformerFunctionMatchAll";
 import TransformerFunctionMath from "./TransformerFunctionMath";
 import TransformerFunctionMax from "./TransformerFunctionMax";
+import TransformerFunctionMerge from "./TransformerFunctionMerge";
 import TransformerFunctionMin from "./TransformerFunctionMin";
 import TransformerFunctionNormalize from "./TransformerFunctionNormalize";
 import TransformerFunctionNot from "./TransformerFunctionNot";
@@ -121,6 +122,7 @@ export default {
   matchall: new TransformerFunctionMatchAll(),
   math: new TransformerFunctionMath(),
   max: new TransformerFunctionMax(),
+  merge: new TransformerFunctionMerge(),
   min: new TransformerFunctionMin(),
   normalize: new TransformerFunctionNormalize(),
   not: new TransformerFunctionNot(),
