@@ -12,30 +12,42 @@ With a helper function to register straight to monaco
 ```js
 // `monaco` should be global or local in the loading module
 
-import { registerJQLanguageDefinition } from 'monaco-languages-json-transform';
+import {
+  registerJsonTransformItemCompletionProvider,
+  registerJsonTransformDSTProvider,
+  registerJsonTransformHoverProvider,
+  defineThemeVsDarkCustom,
+} from "@nlighten/monaco-json-transform";
 
 ...
 
-registerJQLanguageDefinition(monaco);
+registerJsonTransformDSTProvider(monaco);
+
+registerJsonTransformItemCompletionProvider(monaco, {
+  getTypeMap: model => { // example
+    const path = model.uri.path;
+    const [, paths] = getSuggestions(path);
+    return paths;
+  },
+  getSuggestions: model => { // example
+    const path = model.uri.path;
+    return getSuggestions(path)[0];
+  },
+});
+
+registerJsonTransformHoverProvider(monaco, {
+  getTypeMap: model => { // example
+    const path = model.uri.path;
+    return getSuggestions(path, true)[1];
+  },
+});
+
+defineThemeVsDarkCustom(monaco);
 ```
 
-DIY (in case you want it to be called some other name):
-```js
-// `monaco` should be global or local in the loading module
 
-import { JQLanguageDefinition } from 'monaco-languages-json-transform';
-
-...
-
-// Register a new language
-monaco.languages.register({ id: 'jq' });
-
-// Register a tokens provider for the language
-monaco.languages.setMonarchTokensProvider('jq', JQLanguageDefinition);
-```
-
-In monaco editor use `"jq"` (or your value if changed) as `language`.
+For syntax highlighting, in monaco editor, use `"vs-dark-custom"` (or your value if changed) as `theme`.
 
 ## License
 
-monaco-languages-json-transform is [MIT Licensed](https://github.com/elisherer/monaco-languages-json-transform/blob/master/LICENSE)
+monaco-json-transform is [MIT Licensed](https://github.com/elisherer/monaco-languages-json-transform/blob/master/LICENSE)

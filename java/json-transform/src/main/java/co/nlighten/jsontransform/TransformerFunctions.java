@@ -44,6 +44,7 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
                 Map.entry("distinct", new TransformerFunctionDistinct()),
                 Map.entry("entries", new TransformerFunctionEntries()),
                 Map.entry("eval",new TransformerFunctionEval()),
+                Map.entry("every",new TransformerFunctionEvery()),
                 Map.entry("filter", new TransformerFunctionFilter()),
                 Map.entry("find", new TransformerFunctionFind()),
                 Map.entry("first", new TransformerFunctionCoalesce()), // * alias for coalesce
@@ -87,6 +88,7 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
                 Map.entry("replace", new TransformerFunctionReplace()),
                 Map.entry("reverse", new TransformerFunctionReverse()),
                 Map.entry("slice", new TransformerFunctionSlice()),
+                Map.entry("some", new TransformerFunctionSome()),
                 Map.entry("sort", new TransformerFunctionSort()),
                 Map.entry("split", new TransformerFunctionSplit()),
                 Map.entry("string", new TransformerFunctionString()),

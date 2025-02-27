@@ -14,7 +14,7 @@ export {
   type FunctionDescriptor,
   EmbeddedTransformerFunction,
   EmbeddedTransformerFunctions,
-  JsonTransformExample,
+  type JsonTransformExample,
 } from "./functions/types";
 
 export { jsonpathJoin } from "./jsonpath/jsonpathJoin";

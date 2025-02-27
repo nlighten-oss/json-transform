@@ -15,7 +15,7 @@ Core types and utilities for handling JSON transformers
   ContextVariablesSchemas: Record<string, TypeSchema>,
   getFunctionInlineSignature:  (name: string, func: FunctionDescriptor, requiredOnly?: boolean) => string,
   getFunctionObjectSignature:  (name: string, func: FunctionDescriptor) => string,
-  functions:  { //Functions,
+  functionsParser:  {
     get(name: string) => FunctionDescriptor,
     getNames() => string[],
     resolveDocsUrl(funcName: string, functionDescriptor ? : FunctionDescriptor) => string,
@@ -33,9 +33,13 @@ Core types and utilities for handling JSON transformers
   },
   parseArgs: (func: FunctionDescriptor, args?: string) => {},
   type Argument,
+  type ArgumentCondition,
+  type ConditionalSubFunction,
+  type FunctionDefinition,
   type FunctionDescriptor,
   EmbeddedTransformerFunction, // enum
   EmbeddedTransformerFunctions: EmbeddedTransformerFunction[],
+  type JsonTransformExample,
   jsonpathJoin: (...args: (string | null | undefined)[]): string,
   JsonPathFunctionRegex: RegExp,
   parseTransformer: (
@@ -51,6 +55,9 @@ Core types and utilities for handling JSON transformers
   },
   type ParseMethod,
   type HandleFunctionMethod,
+  definitions: Record<EmbeddedTransformerFunction, FunctionDefinition>,
+  examples: Record<EmbeddedTransformerFunction, JsonTransformExample>,
+  functions: Record<EmbeddedTransformerFunction, FunctionDescriptor>, 
   transformUtils: { //TransformUtils
     setAdditionalContext: (additionalContext: Set<string>) => void,
     getAdditionalContext: () => Set<string>,

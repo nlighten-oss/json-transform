@@ -570,6 +570,23 @@ export default {
     description: "Evaluates the input and then transforms the context with the expression",
     inputSchema: { type: "any", required: true, description: "Transformer definition" },
   },
+  every: {
+    description: "Checks if all elements in an array satisfy a predicate",
+    usageNotes:
+      ":::info\npredicate `by` should resolve to a `boolean` value, it uses the [truthy logic](../truthy-logic)\n:::",
+    inputSchema: { type: "array", required: true, description: "Array of elements" },
+    outputSchema: { type: "boolean" },
+    arguments: [
+      {
+        name: "by",
+        description: "A predicate transformer for an element",
+        type: "transformer",
+        position: 0,
+        required: true,
+        transformerArguments: [{ name: "##current", type: "any", position: 0, description: "Current element" }],
+      },
+    ],
+  },
   filter: {
     description: "Filter input array to all the elements that satisfy the predicate transformer",
     usageNotes:
@@ -1586,6 +1603,23 @@ export default {
         type: "integer",
         position: 1,
         default: Infinity,
+      },
+    ],
+  },
+  some: {
+    description: "Checks if any elements in an array satisfy a predicate",
+    usageNotes:
+      ":::info\npredicate `by` should resolve to a `boolean` value, it uses the [truthy logic](../truthy-logic)\n:::",
+    inputSchema: { type: "array", required: true, description: "Array of elements" },
+    outputSchema: { type: "boolean" },
+    arguments: [
+      {
+        name: "by",
+        description: "A predicate transformer for an element",
+        type: "transformer",
+        position: 0,
+        required: true,
+        transformerArguments: [{ name: "##current", type: "any", position: 0, description: "Current element" }],
       },
     ],
   },

@@ -14,6 +14,7 @@ import TransformerFunctionDigest from "./TransformerFunctionDigest";
 import TransformerFunctionDistinct from "./TransformerFunctionDistinct";
 import TransformerFunctionEntries from "./TransformerFunctionEntries";
 import TransformerFunctionEval from "./TransformerFunctionEval";
+import TransformerFunctionEvery from "./TransformerFunctionEvery";
 import TransformerFunctionFilter from "./TransformerFunctionFilter";
 import TransformerFunctionFind from "./TransformerFunctionFind";
 import TransformerFunctionFlat from "./TransformerFunctionFlat";
@@ -55,6 +56,7 @@ import TransformerFunctionReduce from "./TransformerFunctionReduce";
 import TransformerFunctionReplace from "./TransformerFunctionReplace";
 import TransformerFunctionReverse from "./TransformerFunctionReverse";
 import TransformerFunctionSlice from "./TransformerFunctionSlice";
+import TransformerFunctionSome from "./TransformerFunctionSome";
 import TransformerFunctionSort from "./TransformerFunctionSort";
 import TransformerFunctionSplit from "./TransformerFunctionSplit";
 import TransformerFunctionString from "./TransformerFunctionString";
@@ -96,6 +98,7 @@ export default {
   distinct: new TransformerFunctionDistinct(),
   entries: new TransformerFunctionEntries(),
   eval: new TransformerFunctionEval(),
+  every: new TransformerFunctionEvery(),
   filter: new TransformerFunctionFilter(),
   find: new TransformerFunctionFind(),
   first: new TransformerFunctionCoalesce(), // * alias for coalesce
@@ -138,6 +141,7 @@ export default {
   replace: new TransformerFunctionReplace(),
   reverse: new TransformerFunctionReverse(),
   slice: new TransformerFunctionSlice(),
+  some: new TransformerFunctionSome(),
   sort: new TransformerFunctionSort(),
   split: new TransformerFunctionSplit(),
   string: new TransformerFunctionString(),

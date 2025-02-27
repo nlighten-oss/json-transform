@@ -17,6 +17,7 @@ export enum EmbeddedTransformerFunction {
   distinct = "distinct", // #SPECIAL
   entries = "entries", // [string, object]][]
   eval = "eval", // ?? (it might be possible if we can calculate the containing function, but definitely not always)
+  every = "every", // boolean
   filter = "filter", // #SPECIAL
   find = "find", // #SPECIAL
   flat = "flat", // #SPECIAL
@@ -58,6 +59,7 @@ export enum EmbeddedTransformerFunction {
   replace = "replace", // string
   reverse = "reverse", // #SPECIAL
   slice = "slice", // #SPECIAL
+  some = "some", // boolean
   sort = "sort", // #SPECIAL
   split = "split", // string[]
   string = "string", // string

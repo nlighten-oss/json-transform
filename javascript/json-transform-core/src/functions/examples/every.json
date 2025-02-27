@@ -1,0 +1,76 @@
+[
+  {
+    "name": "inline - true",
+    "given": {
+      "input": [
+        {
+          "active": true
+        },
+        {
+          "active": true
+        }
+      ],
+      "definition": "$$every(##current.active):$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "inline - false",
+    "given": {
+      "input": [
+        {
+          "active": false
+        },
+        {
+          "active": true
+        }
+      ],
+      "definition": "$$every(##current.active):$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "object - true",
+    "given": {
+      "input": [
+        {
+          "active": true
+        },
+        {
+          "active": true
+        }
+      ],
+      "definition": {
+        "$$every": "$",
+        "by": "##current.active"
+      }
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "object - false",
+    "given": {
+      "input": [
+        {
+          "active": false
+        },
+        {
+          "active": true
+        }
+      ],
+      "definition": {
+        "$$every": "$",
+        "by": "##current.active"
+      }
+    },
+    "expect": {
+      "equal": false
+    }
+  }
+]

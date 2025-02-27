@@ -16,6 +16,7 @@ import _digest from "./examples/digest.json";
 import _distinct from "./examples/distinct.json";
 import _entries from "./examples/entries.json";
 import _eval from "./examples/eval.json";
+import _every from "./examples/every.json";
 import _filter from "./examples/filter.json";
 import _find from "./examples/find.json";
 import _flat from "./examples/flat.json";
@@ -57,6 +58,7 @@ import _reduce from "./examples/reduce.json";
 import _replace from "./examples/replace.json";
 import _reverse from "./examples/reverse.json";
 import _slice from "./examples/slice.json";
+import _some from "./examples/some.json";
 import _sort from "./examples/sort.json";
 import _split from "./examples/split.json";
 import _string from "./examples/string.json";
@@ -98,6 +100,7 @@ export default {
   distinct: _distinct,
   entries: _entries,
   eval: _eval,
+  every: _every,
   filter: _filter,
   find: _find,
   flat: _flat,
@@ -139,6 +142,7 @@ export default {
   replace: _replace,
   reverse: _reverse,
   slice: _slice,
+  some: _some,
   sort: _sort,
   split: _split,
   string: _string,
