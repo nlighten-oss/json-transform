@@ -1,6 +1,6 @@
 {
   "name": "@nlighten/monaco-json-transform",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "JSON Transform language tokenizer (and syntax highlight), hover provider and more",
   "main": "./dist/index.js",
   "source": "src/index.ts",
@@ -42,7 +42,7 @@
   "homepage": "https://github.com/nlighten-oss/json-transform#readme",
   "peerDependencies": {
     "@nlighten/json-schema-utils": "^1.0.3",
-    "@nlighten/json-transform-core": "file://../json-transform-core",
+    "@nlighten/json-transform-core": "^1.7.1",
     "monaco-editor": "^0.51.0"
   },
   "devDependencies": {

@@ -7,7 +7,7 @@
   "private": true,
   "devDependencies": {
     "bignumber.js": "^9.1.2",
-    "@nlighten/json-transform-core": "file:../javascript/json-transform-core",
+    "@nlighten/json-transform-core": "file://../javascript/json-transform-core",
     "@types/json-bigint": "^1.0.4",
     "json-bigint": "^1.0.0",
     "lossless-json": "^4.0.2",
