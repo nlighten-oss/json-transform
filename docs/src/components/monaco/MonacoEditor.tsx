@@ -4,7 +4,7 @@ import Editor, { EditorProps, OnChange, OnMount } from "@monaco-editor/react";
 import { isValidPropertyPath, type TypeSchema } from "@nlighten/json-schema-utils";
 import { transformUtils } from "@nlighten/json-transform-core";
 import { getModel, getMonaco } from "./Monaco.init";
-import {getSuggestions} from "./suggestionsProvider";
+import { getSuggestions } from "./suggestionsProvider";
 
 const glob = window as any;
 
@@ -140,22 +140,22 @@ const MonacoEditor = ({
 
         const iter = line.matchAll(transformUtils.variableDetectionRegExp);
         for (
-            let iterResult = iter.next(), match: RegExpMatchArray | null = iterResult.value;
-            !iterResult.done;
-            iterResult = iter.next(), match = iterResult.value as RegExpMatchArray | null
+          let iterResult = iter.next(), match: RegExpMatchArray | null = iterResult.value;
+          !iterResult.done;
+          iterResult = iter.next(), match = iterResult.value as RegExpMatchArray | null
         ) {
           if (!match || typeof match.index === "undefined") continue;
           const sVar = match[0]
-              .replace(/\["([^"]+)"]/g, ".$1")
-              .replace(/\[\\"([^"]+)\\"]/g, ".$1") // double quotes escaped
-              .replace(/\['([^']+)']/g, ".$1")
-              .replace(/\[[^\]]+]/g, "[]"); // remove indexers
+            .replace(/\["([^"]+)"]/g, ".$1")
+            .replace(/\[\\"([^"]+)\\"]/g, ".$1") // double quotes escaped
+            .replace(/\['([^']+)']/g, ".$1")
+            .replace(/\[[^\]]+]/g, "[]"); // remove indexers
           if (
-              (!match[0] && match[0] !== "") || // Skip if: no var (not empty string)
-              s.includes(match[0]) ||
-              s.includes(sVar) || // var exists (in simple form or original)
-              /\.\.|[=@?:*]/.test(match[0]) || // var is a JSONPath query
-              isValidPropertyPath(sVar, paths)
+            (!match[0] && match[0] !== "") || // Skip if: no var (not empty string)
+            s.includes(match[0]) ||
+            s.includes(sVar) || // var exists (in simple form or original)
+            /\.\.|[=@?:*]/.test(match[0]) || // var is a JSONPath query
+            isValidPropertyPath(sVar, paths)
           )
             continue;
 

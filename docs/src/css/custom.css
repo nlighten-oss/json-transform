@@ -38,8 +38,27 @@
 .examples_grid {
   display: grid;
   grid-template-columns: auto auto auto;
-  gap: 5px;
+  gap: 2px;
   overflow: hidden;
+}
+.examples_grid > div, .examples_grid > p {
+  margin-bottom: 0;
+}
+.examples_grid > div.action {
+  position: relative;
+  text-align: right;
+  overflow: visible;
+  height: 0;
+}
+.examples_grid > div.action.action--hidden > a {
+  display: none;
+}
+.examples_grid > div.action > a {
+  position: absolute;
+  top: -32px;
+  right: 4px;
+  padding: 2px;
+  font-size: 0.8em;
 }
 
 .tester_grid {
@@ -62,6 +81,11 @@
 .examples_grid > div {
   overflow: auto;
   max-height: 500px;
+}
+
+.prism-code > code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .markmap-container {

@@ -10,16 +10,6 @@
     }
   },
   {
-    "name": "uuid - empty uuid",
-    "given": {
-      "input": "a8e41dc6-74c9-42c5-bb03-3bfd623044c5",
-      "definition": "$$uuid():$"
-    },
-    "expect": {
-      "equal": "a8e41dc6-74c9-42c5-bb03-3bfd623044c5"
-    }
-  },
-  {
     "name": "uuid - base36",
     "given": {
       "input": "a8e41dc6-74c9-42c5-bb03-3bfd623044c5",

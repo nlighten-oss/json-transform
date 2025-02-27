@@ -132,10 +132,10 @@ public class TransformerFunctionDate extends TransformerFunction {
                 default -> BigDecimal.valueOf(instant.getEpochSecond());
             };
             case "FORMAT" -> DateTimeFormatter.ofPattern(context.getString("pattern"))
-                    .withZone(ZoneId.of(context.getString("timezone"), ZoneId.SHORT_IDS))
+                    .withZone(ZoneId.of(context.getString("timezone").trim(), ZoneId.SHORT_IDS))
                     .format(instant);
             case "ZONE" -> DateTimeFormatter.ISO_OFFSET_DATE_TIME
-                    .withZone(ZoneId.of(context.getString("zone"), ZoneId.SHORT_IDS))
+                    .withZone(ZoneId.of(context.getString("zone").trim(), ZoneId.SHORT_IDS))
                     .format(instant);
             default -> null;
         };

@@ -1,6 +1,7 @@
 package co.nlighten.jsontransform.adapters.jsonorg;
 
 import co.nlighten.jsontransform.adapters.JsonAdapter;
+import co.nlighten.jsontransform.adapters.JsonAdapterHelpers;
 import co.nlighten.jsontransform.adapters.pojo.PojoMapper;
 import com.jayway.jsonpath.DocumentContext;
 import org.json.*;
@@ -66,19 +67,7 @@ public class JsonOrgJsonAdapter extends JsonAdapter<Object, JSONArray, JSONObjec
 
     @Override
     public Object unwrap(Object value, boolean reduceBigDecimals) {
-        if (JSONObject.NULL.equals(value)) {
-            return null;
-        }
-        if (value instanceof JSONObject jo) {
-            return jo.toMap();
-        }
-        if (value instanceof JSONArray ja) {
-            return ja.toList();
-        }
-        if (value instanceof JSONString ja) {
-            return ja.toString();
-        }
-        return value;
+        return JsonOrgHelpers.unwrap(value, reduceBigDecimals);
     }
 
     @Override

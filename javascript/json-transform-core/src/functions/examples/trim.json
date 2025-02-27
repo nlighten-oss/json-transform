@@ -13,7 +13,7 @@
     "name": "inline - remove leading spaces",
     "given": {
       "input": "  hello  ",
-      "definition": "$$trim(start):$"
+      "definition": "$$trim(START):$"
     },
     "expect": {
       "equal": "hello  "
@@ -32,11 +32,13 @@
   {
     "name": "inline - remove indentation",
     "given": {
-      "input": "             <html> \n                 <body> \n                     <p>Hello, world</ p> \n                 </ body> \n             </ html>",
+      "input": "             <html> \n                 <body> \n                     <p>Hello, world</p> \n                 </body> \n             </html>",
+      "inputFormat": "xml",
       "definition": "$$trim(INDENT):$"
     },
     "expect": {
-      "equal": "<html>\n    <body>\n        <p>Hello, world</ p>\n    </ body>\n</ html>"
+      "equal": "<html>\n    <body>\n        <p>Hello, world</p>\n    </body>\n</html>",
+      "format": "xml"
     }
   }
 ]

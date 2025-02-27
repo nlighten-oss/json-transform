@@ -1,6 +1,6 @@
 [
   {
-    "name": "Inline true",
+    "name": "Inline false",
     "given": {
       "input": true,
       "definition": "$$not:$"
@@ -10,7 +10,27 @@
     }
   },
   {
-    "name": "Inline false",
+    "name": "Inline false (from number)",
+    "given": {
+      "input": 5,
+      "definition": "$$not:$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "Inline false (from string \"true\")",
+    "given": {
+      "input": "true",
+      "definition": "$$not:$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "Inline true",
     "given": {
       "input": false,
       "definition": "$$not:$"
@@ -20,12 +40,20 @@
     }
   },
   {
-    "name": "Object true",
+    "name": "Inline true (from string \"yes\")",
     "given": {
-      "input": true,
-      "definition": {
-        "$$not": "$"
-      }
+      "input": "yes",
+      "definition": "$$not:$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "Inline false JS style (from string \"yes\")",
+    "given": {
+      "input": "yes",
+      "definition": "$$not(JS):$"
     },
     "expect": {
       "equal": false
@@ -34,6 +62,18 @@
   {
     "name": "Object false",
     "given": {
+      "input": true,
+      "definition": {
+        "$$not": "$"
+      }
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "Object true",
+    "given": {
       "input": false,
       "definition": {
         "$$not": "$"
@@ -41,6 +81,19 @@
     },
     "expect": {
       "equal": true
+    }
+  },
+  {
+    "name": "Object false JS style (from string \"yes\")",
+    "given": {
+      "input": "yes",
+      "definition": {
+        "$$not": "$",
+        "style": "JS"
+      }
+    },
+    "expect": {
+      "equal": false
     }
   }
 ]

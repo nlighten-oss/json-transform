@@ -1,6 +1,6 @@
 [
   {
-    "name": "upper (no args)",
+    "name": "upper (inline)",
     "given": {
       "input": "text",
       "definition": "$$upper:$"
@@ -10,10 +10,12 @@
     }
   },
   {
-    "name": "upper (no args, with parentheses)",
+    "name": "upper (object)",
     "given": {
       "input": "text",
-      "definition": "$$upper():$"
+      "definition": {
+        "$$upper": "$"
+      }
     },
     "expect": {
       "equal": "TEXT"

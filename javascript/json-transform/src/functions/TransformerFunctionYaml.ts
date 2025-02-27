@@ -1,6 +1,6 @@
-import yamljs from "yamljs";
 import TransformerFunction from "./common/TransformerFunction";
 import FunctionContext from "./common/FunctionContext";
+import YamlFormat from "../formats/yaml/YamlFormat";
 
 class TransformerFunctionYaml extends TransformerFunction {
   constructor() {
@@ -8,7 +8,7 @@ class TransformerFunctionYaml extends TransformerFunction {
   }
 
   override async apply(context: FunctionContext): Promise<any> {
-    return yamljs.stringify(await context.getUnwrapped(null, true), Infinity, 2);
+    return YamlFormat.INSTANCE.serialize(await context.getUnwrapped(null, true));
   }
 }
 

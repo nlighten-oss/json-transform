@@ -1,32 +1,35 @@
-import {IPureNode} from "markmap-common";
+import { IPureNode } from "markmap-common";
 import { functionsParser } from "@nlighten/json-transform-core";
 
 const valueStringify = (value: any) => {
   return `<b>${JSON.stringify(value)}</b>`;
-}
+};
 const funcStringify = (value: any) => {
   return `<span style="color:var(--markmap-keyword-color)"><i><b>${value}</b></i></span>`;
-}
+};
 
 const isPrimitive = (value: any) => {
-  return (typeof value === "string" && !value.startsWith("$$")) ||
+  return (
+    (typeof value === "string" && !value.startsWith("$$")) ||
     typeof value === "boolean" ||
     typeof value === "number" ||
-    value === null;
-}
+    value === null
+  );
+};
 
 export default function transformerToMarkmap(value: any, key: string): IPureNode {
   const valueIsPrimitive = isPrimitive(value);
-  const node : IPureNode = {
-    content: key === "*" && !valueIsPrimitive
-      ? "*"
-      : valueIsPrimitive
-        ? `${key} = ${valueStringify(value)}`
-        : key.startsWith("$$")
-          ? funcStringify(key)
-          : key,
-    children: []
-  }
+  const node: IPureNode = {
+    content:
+      key === "*" && !valueIsPrimitive
+        ? "*"
+        : valueIsPrimitive
+          ? `${key} = ${valueStringify(value)}`
+          : key.startsWith("$$")
+            ? funcStringify(key)
+            : key,
+    children: [],
+  };
   if (valueIsPrimitive) {
     return node;
   }
@@ -49,10 +52,10 @@ export default function transformerToMarkmap(value: any, key: string): IPureNode
           node.children.push(transformerToMarkmap(foundInlineFunctionValue, ""));
         }
       } else {
-        node.children.push({content: JSON.stringify(value), children: []});
+        node.children.push({ content: JSON.stringify(value), children: [] });
       }
     } else {
-      node.children.push({content: JSON.stringify(value), children: []});
+      node.children.push({ content: JSON.stringify(value), children: [] });
     }
   } else if (Array.isArray(value)) {
     node.children = value.map((item, index) => {

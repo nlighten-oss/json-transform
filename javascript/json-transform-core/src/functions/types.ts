@@ -116,6 +116,10 @@ export type Argument = {
       type: "transformer";
       transformerArguments?: Argument[];
     }
+  | {
+      type: "const"; // for overrides documentation
+      const: any;
+    }
 );
 
 export type ArgumentCondition = {
@@ -123,9 +127,9 @@ export type ArgumentCondition = {
   equals: string;
 };
 
-export type ConditionalOverrides = {
+export type ConditionalSubFunction<T extends FunctionDefinition> = {
   if: ArgumentCondition[]; // AND relationship
-  then: FunctionDescriptor;
+  then: T;
 };
 
 export type JsonTransformExample = {
@@ -148,20 +152,26 @@ export type JsonTransformExample = {
   };
 };
 
-export type FunctionDescriptor = {
+export type FunctionDefinition = {
   aliases?: string[];
   inputSchema?: Omit<Argument, "name">;
   arguments?: Argument[];
   description: string;
   notes?: string;
+  usageNotes?: string;
+  argumentsNotes?: string;
   outputSchema?: TypeSchema;
-  overrides?: ConditionalOverrides[];
+  subfunctions?: ConditionalSubFunction<FunctionDefinition>[];
   /** For documentation purposes when output schema is calculated */
   outputSchemaTemplate?: TypeSchema;
   /** should specify the alternative function that should be used instead **/
   deprecatedInFavorOf?: string;
   /** If set, this function does not alter the type of its primary argument */
   pipedType?: boolean;
+};
+
+export type FunctionDescriptor = Omit<FunctionDefinition, "subfunctions"> & {
+  subfunctions?: ConditionalSubFunction<FunctionDescriptor>[];
   custom?: boolean;
   /** (when outputSchema) Parsed in advance to get all possible paths */
   parsedOutputSchema?: ParsedSchema;

@@ -6,6 +6,9 @@ on:
       - main
     paths:
       - docs/**
+      - javascript/json-transform/**
+      - javascript/json-transform-core/**
+      - javascript/monaco-json-transform/**
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -16,22 +19,68 @@ concurrency:
 
 jobs:
   test-docs:
-    name: Test docs build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+
+      - name: setup json-transform build
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
+          cache: npm
+          cache-dependency-path: ./javascript/json-transform/package-lock.json
+
+      - name: install json-transform dependencies
+        working-directory: ./javascript/json-transform
+        run: npm ci
+
+      - name: build json-transform
+        working-directory: ./javascript/json-transform
+        run: npm run build
+
+      - name: setup json-transform-core build
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: ./javascript/json-transform-core/package-lock.json
+
+      - name: install json-transform-core dependencies
+        working-directory: ./javascript/json-transform-core
+        run: npm ci
+
+      - name: build json-transform-core
+        working-directory: ./javascript/json-transform-core
+        run: npm run build
+
+      - name: setup monaco-json-transform build
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: ./javascript/monaco-json-transform/package-lock.json
+
+      - name: install monaco-json-transform dependencies
+        working-directory: ./javascript/monaco-json-transform
+        run: npm ci
+
+      - name: build monaco-json-transform
+        working-directory: ./javascript/monaco-json-transform
+        run: npm run build
+
+      - name: setup docs build
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
           cache: npm
           cache-dependency-path: ./docs/package-lock.json
 
-      - name: Install dependencies
+      - name: install docs dependencies
         working-directory: ./docs
         run: npm ci
 
-      - name: Test build website
+      - name: build docs
         working-directory: ./docs
         run: npm run build

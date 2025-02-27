@@ -10,16 +10,6 @@
     }
   },
   {
-    "name": "encode (no args, with parenthesis)",
-    "given": {
-      "input": "not url+safe?=x&b=path/path",
-      "definition": "$$urlencode():$"
-    },
-    "expect": {
-      "equal": "not+url%2Bsafe%3F%3Dx%26b%3Dpath%2Fpath"
-    }
-  },
-  {
     "name": "encode (inline text)",
     "given": {
       "input": null,
@@ -41,7 +31,7 @@
   },
   {
     "name": "encode (utf-16)",
-    "skip": true,
+    "skip": ["javascript"],
     "given": {
       "input": "hello+unicode+😀👨‍👩‍👧‍👦🪬",
       "definition": "$$urlencode(UTF-16):$"

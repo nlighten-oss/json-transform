@@ -17,9 +17,27 @@ class CsvFormat implements FormatSerializer, FormatDeserializer {
   private static readonly CARRIAGE_RETURN = "\r".codePointAt(0);
   private static readonly NEW_LINE_WINDOWS = "\r\n";
 
+  /**
+   * Formatter -
+   * if names provided it will use it as header row (unless noHeaders) and expose only those fields (if objects)
+   * if names not provided, it will use the names of the first object and expose all those fields for the rest
+   * Parser -
+   * if names provided it will extract only those fields
+   * if noHeaders is set, it will use these names to map the row values by their indices
+   */
   private readonly names?: string[];
+  /**
+   * When used in formatter, it means the headers row will not be written
+   * When used in parser, it means that the output of parsing will be an array of arrays (unless names is specified)
+   */
   private readonly noHeaders: boolean;
+  /**
+   * Formatting will quote all values
+   */
   private readonly forceQuote: boolean;
+  /**
+   * What separator to format with or expect to parse with
+   */
   private readonly separator: string;
 
   constructor(
@@ -120,34 +138,34 @@ class CsvFormat implements FormatSerializer, FormatDeserializer {
     return sb.toString();
   }
 
-  private accumulate(context: CsvParserContext, result: any[], values: any[]): void {
-    if (result.length === 0 && !context.namesRead && !this.noHeaders) {
+  private accumulate(context: CsvParserContext, results: any[], values: any[]): void {
+    if (results.length === 0 && !context.namesRead && !this.noHeaders) {
       context.names = values;
       context.namesRead = true;
       return;
     }
     if (this.noHeaders && isNullOrUndefined(this.names)) {
-      result.push(values);
+      results.push(values); // set item as an array of values
       return;
     }
+    // there are names, make a map
     if (!isNullOrUndefined(context.names)) {
       const item: Record<string, any> = {};
-      let i = 0;
+      let i: number;
       for (i = 0; i < context.names.length; i++) {
         const name = getAsString(context.names[i]) ?? "";
-        if (
-          (context.extractNames === null || Object.prototype.hasOwnProperty.call(context.extractNames, name)) &&
-          values.length > i
-        ) {
+        if ((isNullOrUndefined(context.extractNames) || context.extractNames.includes(name)) && values.length > i) {
           item[name] = values[i];
         }
       }
+      // TODO: make it conditional
+      // more values than names
       for (; i < values.length; i++) {
         if (!Object.prototype.hasOwnProperty.call(item, `$${i}`)) {
           item[`$${i}`] = values[i];
         }
       }
-      result.push(item);
+      results.push(item);
     }
   }
 
@@ -158,9 +176,7 @@ class CsvFormat implements FormatSerializer, FormatDeserializer {
     const result: any[] = [];
     const context = new CsvParserContext();
     if (this.noHeaders && !isNullOrUndefined(this.names)) {
-      const names: string[] = [];
-      this.names.forEach(item => names.push(item));
-      context.names = names;
+      context.names = this.names.slice();
     }
     context.extractNames = this.names ?? null;
 
@@ -170,6 +186,7 @@ class CsvFormat implements FormatSerializer, FormatDeserializer {
     let offset = 0;
 
     while (offset < len) {
+      // always take current one and next one (offset may skip 1 or 2 depending on char sequence)
       const cur = input.codePointAt(offset) as number;
       const curSize = charCount(cur);
       const next = offset + curSize < len ? (input.codePointAt(offset + curSize) as number) : -1;
@@ -203,6 +220,7 @@ class CsvFormat implements FormatSerializer, FormatDeserializer {
           cell.append(CsvFormat.DOUBLE_QUOTES);
           offset += curAndNextSize;
         } else if (cell.length === 0) {
+          // consider only the first one
           context.inQuotes = !context.inQuotes;
           offset += curSize;
         } else {
@@ -213,6 +231,7 @@ class CsvFormat implements FormatSerializer, FormatDeserializer {
         context.inQuotes = !context.inQuotes;
         offset += curSize;
       } else if (!context.inQuotes && (cur === 32 || cur === 9)) {
+        // ignore
         offset += curSize;
       } else {
         cell.append(String.fromCodePoint(cur));

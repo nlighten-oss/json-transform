@@ -1,6 +1,6 @@
 [
   {
-    "name": "lower (no args)",
+    "name": "lower (inline)",
     "given": {
       "input": "TEXT",
       "definition": "$$lower:$"
@@ -10,10 +10,12 @@
     }
   },
   {
-    "name": "lower (no args, with parentheses)",
+    "name": "lower (object)",
     "given": {
       "input": "TEXT",
-      "definition": "$$lower():$"
+      "definition": {
+        "$$lower": "$"
+      }
     },
     "expect": {
       "equal": "text"

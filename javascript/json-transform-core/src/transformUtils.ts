@@ -1,5 +1,5 @@
 import { TypeSchema } from "@nlighten/json-schema-utils";
-import { ContextVariablesSchemas } from "./functions/context";
+import { ContextVariablesSchemas } from "./functions/ContextVariablesSchemas";
 
 class TransformUtils {
   private additionalContext: Set<string>;

@@ -10,26 +10,6 @@
     }
   },
   {
-    "name": "testInlineFunctionSplit - split with empty delimiter",
-    "given": {
-      "input": "hello world",
-      "definition": "$$split():$"
-    },
-    "expect": {
-      "equal": ["h", "e", "l", "l", "o", " ", "w", "o", "r", "l", "d"]
-    }
-  },
-  {
-    "name": "testInlineFunctionSplit - split by space",
-    "given": {
-      "input": "hello world",
-      "definition": "$$split( ):$"
-    },
-    "expect": {
-      "equal": ["hello", "world"]
-    }
-  },
-  {
     "name": "testInlineFunctionSplit - split by single space character",
     "given": {
       "input": "hello world",

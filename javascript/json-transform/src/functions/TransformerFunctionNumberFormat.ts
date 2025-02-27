@@ -113,6 +113,7 @@ class TransformerFunctionNumberFormat extends TransformerFunction {
         grouping: { type: ArgType.String, position: 3, defaultIsNull: true },
         decimal: { type: ArgType.String, position: 4, defaultIsNull: true },
         radix: { type: ArgType.Integer, position: 1, defaultInteger: 10 },
+        currency: { type: ArgType.String, position: 2, defaultIsNull: true },
       },
     });
     const [format] = parsePattern("#,##0.000");

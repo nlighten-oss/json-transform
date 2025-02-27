@@ -10,16 +10,6 @@
     }
   },
   {
-    "name": "inline - empty parentheses",
-    "given": {
-      "input": "text",
-      "definition": "$$string():$"
-    },
-    "expect": {
-      "equal": "text"
-    }
-  },
-  {
     "name": "inline - string with quotes",
     "given": {
       "input": "text",

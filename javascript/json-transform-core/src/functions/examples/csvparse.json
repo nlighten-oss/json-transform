@@ -3,6 +3,7 @@
     "name": "Inline - parse CSV with comma as a value",
     "given": {
       "input": "a\n\",\"",
+      "inputFormat": "csv",
       "definition": "$$csvparse:$"
     },
     "expect": {
@@ -17,6 +18,7 @@
     "name": "Inline - parse CSV with escaped double quotes",
     "given": {
       "input": "a\n\"\"\"\"",
+      "inputFormat": "csv",
       "definition": "$$csvparse:$"
     },
     "expect": {
@@ -31,6 +33,7 @@
     "name": "Inline - parse CSV into array format",
     "given": {
       "input": "1,2\n3,4",
+      "inputFormat": "csv",
       "definition": "$$csvparse(true):$"
     },
     "expect": {
@@ -44,6 +47,7 @@
     "name": "Object - parse CSV with comma as a value",
     "given": {
       "input": "a\n\",\"",
+      "inputFormat": "csv",
       "definition": {
         "$$csvparse": "$"
       }
@@ -60,6 +64,7 @@
     "name": "Object - parse CSV with escaped double quotes",
     "given": {
       "input": "a\n\"\"\"\"",
+      "inputFormat": "csv",
       "definition": {
         "$$csvparse": "$"
       }
@@ -69,6 +74,23 @@
         {
           "a": "\""
         }
+      ]
+    }
+  },
+  {
+    "name": "Object - parse CSV with escaped double quotes",
+    "given": {
+      "input": "1,2\n3,4",
+      "inputFormat": "csv",
+      "definition": {
+        "$$csvparse": "$",
+        "no_headers": true
+      }
+    },
+    "expect": {
+      "equal": [
+        ["1","2"],
+        ["3","4"]
       ]
     }
   }

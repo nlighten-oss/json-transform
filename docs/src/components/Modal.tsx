@@ -6,13 +6,13 @@ import styles from "./Modal.module.css";
 const modalRoot = document.body;
 
 const Modal = ({
-                 className,
-                 contentClassName,
-                 onRequestClose,
-                 title,
-                 children,
-                 hideTitle,
-               }: {
+  className,
+  contentClassName,
+  onRequestClose,
+  title,
+  children,
+  hideTitle,
+}: {
   className?: string;
   contentClassName?: string;
   onRequestClose: () => any;

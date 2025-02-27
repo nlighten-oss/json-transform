@@ -1,5 +1,73 @@
 [
   {
+    "name": "Inline XOR - false",
+    "given": {
+      "input": [
+        true,
+        true,
+        false
+      ],
+      "definition": "$$xor:$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "Inline XOR - true",
+    "given": {
+      "input": [
+        true,
+        false,
+        false
+      ],
+      "definition": "$$xor:$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "Inline XOR - both null, 0",
+    "given": {
+      "input": [null,0],
+      "definition": "$$xor:$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "Inline XOR - both 1",
+    "given": {
+      "input": [1,1],
+      "definition": "$$xor:$"
+    },
+    "expect": {
+      "equal": false
+    }
+  },
+  {
+    "name": "Inline XOR - first 1, second 0",
+    "given": {
+      "input": [1,0],
+      "definition": "$$xor:$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
+    "name": "Inline XOR - first 1, second null",
+    "given": {
+      "input": [1,null],
+      "definition": "$$xor:$"
+    },
+    "expect": {
+      "equal": true
+    }
+  },
+  {
     "name": "XOR - first equals 2, second equals 3 (both true)",
     "given": {
       "input": [2,3],
@@ -90,46 +158,6 @@
       "definition": {
         "$$xor": ["$[0]", "$[1]"]
       }
-    },
-    "expect": {
-      "equal": true
-    }
-  },
-  {
-    "name": "Inline XOR - both null, 0",
-    "given": {
-      "input": [null,0],
-      "definition": "$$xor:$"
-    },
-    "expect": {
-      "equal": false
-    }
-  },
-  {
-    "name": "Inline XOR - both 1",
-    "given": {
-      "input": [1,1],
-      "definition": "$$xor:$"
-    },
-    "expect": {
-      "equal": false
-    }
-  },
-  {
-    "name": "Inline XOR - first 1, second 0",
-    "given": {
-      "input": [1,0],
-      "definition": "$$xor:$"
-    },
-    "expect": {
-      "equal": true
-    }
-  },
-  {
-    "name": "Inline XOR - first 1, second null",
-    "given": {
-      "input": [1,null],
-      "definition": "$$xor:$"
     },
     "expect": {
       "equal": true

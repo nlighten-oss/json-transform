@@ -2,6 +2,7 @@ package co.nlighten.jsontransform.formats.yaml;
 
 import co.nlighten.jsontransform.MultiAdapterBaseTest;
 import co.nlighten.jsontransform.adapters.JsonAdapter;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -85,5 +86,39 @@ items:
         var result = new YamlFormat(adapter).deserialize(outputYaml);
         // check that reconstructed correctly
         assertEquals(adapter, inputJsonElement, result);
+    }
+
+    @ParameterizedTest()
+    @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
+    void simpleExample(JsonAdapter<?,?,?> adapter) {
+        // get JSON as JsonElement
+        var inputJsonElement = adapter.parse("""
+                {
+                  "a": "1",
+                  "b": [
+                    "B",
+                    2
+                  ],
+                  "c": true,
+                  "d": {
+                    "e": [
+                      "E",
+                      "800"
+                    ]
+                  }
+                }""");
+        // convert to YAML and back to JsonElement
+        var outputYaml = new YamlFormat(adapter).serialize(inputJsonElement);
+        Assertions.assertEquals("""
+a: '1'
+b:
+  - B
+  - 2
+c: true
+d:
+  e:
+    - E
+    - '800'
+""", outputYaml);
     }
 }

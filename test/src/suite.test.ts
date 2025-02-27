@@ -6,7 +6,7 @@ import {ImplsByLang} from "./implementations";
 import { examples, JsonTransformExample } from "@nlighten/json-transform-core"
 import {EmbeddedTransformerFunction} from "@nlighten/json-transform-core/src";
 
-const language = process.env.IMPL_LANG ?? "javascript";
+const language = process.env.IMPL_LANG ?? "java";
 
 const testsFolder = __dirname + "/../tests";
 const EXAMPLES_FOLDER = "functions";
@@ -32,9 +32,12 @@ describe.each(ImplsByLang[language])('%s', implementation => {
   describe.each(testsSubfolders)('%s', folder => {
     describe.each(getFolderTestFiles(folder))('$name', ({ file }) => {
       const fileTests = getTestsFileContents(folder, file)
-        .map((t: any, i: number) => [i + 1, (t.skip ? "[SKIPPED] " : "") + t.name, t]) as [number, string, any]
-      test.for(fileTests)("%i. %s", ([i, n, t], ctx) => {
-        if (t.skip === true || (Array.isArray(t.skip) && t.skip.includes(implementation))) {
+        .map((t: any, i: number) => {
+          const skipThisTest = t.skip === true || (Array.isArray(t.skip) && t.skip.includes(implementation));
+          return [i + 1, (skipThisTest ? "[SKIPPED] " : "") + t.name, t, skipThisTest]
+        }) as [number, string, any, boolean]
+      test.for(fileTests)("%i. %s", ([i, n, t, skip], ctx) => {
+        if (skip) {
           console.warn("Skipping test: " + t.skip);
           //ctx.skip();
           return;

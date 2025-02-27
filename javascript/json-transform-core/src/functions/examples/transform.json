@@ -27,6 +27,25 @@
     }
   },
   {
+    "name": "object - transformation with split function",
+    "given": {
+      "input": "a,b",
+      "definition": {
+        "$$transform": "$$split(','):$",
+        "to": {
+          "left": "##current[0]",
+          "right": "##current[1]"
+        }
+      }
+    },
+    "expect": {
+      "equal":{
+        "left": "a",
+        "right": "b"
+      }
+    }
+  },
+  {
     "name": "inline - transformation with split function",
     "given": {
       "input": "ab",

@@ -1,6 +1,11 @@
 name: JavaScript json-transform-core Test
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - javascript/json-transform-core/**
   pull_request:
     branches:
       - main
@@ -18,16 +23,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: setup json-transform-core build
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           cache: npm
           cache-dependency-path: ./javascript/json-transform-core/package-lock.json
 
-      - name: Install dependencies
+      - name: install json-transform-core dependencies
         working-directory: ./javascript/json-transform-core
         run: npm ci
 
-      - name: Run tests
+      - name: test json-transform-core
         working-directory: ./javascript/json-transform-core
         run: npm test

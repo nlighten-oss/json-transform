@@ -663,12 +663,12 @@ describe("functions schema detection", () => {
         }
         // static output schema
         default: {
-          if (func.overrides) {
+          if (func.subfunctions) {
             // static conditional
             const paramName = func.arguments?.find(p => p.position === 0)?.name ?? "";
             const expected: Record<string, TypeSchema> = {};
             const outputProperties: Record<string, TypeSchema> = {};
-            const transformer = func.overrides.reduce((a, kv) => {
+            const transformer = func.subfunctions.reduce((a, kv) => {
               const argValue = kv.if[0].equals; // TODO: this is not generic
               a["inline_" + argValue] = `${alias}(${argValue}):irrelevant`;
               a["object_" + argValue] = {
@@ -701,8 +701,9 @@ describe("functions schema detection", () => {
               }
               return a;
             }, {} as any);
-            expect(transformerResult(transformer)).toStrictEqual(
-              createFlowTraversalResult({
+            expect({ transformer, result: transformerResult(transformer) }).toStrictEqual({
+              transformer,
+              result: createFlowTraversalResult({
                 paths: {
                   $: {
                     additionalProperties: false,
@@ -712,7 +713,7 @@ describe("functions schema detection", () => {
                   ...expected,
                 },
               }),
-            );
+            });
             break;
           }
 

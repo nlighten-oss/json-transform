@@ -64,7 +64,7 @@ public class JacksonJsonAdapter extends JsonAdapter<JsonNode, ArrayNode, ObjectN
     @Override
     public JsonNode parse(String value) {
         var provider = jsonPathConfiguration.jsonProvider();
-        if (value != null && value.startsWith("'") && value.endsWith("'") && value.length() > 2) {
+        if (value != null && value.startsWith("'") && value.endsWith("'") && value.length() >= 2) {
             return (JsonNode) provider.parse(
                 JsonAdapterHelpers.singleQuotedStringToDoubleQuoted(value)
             );

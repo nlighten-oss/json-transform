@@ -53,7 +53,7 @@ public class TransformerFunctionNumberFormat extends TransformerFunction {
                     resolvedLocale,
                     NumberFormat.Style.valueOf(context.getEnum("compact_style"))
                 );
-            default -> NumberFormat.getNumberInstance();
+            default -> NumberFormat.getNumberInstance(FunctionHelpers.DEFAULT_LOCALE);
         };
         return formatter.format(input);
     }

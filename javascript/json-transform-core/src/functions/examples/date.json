@@ -180,13 +180,13 @@
     }
   },
   {
-    "name": "timezoneError with space",
+    "name": "timezoneError with spaces",
     "given": {
-      "input": " +01:00",
+      "input": " +01:00 ",
       "definition": "$$date(ZONE,$):2023-01-01T00:00:00Z"
     },
     "expect": {
-      "isEmpty": true
+      "equal": "2023-01-01T01:00:00+01:00"
     }
   },
   {
@@ -206,7 +206,7 @@
       "definition": "$$date(add):$"
     },
     "expect": {
-      "isEmpty": true
+      "isNull": true
     }
   },
   {

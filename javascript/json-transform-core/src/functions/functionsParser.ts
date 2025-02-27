@@ -1,9 +1,14 @@
-import { Argument, EmbeddedTransformerFunction, EmbeddedTransformerFunctions, FunctionDescriptor } from "./types";
-import parseSchemas from "./parseSchemas";
+import {
+  Argument,
+  EmbeddedTransformerFunction,
+  EmbeddedTransformerFunctions,
+  FunctionDefinition,
+  FunctionDescriptor,
+} from "./types";
+import parseDefinitions from "./parseDefinitions";
 import { HandleFunctionMethod } from "../ParseContext";
 import definitions from "./definitions";
-
-const embeddedDefinitions = parseSchemas(definitions);
+import functions from "./functions";
 
 type ObjectFunctionMatchResult = {
   name: string;
@@ -80,11 +85,11 @@ class FunctionsParser {
   }
 
   setClientFunctions(
-    clientFunctions: Record<string, FunctionDescriptor>,
+    clientFunctions: Record<string, FunctionDefinition>,
     handler?: HandleFunctionMethod,
     docsUrlResolver?: (funcName: string) => string,
   ) {
-    this.clientFunctions = parseSchemas(clientFunctions, true);
+    this.clientFunctions = parseDefinitions(clientFunctions, true);
     this.clientDocsUrlResolver = docsUrlResolver;
     this.allFunctionsNames = Object.keys(clientFunctions).concat(EmbeddedTransformerFunctions).sort();
 
@@ -95,7 +100,7 @@ class FunctionsParser {
   }
 
   get(name: string, args?: Record<string, any>) {
-    return this.clientFunctions?.[name] ?? embeddedDefinitions[name];
+    return this.clientFunctions?.[name] ?? functions[name];
   }
 
   getNames() {
@@ -131,10 +136,10 @@ class FunctionsParser {
     const funcName = m[1] as EmbeddedTransformerFunction;
     let func = functionsParser.get(funcName);
     if (!func) return null;
-    if (func.overrides || callback) {
+    if (func.subfunctions || callback) {
       const argsWithoutParenthesis = m[3];
       const args = parseArgs(func, argsWithoutParenthesis);
-      func = getOverriddenFunction(func, args);
+      func = getSubfunction(func, args);
       if (callback) {
         const inlineFunctionValue = m[5];
         callback(funcName, func, inlineFunctionValue, args);
@@ -153,7 +158,7 @@ class FunctionsParser {
           const match = this.matchObject(value, true);
           if (match) return match;
         }
-        const func = getOverriddenFunction(this.get(funcName), data);
+        const func = getSubfunction(this.get(funcName), data);
         return {
           name: funcName,
           func,
@@ -200,15 +205,15 @@ export const parseArgs = (func: FunctionDescriptor, args?: string) => {
       );
 };
 
-export const getOverriddenFunction = (func: FunctionDescriptor, args?: Record<string, any>) => {
-  if (!func.overrides || !args) return func;
-  for (const override of func.overrides) {
+export const getSubfunction = (func: FunctionDescriptor, args?: Record<string, any>) => {
+  if (!func.subfunctions || !args) return func;
+  for (const subFunc of func.subfunctions) {
     if (
-      override.if.every(
-        c => (args[c.argument] ?? override.then.defaultValues?.[c.argument])?.toString().toUpperCase() === c.equals,
+      subFunc.if.every(
+        c => (args[c.argument] ?? subFunc.then.defaultValues?.[c.argument])?.toString().toUpperCase() === c.equals,
       )
     ) {
-      return override.then; // replace func instance based on args
+      return subFunc.then; // replace func instance based on args
     }
   }
   return func;

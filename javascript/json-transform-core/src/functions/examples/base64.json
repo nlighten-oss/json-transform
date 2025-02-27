@@ -2,408 +2,267 @@
   {
     "name": "inline encode (no arguments)",
     "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
+      "input": "test{?}<>!",
       "definition": "$$base64:$"
     },
     "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ="
+      "equal": "dGVzdHs/fTw+IQ=="
     }
   },
   {
-    "name": "inline encode (no arguments, with parenthesis)",
+    "name": "inline encode (e for ENCODE)",
     "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
-      "definition": "$$base64():$"
+      "input": "test{?}<>!",
+      "definition": "$$base64(e):$"
     },
     "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ="
+      "equal": "dGVzdHs/fTw+IQ=="
     }
   },
   {
-    "name": "inline encode (encode arg)",
+    "name": "inline encode (e,BASIC,false,UTF-16)",
     "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
-      "definition": "$$base64(encode):$"
+      "input": "test{?}<>!",
+      "definition": "$$base64(e,BASIC,false,UTF-16):$"
     },
     "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ="
+      "equal": "/v8AdABlAHMAdAB7AD8AfQA8AD4AIQ=="
     }
   },
   {
-    "name": "inline encode (enc arg)",
+    "name": "inline encode (e,BASIC,true)",
     "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
-      "definition": "$$base64(enc):$"
+      "input": "test{?}<>!",
+      "definition": "$$base64(e,BASIC,true):$"
     },
     "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ="
+      "equal": "dGVzdHs/fTw+IQ"
     }
   },
   {
-    "name": "inline encode (e, Basic)",
+    "name": "inline encode (e,URL)",
     "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
-      "definition": "$$base64(e,Basic):$"
+      "input": "test{?}<>!",
+      "definition": "$$base64(e,URL):$"
     },
     "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ="
+      "equal": "dGVzdHs_fTw-IQ=="
     }
   },
   {
-    "name": "inline encode (e,b)",
+    "name": "inline encode (e,URL,true)",
     "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
-      "definition": "$$base64(e,b):$"
+      "input": "test{?}<>!",
+      "definition": "$$base64(e,URL,true):$"
     },
     "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ="
+      "equal": "dGVzdHs_fTw-IQ"
     }
   },
   {
-    "name": "inline encode (ENCODE,BASIC,false,UTF-16)",
+    "name": "inline encode (e,MIME)",
     "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
-      "definition": "$$base64(ENCODE,BASIC,false,UTF-16):$"
+      "input": "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "definition": "$$base64(e,MIME):$"
     },
     "expect": {
-      "equal": "/v8AaABlAGwAbABvAC0AdwBvAHIAbABkACwAaABlAGwAbABvAC0AdwBvAHIAbABkACwAaABlAGwAbABvAC0AdwBvAHIAbABkACwAaABlAGwAbABvAC0AdwBvAHIAbABkACwAaABlAGwAbABvAC0AdwBvAHIAbABk"
+      "equal": "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXowMTIzNDU2Nzg5QUJDREVGR0hJSktMTU5PUFFSU1RV\r\nVldYWVo="
     }
   },
   {
-    "name": "inline encode (e,b,true)",
+    "name": "inline encode (e,MIME,true)",
     "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
-      "definition": "$$base64(e,b,true):$"
+      "input": "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "definition": "$$base64(e,MIME,true):$"
     },
     "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ"
-    }
-  },
-  {
-    "name": "inline encode (e,url)",
-    "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
-      "definition": "$$base64(e,url):$"
-    },
-    "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ="
-    }
-  },
-  {
-    "name": "inline encode (e,u)",
-    "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
-      "definition": "$$base64(e,u):$"
-    },
-    "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ="
-    }
-  },
-  {
-    "name": "inline encode (e,u,true)",
-    "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
-      "definition": "$$base64(e,u,true):$"
-    },
-    "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ"
-    }
-  },
-  {
-    "name": "inline encode (E,Mime)",
-    "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
-      "definition": "$$base64(E,Mime):$"
-    },
-    "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29y\r\nbGQ="
-    }
-  },
-  {
-    "name": "inline encode (e,m)",
-    "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
-      "definition": "$$base64(e,m):$"
-    },
-    "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29y\r\nbGQ="
-    }
-  },
-  {
-    "name": "inline encode (e,m,true)",
-    "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
-      "definition": "$$base64(e,m,true):$"
-    },
-    "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29y\r\nbGQ"
+      "equal": "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXowMTIzNDU2Nzg5QUJDREVGR0hJSktMTU5PUFFSU1RV\r\nVldYWVo"
     }
   },
   {
     "name": "object encode (no arguments)",
     "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
+      "input": "test{?}<>!",
       "definition": {
         "$$base64": "$"
       }
     },
     "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ="
+      "equal": "dGVzdHs/fTw+IQ=="
     }
   },
   {
-    "name": "object encode (action=encode)",
+    "name": "object encode (action=ENCODE)",
     "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
+      "input": "test{?}<>!",
       "definition": {
         "$$base64": "$",
-        "action": "encode"
+        "action": "ENCODE"
       }
     },
     "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ="
+      "equal": "dGVzdHs/fTw+IQ=="
     }
   },
   {
-    "name": "object encode (action=enc)",
+    "name": "object encode (action=ENCODE,rfc=BASIC)",
     "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
+      "input": "test{?}<>!",
       "definition": {
         "$$base64": "$",
-        "action": "enc"
-      }
-    },
-    "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ="
-    }
-  },
-  {
-    "name": "object encode (action=encode,rfc=BASIC)",
-    "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
-      "definition": {
-        "$$base64": "$",
-        "action": "encode",
+        "action": "ENCODE",
         "rfc": "BASIC"
       }
     },
     "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ="
-    }
-  },
-  {
-    "name": "object encode (action=encode,rfc=B)",
-    "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
-      "definition": {
-        "$$base64": "$",
-        "action": "encode",
-        "rfc": "B"
-      }
-    },
-    "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ="
+      "equal": "dGVzdHs/fTw+IQ=="
     }
   },
   {
     "name": "object encode (charset=UTF-16)",
     "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
+      "input": "test{?}<>!",
       "definition": {
         "$$base64": "$",
         "charset": "UTF-16"
       }
     },
     "expect": {
-      "equal": "/v8AaABlAGwAbABvAC0AdwBvAHIAbABkACwAaABlAGwAbABvAC0AdwBvAHIAbABkACwAaABlAGwAbABvAC0AdwBvAHIAbABkACwAaABlAGwAbABvAC0AdwBvAHIAbABkACwAaABlAGwAbABvAC0AdwBvAHIAbABk"
+      "equal": "/v8AdABlAHMAdAB7AD8AfQA8AD4AIQ=="
     }
   },
   {
-    "name": "object encode (action=e,rfc=B,without_padding=true)",
+    "name": "object encode (without_padding=true)",
     "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
+      "input": "test{?}<>!",
       "definition": {
         "$$base64": "$",
-        "action": "e",
-        "rfc": "B",
         "without_padding": true
       }
     },
     "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ"
+      "equal": "dGVzdHs/fTw+IQ"
     }
   },
   {
-    "name": "object encode (action=e,rfc=url)",
+    "name": "object encode (rfc=URL)",
     "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
+      "input": "test{?}<>!",
       "definition": {
         "$$base64": "$",
-        "action": "e",
-        "rfc": "url"
+        "rfc": "URL"
       }
     },
     "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ="
+      "equal": "dGVzdHs_fTw-IQ=="
     }
   },
   {
-    "name": "object encode (action=e,rfc=u)",
+    "name": "object encode (rfc=URL,without_padding=true)",
     "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
+      "input": "test{?}<>!",
       "definition": {
         "$$base64": "$",
-        "action": "e",
-        "rfc": "u"
-      }
-    },
-    "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ="
-    }
-  },
-  {
-    "name": "object encode (action=e,rfc=U,without_padding=true)",
-    "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
-      "definition": {
-        "$$base64": "$",
-        "action": "e",
-        "rfc": "U",
+        "rfc": "URL",
         "without_padding": true
       }
     },
     "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ"
+      "equal": "dGVzdHs_fTw-IQ"
     }
   },
   {
-    "name": "object encode (action=e,rfc=Mime)",
+    "name": "object encode (rfc=MIME)",
     "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
+      "input": "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",
       "definition": {
         "$$base64": "$",
-        "action": "e",
-        "rfc": "Mime"
+        "rfc": "MIME"
       }
     },
     "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29y\r\nbGQ="
+      "equal": "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXowMTIzNDU2Nzg5QUJDREVGR0hJSktMTU5PUFFSU1RV\r\nVldYWVo="
     }
   },
   {
-    "name": "object encode (action=e,rfc=M)",
+    "name": "object encode (rfc=MIME,without_padding=true)",
     "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
+      "input": "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",
       "definition": {
         "$$base64": "$",
-        "action": "e",
-        "rfc": "M"
-      }
-    },
-    "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29y\r\nbGQ="
-    }
-  },
-  {
-    "name": "object encode (action=e,rfc=M,without_padding=true)",
-    "given": {
-      "input": "hello-world,hello-world,hello-world,hello-world,hello-world",
-      "definition": {
-        "$$base64": "$",
-        "action": "e",
-        "rfc": "M",
+        "rfc": "MIME",
         "without_padding": true
       }
     },
     "expect": {
-      "equal": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29y\r\nbGQ"
+      "equal": "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXowMTIzNDU2Nzg5QUJDREVGR0hJSktMTU5PUFFSU1RV\r\nVldYWVo"
     }
   },
   {
-    "name": "inline decode ('Decode',b)",
+    "name": "inline decode (DECODE)",
     "given": {
-      "input": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ=",
-      "definition": "$$base64('Decode',b):$"
+      "input": "dGVzdHs/fTw+IQ==",
+      "definition": "$$base64(DECODE):$"
     },
     "expect": {
-      "equal": "hello-world,hello-world,hello-world,hello-world,hello-world"
+      "equal": "test{?}<>!"
     }
   },
   {
-    "name": "inline decode (decode,b)",
+    "name": "inline decode (d,URL)",
     "given": {
-      "input": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ=",
-      "definition": "$$base64(decode,b):$"
+      "input": "dGVzdHs_fTw-IQ==",
+      "definition": "$$base64(d,URL):$"
     },
     "expect": {
-      "equal": "hello-world,hello-world,hello-world,hello-world,hello-world"
+      "equal": "test{?}<>!"
     }
   },
   {
-    "name": "inline decode (d,b)",
+    "name": "inline decode (d,URL) without padding",
     "given": {
-      "input": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ",
-      "definition": "$$base64(d,b):$"
+      "input": "dGVzdHs_fTw-IQ",
+      "definition": "$$base64(d,URL):$"
     },
     "expect": {
-      "equal": "hello-world,hello-world,hello-world,hello-world,hello-world"
+      "equal": "test{?}<>!"
     }
   },
   {
-    "name": "inline decode (d,u)",
+    "name": "inline decode (d,MIME)",
     "given": {
-      "input": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ=",
-      "definition": "$$base64(d,u):$"
+      "input": "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXowMTIzNDU2Nzg5QUJDREVGR0hJSktMTU5PUFFSU1RV\r\nVldYWVo=",
+      "definition": "$$base64(d,MIME):$"
     },
     "expect": {
-      "equal": "hello-world,hello-world,hello-world,hello-world,hello-world"
+      "equal": "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     }
   },
   {
-    "name": "inline decode (d,u)",
+    "name": "inline decode (d,MIME) without padding",
     "given": {
-      "input": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ",
-      "definition": "$$base64(d,u):$"
+      "input": "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXowMTIzNDU2Nzg5QUJDREVGR0hJSktMTU5PUFFSU1RV\r\nVldYWVo",
+      "definition": "$$base64(d,MIME):$"
     },
     "expect": {
-      "equal": "hello-world,hello-world,hello-world,hello-world,hello-world"
+      "equal": "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     }
   },
   {
-    "name": "inline decode (d,m)",
-    "given": {
-      "input": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29y\r\nbGQ=",
-      "definition": "$$base64(d,m):$"
-    },
-    "expect": {
-      "equal": "hello-world,hello-world,hello-world,hello-world,hello-world"
-    }
-  },
-  {
-    "name": "inline decode (d,m)",
-    "given": {
-      "input": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29y\r\nbGQ",
-      "definition": "$$base64(d,m):$"
-    },
-    "expect": {
-      "equal": "hello-world,hello-world,hello-world,hello-world,hello-world"
-    }
-  },
-  {
-    "name": "inline decode (d,b,,UTF-8)",
+    "name": "inline decode (d,B,,UTF-8)",
     "given": {
       "input": "aGVsbG8tdW5pY29kZS3wn5iA8J+RqOKAjfCfkanigI3wn5Gn4oCN8J+RpvCfqqzim7PinaTwn6eA",
-      "definition": "$$base64(d,b,,UTF-8):$"
+      "definition": "$$base64(d,B,,UTF-8):$"
     },
     "expect": {
       "equal": "hello-unicode-😀👨‍👩‍👧‍👦🪬⛳❤🧀"
     }
   },
   {
-    "name": "inline decode (d,b,,UTF-16)",
+    "name": "inline decode (d,B,,UTF-16)",
     "given": {
       "input": "/v8AaABlAGwAbABvAC0AdQBuAGkAYwBvAGQAZQAt2D3eANg93GggDdg93GkgDdg93GcgDdg93GbYPt6sJvMnZNg+3cA=",
-      "definition": "$$base64(d,b,,UTF-16):$"
+      "definition": "$$base64(d,B,,UTF-16):$"
     },
     "expect": {
       "equal": "hello-unicode-😀👨‍👩‍👧‍👦🪬⛳❤🧀"
@@ -412,84 +271,70 @@
   {
     "name": "object decode (action=DECODE)",
     "given": {
-      "input": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ=",
+      "input": "dGVzdHs/fTw+IQ==",
       "definition": {
         "$$base64": "$",
         "action": "DECODE"
       }
     },
     "expect": {
-      "equal": "hello-world,hello-world,hello-world,hello-world,hello-world"
+      "equal": "test{?}<>!"
     }
   },
   {
-    "name": "object decode (action=DECODE,rfc=b)",
+    "name": "object decode (action=DECODE,rfc=URL)",
     "given": {
-      "input": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ",
+      "input": "dGVzdHs_fTw-IQ==",
       "definition": {
         "$$base64": "$",
         "action": "DECODE",
-        "rfc": "b"
+        "rfc": "URL"
       }
     },
     "expect": {
-      "equal": "hello-world,hello-world,hello-world,hello-world,hello-world"
+      "equal": "test{?}<>!"
     }
   },
   {
-    "name": "object decode (action=DECODE,rfc=url)",
+    "name": "object decode (action=DECODE,rfc=URL) without padding",
     "given": {
-      "input": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ=",
+      "input": "dGVzdHs_fTw-IQ",
       "definition": {
         "$$base64": "$",
         "action": "DECODE",
-        "rfc": "url"
+        "rfc": "URL"
       }
     },
     "expect": {
-      "equal": "hello-world,hello-world,hello-world,hello-world,hello-world"
+      "equal": "test{?}<>!"
     }
   },
   {
-    "name": "object decode (action=DECODE,rfc=u)",
+    "name": "object decode (action=DECODE,rfc=MIME)",
     "given": {
-      "input": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQ",
+      "input": "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXowMTIzNDU2Nzg5QUJDREVGR0hJSktMTU5PUFFSU1RV\nVldYWVo=",
       "definition": {
         "$$base64": "$",
         "action": "DECODE",
-        "rfc": "u"
+        "rfc": "MIME"
       }
     },
     "expect": {
-      "equal": "hello-world,hello-world,hello-world,hello-world,hello-world"
+      "equal": "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     }
   },
   {
-    "name": "object decode (action=DECODE,rfc=mime)",
+    "name": "object decode (action=DECODE,rfc=MIME)",
     "given": {
-      "input": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29y\r\nbGQ=",
+      "input": "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXowMTIzNDU2Nzg5QUJDREVGR0hJSktMTU5PUFFSU1RV\nVldYWVo",
       "definition": {
         "$$base64": "$",
         "action": "DECODE",
-        "rfc": "mime"
+        "rfc": "MIME"
       }
     },
     "expect": {
-      "equal": "hello-world,hello-world,hello-world,hello-world,hello-world"
-    }
-  },
-  {
-    "name": "object decode (action=DECODE,rfc=m)",
-    "given": {
-      "input": "aGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29ybGQsaGVsbG8td29y\r\nbGQ",
-      "definition": {
-        "$$base64": "$",
-        "action": "DECODE",
-        "rfc": "m"
-      }
-    },
-    "expect": {
-      "equal": "hello-world,hello-world,hello-world,hello-world,hello-world"
+      "equal": "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     }
   },
   {

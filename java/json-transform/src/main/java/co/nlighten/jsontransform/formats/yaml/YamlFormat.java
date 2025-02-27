@@ -8,6 +8,7 @@ import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.common.FlowStyle;
+import org.snakeyaml.engine.v2.common.ScalarStyle;
 
 public class YamlFormat implements FormatSerializer, FormatDeserializer {
 
@@ -18,10 +19,15 @@ public class YamlFormat implements FormatSerializer, FormatDeserializer {
 
     public YamlFormat(JsonAdapter<?, ?, ?> adapter) {
         this.adapter = adapter;
-        this.loadSettings = LoadSettings.builder().build();
+        this.loadSettings = LoadSettings.builder()
+                .build();
         this.dumpSettings = DumpSettings.builder()
                 .setDefaultFlowStyle(FlowStyle.BLOCK)
                 .setMultiLineFlow(true)
+                .setIndent(2)
+                .setIndicatorIndent(2) // array indention
+                .setIndentWithIndicator(true)
+                .setCanonical(false)
                 .build();
     }
 

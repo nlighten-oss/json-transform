@@ -23,4 +23,4 @@ export const walkTransformer = (transformer: any, callback: (path: string, value
     let valuePath = toObjectFieldPath(key);
     walkTransformer(transformer[key], callback, path + valuePath);
   }
-}
+};

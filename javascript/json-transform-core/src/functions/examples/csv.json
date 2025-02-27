@@ -9,7 +9,8 @@
       "definition": "$$csv:$"
     },
     "expect": {
-      "equal": "a,b\nA,1\nC,2\n"
+      "equal": "a,b\nA,1\nC,2\n",
+      "format": "csv"
     }
   },
   {
@@ -22,7 +23,8 @@
       "definition": "$$csv(true):$"
     },
     "expect": {
-      "equal": "A,1\nC,2\n"
+      "equal": "A,1\nC,2\n",
+      "format": "csv"
     }
   },
   {
@@ -37,7 +39,8 @@
       }
     },
     "expect": {
-      "equal": "a,b\nA,1\nC,2\n"
+      "equal": "a,b\nA,1\nC,2\n",
+      "format": "csv"
     }
   },
   {
@@ -53,7 +56,8 @@
       }
     },
     "expect": {
-      "equal": "A,1\nC,2\n"
+      "equal": "A,1\nC,2\n",
+      "format": "csv"
     }
   },
   {
@@ -69,7 +73,8 @@
       }
     },
     "expect": {
-      "equal": "a,b\n1,2\n3,4\n"
+      "equal": "a,b\n1,2\n3,4\n",
+      "format": "csv"
     }
   },
   {
@@ -84,7 +89,28 @@
       }
     },
     "expect": {
-      "equal": "1,2\n3,4\n"
+      "equal": "1,2\n3,4\n",
+      "format": "csv"
+    }
+  },
+  {
+    "name": "inline - no_headers and force_quote",
+    "given": {
+      "input": [
+        {
+          "a": "A",
+          "b": 1
+        },
+        {
+          "a": "C",
+          "b": 2
+        }
+      ],
+      "definition": "$$csv(true, true):$"
+    },
+    "expect": {
+      "equal": "\"A\",\"1\"\n\"C\",\"2\"\n",
+      "format": "csv"
     }
   }
 ]

@@ -3,6 +3,7 @@
     "name": "inline - sanity",
     "given": {
       "input": "title: TITLE\n",
+      "inputFormat": "yaml",
       "definition": "$$yamlparse:$"
     },
     "expect": {
@@ -15,6 +16,7 @@
     "name": "inline - sanity (2)",
     "given": {
       "input": "root:\n  title: TITLE\n",
+      "inputFormat": "yaml",
       "definition": "$$yamlparse:$"
     },
     "expect": {
@@ -26,9 +28,34 @@
     }
   },
   {
+    "name": "inline - sanity (3)",
+    "given": {
+      "input": "a: '1'\nb:\n  - B\n  - 2\nc: true\nd:\n  e:\n    - E\n    - '800'\n",
+      "inputFormat": "yaml",
+      "definition": "$$yamlparse:$"
+    },
+    "expect": {
+      "equal": {
+        "a": "1",
+        "b": [
+          "B",
+          2
+        ],
+        "c": true,
+        "d": {
+          "e": [
+            "E",
+            "800"
+          ]
+        }
+      }
+    }
+  },
+  {
     "name": "inline",
     "given": {
       "input": "title: Mr.\nfirstName: Sam\nlastName: Anton\naddress:\n  flatNumber: BV-1025\n  buildingName: Shivaji\n  plotNumber: '1093'\n  sector: Sector 19\n  city: Bengaluru\n  state: Karnataka\n  country: India\n  nodeName: South Bengaluru\nitems:\n- itemName: Television\n  itemBoughtYear: '2014'\n- itemName: Washing Machine\n  itemBoughtYear: '2020'\n- itemName: Refrigerator\n  itemBoughtYear: '2011'\n- itemName: Grinder\n  itemBoughtYear: '2012'\n- itemName: Computer\n  itemBoughtYear: '2010'\n",
+      "inputFormat": "yaml",
       "definition": "$$yamlparse:$"
     },
     "expect": {
@@ -75,6 +102,7 @@
     "name": "inline",
     "given": {
       "input": "title: Mr.\nfirstName: Sam\nlastName: Anton\naddress:\n  flatNumber: BV-1025\n  buildingName: Shivaji\n  plotNumber: '1093'\n  sector: Sector 19\n  city: Bengaluru\n  state: Karnataka\n  country: India\n  nodeName: South Bengaluru\nitems:\n- itemName: Television\n  itemBoughtYear: '2014'\n- itemName: Washing Machine\n  itemBoughtYear: '2020'\n- itemName: Refrigerator\n  itemBoughtYear: '2011'\n- itemName: Grinder\n  itemBoughtYear: '2012'\n- itemName: Computer\n  itemBoughtYear: '2010'\n",
+      "inputFormat": "yaml",
       "definition": {
         "$$yamlparse": "$"
       }

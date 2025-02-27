@@ -1,13 +1,16 @@
-export { ContextVariablesSchemas } from "./functions/context";
+export { ContextVariablesSchemas } from "./functions/ContextVariablesSchemas";
 export {
   getFunctionInlineSignature,
   getFunctionObjectSignature,
   functionsParser,
   parseArgs,
-  getOverriddenFunction,
+  getSubfunction,
 } from "./functions/functionsParser";
 export {
   type Argument,
+  type ArgumentCondition,
+  type ConditionalSubFunction,
+  type FunctionDefinition,
   type FunctionDescriptor,
   EmbeddedTransformerFunction,
   EmbeddedTransformerFunctions,
@@ -22,6 +25,7 @@ export { ParseContext, type ParseMethod, type HandleFunctionMethod } from "./Par
 
 import definitions from "./functions/definitions";
 import examples from "./functions/examples";
-export { definitions, examples };
+import functions from "./functions/functions";
+export { definitions, examples, functions };
 
 export { transformUtils } from "./transformUtils";

@@ -1,6 +1,6 @@
-import yamljs from "yamljs";
 import TransformerFunction from "./common/TransformerFunction";
 import FunctionContext from "./common/FunctionContext";
+import YamlFormat from "../formats/yaml/YamlFormat";
 
 class TransformerFunctionYamlParse extends TransformerFunction {
   constructor() {
@@ -10,7 +10,7 @@ class TransformerFunctionYamlParse extends TransformerFunction {
   override async apply(context: FunctionContext): Promise<any> {
     const str = await context.getString(null);
     if (str == null) return null;
-    return yamljs.parse(str);
+    return YamlFormat.INSTANCE.deserialize(str);
   }
 }
 

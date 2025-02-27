@@ -20,7 +20,7 @@
       "definition": "$$jwtparse:$"
     },
     "expect": {
-      "isEmpty": true
+      "isNull": true
     }
   },
   {
@@ -48,7 +48,7 @@
       }
     },
     "expect": {
-      "isEmpty": true
+      "isNull": true
     }
   }
 ]

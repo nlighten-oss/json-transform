@@ -1,5 +1,5 @@
-import { isValidPropertyPath, TypeSchema } from "@nlighten/json-schema-utils";
-import { ContextVariablesSchemas } from "./functions/context";
+import { TypeSchema } from "@nlighten/json-schema-utils";
+import { ContextVariablesSchemas } from "./functions/ContextVariablesSchemas";
 import { FunctionDescriptor } from "./functions/types";
 
 export class ParseContext {

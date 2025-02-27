@@ -3,8 +3,9 @@ import { formatSchemaType, type TypeSchema } from "@nlighten/json-schema-utils";
 import {
   ContextVariablesSchemas,
   functionsParser,
-  getFunctionInlineSignature, getOverriddenFunction,
-  parseArgs
+  getFunctionInlineSignature,
+  getSubfunction,
+  parseArgs,
 } from "@nlighten/json-transform-core";
 
 type TypeMap = Record<string, TypeSchema>;
@@ -52,9 +53,10 @@ export const jsonTransformHoverProviderFactory: (
         const funcType = charBefore === '"' && charAfter === '"' ? "object" : "inline";
         let func = functionsParser.get(funcName);
         if (!func) return;
-        if (func.overrides && funcType === "inline") { // TODO: is there a way to get the definition for object?
+        if (func.subfunctions && funcType === "inline") {
+          // TODO: is there a way to get the definition for object?
           const args = parseArgs(func, word.word.match(/\(([^)]*)/)?.[1] ?? "");
-          func = getOverriddenFunction(func, args);
+          func = getSubfunction(func, args);
         }
         const sig = getFunctionInlineSignature(funcName, func);
         return resolve({

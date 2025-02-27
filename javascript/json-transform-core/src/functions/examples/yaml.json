@@ -8,7 +8,8 @@
       "definition": "$$yaml:$"
     },
     "expect": {
-      "equal": "title: TITLE\n"
+      "equal": "title: TITLE\n",
+      "format": "yaml"
     }
   },
   {
@@ -22,7 +23,8 @@
       "definition": "$$yaml:$"
     },
     "expect": {
-      "equal": "root:\n  title: TITLE\n"
+      "equal": "root:\n  title: TITLE\n",
+      "format": "yaml"
     }
   },
   {
@@ -93,6 +95,32 @@
           "itemBoughtYear" : "2010"
         } ]
       }
+    }
+  },
+  {
+    "name": "example",
+    "given": {
+      "input": {
+        "a": "1",
+        "b": [
+          "B",
+          2
+        ],
+        "c": true,
+        "d": {
+          "e": [
+            "E",
+            "800"
+          ]
+        }
+      },
+      "definition": {
+        "$$yaml": "$"
+      }
+    },
+    "expect": {
+      "equal": "a: '1'\nb:\n  - B\n  - 2\nc: true\nd:\n  e:\n    - E\n    - '800'\n",
+      "format": "yaml"
     }
   },
   {

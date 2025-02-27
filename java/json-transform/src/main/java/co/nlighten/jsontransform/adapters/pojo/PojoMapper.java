@@ -1,5 +1,7 @@
 package co.nlighten.jsontransform.adapters.pojo;
 
+import co.nlighten.jsontransform.adapters.JsonAdapterHelpers;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -26,14 +28,18 @@ public class PojoMapper {
      * Wraps and unwraps values for PojoJsonAdapter processing
      * @param object object to convert
      * @param unwrap if true, will convert PojoNull to null, otherwise will convert null values to PojoNull
+     * @param reduceBigDecimals if true, will convert BigDecimal to smaller number structures if possible
      */
-    public static Object convert(Object object, boolean unwrap) {
+    public static Object convert(Object object, boolean unwrap, boolean reduceBigDecimals) {
         if (object == null || object instanceof PojoNull) {
             return unwrap ? null : PojoNull.INSTANCE;
         }
-        // number | boolean | string
-        if (object instanceof Number ||
-                object instanceof Boolean ||
+        // number
+        if (object instanceof Number n) {
+            return JsonAdapterHelpers.unwrapNumber(n, reduceBigDecimals);
+        }
+        // boolean | string
+        if (object instanceof Boolean ||
                 object instanceof String) {
             return object;
         }
@@ -45,14 +51,14 @@ public class PojoMapper {
         if (object instanceof Iterable<?> i) {
             var result = new ArrayList<>();
             for (var item : i) {
-                result.add(convert(item, unwrap));
+                result.add(convert(item, unwrap, reduceBigDecimals));
             }
             return result;
         } else if (object.getClass().isArray()) {
             var result = new ArrayList<>();
             var length = Array.getLength(object);
             for (var i = 0; i < length; i++) {
-                result.add(convert(Array.get(object, i), unwrap));
+                result.add(convert(Array.get(object, i), unwrap, reduceBigDecimals));
             }
             return result;
         }
@@ -61,14 +67,14 @@ public class PojoMapper {
         if (object instanceof Map<?, ?> m) {
             // - map
             for (var entry : m.entrySet()) {
-                result.put(entry.getKey().toString(), convert(entry.getValue(), unwrap));
+                result.put(entry.getKey().toString(), convert(entry.getValue(), unwrap, reduceBigDecimals));
             }
         } else {
             // - class type
             getAllFields(object.getClass()).forEach(field -> {
                 try {
                     field.setAccessible(true);
-                    result.put(field.getName(), convert(field.get(object), unwrap));
+                    result.put(field.getName(), convert(field.get(object), unwrap, reduceBigDecimals));
                 } catch (IllegalAccessException e) {
                     // e.printStackTrace();
                 }
@@ -76,8 +82,11 @@ public class PojoMapper {
         }
         return result;
     }
+    public static Object convert(Object object) {
+        return convert(object, false, false);
+    }
 
     public static Object deepClone(Object value) {
-        return convert(value, false);
+        return convert(value);
     }
 }

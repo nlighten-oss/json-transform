@@ -3,6 +3,7 @@
     "name": "Inline - empty root element",
     "given": {
       "input": "<root></root>",
+      "inputFormat": "xml",
       "definition": "$$xmlparse:$"
     },
     "expect": {
@@ -16,6 +17,7 @@
     "skip": ["javascript"],
     "given": {
       "input": "<root><hello to=\"world\"><hi /><hi /></hello></root>",
+      "inputFormat": "xml",
       "definition": "$$xmlparse:$"
     },
     "expect": {
@@ -33,6 +35,7 @@
     "name": "Object - empty root element",
     "given": {
       "input": "<root></root>",
+      "inputFormat": "xml",
       "definition": {
         "$$xmlparse": "$"
       }
@@ -48,6 +51,7 @@
     "skip": ["javascript"],
     "given": {
       "input": "<root><hello to=\"world\"><hi /><hi /></hello></root>",
+      "inputFormat": "xml",
       "definition": {
         "$$xmlparse": "$"
       }
@@ -68,6 +72,7 @@
     "skip": ["javascript"],
     "given": {
       "input": "<root><hello to=\"world\"><hi><test>X</test></hi></hello></root>",
+      "inputFormat": "xml",
       "definition": {
         "$$xmlparse": "$",
         "force_list": ["hi"]
@@ -93,6 +98,7 @@
     "skip": ["javascript"],
     "given": {
       "input": "<root><hello to=\"world\"><hi /><hi /></hello></root>",
+      "inputFormat": "xml",
       "definition": {
         "$$xmlparse": "$",
         "force_list": ["hi"]
@@ -114,6 +120,7 @@
     "skip": ["javascript"],
     "given": {
       "input": "<root><hello to=\"2\"><hi>true</hi></hello></root>",
+      "inputFormat": "xml",
       "definition": {
         "$$xmlparse": "$",
         "keep_strings": true
@@ -135,6 +142,7 @@
     "skip": ["javascript"],
     "given": {
       "input": "<root><hello to=\"2\"><hi>true</hi></hello></root>",
+      "inputFormat": "xml",
       "definition": {
         "$$xmlparse": "$"
       }

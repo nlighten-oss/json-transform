@@ -1,6 +1,6 @@
 [
   {
-    "name": "example",
+    "name": "object - example",
     "given": {
       "input": {
         "value": "bbb"
@@ -32,6 +32,65 @@
               "c": true
             }
           ]
+        },
+        "b": "bbb"
+      }
+    }
+  },
+  {
+    "name": "object - example 2",
+    "given": {
+      "input": {
+        "a.a1": 123,
+        "a.a2.b.c": true,
+        "b": "bbb"
+      },
+      "definition": {
+        "$$unflatten": "$",
+        "path":"x",
+        "target": {
+          "y": 0
+        }
+      }
+    },
+    "expect": {
+      "equal": {
+        "y": 0,
+        "x": {
+          "a": {
+            "a1": 123,
+            "a2": {
+              "b": {
+                "c": true
+              }
+            }
+          },
+          "b": "bbb"
+        }
+      }
+    }
+  },
+  {
+    "name": "inline - example",
+    "given": {
+      "input": {
+        "a.a1": 123,
+        "a.a2.b.c": true,
+        "b": "bbb"
+      },
+      "definition": "$$unflatten:$"
+
+
+    },
+    "expect": {
+      "equal": {
+        "a": {
+          "a1": 123,
+          "a2": {
+            "b": {
+              "c": true
+            }
+          }
         },
         "b": "bbb"
       }

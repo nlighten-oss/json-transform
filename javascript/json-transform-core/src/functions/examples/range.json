@@ -10,30 +10,20 @@
     }
   },
   {
-    "name": "Inline null input with colon",
+    "name": "Inline null input and step 1",
     "given": {
       "input": null,
-      "definition": "$$range(1,5):"
+      "definition": "$$range(1,5,1)"
     },
     "expect": {
       "equal": [1, 2, 3, 4, 5]
     }
   },
   {
-    "name": "Inline null input with colon and step 1",
-    "given": {
-      "input": null,
-      "definition": "$$range(1,5,1):"
-    },
-    "expect": {
-      "equal": [1, 2, 3, 4, 5]
-    }
-  },
-  {
-    "name": "Inline decimal input with colon and step 0.5",
+    "name": "Inline decimal input and step 0.5",
     "given": {
       "input": 2.7,
-      "definition": "$$range(1.5,$,0.5):"
+      "definition": "$$range(1.5,$,0.5)"
     },
     "expect": {
       "equal": [
@@ -82,16 +72,6 @@
     "given": {
       "input": null,
       "definition": "$$range"
-    },
-    "expect": {
-      "equal": []
-    }
-  },
-  {
-    "name": "Inline null input with colon and no arguments",
-    "given": {
-      "input": null,
-      "definition": "$$range():"
     },
     "expect": {
       "equal": []

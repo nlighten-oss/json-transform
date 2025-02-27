@@ -55,22 +55,22 @@ public class PojoJsonAdapter extends JsonAdapter<Object, AbstractList<Object>, M
 
     @Override
     public Object wrap(Object value) {
-        return PojoMapper.convert(value, false);
+        return PojoMapper.convert(value);
     }
 
     @Override
     public Object unwrap(Object value, boolean reduceBigDecimals) {
-        return PojoMapper.convert(value, true);
+        return PojoMapper.convert(value, true, reduceBigDecimals);
     }
 
     @Override
     public Object parse(String value) {
-        if (value != null && value.startsWith("'") && value.endsWith("'") && value.length() > 2) {
+        if (value != null && value.startsWith("'") && value.endsWith("'") && value.length() >= 2) {
             return PojoMapper.convert(PojoHelpers.parse(
                 JsonAdapterHelpers.singleQuotedStringToDoubleQuoted(value)
-            ), false);
+            ));
         }
-        return PojoMapper.convert(PojoHelpers.parse(value), false);
+        return PojoMapper.convert(PojoHelpers.parse(value));
     }
 
     @Override
@@ -130,6 +130,6 @@ public class PojoJsonAdapter extends JsonAdapter<Object, AbstractList<Object>, M
             var strInArr = PojoHelpers.toJson(arr);
             return strInArr.substring(1, strInArr.length() - 1);
         }
-        return PojoHelpers.toJson(PojoMapper.convert(value, true));
+        return PojoHelpers.toJson(PojoMapper.convert(value, true, false));
     }
 }

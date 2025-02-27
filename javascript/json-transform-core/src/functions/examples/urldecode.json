@@ -10,16 +10,6 @@
     }
   },
   {
-    "name": "decode (no args, with parenthesis)",
-    "given": {
-      "input": "not+url%2Bsafe%3F%3Dx%26b%3Dpath%2Fpath",
-      "definition": "$$urldecode():$"
-    },
-    "expect": {
-      "equal": "not url+safe?=x&b=path/path"
-    }
-  },
-  {
     "name": "decode (inline text)",
     "given": {
       "input": null,

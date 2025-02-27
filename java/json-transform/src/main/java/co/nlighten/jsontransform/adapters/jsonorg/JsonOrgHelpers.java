@@ -1,5 +1,6 @@
 package co.nlighten.jsontransform.adapters.jsonorg;
 
+import co.nlighten.jsontransform.adapters.JsonAdapterHelpers;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.Option;
 import com.jayway.jsonpath.spi.json.JsonOrgJsonProvider;
@@ -109,5 +110,40 @@ public class JsonOrgHelpers {
             return js.toString().hashCode();
         }
         return object.hashCode();
+    }
+
+    static Map<String, Object> unwrapObject(JSONObject value, boolean reduceBigDecimals) {
+        var obj = new HashMap<String, Object>();
+        for (var key : value.keySet()) {
+            obj.put(key, unwrap(value.get(key), reduceBigDecimals));
+        }
+        return obj;
+    }
+
+    static List<Object> unwrapArray(JSONArray value, boolean reduceBigDecimals) {
+        var results = new ArrayList<>(value.length());
+        for (var item : value) {
+            results.add(unwrap(item, reduceBigDecimals));
+        }
+        return results;
+    }
+
+    static Object unwrap(Object value, boolean reduceBigDecimals) {
+        if (JSONObject.NULL.equals(value)) {
+            return null;
+        }
+        if (value instanceof JSONObject jo) {
+            return unwrapObject(jo, reduceBigDecimals);
+        }
+        if (value instanceof JSONArray ja) {
+            return unwrapArray(ja, reduceBigDecimals);
+        }
+        if (value instanceof JSONString ja) {
+            return ja.toString();
+        }
+        if (value instanceof Number n) {
+            return JsonAdapterHelpers.unwrapNumber(n, reduceBigDecimals);
+        }
+        return value;
     }
 }

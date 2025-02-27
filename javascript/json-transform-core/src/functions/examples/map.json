@@ -1,6 +1,53 @@
 [
   {
-    "name": "Test Object Function Map",
+    "name": "object",
+    "given": {
+      "input": {
+        "value": 5,
+        "item": {
+          "foo": "aaa",
+          "id": "bbb"
+        },
+        "items": [
+          {
+            "foo": "bar",
+            "id": "aaa"
+          },
+          {
+            "foo": "bar2",
+            "id": "bbb"
+          }
+        ]
+      },
+      "definition": {
+        "$$map": "$.items",
+        "to": {
+          "id": "##current.id",
+          "map_foo": "##current.foo",
+          "idx": "##index",
+          "value": "$.value"
+        }
+      }
+    },
+    "expect": {
+      "equal": [
+        {
+          "id": "aaa",
+          "map_foo": "bar",
+          "idx": 0,
+          "value": 5
+        },
+        {
+          "id": "bbb",
+          "map_foo": "bar2",
+          "idx": 1,
+          "value": 5
+        }
+      ]
+    }
+  },
+  {
+    "name": "object - alternative form",
     "given": {
       "input": {
         "value": 5,
@@ -49,54 +96,7 @@
     }
   },
   {
-    "name": "Test Object Function Map with To",
-    "given": {
-      "input": {
-        "value": 5,
-        "item": {
-          "foo": "aaa",
-          "id": "bbb"
-        },
-        "items": [
-          {
-            "foo": "bar",
-            "id": "aaa"
-          },
-          {
-            "foo": "bar2",
-            "id": "bbb"
-          }
-        ]
-      },
-      "definition": {
-        "$$map": "$.items",
-        "to": {
-          "id": "##current.id",
-          "map_foo": "##current.foo",
-          "idx": "##index",
-          "value": "$.value"
-        }
-      }
-    },
-    "expect": {
-      "equal": [
-        {
-          "id": "aaa",
-          "map_foo": "bar",
-          "idx": 0,
-          "value": 5
-        },
-        {
-          "id": "bbb",
-          "map_foo": "bar2",
-          "idx": 1,
-          "value": 5
-        }
-      ]
-    }
-  },
-  {
-    "name": "Test Object Function Map with Value Lookup",
+    "name": "object - alternative form - mapping non array",
     "given": {
       "input": {
         "value": 5,
@@ -128,7 +128,7 @@
       }
     },
     "expect": {
-      "isEmpty": true
+      "isNull": true
     }
   },
   {
@@ -162,7 +162,7 @@
     }
   },
   {
-    "name": "Inline",
+    "name": "inline",
     "given": {
       "input": [
         {

@@ -8,7 +8,7 @@
         13.45,
         null
       ],
-      "definition": "$$sum():$"
+      "definition": "$$sum:$"
     },
     "expect": {
       "equal": 19.45

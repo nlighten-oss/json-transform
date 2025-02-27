@@ -46,7 +46,7 @@
       "definition": "$$matchall(hello$):$"
     },
     "expect": {
-      "isEmpty": true
+      "isNull": true
     }
   },
   {

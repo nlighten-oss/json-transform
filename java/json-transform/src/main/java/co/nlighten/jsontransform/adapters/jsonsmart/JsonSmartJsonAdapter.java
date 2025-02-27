@@ -56,12 +56,12 @@ public class JsonSmartJsonAdapter extends JsonAdapter<Object, JSONArray, JSONObj
 
     @Override
     public Object wrap(Object value) {
-        return JsonSmartHelpers.convert(value, false);
+        return JsonSmartHelpers.convert(value, false, false);
     }
 
     @Override
     public Object unwrap(Object value, boolean reduceBigDecimals) {
-        return JsonSmartHelpers.convert(value, true);
+        return JsonSmartHelpers.convert(value, true, reduceBigDecimals);
     }
 
     @Override

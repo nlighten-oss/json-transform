@@ -1,13 +1,13 @@
-import * as monaco from 'monaco-editor';
+import * as monaco from "monaco-editor";
 import { loader, type Monaco } from "@monaco-editor/react";
-import {getSuggestions} from "./suggestionsProvider";
+import { getSuggestions } from "./suggestionsProvider";
 
 import {
   registerJsonTransformItemCompletionProvider,
   registerJsonTransformDSTProvider,
   registerJsonTransformHoverProvider,
-  defineThemeVsDarkCustom
-} from "@nlighten/monaco-json-transform"
+  defineThemeVsDarkCustom,
+} from "@nlighten/monaco-json-transform";
 
 const glob = window as unknown as { monaco: Monaco };
 
@@ -39,29 +39,29 @@ const initMonaco = (monaco: Monaco) => {
   registerJsonTransformDSTProvider(monaco);
 
   registerJsonTransformItemCompletionProvider(monaco, {
-    getTypeMap: (model) => {
+    getTypeMap: model => {
       const path = model.uri.path.replace(/\.\w+$/, "");
       const [, paths] = getSuggestions(path);
       return paths;
     },
-    getSuggestions: (model) => {
+    getSuggestions: model => {
       const path = model.uri.path.replace(/\.\w+$/, "");
       return getSuggestions(path)[0];
-    }
+    },
   });
 
   registerJsonTransformHoverProvider(monaco, {
-    getTypeMap: (model) => {
+    getTypeMap: model => {
       const path = model.uri.path.replace(/\.\w+$/, "");
-      console.log('looking for: ' + path);
+      console.log("looking for: " + path);
       return getSuggestions(path, true)[1];
-    }
+    },
   });
 
   defineThemeVsDarkCustom(monaco);
 };
 
-loader.config({ monaco })
+loader.config({ monaco });
 
 loader.init().then(monaco => {
   glob.monaco = monaco;

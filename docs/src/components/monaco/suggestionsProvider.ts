@@ -5,7 +5,7 @@ type SuggestionsResult = [string[], Record<string, TypeSchema>];
 const suggestions: Record<string, SuggestionsResult> = {};
 
 export const setSuggestions = (key: string, variables: string[], paths: Record<string, TypeSchema>) => {
-  console.log("suggestions were set", variables, paths)
+  console.log("suggestions were set", variables, paths);
   suggestions[key] = [variables, paths];
 };
 

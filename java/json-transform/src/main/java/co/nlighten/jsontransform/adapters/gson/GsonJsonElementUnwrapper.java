@@ -1,5 +1,6 @@
 package co.nlighten.jsontransform.adapters.gson;
 
+import co.nlighten.jsontransform.adapters.JsonAdapterHelpers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,47 +15,6 @@ import java.util.Map;
 
 public class GsonJsonElementUnwrapper {
 
-    private static final BigDecimal BIG_DECIMAL_MAX_INT = BigDecimal.valueOf(Integer.MAX_VALUE);
-    private static final BigDecimal BIG_DECIMAL_MAX_LONG = BigDecimal.valueOf(Long.MAX_VALUE);
-
-    private static boolean isPrimitiveNumber(final Number n) {
-        return n instanceof Integer ||
-                n instanceof Byte ||
-                n instanceof Short ||
-                n instanceof Float ||
-                n instanceof Double ||
-                n instanceof Long ||
-                n instanceof BigDecimal ||
-                n instanceof BigInteger;
-    }
-
-    private static Number unwrapNumber(final Number n, final boolean reduceBigDecimals) {
-        Number unwrapped;
-
-        if (!isPrimitiveNumber(n) || (reduceBigDecimals && n instanceof BigDecimal)) {
-            BigDecimal bigDecimal = n instanceof BigDecimal nbd ? nbd : new BigDecimal(n.toString());
-            if (bigDecimal.scale() <= 0) {
-                if (bigDecimal.abs().compareTo(BIG_DECIMAL_MAX_INT) <= 0) {
-                    unwrapped = bigDecimal.intValue();
-                } else if (bigDecimal.abs().compareTo(BIG_DECIMAL_MAX_LONG) <= 0){
-                    unwrapped = bigDecimal.longValue();
-                } else {
-                    unwrapped = bigDecimal;
-                }
-            } else {
-                final double doubleValue = bigDecimal.doubleValue();
-                if (BigDecimal.valueOf(doubleValue).compareTo(bigDecimal) != 0) {
-                    unwrapped = bigDecimal;
-                } else {
-                    unwrapped = doubleValue;
-                }
-            }
-        } else {
-            unwrapped = n;
-        }
-        return unwrapped;
-    }
-
     public static Object unwrapJsonPrimitive(final JsonPrimitive p) {
         return unwrapJsonPrimitive(p, false);
     }
@@ -64,7 +24,7 @@ public class GsonJsonElementUnwrapper {
         } else if (p.isBoolean()) {
             return p.getAsBoolean();
         } else if (p.isNumber()) {
-            return unwrapNumber(p.getAsNumber(), reduceBigDecimals);
+            return JsonAdapterHelpers.unwrapNumber(p.getAsNumber(), reduceBigDecimals);
         }
         throw new RuntimeException("Invalid JsonPrimitive type: " + p);
     }
