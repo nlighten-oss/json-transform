@@ -11,44 +11,53 @@ public interface Transformer {
      * @return The transformer input
      */
     static Transformer RAW() {
-        return (input, additionalContext, allowReturningStreams) -> input;
+        return (input, additionalContext, unwrap) -> input;
     }
 
     /**
-     * transforms based on the transformer specification
+     * Transforms the payload using the transformer definition
+     *
+     * @param payload               The payload to transform
+     * @param additionalContext     (optional) Additional context to use in the transformation
+     * @param unwrap                (optional) Unwrap the result to POJO from the used implementation (default is false)
+     */
+    Object transform(Object payload, Map<String, Object> additionalContext, boolean unwrap);
+
+    /**
+     * Transforms the payload using the transformer definition
+     *
+     * @param payload               The payload to transform
+     * @param additionalContext     (optional) Additional context to use in the transformation
+     */
+    default Object transform(Object payload, Map<String, Object> additionalContext) {
+        return transform(payload, additionalContext, false);
+    }
+
+    /**
+     * Transforms the payload using the transformer definition
+     *
+     * @param payload               The payload to transform
+     * @param unwrap                (optional) Unwrap the result to POJO from the used implementation (default is false)
+     */
+    default Object transform(Object payload, boolean unwrap) {
+        return transform(payload, null, unwrap);
+    }
+
+    /**
+     * Transforms the payload using the transformer definition
+     *
+     * @param payload               The payload to transform
+     */
+    default Object transform(Object payload) {
+        return transform(payload, null);
+    }
+
+    /**
+     * transforms based on the transformer definition alone
      *
      * @return transformed data
      */
     default Object transform() {
-        return transform(null, null);
+        return transform(null);
     }
-
-    /**
-     * transforms the given data based on the transformer specification
-     *
-     * @param input the data to transform
-     * @return transformed data
-     */
-    default Object transform(Object input) {
-        return transform(input, null);
-    }
-
-    /**
-     * transforms the given data based on the transformer specification
-     * @param input the data to transform
-     * @param additionalContext additional context to use during transformation
-     * @return transformed data
-     */
-    default Object transform(Object input, Map<String, Object> additionalContext) {
-        return transform(input, additionalContext, false);
-    }
-
-    /**
-     * transforms the given data based on the transformer specification
-     * @param input the data to transform
-     * @param additionalContext additional context to use during transformation
-     * @param allowReturningStreams allow returning json streams instead of arrays as transformation result
-     * @return transformed data
-     */
-    Object transform(Object input, Map<String, Object> additionalContext, boolean allowReturningStreams);
 }

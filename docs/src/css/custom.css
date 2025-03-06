@@ -83,7 +83,7 @@
   max-height: 500px;
 }
 
-.prism-code > code {
+.prism-code:not(.language-java) > code {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }

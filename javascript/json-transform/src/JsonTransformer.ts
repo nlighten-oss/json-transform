@@ -23,6 +23,13 @@ export class JsonTransformer implements Transformer {
     };
   }
 
+  /**
+   * Transforms the payload using the transformer definition
+   *
+   * @param payload               The payload to transform
+   * @param additionalContext     (optional) Additional context to use in the transformation
+   * @returns A promise to the transformed payload
+   */
   async transform(payload: any = null, additionalContext: Record<string, any> = {}) {
     if (isNullOrUndefined(this.definition)) {
       return null;
@@ -137,6 +144,9 @@ export class JsonTransformer implements Transformer {
     return this.fromJsonPrimitive(path, definition, resolver, allowReturningStreams);
   }
 
+  /**
+   * Gets the transformer definition
+   */
   getDefinition() {
     return this.definition;
   }

@@ -51,7 +51,7 @@ export const getFunctionObjectSignature = (name: string, func: FunctionDescripto
 
 class FunctionsParser {
   private clientFunctions: Record<string, FunctionDescriptor>;
-  private allFunctionsNames: string[];
+  private allFunctionsNames: Set<string>;
   private objectFunctionRegex: RegExp;
   private inlineFunctionRegex: RegExp;
   private matchInlineFunctionWithArgsRegex: RegExp;
@@ -67,21 +67,28 @@ class FunctionsParser {
    * 4 - Colon (or something else)
    * 5 - What comes after the colon (value) -- only when 'noArgs' = false
    */
-  private inlineFunctionRegexFactory = (global: boolean, noArgs: boolean) =>
+  private inlineFunctionRegexFactory = (names: string[], global: boolean, noArgs: boolean) =>
     new RegExp(
-      `\\$\\$(${this.getNames().join("|")})(\\((.*?)\\))?(:${noArgs ? "" : `([^"]*)`}|$|")`,
+      `\\$\\$(${Array.from(this.getNames()).join("|")})(\\((.*?)\\))?(:${noArgs ? "" : `([^"]*)`}|$|")`,
       global ? "g" : undefined,
     );
 
-  private objectFunctionRegexFactory = () => new RegExp(`(?<=")\\$\\$(${this.getNames().join("|")})":`, "g");
+  private objectFunctionRegexFactory = (names: string[]) => new RegExp(`(?<=")\\$\\$(${names.join("|")})":`, "g");
 
   constructor() {
     this.clientFunctions = {};
-    this.allFunctionsNames = EmbeddedTransformerFunctions;
-
-    this.objectFunctionRegex = this.objectFunctionRegexFactory();
-    this.inlineFunctionRegex = this.inlineFunctionRegexFactory(true, true);
-    this.matchInlineFunctionWithArgsRegex = this.inlineFunctionRegexFactory(false, false);
+    const functionNames = new Set(Object.keys(functions));
+    // add aliases
+    for (const name of functionNames) {
+      if (functions[name].aliases) {
+        functions[name].aliases?.forEach(alias => functionNames.add(alias));
+      }
+    }
+    this.allFunctionsNames = functionNames;
+    const names = Array.from(this.allFunctionsNames);
+    this.objectFunctionRegex = this.objectFunctionRegexFactory(names);
+    this.inlineFunctionRegex = this.inlineFunctionRegexFactory(names, true, true);
+    this.matchInlineFunctionWithArgsRegex = this.inlineFunctionRegexFactory(names, false, false);
   }
 
   setClientFunctions(
@@ -91,11 +98,16 @@ class FunctionsParser {
   ) {
     this.clientFunctions = parseDefinitions(clientFunctions, true);
     this.clientDocsUrlResolver = docsUrlResolver;
-    this.allFunctionsNames = Object.keys(clientFunctions).concat(EmbeddedTransformerFunctions).sort();
-
-    this.objectFunctionRegex = this.objectFunctionRegexFactory();
-    this.inlineFunctionRegex = this.inlineFunctionRegexFactory(true, true);
-    this.matchInlineFunctionWithArgsRegex = this.inlineFunctionRegexFactory(false, false);
+    for (const name in clientFunctions) {
+      this.allFunctionsNames.add(name);
+      if (clientFunctions[name].aliases) {
+        clientFunctions[name].aliases?.forEach(alias => this.allFunctionsNames.add(alias));
+      }
+    }
+    const names = Array.from(this.allFunctionsNames);
+    this.objectFunctionRegex = this.objectFunctionRegexFactory(names);
+    this.inlineFunctionRegex = this.inlineFunctionRegexFactory(names, true, true);
+    this.matchInlineFunctionWithArgsRegex = this.inlineFunctionRegexFactory(names, false, false);
     this.handleClientFunction = handler;
   }
 

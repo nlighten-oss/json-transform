@@ -28,7 +28,9 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
 
     static {
         registerFunctions(
+                Map.entry("all",new TransformerFunctionEvery()),
                 Map.entry("and", new TransformerFunctionAnd()),
+                Map.entry("any", new TransformerFunctionSome()),
                 Map.entry("at",new TransformerFunctionAt()),
                 Map.entry("avg",new TransformerFunctionAvg()),
                 Map.entry("base64", new TransformerFunctionBase64()),

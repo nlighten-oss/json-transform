@@ -82,7 +82,9 @@ import TransformerFunctionYaml from "./TransformerFunctionYaml";
 import TransformerFunctionYamlParse from "./TransformerFunctionYamlParse";
 
 export default {
+  all: new TransformerFunctionEvery(),
   and: new TransformerFunctionAnd(),
+  any: new TransformerFunctionSome(),
   at: new TransformerFunctionAt(),
   avg: new TransformerFunctionAvg(),
   base64: new TransformerFunctionBase64(),

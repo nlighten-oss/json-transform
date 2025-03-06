@@ -160,6 +160,7 @@ const config: Config = {
     },
     prism: {
       theme: darkCodeTheme,
+      additionalLanguages: ["java"],
     },
   },
   markdown: {

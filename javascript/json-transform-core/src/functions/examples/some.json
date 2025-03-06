@@ -72,5 +72,25 @@
     "expect": {
       "equal": false
     }
+  },
+  {
+    "name": "object - true - alias any",
+    "given": {
+      "input": [
+        {
+          "active": true
+        },
+        {
+          "active": false
+        }
+      ],
+      "definition": {
+        "$$any": "$",
+        "by": "##current.active"
+      }
+    },
+    "expect": {
+      "equal": true
+    }
   }
 ]

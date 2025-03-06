@@ -10,6 +10,11 @@ public abstract class JsonTransformerConfiguration {
     private static final Logger log = LoggerFactory.getLogger(JsonTransformerConfiguration.class);
     static volatile JsonTransformerConfiguration current = null;
 
+    /**
+     * Sets the default configuration (based on a specific JSON implementation)
+     *
+     * @param configuration The JSON transformer configuration implementation
+     */
     public synchronized static void set(JsonTransformerConfiguration configuration) {
         if (configuration == null) {
             throw new ExceptionInInitializerError("Cannot set empty configuration");
@@ -18,6 +23,9 @@ public abstract class JsonTransformerConfiguration {
         current = configuration;
     }
 
+    /**
+     * Gets the current default JSON transformer configuration
+     */
     public static JsonTransformerConfiguration get() {
         if (current == null) {
             log.debug("Json transformers configuration was not set. Using default Pojo implementation.");
@@ -32,6 +40,9 @@ public abstract class JsonTransformerConfiguration {
         this.adapter = adapter;
     }
 
+    /**
+     * Gets the current JSON implementation adapter
+     */
     public JsonAdapter<?, ?, ?> getAdapter() {
         return this.adapter;
     }

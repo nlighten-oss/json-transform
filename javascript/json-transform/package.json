@@ -1,7 +1,7 @@
 {
   "name": "@nlighten/json-transform",
   "description": "JSON transformers JavaScript implementation",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "main": "./dist/index.js",
   "source": "src/index.ts",
   "exports": "./dist/index.js",

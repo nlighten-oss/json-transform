@@ -17,7 +17,7 @@ Core types and utilities for handling JSON transformers
   getFunctionObjectSignature:  (name: string, func: FunctionDescriptor) => string,
   functionsParser:  {
     get(name: string) => FunctionDescriptor,
-    getNames() => string[],
+    getNames() => Set<string>,
     resolveDocsUrl(funcName: string, functionDescriptor ? : FunctionDescriptor) => string,
     matchInline(
       data: any,

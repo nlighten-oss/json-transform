@@ -3,7 +3,7 @@ import {
   ContextVariablesSchemas,
   functionsParser,
   getFunctionInlineSignature,
-  getFunctionObjectSignature
+  getFunctionObjectSignature,
 } from "@nlighten/json-transform-core";
 import { formatSchemaType, type TypeSchema } from "@nlighten/json-schema-utils";
 
@@ -88,7 +88,7 @@ export const jsonTransformerItemCompletionProvider: (
       tags,
     };
   };
-  const functionSuggestions = functionsParser.getNames().map(x => `$$${x}`);
+  const functionSuggestions = Array.from(functionsParser.getNames()).map(x => `$$${x}`);
   const contextSuggestions = Object.keys(ContextVariablesSchemas);
 
   return {

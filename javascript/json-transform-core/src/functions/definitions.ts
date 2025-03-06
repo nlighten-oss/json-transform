@@ -571,6 +571,7 @@ export default {
     inputSchema: { type: "any", required: true, description: "Transformer definition" },
   },
   every: {
+    aliases: ["all"],
     description: "Checks if all elements in an array satisfy a predicate",
     usageNotes:
       ":::info\npredicate `by` should resolve to a `boolean` value, it uses the [truthy logic](../truthy-logic)\n:::",
@@ -1607,6 +1608,7 @@ export default {
     ],
   },
   some: {
+    aliases: ["any"],
     description: "Checks if any elements in an array satisfy a predicate",
     usageNotes:
       ":::info\npredicate `by` should resolve to a `boolean` value, it uses the [truthy logic](../truthy-logic)\n:::",

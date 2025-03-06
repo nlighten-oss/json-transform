@@ -20,6 +20,13 @@ public class JsonTransformer implements Transformer {
     private final JsonTransformerFunction JSON_TRANSFORMER;
     private final TransformerFunctionsAdapter transformerFunctions;
 
+    /**
+     * Creates a new JSON transformer from definition
+     *
+     * @param definition       The transformer definition
+     * @param adapter          (optional) A specific JSON implementation adapter (otherwise uses the configured default)
+     * @param functionsAdapter (optional) A specific transformer functions adapter (otherwise uses the default)
+     */
     public JsonTransformer(
             final Object definition,
             final JsonAdapter<?, ?, ?> adapter,
@@ -30,34 +37,56 @@ public class JsonTransformer implements Transformer {
         this.JSON_TRANSFORMER = this::fromJsonElement;
     }
 
+    /**
+     * Creates a new JSON transformer from definition
+     *
+     * @param definition       The transformer definition
+     * @param adapter          (optional) A specific JSON implementation adapter (otherwise uses the configured default)
+     */
     public JsonTransformer(
             final Object definition,
             final JsonAdapter<?, ?, ?> adapter) {
         this(definition, adapter, null);
     }
 
+    /**
+     * Creates a new JSON transformer from definition
+     *
+     * @param definition       The transformer definition
+     * @param functionsAdapter (optional) A specific transformer functions adapter (otherwise uses the default)
+     */
     public JsonTransformer(
             final Object definition,
             final TransformerFunctionsAdapter functionsAdapter) {
         this(definition, null, functionsAdapter);
     }
 
+    /**
+     * Creates a new JSON transformer from definition
+     *
+     * @param definition       The transformer definition
+     */
     public JsonTransformer(final Object definition) {
         this(definition, DEFAULT_TRANSFORMER_FUNCTIONS);
     }
 
-    public Object transform(Object payload, Map<String, Object> additionalContext, boolean allowReturningStreams, boolean unwrap) {
-        var result = transform(payload, additionalContext, allowReturningStreams);
+    /**
+     * Transforms the payload using the transformer definition
+     *
+     * @param payload               The payload to transform
+     * @param additionalContext     (optional) Additional context to use in the transformation
+     * @param unwrap                (optional) Unwrap the result to POJO from the used JSON implementation (default is false)
+     */
+    @Override
+    public Object transform(Object payload, Map<String, Object> additionalContext, boolean unwrap) {
+        if (definition == null) {
+            return unwrap ? null : adapter.jsonNull();
+        }
+        var resolver = adapter.createPayloadResolver(payload, additionalContext, false);
+        var result = fromJsonElement("$", definition, resolver, false);
         return unwrap ? adapter.unwrap(result) : result;
     }
 
-    public Object transform(Object payload, Map<String, Object> additionalContext, boolean allowReturningStreams) {
-        if (definition == null) {
-            return adapter.jsonNull();
-        }
-        var resolver = adapter.createPayloadResolver(payload, additionalContext, false);
-        return fromJsonElement("$", definition, resolver, allowReturningStreams);
-    }
 
     protected Object fromJsonPrimitive(String path, Object definition, ParameterResolver resolver, boolean allowReturningStreams) {
         if (!adapter.isJsonString(definition))
@@ -81,7 +110,6 @@ public class JsonTransformer implements Transformer {
             return adapter.jsonNull();
         }
     }
-
 
     protected Object fromJsonObject(String path, Object definition, ParameterResolver resolver, boolean allowReturningStreams) {
         var match = transformerFunctions.matchObject(adapter, path, definition, resolver, JSON_TRANSFORMER);
@@ -158,6 +186,9 @@ public class JsonTransformer implements Transformer {
         return fromJsonPrimitive(path, definition, resolver, allowReturningStreams);
     }
 
+    /**
+     * Gets the transformer definition
+     */
     public Object getDefinition() {
         return definition;
     }
