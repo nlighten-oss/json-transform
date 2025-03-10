@@ -1,0 +1,15 @@
+.content {
+    padding-top: 20px;
+}
+.copy_line {
+    display: flex;
+    gap: 4px;
+    margin: 20px 0;
+    min-width: 40vw;
+}
+.copy_line input {
+    flex: 1;
+}
+.buttons {
+    text-align: center;
+}

@@ -11,6 +11,7 @@ import MarkmapView from "./markmap/MarkmapView";
 import transformerToMarkmap from "./transformerToMarkmap";
 import Modal from "./Modal";
 import { extractValue, SHARE_QS, shareLink } from "@site/src/utils/shareLink";
+import CopyDialog from "@site/src/components/CopyDialog";
 
 const DEFAULT_INPUT_VALUE = `{
   "first_name": "John",
@@ -60,6 +61,7 @@ const TransformerTester = () => {
   const [outputError, setOutputError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [shareValue, setShareValue] = useState("");
 
   const location = useLocation();
   const history = useHistory();
@@ -129,7 +131,7 @@ const TransformerTester = () => {
 
   const handleShare = async () => {
     const url = await shareLink(parsedInput, parsedTransformer);
-    prompt("Copy this value and share it", url);
+    setShareValue(url);
   };
 
   const handleVisualize = () => {
@@ -238,6 +240,9 @@ const TransformerTester = () => {
           />
         </Modal>
       )}
+      <CopyDialog open={!!shareValue} title="Share" onRequestClose={() => setShareValue("")} value={shareValue}>
+        Copy this value and share it
+      </CopyDialog>
     </>
   );
 };
