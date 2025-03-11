@@ -17,11 +17,15 @@ public class TransformerFunctionFind extends TransformerFunction {
         var streamer = context.getJsonElementStreamer(null);
         if (streamer == null)
             return null;
+        var hasBy = context.has("by");
         var by = context.getJsonElement("by", false);
         var index = new AtomicInteger(0);
         var adapter = context.getAdapter();
         return streamer.stream()
                 .filter(item -> {
+                    if (!hasBy) {
+                        return adapter.isTruthy(item);
+                    }
                     var condition = context.transformItem(by, item, index.getAndIncrement());
                     return adapter.isTruthy(condition);
                 })

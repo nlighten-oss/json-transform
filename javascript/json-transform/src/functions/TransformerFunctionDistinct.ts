@@ -25,11 +25,12 @@ class TransformerFunctionDistinct extends TransformerFunction {
     const streamer = await context.getJsonElementStreamer(null);
     if (streamer == null) return null;
 
+    const hasBy = context.has("by");
     const by = await context.getJsonElement("by", false);
     const stream = streamer.stream();
     return JsonElementStreamer.fromTransformedStream(
       context,
-      isNullOrUndefined(by)
+      !hasBy
         ? stream.distinctBy(getUnique)
         : stream.distinctBy(async item => getUnique(await context.transformItem(by, item))),
     );

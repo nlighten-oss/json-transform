@@ -11,10 +11,10 @@ public class TransformerFunctionSort extends TransformerFunction {
     public TransformerFunctionSort() {
         super(FunctionDescription.of(
                 Map.of(
-                        "by", ArgumentType.of(ArgType.Transformer).position(0),
-                        "order", ArgumentType.of(ArgType.Enum).position(1).defaultEnum("ASC"),
-                        "type", ArgumentType.of(ArgType.Enum).position(2).defaultEnum("AUTO"),
-                        "then", ArgumentType.of(ArgType.Array).position(3).defaultIsNull(true)
+                    "by", ArgumentType.of(ArgType.Transformer).position(0),
+                    "order", ArgumentType.of(ArgType.Enum).position(1).defaultEnum("ASC"),
+                    "type", ArgumentType.of(ArgType.Enum).position(2).defaultEnum("AUTO"),
+                    "then", ArgumentType.of(ArgType.Array).position(3).defaultIsNull(true)
                 )
         ));
     }
@@ -31,17 +31,10 @@ public class TransformerFunctionSort extends TransformerFunction {
         var adapter = context.getAdapter();
         if (!context.has("by")) {
             // does not have sort "by" (can sort inside the stream)
-            Comparator<Object> comparator = type == null || "AUTO".equals(type)
-                             ? adapter.comparator()
-                             : switch (type) {
-                                  case "NUMBER" -> Comparator.comparing(adapter::getNumberAsBigDecimal);
-                                  case "BOOLEAN" -> Comparator.comparing(adapter::getBoolean);
-                                  //case "string"
-                                  default -> Comparator.comparing(adapter::getAsString);
-                               };
+            Comparator<Object> comparator = FunctionHelpers.createComparator(adapter, type);
             return JsonElementStreamer.fromTransformedStream(context, arr.stream()
-                        .sorted(descending ? comparator.reversed() : comparator)
-                                                            );
+                .sorted(descending ? comparator.reversed() : comparator)
+            );
         } else {
             var by = context.getJsonElement( "by", false);
             var chain = new ArrayList<>();

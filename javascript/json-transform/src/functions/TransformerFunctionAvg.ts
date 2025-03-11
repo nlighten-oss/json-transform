@@ -20,6 +20,7 @@ class TransformerFunctionAvg extends TransformerFunction {
     if (value == null || value.knownAsEmpty()) {
       return null;
     }
+    const hasBy = context.has("by");
     const by = await context.getJsonElement("by", false);
     const _default = (await context.getBigDecimal("default")) ?? BigDecimal(0);
     let size = 0;
@@ -27,7 +28,7 @@ class TransformerFunctionAvg extends TransformerFunction {
       .stream()
       .map(async t => {
         size++;
-        const res = isNullOrUndefined(by) ? t : await context.transformItem(by, t);
+        const res = !hasBy ? t : await context.transformItem(by, t);
         return isNullOrUndefined(res) ? _default : BigDecimal(res);
       })
       .reduce((a: BigNumber, c) => a.plus(c));

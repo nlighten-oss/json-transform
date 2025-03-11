@@ -28,9 +28,9 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
 
     static {
         registerFunctions(
-                Map.entry("all",new TransformerFunctionEvery()),
+                Map.entry("all",new TransformerFunctionEvery()), // * alias for every
                 Map.entry("and", new TransformerFunctionAnd()),
-                Map.entry("any", new TransformerFunctionSome()),
+                Map.entry("any", new TransformerFunctionSome()), // * alias for some
                 Map.entry("at",new TransformerFunctionAt()),
                 Map.entry("avg",new TransformerFunctionAvg()),
                 Map.entry("base64", new TransformerFunctionBase64()),
@@ -49,6 +49,7 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
                 Map.entry("every",new TransformerFunctionEvery()),
                 Map.entry("filter", new TransformerFunctionFilter()),
                 Map.entry("find", new TransformerFunctionFind()),
+                Map.entry("findindex", new TransformerFunctionFindIndex()),
                 Map.entry("first", new TransformerFunctionCoalesce()), // * alias for coalesce
                 Map.entry("flat", new TransformerFunctionFlat()),
                 Map.entry("flatten",new TransformerFunctionFlatten()),
@@ -56,6 +57,7 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
                 Map.entry("formparse", new TransformerFunctionFormParse()),
                 Map.entry("group", new TransformerFunctionGroup()),
                 Map.entry("if", new TransformerFunctionIf()),
+                Map.entry("indexof", new TransformerFunctionIndexOf()),
                 Map.entry("is", new TransformerFunctionIs()),
                 Map.entry("isnull", new TransformerFunctionIsNull()),
                 Map.entry("join", new TransformerFunctionJoin()),
@@ -87,6 +89,7 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
                 Map.entry("range", new TransformerFunctionRange()),
                 Map.entry("raw", new TransformerFunctionRaw()),
                 Map.entry("reduce", new TransformerFunctionReduce()),
+                Map.entry("repeat", new TransformerFunctionRepeat()),
                 Map.entry("replace", new TransformerFunctionReplace()),
                 Map.entry("reverse", new TransformerFunctionReverse()),
                 Map.entry("slice", new TransformerFunctionSlice()),

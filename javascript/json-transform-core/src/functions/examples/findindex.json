@@ -1,0 +1,61 @@
+[
+  {
+    "name": "object - found",
+    "given": {
+      "input": [0, [], "a"],
+      "definition": {
+        "$$findindex": "$",
+        "by": "##current"
+      }
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "object - explicit boolean",
+    "given": {
+      "input": ["a", "1", "true"],
+      "definition": {
+        "$$findindex": "$",
+        "by": "$$boolean:##current"
+      }
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "object - not found",
+    "given": {
+      "input": ["a", "1", "false"],
+      "definition": {
+        "$$findindex": "$",
+        "by": "$$boolean:##current"
+      }
+    },
+    "expect": {
+      "equal": -1
+    }
+  },
+  {
+    "name": "inline - found",
+    "given": {
+      "input": [0, [], "a"],
+      "definition": "$$findindex(##current):$"
+    },
+    "expect": {
+      "equal": 2
+    }
+  },
+  {
+    "name": "inline - not found",
+    "given": {
+      "input": [0, [], "false"],
+      "definition": "$$findindex('$$boolean:##current'):$"
+    },
+    "expect": {
+      "equal": -1
+    }
+  }
+]

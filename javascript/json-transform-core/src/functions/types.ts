@@ -20,12 +20,14 @@ export enum EmbeddedTransformerFunction {
   every = "every", // boolean
   filter = "filter", // #SPECIAL
   find = "find", // #SPECIAL
+  findindex = "findindex", // number
   flat = "flat", // #SPECIAL
   flatten = "flatten", // object ??
   form = "form", // string
   formparse = "formparse", // object
   group = "group", // object ??
   if = "if", // #SPECIAL
+  indexof = "indexof", // number
   is = "is", // boolean
   isnull = "isnull", // boolean
   join = "join", // string
@@ -56,6 +58,7 @@ export enum EmbeddedTransformerFunction {
   range = "range", // number[]
   raw = "raw", // #SPECIAL
   reduce = "reduce", // #SPECIAL
+  repeat = "repeat", // #SPECIAL
   replace = "replace", // string
   reverse = "reverse", // #SPECIAL
   slice = "slice", // #SPECIAL

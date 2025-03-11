@@ -10,7 +10,7 @@ public class TransformerFunctionFilter extends TransformerFunction {
     public TransformerFunctionFilter() {
         super(FunctionDescription.of(
             Map.of(
-            "by", ArgumentType.of(ArgType.Transformer).position(0).defaultIsNull(true)
+            "by", ArgumentType.of(ArgType.Transformer).position(0)
             )
         ));
     }

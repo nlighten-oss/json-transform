@@ -183,6 +183,26 @@ public abstract class JsonAdapter<JE, JA extends Iterable<JE>, JO extends JE> {
     public abstract Boolean getBoolean(Object value);
 
     /**
+     * Convert the specified object to one of supported types
+     * @param type type of object to extract as ("NUMBER" / "BOOLEAN" / "STRING" / "AUTO")
+     * @param value the value
+     * @return the extracted value
+     */
+    public Object getAs(String type, Object value) {
+        if ("NUMBER".equals(type) || isJsonNumber(value)) {
+            return getNumberAsBigDecimal(value);
+        }
+        if ("BOOLEAN".equals(type) || isJsonBoolean(value)) {
+            return getBoolean(value);
+        }
+        if ("STRING".equals(type) || isJsonString(value)) {
+            return getAsString(value);
+        }
+        // "AUTO"
+        return value;
+    }
+
+    /**
      * Compares two Json elements
      * @param a the first Json element
      * @param b the second Json element

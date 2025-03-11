@@ -1,10 +1,12 @@
 package co.nlighten.jsontransform.functions;
 
+import co.nlighten.jsontransform.JsonElementStreamer;
 import co.nlighten.jsontransform.functions.common.*;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 
 public class TransformerFunctionRange extends TransformerFunction {
     public TransformerFunctionRange() {
@@ -25,12 +27,10 @@ public class TransformerFunctionRange extends TransformerFunction {
         }
         var step = context.getBigDecimal("step");
         var size = end.subtract(start).divideToIntegralValue(step).add(BigDecimal.ONE).intValue();
-        var result = new BigDecimal[size];
-        var index = 0;
-        for (var l = start; l.compareTo(end) <= 0; l = l.add(step)) {
-            result[index] = l;
-            index++;
-        }
-        return result;
+
+        var value = new AtomicReference<>(start);
+        return JsonElementStreamer.fromTransformedStream(context,
+                Stream.generate(() -> value.getAndUpdate(next -> next.add(step))).limit(size)
+        );
     }
 }

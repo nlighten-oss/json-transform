@@ -1,8 +1,11 @@
 package co.nlighten.jsontransform.functions.common;
 
+import co.nlighten.jsontransform.adapters.JsonAdapter;
+
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Comparator;
 import java.util.Locale;
 
 public class FunctionHelpers {
@@ -33,5 +36,16 @@ public class FunctionHelpers {
             }
         }
         return new DecimalFormat(pattern, symbols);
+    }
+
+    public static Comparator<Object> createComparator(JsonAdapter<?, ?, ?> adapter, String type) {
+        return type == null || "AUTO".equals(type)
+                ? adapter.comparator()
+                : switch (type) {
+            case "NUMBER" -> Comparator.comparing(adapter::getNumberAsBigDecimal);
+            case "BOOLEAN" -> Comparator.comparing(adapter::getBoolean);
+            //case "string"
+            default -> Comparator.comparing(adapter::getAsString);
+        };
     }
 }

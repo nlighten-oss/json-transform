@@ -34,7 +34,7 @@ export const BigDecimal = BigNumber.clone({
   DECIMAL_PLACES: 15,
 });
 
-export const RoundingModes: Record<string, number> = {
+export const RoundingModes: Record<string, BigNumber.RoundingMode> = {
   UP: BigNumber.ROUND_UP,
   DOWN: BigNumber.ROUND_DOWN,
   CEILING: BigNumber.ROUND_CEIL,

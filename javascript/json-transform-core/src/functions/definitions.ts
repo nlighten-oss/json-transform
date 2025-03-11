@@ -621,7 +621,28 @@ export default {
         description: "A predicate transformer for an element",
         type: "transformer",
         position: 0,
-        required: true,
+        default: "##current",
+        transformerArguments: [
+          { name: "##current", type: "any", position: 0, description: "Current element" },
+          { name: "##index", type: "integer", position: 1, description: "Current index" },
+        ],
+      },
+    ],
+  },
+  findindex: {
+    description:
+      "Find the index of the first element in a specified array that satisfy the predicate transformer.\n\nIf none of the elements satisfy the predicate the result will be `-1`.",
+    usageNotes:
+      ":::info\npredicate `by` should resolve to a `boolean` value, it uses the [truthy logic](../truthy-logic)\n:::",
+    inputSchema: { type: "array", required: true, description: "Array of elements" },
+    outputSchema: { type: "number" },
+    arguments: [
+      {
+        name: "by",
+        description: "A predicate transformer for an element",
+        type: "transformer",
+        position: 0,
+        default: "##current",
         transformerArguments: [
           { name: "##current", type: "any", position: 0, description: "Current element" },
           { name: "##index", type: "integer", position: 1, description: "Current index" },
@@ -723,6 +744,20 @@ export default {
     arguments: [
       { name: "then", required: true, description: "Value to return if condition is true", type: "any", position: 0 },
       { name: "else", description: "Value to return if condition is false", type: "any", position: 1, default: null },
+    ],
+  },
+  indexof: {
+    description: "Find the index of the first element that matches the specified value.",
+    inputSchema: { type: "array", required: true, description: "Array of elements" },
+    outputSchema: { type: "number" },
+    arguments: [
+      {
+        name: "of",
+        description: "The value to look for",
+        type: "any",
+        position: 0,
+        required: true,
+      },
     ],
   },
   is: {
@@ -1069,9 +1104,9 @@ export default {
   max: {
     description: "Returns the max of all values in the array",
     inputSchema: { type: "array", required: true, description: "Array of elements" },
-    outputSchemaTemplate: { type: "number", $comment: "BigDecimal" },
+    outputSchemaTemplate: { type: "object", $comment: "Same as picked element" },
     arguments: [
-      { name: "default", type: "BigDecimal", description: "The default value to use for empty values", position: 0 },
+      { name: "default", type: "any", description: "The default value to use for empty values", position: 0 },
       {
         name: "type",
         description: "Type of values to expect when ordering the input array",
@@ -1114,9 +1149,9 @@ export default {
   min: {
     description: "Returns the min of all values in the array",
     inputSchema: { type: "array", required: true, description: "Array of elements" },
-    outputSchemaTemplate: { type: "number", $comment: "BigDecimal" },
+    outputSchemaTemplate: { type: "object", $comment: "Same as picked element" },
     arguments: [
-      { name: "default", description: "The default value to use for empty values", type: "BigDecimal", position: 0 },
+      { name: "default", type: "any", description: "The default value to use for empty values", position: 0 },
       {
         name: "type",
         description: "Type of values to expect when ordering the input array",
@@ -1534,6 +1569,20 @@ export default {
         description: "Initial value to start the accumulation with",
         type: "any",
         position: 1,
+        required: true,
+      },
+    ],
+  },
+  repeat: {
+    description: "Creates an array with the specified value repeated `count` times",
+    inputSchema: { type: "any", required: true, description: "Value to repeat" },
+    outputSchemaTemplate: { type: "array", description: "of same type as input" },
+    arguments: [
+      {
+        name: "count",
+        description: "The amount of times to repeat the value",
+        type: "integer",
+        position: 0,
         required: true,
       },
     ],

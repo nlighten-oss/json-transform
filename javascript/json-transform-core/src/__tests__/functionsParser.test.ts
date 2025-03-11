@@ -245,6 +245,49 @@ describe("functions schema detection", () => {
           );
           break;
         }
+        case EmbeddedTransformerFunction.repeat: {
+          const givenTypeMap: Record<string, TypeSchema> = {
+            "$.a0": INTEGER_ARRAY,
+            "$.a0[]": INTEGER,
+            "$.a1": STRING,
+          };
+          expect(
+            transformerResult(
+              {
+                inline: `${alias}(irrelevant):$.a0`,
+                inline2: `${alias}(irrelevant):$.a1`,
+                object: {
+                  [alias]: "$.a0",
+                },
+              },
+              givenTypeMap,
+            ),
+          ).toStrictEqual(
+            createFlowTraversalResult({
+              paths: {
+                $: {
+                  additionalProperties: false,
+                  properties: {
+                    inline: { type: "array", items: INTEGER_ARRAY },
+                    inline2: STRING_ARRAY,
+                    object: { type: "array", items: INTEGER_ARRAY },
+                  },
+                  type: "object",
+                },
+                ...givenTypeMap,
+                "$.inline": { type: "array", items: INTEGER_ARRAY },
+                "$.inline[]": INTEGER_ARRAY,
+                "$.inline[][]": INTEGER,
+                "$.inline2": STRING_ARRAY,
+                "$.inline2[]": STRING,
+                "$.object": { type: "array", items: INTEGER_ARRAY },
+                "$.object[]": INTEGER_ARRAY,
+                "$.object[][]": INTEGER,
+              },
+            }),
+          );
+          break;
+        }
         case EmbeddedTransformerFunction.lookup: {
           const givenTypeMap: Record<string, TypeSchema> = {
             "$.a0": ARRAY,

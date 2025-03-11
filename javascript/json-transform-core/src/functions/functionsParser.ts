@@ -1,13 +1,6 @@
-import {
-  Argument,
-  EmbeddedTransformerFunction,
-  EmbeddedTransformerFunctions,
-  FunctionDefinition,
-  FunctionDescriptor,
-} from "./types";
+import { Argument, EmbeddedTransformerFunction, FunctionDefinition, FunctionDescriptor } from "./types";
 import parseDefinitions from "./parseDefinitions";
 import { HandleFunctionMethod } from "../ParseContext";
-import definitions from "./definitions";
 import functions from "./functions";
 
 type ObjectFunctionMatchResult = {

@@ -455,6 +455,16 @@ class TransformerParser {
         }
         break;
       }
+      case EmbeddedTransformerFunction.repeat: {
+        TransformerParser.parse(value, targetPath, localPath + "[]", previousPaths, paths, context);
+        if (context.hasPaths()) {
+          context.setPath(targetPath + localPath, {
+            type: "array",
+            items: structuredClone(context.resolve(targetPath + localPath + "[]")),
+          });
+        }
+        break;
+      }
       case EmbeddedTransformerFunction.lookup: {
         // input is array of known size (object with result type is at index 0)
         // * This is a special case because the transformer uses ##current/{alias} / ##index to reference the object / iteration element

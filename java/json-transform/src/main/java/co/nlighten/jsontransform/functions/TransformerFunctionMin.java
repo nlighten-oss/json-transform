@@ -2,7 +2,9 @@ package co.nlighten.jsontransform.functions;
 
 import co.nlighten.jsontransform.functions.common.*;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 
@@ -22,36 +24,30 @@ public class TransformerFunctionMin extends TransformerFunction {
         var streamer = context.getJsonElementStreamer(null);
         if (streamer == null || streamer.knownAsEmpty())
             return null;
-        var by = context.getJsonElement("by", true);
-
+        var hasBy = context.has("by");
         var type = context.getEnum("type");
+        var def = context.getJsonElement("default", true);
 
-        var def = context.getJsonElement("default");
         var adapter = context.getAdapter();
-        Comparator<Object> comparator = type == null || "AUTO".equals(type)
-                                    ? adapter.comparator()
-                                    : switch (type) {
-            case "NUMBER" -> Comparator.comparing(adapter::getNumberAsBigDecimal);
-            case "BOOLEAN" -> Comparator.comparing(adapter::getBoolean);
-            //case "string"
-            default -> Comparator.comparing(adapter::getAsString);
-        };
-        var result = streamer.stream()
-                .map(t -> {
-                    var res = !adapter.isNull(by) ? context.transformItem(by, t) : t;
-                    return adapter.isNull(res) ? def : res;
-                })
-                .min(comparator);
-        if (result.isPresent()) {
-            var resultValue = result.get();
-            if ("NUMBER".equals(type) || adapter.isJsonNumber(resultValue)) {
-                return adapter.getNumberAsBigDecimal(resultValue);
-            } else if ("BOOLEAN".equals(type) || adapter.isJsonBoolean(resultValue)) {
-                return adapter.getBoolean(resultValue);
-            } else {
-                return adapter.getAsString(resultValue);
-            }
+        if (!hasBy) {
+            var comparator = FunctionHelpers.createComparator(adapter, type);
+            var result = streamer.stream()
+                    .map(t -> adapter.isNull(t) ? def : t)
+                    .min(comparator);
+            return result.isPresent() ? adapter.getAs(type, result.get()) : adapter.jsonNull();
+        } else {
+            var by = context.getJsonElement("by", false);
+            var comparator = CompareBy.createByComparator(adapter, 0, type);
+            var result = streamer.stream()
+                    .map(item -> {
+                        var cb = new CompareBy(item);
+                        var t = context.transformItem(by, item);
+                        cb.by = new ArrayList<>();
+                        cb.by.add(adapter.isNull(t) ? def : t);
+                        return cb;
+                    })
+                    .min(comparator);
+            return result.isPresent() ? adapter.getAs(type, result.get().value) : adapter.jsonNull();
         }
-        return adapter.jsonNull();
     }
 }

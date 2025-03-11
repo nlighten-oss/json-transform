@@ -44,15 +44,19 @@
     "given": {
       "input": [
         {
+          "id": 1,
           "value": 4
         },
         {
+          "id": 2,
           "value": 2
         },
         {
+          "id": 3,
           "value": 13.45
         },
         {
+          "id": 4,
           "value": null
         }
       ],
@@ -62,7 +66,10 @@
       }
     },
     "expect": {
-      "isNull": true
+      "equal": {
+        "id": 4,
+        "value": null
+      }
     }
   },
   {
@@ -85,11 +92,13 @@
       "definition": {
         "$$min": "$",
         "by": "##current.value",
-        "default": 1
+        "default": 3
       }
     },
     "expect": {
-      "equal": 1
+      "equal": {
+        "value": 2
+      }
     }
   }
 ]

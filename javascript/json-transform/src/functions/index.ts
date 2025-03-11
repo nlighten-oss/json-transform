@@ -17,12 +17,14 @@ import TransformerFunctionEval from "./TransformerFunctionEval";
 import TransformerFunctionEvery from "./TransformerFunctionEvery";
 import TransformerFunctionFilter from "./TransformerFunctionFilter";
 import TransformerFunctionFind from "./TransformerFunctionFind";
+import TransformerFunctionFindIndex from "./TransformerFunctionFindIndex";
 import TransformerFunctionFlat from "./TransformerFunctionFlat";
 import TransformerFunctionFlatten from "./TransformerFunctionFlatten";
 import TransformerFunctionForm from "./TransformerFunctionForm";
 import TransformerFunctionFormParse from "./TransformerFunctionFormParse";
 import TransformerFunctionGroup from "./TransformerFunctionGroup";
 import TransformerFunctionIf from "./TransformerFunctionIf";
+import TransformerFunctionIndexOf from "./TransformerFunctionIndexOf";
 import TransformerFunctionIs from "./TransformerFunctionIs";
 import TransformerFunctionIsNull from "./TransformerFunctionIsNull";
 import TransformerFunctionJoin from "./TransformerFunctionJoin";
@@ -53,6 +55,7 @@ import TransformerFunctionPartition from "./TransformerFunctionPartition";
 import TransformerFunctionRange from "./TransformerFunctionRange";
 import TransformerFunctionRaw from "./TransformerFunctionRaw";
 import TransformerFunctionReduce from "./TransformerFunctionReduce";
+import TransformerFunctionRepeat from "./TransformerFunctionRepeat";
 import TransformerFunctionReplace from "./TransformerFunctionReplace";
 import TransformerFunctionReverse from "./TransformerFunctionReverse";
 import TransformerFunctionSlice from "./TransformerFunctionSlice";
@@ -82,9 +85,9 @@ import TransformerFunctionYaml from "./TransformerFunctionYaml";
 import TransformerFunctionYamlParse from "./TransformerFunctionYamlParse";
 
 export default {
-  all: new TransformerFunctionEvery(),
+  all: new TransformerFunctionEvery(), // * alias for every
   and: new TransformerFunctionAnd(),
-  any: new TransformerFunctionSome(),
+  any: new TransformerFunctionSome(), // * alias for some
   at: new TransformerFunctionAt(),
   avg: new TransformerFunctionAvg(),
   base64: new TransformerFunctionBase64(),
@@ -103,6 +106,7 @@ export default {
   every: new TransformerFunctionEvery(),
   filter: new TransformerFunctionFilter(),
   find: new TransformerFunctionFind(),
+  findindex: new TransformerFunctionFindIndex(),
   first: new TransformerFunctionCoalesce(), // * alias for coalesce
   flat: new TransformerFunctionFlat(),
   flatten: new TransformerFunctionFlatten(),
@@ -110,6 +114,7 @@ export default {
   formparse: new TransformerFunctionFormParse(),
   group: new TransformerFunctionGroup(),
   if: new TransformerFunctionIf(),
+  indexof: new TransformerFunctionIndexOf(),
   is: new TransformerFunctionIs(),
   isnull: new TransformerFunctionIsNull(),
   join: new TransformerFunctionJoin(),
@@ -140,6 +145,7 @@ export default {
   range: new TransformerFunctionRange(),
   raw: new TransformerFunctionRaw(),
   reduce: new TransformerFunctionReduce(),
+  repeat: new TransformerFunctionRepeat(),
   replace: new TransformerFunctionReplace(),
   reverse: new TransformerFunctionReverse(),
   slice: new TransformerFunctionSlice(),

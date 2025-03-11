@@ -19,12 +19,14 @@ import _eval from "./examples/eval.json";
 import _every from "./examples/every.json";
 import _filter from "./examples/filter.json";
 import _find from "./examples/find.json";
+import _findindex from "./examples/findindex.json";
 import _flat from "./examples/flat.json";
 import _flatten from "./examples/flatten.json";
 import _form from "./examples/form.json";
 import _formparse from "./examples/formparse.json";
 import _group from "./examples/group.json";
 import _if from "./examples/if.json";
+import _indexof from "./examples/indexof.json";
 import _is from "./examples/is.json";
 import _isnull from "./examples/isnull.json";
 import _join from "./examples/join.json";
@@ -55,6 +57,7 @@ import _partition from "./examples/partition.json";
 import _range from "./examples/range.json";
 import _raw from "./examples/raw.json";
 import _reduce from "./examples/reduce.json";
+import _repeat from "./examples/repeat.json";
 import _replace from "./examples/replace.json";
 import _reverse from "./examples/reverse.json";
 import _slice from "./examples/slice.json";
@@ -103,12 +106,14 @@ export default {
   every: _every,
   filter: _filter,
   find: _find,
+  findindex: _findindex,
   flat: _flat,
   flatten: _flatten,
   form: _form,
   formparse: _formparse,
   group: _group,
   if: _if,
+  indexof: _indexof,
   is: _is,
   isnull: _isnull,
   join: _join,
@@ -139,6 +144,7 @@ export default {
   range: _range,
   raw: _raw,
   reduce: _reduce,
+  repeat: _repeat,
   replace: _replace,
   reverse: _reverse,
   slice: _slice,

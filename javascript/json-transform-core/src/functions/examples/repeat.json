@@ -1,0 +1,59 @@
+[
+  {
+    "name": "Inline value from input",
+    "given": {
+      "input": "A",
+      "definition": "$$repeat(3):$"
+    },
+    "expect": {
+      "equal": ["A","A","A"]
+    }
+  },
+  {
+    "name": "Inline value and count from input",
+    "given": {
+      "input": {
+        "value": "A",
+        "count": 3
+      },
+      "definition": "$$repeat($.count):$.value"
+    },
+    "expect": {
+      "equal": ["A","A","A"]
+    }
+  },
+  {
+    "name": "Object value from input",
+    "given": {
+      "input": "A",
+      "definition": {
+        "$$repeat": "$",
+        "count": 3
+      }
+    },
+    "expect": {
+      "equal": ["A","A","A"]
+    }
+  },
+  {
+    "name": "Object repeat objects",
+    "given": {
+      "input": {
+        "A": 2
+      },
+      "definition": {
+        "$$repeat": "$",
+        "count": 3
+      }
+    },
+    "expect": {
+      "equal": [{
+        "A": 2
+      },{
+        "A": 2
+      },{
+        "A": 2
+      }]
+    }
+  }
+]

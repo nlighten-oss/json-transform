@@ -1,15 +1,8 @@
 import TransformerFunction from "./TransformerFunction";
 import { ParameterResolver } from "../../ParameterResolver";
 import { JsonTransformerFunction } from "../../JsonTransformerFunction";
-import {
-  compareTo,
-  isNullOrUndefined,
-  getAsString,
-  getDocumentContext,
-  isMap,
-  toObjectFieldPath,
-} from "../../JsonHelpers";
-import { BigDecimal, MAX_SCALE_ROUNDING, RoundingModes } from "./FunctionHelpers";
+import { compareTo, isNullOrUndefined, getAsString, getDocumentContext, toObjectFieldPath } from "../../JsonHelpers";
+import { BigDecimal } from "./FunctionHelpers";
 import JsonElementStreamer from "../../JsonElementStreamer";
 import BigNumber from "bignumber.js";
 import DocumentContext from "../../DocumentContext";

@@ -19,9 +19,10 @@ public class TransformerFunctionDistinct extends TransformerFunction {
     public Object apply(FunctionContext context) {
         var streamer = context.getJsonElementStreamer(null);
         if (streamer == null) return null;
-        var by = context.getJsonElement( "by", false);
+        var hasBy = context.has("by");
         var adapter = context.getAdapter();
-        if (!adapter.isNull(by)) {
+        if (hasBy) {
+            var by = context.getJsonElement( "by", false);
             return JsonElementStreamer.fromTransformedStream(context, streamer.stream()
                         .map(item -> {
                             var toDistinctBy = context.transformItem(by, item);

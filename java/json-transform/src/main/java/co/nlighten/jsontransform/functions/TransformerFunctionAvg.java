@@ -22,6 +22,7 @@ public class TransformerFunctionAvg extends TransformerFunction {
         var streamer = context.getJsonElementStreamer(null);
         if (streamer == null || streamer.knownAsEmpty())
             return null;
+        var hasBy = context.has("by");
         var by = context.getJsonElement( "by", false);
         var _default = Objects.requireNonNullElse(context.getBigDecimal("default"), BigDecimal.ZERO);
         var size = new AtomicInteger(0);
@@ -30,7 +31,7 @@ public class TransformerFunctionAvg extends TransformerFunction {
         var result = streamer.stream()
                 .map(t -> {
                     size.getAndIncrement();
-                    var res = !adapter.isNull(by) ? context.transformItem(by, t) : t;
+                    var res = hasBy ? context.transformItem(by, t) : t;
                     return adapter.isNull(res) ? _default : adapter.getNumberAsBigDecimal(res);
                 })
                 .reduce(identity, BigDecimal::add)

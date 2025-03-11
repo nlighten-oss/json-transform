@@ -19,8 +19,9 @@ public class CompareBy {
         Comparator<CompareBy> comparator;
         if (type == null || "AUTO".equalsIgnoreCase(type)) {
             comparator = (CompareBy a, CompareBy b) -> {
-                var compareResult = adapter.compareTo(a.by.get(index), b.by.get(index));
-                return Objects.requireNonNullElse(compareResult, 0);
+                var result = adapter.compareTo(a.by.get(index), b.by.get(index));
+                if (result == null) return 0;
+                return result;
             };
         } else {
             comparator = switch (type.toUpperCase()) {

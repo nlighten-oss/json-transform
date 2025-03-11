@@ -16,9 +16,13 @@ class TransformerFunctionFind extends TransformerFunction {
     const streamer = await context.getJsonElementStreamer(null);
     if (streamer == null) return null;
 
+    const hasBy = context.has("by");
     const by = await context.getJsonElement("by", false);
     let index = 0;
     return await streamer.stream().find(async item => {
+      if (!hasBy) {
+        return isTruthy(item);
+      }
       const condition = await context.transformItem(by, item, index++);
       return isTruthy(condition);
     });

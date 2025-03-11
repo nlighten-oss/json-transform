@@ -1,6 +1,9 @@
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
+import JsonElementStreamer from "../JsonElementStreamer";
+import { createAsyncSequence } from "@wortise/sequency";
+import { RoundingModes } from "./common/FunctionHelpers";
 
 class TransformerFunctionRange extends TransformerFunction {
   constructor() {
@@ -20,13 +23,19 @@ class TransformerFunctionRange extends TransformerFunction {
       return [];
     }
     const step = (await context.getBigDecimal("step")) ?? 1;
-    const result: any[] = []; //new BigDecimal[end.subtract(start).divide(step, RoundingMode.FLOOR).add(BigDecimal.ONE).intValue()];
-    let index = 0;
-    for (let l = start; l.comparedTo(end) <= 0; l = l.plus(step)) {
-      result.push(l);
-      index++;
-    }
-    return result;
+    const size = end.minus(start).dividedToIntegerBy(step).plus(1).integerValue(RoundingModes.DOWN).toNumber();
+
+    let value = start;
+    return JsonElementStreamer.fromTransformedStream(
+      context,
+      createAsyncSequence({
+        next: () => {
+          const result = value;
+          value = value.plus(step);
+          return Promise.resolve({ value: result });
+        },
+      }).take(size),
+    );
   }
 }
 

@@ -1,0 +1,48 @@
+[
+  {
+    "name": "object - found",
+    "given": {
+      "input": ["A", "B", "C"],
+      "definition": {
+        "$$indexof": "$",
+        "of": "B"
+      }
+    },
+    "expect": {
+      "equal": 1
+    }
+  },
+  {
+    "name": "object - not found",
+    "given": {
+      "input": ["A", "B", "C"],
+      "definition": {
+        "$$indexof": "$",
+        "of": "D"
+      }
+    },
+    "expect": {
+      "equal": -1
+    }
+  },
+  {
+    "name": "inline - found",
+    "given": {
+      "input": ["A", "B", "C"],
+      "definition": "$$indexof(B):$"
+    },
+    "expect": {
+      "equal": 1
+    }
+  },
+  {
+    "name": "inline - not found",
+    "given": {
+      "input": ["A", "B", "C"],
+      "definition": "$$indexof(D):$"
+    },
+    "expect": {
+      "equal": -1
+    }
+  }
+]

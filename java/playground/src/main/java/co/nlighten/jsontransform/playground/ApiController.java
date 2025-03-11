@@ -1,16 +1,26 @@
 package co.nlighten.jsontransform.playground;
 
 import co.nlighten.jsontransform.DebuggableTransformerFunctions;
+import co.nlighten.jsontransform.adapters.gson.GsonJsonAdapter;
 import co.nlighten.jsontransform.adapters.gson.GsonJsonTransformer;
 import co.nlighten.jsontransform.adapters.jackson.JacksonJsonTransformer;
 import co.nlighten.jsontransform.adapters.jsonorg.JsonOrgJsonTransformer;
 import co.nlighten.jsontransform.adapters.jsonsmart.JsonSmartJsonTransformer;
 import co.nlighten.jsontransform.adapters.pojo.PojoJsonTransformer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api")
 public class ApiController {
+
+    public ApiController() {
+        var builder = new GsonBuilder();
+        GsonConfiguration.setupBuilder(builder);
+        GsonJsonTransformer.DEFAULT_ADAPTER = new GsonJsonAdapter(builder::create);
+    }
+
 
     @PostMapping("/v1/transform/gson")
     public TransformTestResponse v1TransformGson(@RequestBody TransformTestRequest request){

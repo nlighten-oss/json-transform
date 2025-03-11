@@ -44,27 +44,33 @@
     "given": {
       "input": [
         {
+          "id": 1,
           "value": 4
         },
         {
+          "id": 2,
           "value": 2
         },
         {
+          "id": 3,
           "value": 13.45
         },
         {
+          "id": 4,
           "value": null
         }
       ],
       "definition": {
         "$$max": "$",
         "by": "##current.value",
-        "default": "zz",
-        "type": "STRING"
+        "default": "zz"
       }
     },
     "expect": {
-      "equal": "zz"
+      "equal": {
+        "id": 3,
+        "value": 13.45
+      }
     }
   },
   {
@@ -90,7 +96,9 @@
       }
     },
     "expect": {
-      "equal": 13.45
+      "equal": {
+        "value": 13.45
+      }
     }
   }
 ]

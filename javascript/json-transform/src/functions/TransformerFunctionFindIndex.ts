@@ -2,13 +2,12 @@ import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
 import FunctionContext from "./common/FunctionContext";
 import { isTruthy } from "../JsonHelpers";
-import JsonElementStreamer from "../JsonElementStreamer";
 
-class TransformerFunctionFilter extends TransformerFunction {
+class TransformerFunctionFindIndex extends TransformerFunction {
   constructor() {
     super({
       arguments: {
-        by: { type: ArgType.Transformer, position: 0 },
+        by: { type: ArgType.Transformer, position: 0, defaultIsNull: true },
       },
     });
   }
@@ -17,16 +16,17 @@ class TransformerFunctionFilter extends TransformerFunction {
     const streamer = await context.getJsonElementStreamer(null);
     if (streamer == null) return null;
 
+    const hasBy = context.has("by");
     const by = await context.getJsonElement("by", false);
     let index = 0;
-    return JsonElementStreamer.fromTransformedStream(
-      context,
-      streamer.stream().filter(async item => {
-        const condition = await context.transformItem(by, item, index++);
-        return isTruthy(condition);
-      }),
-    );
+    return await streamer.stream().indexOfFirst(async item => {
+      if (!hasBy) {
+        return isTruthy(item);
+      }
+      const condition = await context.transformItem(by, item, index++);
+      return isTruthy(condition);
+    });
   }
 }
 
-export default TransformerFunctionFilter;
+export default TransformerFunctionFindIndex;
