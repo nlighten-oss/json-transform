@@ -1,21 +1,20 @@
-import {
-  add,
-  addMilliseconds,
-  format,
-  formatISO,
-  fromUnixTime,
-  sub,
-  subMilliseconds,
-  parseJSON,
-  differenceInMilliseconds,
-  differenceInSeconds,
-  differenceInMinutes,
-  differenceInHours,
-  differenceInDays,
-  differenceInMonths,
-  differenceInYears,
-} from "date-fns";
-import { tz, TZDate } from "@date-fns/tz";
+import { add } from "date-fns/add";
+import { addMilliseconds } from "date-fns/addMilliseconds";
+import { format } from "date-fns/format";
+import { formatISO } from "date-fns/formatISO";
+import { fromUnixTime } from "date-fns/fromUnixTime";
+import { sub } from "date-fns/sub";
+import { subMilliseconds } from "date-fns/subMilliseconds";
+import { parseJSON } from "date-fns/parseJSON";
+import { differenceInMilliseconds } from "date-fns/differenceInMilliseconds";
+import { differenceInSeconds } from "date-fns/differenceInSeconds";
+import { differenceInMinutes } from "date-fns/differenceInMinutes";
+import { differenceInHours } from "date-fns/differenceInHours";
+import { differenceInDays } from "date-fns/differenceInDays";
+import { differenceInMonths } from "date-fns/differenceInMonths";
+import { differenceInYears } from "date-fns/differenceInYears";
+import { TZDate } from "@date-fns/tz/date";
+import { tz } from "@date-fns/tz/tz";
 import BigNumber from "bignumber.js";
 import TransformerFunction from "./common/TransformerFunction";
 import { ArgType } from "./common/ArgType";
