@@ -61,10 +61,7 @@ class FunctionsParser {
    * 5 - What comes after the colon (value) -- only when 'noArgs' = false
    */
   private inlineFunctionRegexFactory = (names: string[], global: boolean, noArgs: boolean) =>
-    new RegExp(
-      `\\$\\$(${Array.from(this.getNames()).join("|")})(\\((.*?)\\))?(:${noArgs ? "" : `([^"]*)`}|$|")`,
-      global ? "g" : undefined,
-    );
+    new RegExp(`\\$\\$(${names.join("|")})(\\((.*?)\\))?(:${noArgs ? "" : `([^"]*)`}|$|")`, global ? "g" : undefined);
 
   private objectFunctionRegexFactory = (names: string[]) => new RegExp(`(?<=")\\$\\$(${names.join("|")})":`, "g");
 
@@ -125,12 +122,7 @@ class FunctionsParser {
 
   matchInline(
     data: any,
-    callback?: (
-      funcName: EmbeddedTransformerFunction,
-      func: FunctionDescriptor,
-      value: any,
-      args: Record<string, any>,
-    ) => any,
+    callback?: (funcName: string, func: FunctionDescriptor, value: any, args: Record<string, any>) => any,
   ) {
     if (typeof data !== "string") return null;
 
@@ -138,9 +130,10 @@ class FunctionsParser {
     if (!m) {
       return null;
     }
-    const funcName = m[1] as EmbeddedTransformerFunction;
+    let funcName = m[1];
     let func = functionsParser.get(funcName);
     if (!func) return null;
+    if (func.aliasTo) funcName = func.aliasTo;
     if (func.subfunctions || callback) {
       const argsWithoutParenthesis = m[3];
       const args = parseArgs(func, argsWithoutParenthesis);
@@ -165,7 +158,7 @@ class FunctionsParser {
         }
         const func = getSubfunction(this.get(funcName), data);
         return {
-          name: funcName,
+          name: func.aliasTo ?? funcName,
           func,
           value,
           spec: data,

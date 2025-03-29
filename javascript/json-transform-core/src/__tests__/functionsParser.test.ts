@@ -53,12 +53,17 @@ describe("functions schema detection", () => {
             "$.a2": NUMBER_ARRAY,
             "$.a2[]": NUMBER,
           };
+          const altAlias = `$$${functionsParser.get(funcName).aliases?.[0]}`;
           expect(
             transformerResult(
               {
                 inline: `${alias}:$.a2`,
+                inlineAlias: `${altAlias}:$.a2`,
                 object: {
                   [alias]: [null, null, "A"],
+                },
+                objectAlias: {
+                  [altAlias]: [null, null, "A"],
                 },
                 object2: {
                   [alias]: [null, null, 0.5],
@@ -76,7 +81,9 @@ describe("functions schema detection", () => {
                   additionalProperties: false,
                   properties: {
                     inline: NUMBER,
+                    inlineAlias: NUMBER,
                     object: STRING,
+                    objectAlias: STRING,
                     object2: NUMBER,
                     object3: INTEGER,
                   },
@@ -84,7 +91,9 @@ describe("functions schema detection", () => {
                 },
                 ...givenTypeMap,
                 "$.inline": NUMBER,
+                "$.inlineAlias": NUMBER,
                 "$.object": STRING,
+                "$.objectAlias": STRING,
                 "$.object2": NUMBER,
                 "$.object3": INTEGER,
               },
