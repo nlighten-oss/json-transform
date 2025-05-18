@@ -32,7 +32,7 @@ export enum EmbeddedTransformerFunction {
   isnull = "isnull", // boolean
   join = "join", // string
   jsonparse = "jsonparse", // object ??
-  jsonpatch = "jsonpatch", // object ??
+  jsonpatch = "jsonpatch", // #SPECIAL
   jsonpath = "jsonpath", // object ??
   jsonpointer = "jsonpointer", // object ??
   jwtparse = "jwtparse", // object

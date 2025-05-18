@@ -677,6 +677,7 @@ describe("functions schema detection", () => {
           break;
         }
         case EmbeddedTransformerFunction.raw:
+        case EmbeddedTransformerFunction.jsonpatch:
         case EmbeddedTransformerFunction.value: {
           const givenTypeMap: Record<string, TypeSchema> = {
             "$.a0": INTEGER_ARRAY,

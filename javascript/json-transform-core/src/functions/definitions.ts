@@ -834,7 +834,6 @@ export default {
       '#### JSON Patch Operations\n\n| Operation | Example                                                                                           |\n|-----------|---------------------------------------------------------------------------------------------------|\n| Add       | `{ "op":"add", "path":"/...", "value":"..." }`                                                    |\n| Remove    | `{ "op":"remove", "path":"/..." }`                                                                |\n| Replace   | `{ "op":"replace", "path":"/...", "value":"..." }`                                                |\n| Move      | `{ "op":"move", "path":"/...", "from":"/..." }`                                                   |\n| Copy      | `{ "op":"copy", "path":"/...", "from":"/..." }`                                                   |\n| Test      | `{ "op":"test", "path":"/...", "value":"..." }` (if test fails, the function result will be null) |',
     inputSchema: { type: "any", required: true, description: "Object to patch" },
     outputSchemaTemplate: { type: "object", description: "Operations output" },
-    outputSchema: { type: "object" },
     arguments: [
       {
         name: "ops",

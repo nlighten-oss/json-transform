@@ -386,6 +386,7 @@ class TransformerParser {
         }
         break;
       }
+      case EmbeddedTransformerFunction.jsonpatch:
       case EmbeddedTransformerFunction.value: {
         // input and output should have the same schema
         TransformerParser.parse(value, targetPath, localPath, previousPaths, paths, context);
