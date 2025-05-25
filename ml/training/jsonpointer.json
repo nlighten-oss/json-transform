@@ -1,5 +1,0 @@
-{
-  "gets the value at the specified JSON Pointer, using inline definition (inline form)": "$$jsonpointer(get,$.pointer):$",
-  "sets the value at the specified JSON Pointer, using inline definition (inline form)": "$$jsonpointer(SET,/b,'$.b[2]'):$",
-  "removes the value at the specified JSON Pointer, using inline definition (inline form)": "$$jsonpointer(REMOVE,/b/2):$"
-}

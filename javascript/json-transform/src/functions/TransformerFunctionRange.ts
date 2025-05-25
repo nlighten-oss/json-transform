@@ -4,6 +4,7 @@ import FunctionContext from "./common/FunctionContext";
 import JsonElementStreamer from "../JsonElementStreamer";
 import { createAsyncSequence } from "@wortise/sequency";
 import { RoundingModes } from "./common/FunctionHelpers";
+import BigNumber from "bignumber.js";
 
 class TransformerFunctionRange extends TransformerFunction {
   constructor() {
@@ -17,12 +18,31 @@ class TransformerFunctionRange extends TransformerFunction {
   }
 
   override async apply(context: FunctionContext): Promise<any> {
-    const start = await context.getBigDecimal("start");
-    const end = await context.getBigDecimal("end");
-    if (start == null || end == null) {
-      return [];
+    let start: BigNumber | null;
+    let end: BigNumber | null;
+    let step: BigNumber;
+    if (context.has("start")) {
+      start = await context.getBigDecimal("start");
+      end = await context.getBigDecimal("end");
+      step = (await context.getBigDecimal("step")) ?? BigNumber(1);
+    } else {
+      const arr = await context.getJsonArray(null);
+      if (!arr) {
+        return null;
+      }
+      start = arr[0];
+      end = arr[1];
+      step = arr[2] ?? BigNumber(1);
     }
-    const step = (await context.getBigDecimal("step")) ?? 1;
+    // sanity check
+    if (
+      start === null ||
+      end === null ||
+      (end.lt(start) && step.isPositive()) ||
+      (end.gt(start) && step.isNegative())
+    ) {
+      return null;
+    }
     const size = end.minus(start).dividedToIntegerBy(step).plus(1).integerValue(RoundingModes.DOWN).toNumber();
 
     let value = start;

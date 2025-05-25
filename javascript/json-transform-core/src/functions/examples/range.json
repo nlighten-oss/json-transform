@@ -1,6 +1,6 @@
 [
   {
-    "name": "Inline null input",
+    "name": "Inline - null input",
     "given": {
       "input": null,
       "definition": "$$range(1,5)"
@@ -10,7 +10,7 @@
     }
   },
   {
-    "name": "Inline null input and step 1",
+    "name": "Inline - null input and step 1",
     "given": {
       "input": null,
       "definition": "$$range(1,5,1)"
@@ -20,7 +20,7 @@
     }
   },
   {
-    "name": "Inline decimal input and step 0.5",
+    "name": "Inline - decimal input and step 0.5",
     "given": {
       "input": 2.7,
       "definition": "$$range(1.5,$,0.5)"
@@ -34,7 +34,7 @@
     }
   },
   {
-    "name": "Inline null input with step 2",
+    "name": "Inline - null input with step 2",
     "given": {
       "input": null,
       "definition": "$$range(1,5,2)"
@@ -44,7 +44,7 @@
     }
   },
   {
-    "name": "Inline null input with step 10",
+    "name": "Inline - null input with step 10",
     "given": {
       "input": null,
       "definition": "$$range(10,45,10)"
@@ -54,7 +54,7 @@
     }
   },
   {
-    "name": "Inline object input with start, end and step",
+    "name": "Inline - object input with start, end and step",
     "given": {
       "input": {
         "start": 10,
@@ -68,23 +68,121 @@
     }
   },
   {
-    "name": "Inline null input with no arguments",
+    "name": "Inline - null input with no arguments",
     "given": {
       "input": null,
       "definition": "$$range"
     },
     "expect": {
-      "equal": []
+      "isNull": true
     }
   },
   {
-    "name": "Inline null input with colon and one argument",
+    "name": "Inline - null input with colon and one argument",
     "given": {
       "input": null,
       "definition": "$$range(1):"
     },
     "expect": {
-      "equal": []
+      "isNull": true
+    }
+  },
+  {
+    "name": "Inline - range array arguments from input",
+    "given": {
+      "input": [1, 5],
+      "definition": "$$range:$"
+    },
+    "expect": {
+      "equal": [1, 2, 3, 4, 5]
+    }
+  },
+  {
+    "name": "Object - null input",
+    "given": {
+      "input": null,
+      "definition": { "$$range": [1, 5] }
+    },
+    "expect": {
+      "equal": [1, 2, 3, 4, 5]
+    }
+  },
+  {
+    "name": "Object - null input and step 1",
+    "given": {
+      "input": null,
+      "definition": { "$$range": [1, 5, 1] }
+    },
+    "expect": {
+      "equal": [1, 2, 3, 4, 5]
+    }
+  },
+  {
+    "name": "Object - decimal input and step 0.5",
+    "given": {
+      "input": 2.7,
+      "definition": { "$$range": [1.5, "$", 0.5] }
+    },
+    "expect": {
+      "equal": [
+        1.5,
+        2,
+        2.5
+      ]
+    }
+  },
+  {
+    "name": "Object - null input with step 2",
+    "given": {
+      "input": null,
+      "definition": { "$$range": [1, 5, 2] }
+    },
+    "expect": {
+      "equal": [1, 3, 5]
+    }
+  },
+  {
+    "name": "Object - null input with step 10",
+    "given": {
+      "input": null,
+      "definition": { "$$range": [10, 45, 10] }
+    },
+    "expect": {
+      "equal": [10, 20, 30, 40]
+    }
+  },
+  {
+    "name": "Object - object input with start, end and step",
+    "given": {
+      "input": {
+        "start": 10,
+        "end": 50,
+        "step": 10
+      },
+      "definition": { "$$range": ["$.start", "$.end", "$.step"] }
+    },
+    "expect": {
+      "equal": [10, 20, 30, 40, 50]
+    }
+  },
+  {
+    "name": "Object - null input with no arguments",
+    "given": {
+      "input": null,
+      "definition": { "$$range": [] }
+    },
+    "expect": {
+      "isNull": true
+    }
+  },
+  {
+    "name": "Object - null input with one argument",
+    "given": {
+      "input": null,
+      "definition": { "$$range": [1] }
+    },
+    "expect": {
+      "isNull": true
     }
   }
 ]

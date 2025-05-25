@@ -1,7 +1,0 @@
-{
-  "decodes a URL-encoded string (inline form)": "$$urldecode:$",
-  "decodes a URL-encoded string, with explicit empty parentheses (inline form)": "$$urldecode():$",
-  "decodes a URL-encoded string, with the string provided inline (inline form)": "$$urldecode:not+url%2Bsafe%3F%3Dx%26b%3Dpath%2Fpath",
-  "decodes a URL-encoded string using UTF-8 encoding (inline form)": "$$urldecode(UTF-8):$",
-  "decodes a URL-encoded string using UTF-16 encoding (inline form)": "$$urldecode(UTF-16):$"
-}

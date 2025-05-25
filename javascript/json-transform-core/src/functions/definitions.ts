@@ -1522,6 +1522,15 @@ export default {
   },
   range: {
     description: "Creates an array with a sequence of numbers starting with `start` up-to `end` in steps of `step`",
+    usageNotes:
+      ":::note\nAlternative form is available using \n```transformers \n{\n" +
+      '  "$$range": [ /* start */, /* end */, /* step ? */]\n' +
+      "}\n```\nIf `start` is used, the primary argument is ignored and can be of any value\n:::",
+    inputSchema: {
+      type: "array",
+      items: { type: "number", $comment: "BigDecimal" },
+      description: "Optionally the values: 'start', 'end' and 'step' (only if not specified as arguments)",
+    },
     outputSchema: { type: "array", items: { type: "number", $comment: "BigDecimal" } },
     arguments: [
       { name: "start", description: "First value", type: "BigDecimal", position: 0, required: true },
@@ -1834,7 +1843,7 @@ export default {
     ],
   },
   template: {
-    description: "Renders a specified text template with the given input or specified payload.",
+    description: "Renders a specified text template with the given input referencing a specified payload.",
     argumentsNotes:
       "#### * Different Types of default parameter resolving options\n| Type               | Description                                                      |\n|--------------------|------------------------------------------------------------------|\n| `UNIQUE` (default) | Each instance of a parameter is resolved to its explicit default |\n| `FIRST_VALUE`      | The first default found for the parameter is used by all         |\n| `LAST_VALUE`       | The last default found is used by all                            |\n",
     inputSchema: { type: "string", required: true, description: "The text template to render" },

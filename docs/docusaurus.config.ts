@@ -6,6 +6,7 @@ import { definitions } from "@nlighten/json-transform-core";
 import darkCodeTheme from "./code_theme";
 import { generateLanguageFile } from "./plugins/GenerateLanguageFileWebpackPlugin";
 import { generateFunctionsMarkdowns } from "./plugins/generateFunctionsMarkdowns";
+import aiLanguageFile from "./plugins/generators/aiLanguageFile";
 
 const icon = "🪄";
 const LOGO = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>${icon}</text></svg>`;
@@ -61,6 +62,10 @@ const config: Config = {
                 publicPath: "/json-transform",
               }),
               generateLanguageFile(),
+              generateLanguageFile({
+                targetFilePath: "ai-language.json",
+                generator: aiLanguageFile,
+              }),
             ],
           };
         },

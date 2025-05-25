@@ -100,10 +100,23 @@
     }
   },
   {
-    "name": "Java - Default Digest",
+    "name": "Inline Java - Default Digest",
     "given": {
       "input": "Hello World",
       "definition": "$$digest(JAVA):$"
+    },
+    "expect": {
+      "equal": -862545276
+    }
+  },
+  {
+    "name": "Java - Default Digest",
+    "given": {
+      "input": "Hello World",
+      "definition": {
+        "$$digest": "$",
+        "algorithm": "JAVA"
+      }
     },
     "expect": {
       "equal": -862545276

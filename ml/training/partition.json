@@ -1,7 +1,0 @@
-{
-  "partitions an array into subarrays of a specified size (inline form)": "$$partition(3):$",
-  "partitions an array into subarrays of a specified size (object form)": {
-    "$$partition": "$",
-    "size": 3
-  }
-}

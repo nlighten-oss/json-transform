@@ -1,4 +1,0 @@
-{
-  "converts a string to uppercase (inline form)": "$$upper:$",
-  "converts a string to uppercase, with explicit empty parentheses (inline form)": "$$upper():$"
-}

@@ -1,8 +1,0 @@
-{
-  "extracts all matches of the regular expression \\\"[el]\\\" from the input string. (inline form)": "$$matchall([el]):$",
-  "extracts all matches of the regular expression \\\"[le]+\\\" from the input string. (inline form)": "$$matchall([le]+):$",
-  "extracts all matches of the regular expression \\\"hell\\\" from the input string. (inline form)": "$$matchall(hell):$",
-  "extracts all matches of the regular expression \\\"^hello\\\" from the input string. (inline form)": "$$matchall(^hello):$",
-  "extracts all matches of the regular expression \\\"hello$\\\" from the input string. (inline form)": "$$matchall(hello$):$",
-  "extracts the first group of the regular expression \\\"w(\\\\w+)d\\\" from the input string. (inline form)": "$$matchall('w(\\\\w+)d',1):$"
-}

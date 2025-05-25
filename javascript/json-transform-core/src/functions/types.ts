@@ -99,17 +99,7 @@ export type Argument = {
   $comment?: string;
 } & (
   | {
-      type:
-        | "boolean"
-        | "string"
-        | "integer"
-        | "long"
-        | "BigDecimal"
-        | "array"
-        | "object"
-        | "transformer"
-        | "string[]"
-        | "any";
+      type: "boolean" | "string" | "integer" | "long" | "BigDecimal" | "array" | "object" | "string[]" | "any";
       enum?: undefined;
       transformerArguments?: undefined;
     }

@@ -1,6 +1,0 @@
-{
-  "parses the input string as a JSON value, using inline definition (inline form)": "$$jsonparse:$",
-  "parses the input string as a JSON value (object form)": {
-    "$$jsonparse": "$"
-  }
-}

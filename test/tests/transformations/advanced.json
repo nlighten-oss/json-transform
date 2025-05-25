@@ -1,6 +1,6 @@
 [
   {
-    "name": "Multiple inline functions (1)",
+    "name": "Inline - Multiple inline functions (1)",
     "given": {
       "input": "text",
       "definition": "$$substring(1,3):$$wrap(>):$"
@@ -10,7 +10,7 @@
     }
   },
   {
-    "name": "Multiple inline functions (2)",
+    "name": "Inline - Multiple inline functions (2)",
     "given": {
       "input": "text",
       "definition": "$$wrap(>):$$substring(1,3):$"
@@ -20,7 +20,7 @@
     }
   },
   {
-    "name": "Multiple inline functions (3)",
+    "name": "Inline - Multiple inline functions (3)",
     "given": {
       "input": "text",
       "definition": "$$join(s):$$split(x):$"
@@ -30,7 +30,7 @@
     }
   },
   {
-    "name": "Multiple object functions",
+    "name": "Mixed - Multiple object functions",
     "given": {
       "input": null,
       "definition": {
@@ -42,7 +42,7 @@
     }
   },
   {
-    "name": "inline inner failure (even though $$partition fails, $$string picks up the null and transforms it)",
+    "name": "Inline - inner failure (even though $$partition fails, $$string picks up the null and transforms it)",
     "given": {
       "input": [1],
       "definition": "$$string(true):$$partition(0):$"
@@ -75,7 +75,7 @@
     }
   },
   {
-    "name": "playground sample",
+    "name": "Mixed - playground sample",
     "given": {
       "input": {
         "first_name": "John",
