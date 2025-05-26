@@ -1,7 +1,7 @@
 {
   "name": "@nlighten/json-transform-core",
   "description": "Core types and utilities for handling JSON transformers",
-  "version": "1.8.3",
+  "version": "1.8.4",
   "main": "./dist/index.js",
   "source": "src/index.ts",
   "exports": "./dist/index.js",

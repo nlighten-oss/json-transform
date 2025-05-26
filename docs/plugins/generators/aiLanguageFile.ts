@@ -84,11 +84,13 @@ export default function () {
       },
       required: ["$$" + key],
     };
-    func.arguments?.forEach((arg: any) => {
-      if (arg.required) inputSchema.required.push(arg.name);
-      inputSchema.properties[arg.name] = fixType(arg);
-    });
-    f.inputSchema = inputSchema;
+    if (key !== "range") {
+      func.arguments?.forEach((arg: any) => {
+        if (arg.required) inputSchema.required.push(arg.name);
+        inputSchema.properties[arg.name] = fixType(arg);
+      });
+    }
+    f.schema = inputSchema;
     if (func.outputSchemaTemplate) {
       f.outputSchemaTemplate = fixType(func.outputSchemaTemplate);
     }

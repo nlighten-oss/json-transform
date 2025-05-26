@@ -1,3 +1,5 @@
+import { tryConvertFunctionsToInline } from "./utils/convert";
+
 export { ContextVariablesSchemas } from "./functions/ContextVariablesSchemas";
 export {
   getFunctionInlineSignature,
@@ -6,6 +8,7 @@ export {
   parseArgs,
   getSubfunction,
 } from "./functions/functionsParser";
+export { convertFunctionsToObjects, tryConvertFunctionsToInline } from "./utils/convert";
 export {
   type Argument,
   type ArgumentCondition,
