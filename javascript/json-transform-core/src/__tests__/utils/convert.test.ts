@@ -53,10 +53,7 @@ describe("convert", () => {
         },
         to: "$$substring(0,5):##current.name",
       }),
-    ).toEqual({
-      $$map: "$$flat:$.names",
-      to: "$$substring(0,5):##current.name",
-    });
+    ).toEqual("$$map('$$substring(0,5):##current.name'):$$flat:$.names");
   });
   test("object to inline - test 5", () => {
     expect(
@@ -130,18 +127,10 @@ describe("convert", () => {
       }),
     ).toEqual({
       "*": "$",
+      age: "$$math('$$math(\\'$$date(EPOCH):#now\\',-,\\'$$date(EPOCH):$.date_of_birth\\')',//,'$$math(365,*,\\'$$math(24,*,3600)\\')')",
       full_name: {
         $$join: ["$.first_name", "$.last_name"],
         delimiter: " ",
-      },
-      age: {
-        $$math: [
-          {
-            $$math: ["$$date(EPOCH):#now", "-", "$$date(EPOCH):$.date_of_birth"],
-          },
-          "//",
-          "$$math(365,*,'$$math(24,*,3600)')",
-        ],
       },
     });
   });

@@ -193,14 +193,16 @@ class FunctionsParser {
     const matches: ({ index: number } & TokenizedInlineFunction)[] = [];
     let match: TokenizedInlineFunction | undefined;
     let indexOffset = line.indexOf("$$");
-    let str = line.substring(indexOffset).trimEnd();
-    if (line[indexOffset - 1] === '"' && str.at(-1) === '"') {
-      str = str.slice(0, -1).replace(/\\'/g, "\\\\'");
-      // try {
-      //   str = JSON.parse('"' + str); //.replace(/\\/g, "\\\\"); // duplicate all backslashes to get the right lengths
-      // } catch (e: any) {}
+    line = line.trimEnd();
+    if (line[indexOffset - 1] === '"' && line.at(-1) === '"') {
+      line = line.slice(0, -1).replace(/\\'/g, "\\\\'");
     }
+    let str = line.substring(indexOffset);
+
     while ((match = tokenizeInlineFunction(str))) {
+      if (!functionsParser.get(match.name)) {
+        break; // not a known function name (so not a function)
+      }
       (match as any).index = indexOffset; // add index to match
       match.args?.forEach(arg => {
         arg.index += indexOffset;
@@ -221,7 +223,6 @@ class FunctionsParser {
       indexOffset = match.input.index;
       str = line.substring(match.input.index);
     }
-    console.debug("debug", matches);
     return matches;
   }
 }

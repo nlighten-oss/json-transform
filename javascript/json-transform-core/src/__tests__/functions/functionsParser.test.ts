@@ -811,9 +811,9 @@ describe("functions schema detection", () => {
 
 describe("matchAllInlineFunctionsInLine", () => {
   test(`sanity`, () => {
-    expect(functionsParser.matchAllInlineFunctionsInLine("  : \"$$foo(1,2):$$bar(abc,'def'):$$\"   ")).toEqual([
+    expect(functionsParser.matchAllInlineFunctionsInLine("  : \"$$pad(1,2):$$wrap(abc,'def'):$$\"   ")).toEqual([
       {
-        name: "foo",
+        name: "pad",
         keyLength: 5,
         args: [
           {
@@ -830,30 +830,30 @@ describe("matchAllInlineFunctionsInLine", () => {
         index: 5,
         input: {
           index: 16,
-          length: 19,
-          value: "$$bar(abc,'def'):$$",
+          length: 18,
+          value: "$$wrap(abc,'def'):$$",
         },
       },
       {
-        keyLength: 5,
-        name: "bar",
+        keyLength: 6,
+        name: "wrap",
         args: [
           {
-            index: 22,
+            index: 23,
             length: 3,
             value: "abc",
           },
           {
-            index: 26,
+            index: 27,
             length: 5,
             value: "def",
           },
         ],
         index: 16,
         input: {
-          index: 33,
-          length: 6,
-          value: '$$"   ',
+          index: 34,
+          length: 2,
+          value: "$$",
         },
       },
     ]);
@@ -886,6 +886,31 @@ describe("matchAllInlineFunctionsInLine", () => {
         index: 10,
         keyLength: 6,
         name: "math",
+      },
+    ]);
+  });
+
+  test(`sanity 3`, () => {
+    expect(functionsParser.matchAllInlineFunctionsInLine(`"$$pad:$$wrap:"`)).toEqual([
+      {
+        index: 1,
+        input: {
+          index: 7,
+          length: 7,
+          value: "$$wrap:",
+        },
+        keyLength: 5,
+        name: "pad",
+      },
+      {
+        index: 7,
+        input: {
+          index: 14,
+          length: 0,
+          value: "",
+        },
+        keyLength: 6,
+        name: "wrap",
       },
     ]);
   });
