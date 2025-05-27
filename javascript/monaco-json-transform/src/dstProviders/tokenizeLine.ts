@@ -1,10 +1,10 @@
 import { functionsParser, JsonPathFunctionRegex, transformUtils } from "@nlighten/json-transform-core";
 
 const FunctionContextRegExp = /##([a-z]+[a-z_\d]*)(((\.(?![-\w$]+\()[-\w$]+)|(\[[^\]\n]+]))+|(?=[^\w.]|$))/g;
-const InlineFunctionArgsPunctuationRegExp = /^\(|,\s*|\)$/g;
 const FindCommentsRegex = /"(\/\/|\$comment)":\s*"(\\"|[^"])*"/g;
+const NumberRegexp = /^-?\d+(\.\d+)?$/;
 
-enum TokenType {
+export enum TokenType {
   VARIABLE = 0,
   VARIABLE_DEPRECATED,
   MEMBER,
@@ -14,6 +14,9 @@ enum TokenType {
   FUNCTION_CONTEXT,
   FUNCTION_DEPRECATED,
   COMMENT,
+  STRING,
+  NUMBER,
+  KEYWORD,
   NO_STYLE,
 }
 
@@ -21,7 +24,7 @@ enum TokenModifier {
   DECLARATION = 0,
 }
 
-type Token = {
+export type Token = {
   line: number;
   char: number;
   length: number;
@@ -55,51 +58,46 @@ export default function tokenizeLine(line: string, lineNumber: number, ts: Token
   }
 
   // INLINE FUNCTIONS (name and args symbols)
-  iter = functionsParser.matchAllInlineFunctionsInLine(line);
-  for (
-    let iterResult = iter.next(), match: RegExpMatchArray | null | undefined = iterResult.value;
-    !iterResult.done;
-    iterResult = iter.next(), match = iterResult.value as RegExpMatchArray | null | undefined
-  ) {
-    if (!match || typeof match.index === "undefined") continue;
-    const func = functionsParser.get(match[1]);
+  const inlineMatches = functionsParser.matchAllInlineFunctionsInLine(line);
+  for (const match of inlineMatches) {
+    const func = functionsParser.get(match.name);
     const deprecated = func?.deprecatedInFavorOf;
 
     ts.tokens.push({
       line: lineNumber,
       char: match.index,
-      length: 2 + match[1].length,
+      length: match.keyLength,
       type: deprecated ? TokenType.FUNCTION_DEPRECATED : TokenType.FUNCTION,
       modifier: TokenModifier.DECLARATION,
     });
     // :
-    if (match[4][0] === ":") {
+    if (match.input?.index) {
       ts.tokens.push({
         line: lineNumber,
-        char: match.index + 2 + match[1].length + (match[2]?.length ?? 0),
+        char: match.input.index - 1,
         length: 1,
         type: TokenType.NO_STYLE,
         modifier: TokenModifier.DECLARATION,
       });
     }
-
     // arguments
-    if (match[2]) {
-      const argsIndex = match.index + 2 + match[1].length;
-      const puncIter = match[2].matchAll(InlineFunctionArgsPunctuationRegExp);
-      for (
-        let puncIterResult = puncIter.next(), puncMatch: RegExpMatchArray | null | undefined = puncIterResult.value;
-        !puncIterResult.done;
-        puncIterResult = puncIter.next(), puncMatch = puncIterResult.value as RegExpMatchArray | null | undefined
-      ) {
-        if (!puncMatch || typeof puncMatch.index === "undefined") continue;
-        ts.tokens.push({
-          line: lineNumber,
-          char: argsIndex + puncMatch.index,
-          length: puncMatch.length,
-          type: TokenType.NO_STYLE,
-          modifier: TokenModifier.DECLARATION,
-        });
+    if (match.args) {
+      for (const arg of match.args) {
+        if (line[arg.index] !== "'") {
+          // let strings stay strings (so other tokens will override it)
+          ts.tokens.push({
+            line: lineNumber,
+            char: arg.index,
+            length: arg.length,
+            type:
+              arg.value === "true" || arg.value === "false"
+                ? TokenType.KEYWORD
+                : arg.value && NumberRegexp.test(arg.value)
+                  ? TokenType.NUMBER
+                  : TokenType.NO_STYLE,
+            modifier: TokenModifier.DECLARATION,
+          });
+        }
       }
     }
   }

@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { jsonpathJoin } from "../jsonpath/jsonpathJoin";
+import { jsonpathJoin } from "../../jsonpath/jsonpathJoin";
 
 describe("jsonpathJoin", () => {
   test("test 1", () => {

@@ -3,9 +3,9 @@ export {
   getFunctionInlineSignature,
   getFunctionObjectSignature,
   functionsParser,
-  parseArgs,
   getSubfunction,
 } from "./functions/functionsParser";
+export { tokenizeInlineFunction, type TokenizedInlineFunction } from "./functions/tokenizeInlineFunction";
 export { convertFunctionsToObjects, tryConvertFunctionsToInline } from "./utils/convert";
 export {
   type Argument,

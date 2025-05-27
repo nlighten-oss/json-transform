@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
 import { cleanParsedSchemaProperty, type TypeSchema } from "@nlighten/json-schema-utils";
-import { EmbeddedTransformerFunction, EmbeddedTransformerFunctions } from "../functions/types";
-import { parseTransformer } from "../parse";
-import { functionsParser } from "../functions/functionsParser";
+import { EmbeddedTransformerFunction, EmbeddedTransformerFunctions } from "../../functions/types";
+import { parseTransformer } from "../../parse";
+import { functionsParser } from "../../functions/functionsParser";
 
 const transformerResult = (
   transformer: Record<string, string | Record<string, any>>,
@@ -807,4 +807,86 @@ describe("functions schema detection", () => {
       }
     });
   }
+});
+
+describe("matchAllInlineFunctionsInLine", () => {
+  test(`sanity`, () => {
+    expect(functionsParser.matchAllInlineFunctionsInLine("  : \"$$foo(1,2):$$bar(abc,'def'):$$\"   ")).toEqual([
+      {
+        name: "foo",
+        keyLength: 5,
+        args: [
+          {
+            index: 11,
+            length: 1,
+            value: "1",
+          },
+          {
+            index: 13,
+            length: 1,
+            value: "2",
+          },
+        ],
+        index: 5,
+        input: {
+          index: 16,
+          length: 19,
+          value: "$$bar(abc,'def'):$$",
+        },
+      },
+      {
+        keyLength: 5,
+        name: "bar",
+        args: [
+          {
+            index: 22,
+            length: 3,
+            value: "abc",
+          },
+          {
+            index: 26,
+            length: 5,
+            value: "def",
+          },
+        ],
+        index: 16,
+        input: {
+          index: 33,
+          length: 6,
+          value: '$$"   ',
+        },
+      },
+    ]);
+  });
+
+  test(`sanity 2`, () => {
+    expect(
+      functionsParser.matchAllInlineFunctionsInLine(
+        `  "age": "$$math('$$math(\\\\'$$date(EPOCH):#now\\\\',-,\\\\'$$date(EPOCH):$.date_of_birth\\\\')',//,'$$math(365,*,\\\\'$$math(24,*,3600)\\\\')')"`,
+      ),
+    ).toEqual([
+      {
+        args: [
+          {
+            index: 17,
+            length: 72,
+            value: "$$math(\\'$$date(EPOCH):#now\\',-,\\'$$date(EPOCH):$.date_of_birth\\')",
+          },
+          {
+            index: 90,
+            length: 2,
+            value: "//",
+          },
+          {
+            index: 93,
+            length: 39,
+            value: "$$math(365,*,\\'$$math(24,*,3600)\\')",
+          },
+        ],
+        index: 10,
+        keyLength: 6,
+        name: "math",
+      },
+    ]);
+  });
 });

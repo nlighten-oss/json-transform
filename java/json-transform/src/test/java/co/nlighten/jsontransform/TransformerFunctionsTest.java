@@ -194,13 +194,11 @@ public class TransformerFunctionsTest extends MultiAdapterBaseTest {
     @MethodSource("co.nlighten.jsontransform.MultiAdapterBaseTest#provideJsonAdapters")
     void inlineArgsParsingTest(JsonAdapter<?,?,?> adapter) {
         TransformerFunctions.registerFunctions(Map.entry("argstest", new TransformerFunctionArgsTest()));
-        assertTransformation(adapter, null, "$$argstest(,):", "[],[]");
-
         assertTransformation(adapter, null, "$$argstest", "N/A");
         assertTransformation(adapter, null, "$$argstest:", "N/A");
         assertTransformation(adapter, null, "$$argstest()", "N/A");
         assertTransformation(adapter, null, "$$argstest():", "N/A");
-        assertTransformation(adapter, null, "$$argstest(,):", "[],[]");
+        assertTransformation(adapter, null, "$$argstest(,):", "N/A");
         assertTransformation(adapter, null, "$$argstest(#null):", "[NULL]");
         assertTransformation(adapter, null, "$$argstest(null,#null):", "[null],[NULL]");
         assertTransformation(adapter, null, "$$argstest(a):", "a");
@@ -229,8 +227,7 @@ public class TransformerFunctionsTest extends MultiAdapterBaseTest {
         assertTransformation(adapter, null, "$$argstest( a , b  , 'c  ' ):", "[ a ],[ b  ],[c  ]");
         assertTransformation(adapter, null, "$$argstest(a,' b'):", "[a],[ b]");
         assertTransformation(adapter, null, "$$argstest('\\n\\r\\t\\u0f0f'):", "\n\r\t\u0f0f");
-        // not detected
-        assertTransformation(adapter, null, "$$argstest(\n\r\t\u0f0f)", "$$argstest(\n\r\t\u0f0f)");
+        assertTransformation(adapter, null, "$$argstest(\n\r\t\u0f0f)", "\n\r\t\u0f0f");
     }
 
     private static class TransformerFunctionValTest extends TransformerFunction {

@@ -1,7 +1,8 @@
-import { Argument, EmbeddedTransformerFunction, FunctionDefinition, FunctionDescriptor } from "./types";
+import { Argument, FunctionDefinition, FunctionDescriptor } from "./types";
 import parseDefinitions from "./parseDefinitions";
 import { HandleFunctionMethod } from "../ParseContext";
 import functions from "./functions";
+import { TokenizedInlineFunction, tokenizeInlineFunction } from "./tokenizeInlineFunction";
 
 type ObjectFunctionMatchResult = {
   name: string;
@@ -47,7 +48,6 @@ class FunctionsParser {
   private allFunctionsNames: Set<string>;
   private objectFunctionRegex: RegExp;
   private inlineFunctionRegex: RegExp;
-  private matchInlineFunctionWithArgsRegex: RegExp;
   private clientDocsUrlResolver: ((funcName: string) => string) | undefined;
   public handleClientFunction?: HandleFunctionMethod;
 
@@ -60,8 +60,8 @@ class FunctionsParser {
    * 4 - Colon (or something else)
    * 5 - What comes after the colon (value) -- only when 'noArgs' = false
    */
-  private inlineFunctionRegexFactory = (names: string[], global: boolean, noArgs: boolean) =>
-    new RegExp(`\\$\\$(${names.join("|")})(\\((.*?)\\))?(:${noArgs ? "" : `([^"]*)`}|$|")`, global ? "g" : undefined);
+  private inlineFunctionRegexFactory = (names: string[]) =>
+    new RegExp(`\\$\\$(${names.join("|")})(\\((.*?)\\))?(:([^"]*)|$|")`, "g");
 
   private objectFunctionRegexFactory = (names: string[]) => new RegExp(`(?<=")\\$\\$(${names.join("|")})":`, "g");
 
@@ -77,8 +77,7 @@ class FunctionsParser {
     this.allFunctionsNames = functionNames;
     const names = Array.from(this.allFunctionsNames);
     this.objectFunctionRegex = this.objectFunctionRegexFactory(names);
-    this.inlineFunctionRegex = this.inlineFunctionRegexFactory(names, true, true);
-    this.matchInlineFunctionWithArgsRegex = this.inlineFunctionRegexFactory(names, false, false);
+    this.inlineFunctionRegex = this.inlineFunctionRegexFactory(names);
   }
 
   setClientFunctions(
@@ -96,8 +95,7 @@ class FunctionsParser {
     }
     const names = Array.from(this.allFunctionsNames);
     this.objectFunctionRegex = this.objectFunctionRegexFactory(names);
-    this.inlineFunctionRegex = this.inlineFunctionRegexFactory(names, true, true);
-    this.matchInlineFunctionWithArgsRegex = this.inlineFunctionRegexFactory(names, false, false);
+    this.inlineFunctionRegex = this.inlineFunctionRegexFactory(names);
     this.handleClientFunction = handler;
   }
 
@@ -126,20 +124,30 @@ class FunctionsParser {
   ) {
     if (typeof data !== "string") return null;
 
-    const m = data.match(this.matchInlineFunctionWithArgsRegex);
+    const m = tokenizeInlineFunction(data);
     if (!m) {
       return null;
     }
-    let funcName = m[1];
+    let funcName = m.name;
     let func = functionsParser.get(funcName);
     if (!func) return null;
     if (func.aliasTo) funcName = func.aliasTo;
     if (func.subfunctions || callback) {
-      const argsWithoutParenthesis = m[3];
-      const args = parseArgs(func, argsWithoutParenthesis);
+      const args =
+        m.args?.reduce(
+          (a, c, i) => {
+            func.arguments?.forEach(fa => {
+              if (fa.position === i && fa.name) {
+                a[fa.name] = c.value;
+              }
+            });
+            return a;
+          },
+          {} as Record<string, any>,
+        ) ?? {};
       func = getSubfunction(func, args);
       if (callback) {
-        const inlineFunctionValue = m[5];
+        const inlineFunctionValue = m.input?.value;
         callback(funcName, func, inlineFunctionValue, args);
       }
     }
@@ -182,37 +190,43 @@ class FunctionsParser {
     return line.matchAll(this.objectFunctionRegex);
   }
   matchAllInlineFunctionsInLine(line: string) {
-    return line.matchAll(this.inlineFunctionRegex);
+    const matches: ({ index: number } & TokenizedInlineFunction)[] = [];
+    let match: TokenizedInlineFunction | undefined;
+    let indexOffset = line.indexOf("$$");
+    let str = line.substring(indexOffset).trimEnd();
+    if (line[indexOffset - 1] === '"' && str.at(-1) === '"') {
+      str = str.slice(0, -1).replace(/\\'/g, "\\\\'");
+      // try {
+      //   str = JSON.parse('"' + str); //.replace(/\\/g, "\\\\"); // duplicate all backslashes to get the right lengths
+      // } catch (e: any) {}
+    }
+    while ((match = tokenizeInlineFunction(str))) {
+      (match as any).index = indexOffset; // add index to match
+      match.args?.forEach(arg => {
+        arg.index += indexOffset;
+        const delta = arg.value?.match(/'/g)?.length ?? 0;
+        arg.length -= delta;
+        indexOffset -= delta;
+      });
+      if (match.input) {
+        match.input.index += indexOffset;
+        const delta = match.input.value?.match(/'/g)?.length ?? 0;
+        match.input.length -= delta;
+        indexOffset -= delta;
+      }
+      matches.push(match as any);
+      if (!match.input || !match.input.value?.startsWith("$$")) {
+        break;
+      }
+      indexOffset = match.input.index;
+      str = line.substring(match.input.index);
+    }
+    console.debug("debug", matches);
+    return matches;
   }
 }
 
 export const functionsParser = new FunctionsParser();
-
-export const parseArgs = (func: FunctionDescriptor, args?: string) => {
-  if (!args) return {};
-  const argsValues = args.split(/,(?=(?:[^']*'[^']*')*[^']*$)/).map((argVal: string) => {
-    let arg = argVal;
-    const trimmed = argVal.trim();
-    if (trimmed.startsWith("'") && trimmed.endsWith("'") && trimmed.length > 1) {
-      arg = trimmed.substring(1, trimmed.length - 1).replace(/''/g, "'");
-      //otherwise, take the whole argument as-is
-    }
-    return arg;
-  });
-  return !argsValues || argsValues.length === 0
-    ? {}
-    : argsValues.reduce(
-        (a, c, i) => {
-          func.arguments?.forEach(fa => {
-            if (fa.position === i && fa.name) {
-              a[fa.name] = c;
-            }
-          });
-          return a;
-        },
-        {} as Record<string, any>, // we can't really infer type, and strings are the only ones that matter anyway
-      );
-};
 
 export const getSubfunction = (func: FunctionDescriptor, args?: Record<string, any>) => {
   if (!func.subfunctions || !args) return func;

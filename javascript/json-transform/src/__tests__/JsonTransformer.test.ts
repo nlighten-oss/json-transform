@@ -355,13 +355,11 @@ describe("JsonTransformer", () => {
 
   test("inlineArgsParsingTest", async () => {
     TransformerFunctions.registerFunctions({ argstest: new TransformerFunctionArgsTest() });
-    await assertTransformation(null, "$$argstest(,):", "[],[]");
-
     await assertTransformation(null, "$$argstest", "N/A");
     await assertTransformation(null, "$$argstest:", "N/A");
     await assertTransformation(null, "$$argstest()", "N/A");
     await assertTransformation(null, "$$argstest():", "N/A");
-    await assertTransformation(null, "$$argstest(,):", "[],[]");
+    await assertTransformation(null, "$$argstest(,):", "N/A");
     await assertTransformation(null, "$$argstest(#null):", "[NULL]");
     await assertTransformation(null, "$$argstest(null,#null):", "[null],[NULL]");
     await assertTransformation(null, "$$argstest(a):", "a");
@@ -390,8 +388,7 @@ describe("JsonTransformer", () => {
     await assertTransformation(null, "$$argstest( a , b  , 'c  ' ):", "[ a ],[ b  ],[c  ]");
     await assertTransformation(null, "$$argstest(a,' b'):", "[a],[ b]");
     await assertTransformation(null, "$$argstest('\\n\\r\\t\\u0f0f'):", "\n\r\t\u0f0f");
-    // not detected
-    await assertTransformation(null, "$$argstest(\n\r\t\u0f0f)", "$$argstest(\n\r\t\u0f0f)");
+    await assertTransformation(null, "$$argstest(\n\r\t\u0f0f)", "\n\r\t\u0f0f");
   });
 
   class TransformerFunctionValTest extends TransformerFunction {
@@ -415,5 +412,17 @@ describe("JsonTransformer", () => {
     await assertTransformation("IN", "$$valtest:\\$", "$");
     // regex replacements
     await assertTransformation("IN", "$$valtest:$1", "$1");
+  });
+
+  test("complicated", async () => {
+    await assertTransformation(
+      {
+        first_name: "John",
+        last_name: "Doe",
+        date_of_birth: "1980-01-01",
+      },
+      "$$math('$$math(\\'$$date(EPOCH):#now\\',-,\\'$$date(EPOCH):$.date_of_birth\\')',//,'$$math(365,*,\\'$$math(24,*,3600)\\')')",
+      BigDecimal(45),
+    );
   });
 });

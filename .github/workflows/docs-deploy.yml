@@ -26,21 +26,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: setup json-transform build
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-          cache-dependency-path: ./javascript/json-transform/package-lock.json
-
-      - name: install json-transform dependencies
-        working-directory: ./javascript/json-transform
-        run: npm ci
-
-      - name: build json-transform
-        working-directory: ./javascript/json-transform
-        run: npm run build
-
       - name: setup json-transform-core build
         uses: actions/setup-node@v4
         with:
@@ -54,6 +39,21 @@ jobs:
 
       - name: build json-transform-core
         working-directory: ./javascript/json-transform-core
+        run: npm run build
+
+      - name: setup json-transform build
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: ./javascript/json-transform/package-lock.json
+
+      - name: install json-transform dependencies
+        working-directory: ./javascript/json-transform
+        run: npm ci
+
+      - name: build json-transform
+        working-directory: ./javascript/json-transform
         run: npm run build
 
       - name: setup monaco-json-transform build

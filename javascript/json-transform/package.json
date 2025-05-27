@@ -1,7 +1,7 @@
 {
   "name": "@nlighten/json-transform",
   "description": "JSON transformers JavaScript implementation",
-  "version": "1.8.2",
+  "version": "1.9.0",
   "main": "./dist/index.js",
   "source": "src/index.ts",
   "exports": "./dist/index.js",
@@ -47,6 +47,7 @@
     "uuid": "^10.0.0"
   },
   "peerDependencies": {
+    "@nlighten/json-transform-core": "^1.9.0",
     "fast-json-patch": "^3.1.1",
     "js-yaml": "^4.1.0",
     "json-pointer": "^0.6.2",
@@ -55,6 +56,7 @@
   "devDependencies": {
     "@date-fns/tz": "^1.2.0",
     "@nlighten/json-schema-utils": "^1.0.2",
+    "@nlighten/json-transform-core": "file://../json-transform-core",
     "@types/js-yaml": "^4.0.9",
     "@types/json-bigint": "^1.0.4",
     "@types/json-pointer": "^1.0.34",

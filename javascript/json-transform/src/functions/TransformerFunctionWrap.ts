@@ -15,7 +15,7 @@ class TransformerFunctionWrap extends TransformerFunction {
   override async apply(context: FunctionContext): Promise<any> {
     const res = await context.getString(null);
     if (res == null) return null;
-    return (await context.getString("prefix")) + res + (await context.getString("suffix"));
+    return ((await context.getString("prefix")) ?? "") + res + ((await context.getString("suffix")) ?? "");
   }
 }
 

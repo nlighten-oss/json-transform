@@ -1,3 +1,4 @@
+import { tokenizeInlineFunction } from "@nlighten/json-transform-core";
 import TransformerFunction from "./functions/common/TransformerFunction";
 import { ParameterResolver } from "./ParameterResolver";
 import { JsonTransformerFunction } from "./JsonTransformerFunction";
@@ -42,8 +43,6 @@ export interface TransformerFunctionsAdapter {
 }
 
 export class TransformerFunctions implements TransformerFunctionsAdapter {
-  private static readonly inlineFunctionRegex = /^\$\$(\w+)(\((.*?)\))?(:|$)/;
-  private static readonly inlineFunctionArgsRegex = /('(\\'|[^'])*'|[^,]*)(?:,|$)/g;
   public static readonly FUNCTION_KEY_PREFIX = "$$";
   public static readonly QUOTE_APOS = "'";
   public static readonly ESCAPE_DOLLAR = "\\$";
@@ -108,44 +107,24 @@ export class TransformerFunctions implements TransformerFunctionsAdapter {
     resolver: ParameterResolver,
     transformer: JsonTransformerFunction,
   ) {
-    const match = value.match(TransformerFunctions.inlineFunctionRegex);
+    const match = tokenizeInlineFunction(value);
     if (match) {
-      const functionKey = match[1];
+      const functionKey = match.name;
       if (TransformerFunctions.functions[functionKey]) {
-        const _function = TransformerFunctions.functions[functionKey];
-        const argsString = match[3];
-        const args: (string | null | undefined)[] = [];
-        if (argsString) {
-          const argMatcher = argsString.matchAll(TransformerFunctions.inlineFunctionArgsRegex);
-          for (const argMatch of argMatcher) {
-            if (argMatch.index != argsString.length || argsString.endsWith(",")) {
-              let arg = argMatch[1];
-              let trimmed = arg?.trim();
-              if (
-                trimmed?.startsWith(TransformerFunctions.QUOTE_APOS) &&
-                trimmed.endsWith(TransformerFunctions.QUOTE_APOS) &&
-                trimmed.length > 1
-              ) {
-                arg = `${singleQuotedStringJsonParse(trimmed)}`;
-              }
-              args.push(arg);
-            }
+        const args = match.args?.map(x => x.value) ?? [];
+        for (let i = args.length - 1; i >= 0; i--) {
+          if (args[i] !== null && typeof args[i] !== "undefined") {
+            break;
           }
+          args.pop();
         }
-        var matchEndIndex = (match?.index ?? 0) + match[0].length;
-        let input: null | string;
-        if (value.charAt(matchEndIndex - 1) != ":") {
-          // if not ends with ':' then no input value specified
-          input = null;
-        } else {
-          input = value.substring(matchEndIndex);
-        }
+
         return InlineFunctionContext.create(
           path + "/" + TransformerFunctions.FUNCTION_KEY_PREFIX + functionKey,
-          input,
+          match.input?.value ?? null,
           args,
           functionKey,
-          _function,
+          TransformerFunctions.functions[functionKey],
           resolver,
           transformer,
         );

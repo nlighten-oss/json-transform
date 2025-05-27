@@ -2,10 +2,10 @@ import type { languages, editor } from "monaco-editor";
 import { formatSchemaType, type TypeSchema } from "@nlighten/json-schema-utils";
 import {
   ContextVariablesSchemas,
+  FunctionDescriptor,
   functionsParser,
   getFunctionInlineSignature,
   getSubfunction,
-  parseArgs,
 } from "@nlighten/json-transform-core";
 
 type TypeMap = Record<string, TypeSchema>;
@@ -20,6 +20,32 @@ export type JsonTransformHoverProviderFactoryOptions = {
   getTypeMap?: (model: editor.ITextModel) => TypeMap;
   dontRegisterDocsCommand?: boolean;
   dontShowDocsLink?: boolean;
+};
+
+const parseArgs = (func: FunctionDescriptor, args?: string) => {
+  if (!args) return {};
+  const argsValues = args.split(/,(?=(?:[^']*'[^']*')*[^']*$)/).map((argVal: string) => {
+    let arg = argVal;
+    const trimmed = argVal.trim();
+    if (trimmed.startsWith("'") && trimmed.endsWith("'") && trimmed.length > 1) {
+      arg = trimmed.substring(1, trimmed.length - 1).replace(/''/g, "'");
+      //otherwise, take the whole argument as-is
+    }
+    return arg;
+  });
+  return !argsValues || argsValues.length === 0
+    ? {}
+    : argsValues.reduce(
+        (a, c, i) => {
+          func.arguments?.forEach(fa => {
+            if (fa.position === i && fa.name) {
+              a[fa.name] = c;
+            }
+          });
+          return a;
+        },
+        {} as Record<string, any>, // we can't really infer type, and strings are the only ones that matter anyway
+      );
 };
 
 export const jsonTransformHoverProviderFactory: (

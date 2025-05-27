@@ -1,5 +1,5 @@
-import type { languages } from "monaco-editor";
-import tokenizeLine, { type TokenizationState } from "./tokenizeLine";
+import { languages } from "monaco-editor";
+import tokenizeLine, { type TokenizationState, type Token } from "./tokenizeLine";
 
 const LEGEND = {
   tokenTypes: [
@@ -12,9 +12,16 @@ const LEGEND = {
     "function_context",
     "function_deprecated",
     "comment",
+    "string",
+    "number",
+    "keyword",
     "no_style",
   ],
   tokenModifiers: ["declaration"],
+};
+
+const tokenSorter = (a: Token, b: Token) => {
+  return a.line - b.line || a.char - b.char;
 };
 
 export const jsonTransformDSTProvider: languages.DocumentSemanticTokensProvider = {
@@ -27,7 +34,7 @@ export const jsonTransformDSTProvider: languages.DocumentSemanticTokensProvider 
       const line = lines[i];
       tokenizeLine(line, i, ts);
     }
-    ts.tokens.sort((a, b) => a.line - b.line || a.char - b.char);
+    ts.tokens.sort(tokenSorter);
     const newData: any = [];
     let prevLine = 0,
       prevChar = 0;

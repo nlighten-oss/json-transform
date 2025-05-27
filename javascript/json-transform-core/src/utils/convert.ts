@@ -117,12 +117,7 @@ export const tryConvertFunctionsToInline = (definition: any): any => {
       if (argValue !== null && typeof argValue !== "undefined") {
         spec[arg.name] = argValue; // store it back for output
       }
-      if (
-        argValue &&
-        (Array.isArray(argValue) ||
-          typeof argValue === "object" ||
-          (typeof argValue === "string" && argValue.startsWith("$$") && argValue.includes(":")))
-      ) {
+      if (argValue && (Array.isArray(argValue) || typeof argValue === "object")) {
         possible = false;
       } else if (possible) {
         if (
@@ -141,12 +136,7 @@ export const tryConvertFunctionsToInline = (definition: any): any => {
       if (argName && argValue !== null && typeof argValue !== "undefined") {
         spec[funcKey][i] = argValue; // store it back for output
       }
-      if (
-        argValue &&
-        (Array.isArray(argValue) ||
-          typeof argValue === "object" ||
-          (typeof argValue === "string" && argValue.startsWith("$$") && argValue.includes(":")))
-      ) {
+      if (argValue && (Array.isArray(argValue) || typeof argValue === "object")) {
         possible = false;
       } else if (possible) {
         if (

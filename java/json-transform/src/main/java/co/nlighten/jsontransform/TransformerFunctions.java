@@ -3,14 +3,13 @@ package co.nlighten.jsontransform;
 import co.nlighten.jsontransform.adapters.JsonAdapter;
 import co.nlighten.jsontransform.functions.*;
 import co.nlighten.jsontransform.functions.common.InlineFunctionContext;
+import co.nlighten.jsontransform.functions.common.InlineFunctionTokenizer;
 import co.nlighten.jsontransform.functions.common.ObjectFunctionContext;
 import co.nlighten.jsontransform.functions.common.TransformerFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -171,40 +170,33 @@ public class TransformerFunctions implements TransformerFunctionsAdapter {
 
     private InlineFunctionContext tryParseInlineFunction(JsonAdapter<?,?,?> adapter, String path, String value, co.nlighten.jsontransform.ParameterResolver resolver,
                                                                      JsonTransformerFunction transformer) {
-        var matcher = inlineFunctionRegex.matcher(value);
-        if (matcher.find()) {
-            var functionKey = matcher.group(1);
+        var match = InlineFunctionTokenizer.tokenize(value);
+        if (match != null) {
+            var functionKey = match.name();
             if (functions.containsKey(functionKey)) {
                 var function = functions.get(functionKey);
-                var argsString = matcher.group(3);
                 var args = new ArrayList<>();
-                if (argsString != null && !argsString.isEmpty()) {
-                    var argMatcher = inlineFunctionArgsRegex.matcher(argsString);
-                    while (argMatcher.find() &&
-                            (argMatcher.start() != argsString.length() || argsString.endsWith(","))) {
-                        var arg = argMatcher.group(1);
-                        var trimmed = argMatcher.group(1).trim();
-                        if (trimmed.startsWith(QUOTE_APOS) && trimmed.endsWith(QUOTE_APOS) && trimmed.length() > 1) {
-                            arg = adapter.getAsString(adapter.parse(trimmed));
-                            //otherwise, take the whole argument as-is
-                        }
-                        args.add(arg);
+                if (match.args() != null && !match.args().isEmpty()) {
+                    match.args().forEach(x -> {
+                        args.add(x.value());
+                    });
+                }
+                for (var i = args.size() - 1; i >= 0; i--) {
+                    if (args.get(i) != null) {
+                        break;
                     }
+                    args.remove(args.size() - 1); // remove trailing nulls
                 }
-                var matchEndIndex = matcher.end();
-                String input;
-                if (value.charAt(matchEndIndex - 1) != ':') { // if not ends with ':' then no input value specified
-                    input = null;
-                } else {
-                    input = value.substring(matchEndIndex);
-                }
+
                 return new InlineFunctionContext(
                         path + "/" + FUNCTION_KEY_PREFIX + functionKey,
-                        input, args,
+                        match.input() != null ? match.input().value() : null,
+                        args,
                         adapter,
                         functionKey,
                         function,
-                        resolver, transformer);
+                        resolver,
+                        transformer);
             }
         }
         return null;

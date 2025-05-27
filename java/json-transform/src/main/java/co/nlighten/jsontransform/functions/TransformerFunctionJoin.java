@@ -4,6 +4,7 @@ import co.nlighten.jsontransform.functions.common.*;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TransformerFunctionJoin extends TransformerFunction {
@@ -26,8 +27,8 @@ public class TransformerFunctionJoin extends TransformerFunction {
         if (delimiter == null) {
             delimiter = context.getString("delimiter");
         }
-        var prefix = context.getString("prefix");
-        var suffix = context.getString("suffix");
+        var prefix = Optional.ofNullable(context.getString("prefix")).orElse("");
+        var suffix = Optional.ofNullable(context.getString("suffix")).orElse("");
         var stream = arr.stream().map(context::getAsString);
         if (!context.getBoolean("keep_nulls")) {
             stream = stream.filter(Objects::nonNull);

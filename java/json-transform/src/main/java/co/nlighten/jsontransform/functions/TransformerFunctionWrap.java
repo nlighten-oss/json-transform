@@ -3,6 +3,7 @@ package co.nlighten.jsontransform.functions;
 import co.nlighten.jsontransform.functions.common.*;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class TransformerFunctionWrap extends TransformerFunction {
     public TransformerFunctionWrap() {
@@ -18,6 +19,8 @@ public class TransformerFunctionWrap extends TransformerFunction {
         var res = context.getString(null);
         if (res == null)
             return null;
-        return context.getString("prefix") + res + context.getString("suffix");
+        return Optional.ofNullable(context.getString("prefix")).orElse("")
+                + res
+                + Optional.ofNullable(context.getString("suffix")).orElse("");
     }
 }
