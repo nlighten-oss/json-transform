@@ -1059,6 +1059,7 @@ export default {
     argumentsNotes:
       '#### Operators\n\n| `operator`                | Action                 | Example                     |\n|---------------------------|------------------------|-----------------------------|\n| `+`, `ADD`                | Addition               | `"$$math(2,+,3)"` = `5`     |\n| `-`, `SUB`, `SUBTRACT`    | Subtraction            | `"$$math(5,-,3)"` = `2`     |\n| `*`, `MUL`, `MULTIPLY`    | Multiplication         | `"$$math(2,*,3)"` = `6`     |\n| `/`, `DIV`, `DIVIDE`      | Division               | `"$$math(6,/,3)"` = `2`     |\n| `//`, `INTDIV`            | Integer division       | `"$$math(7,//,3)"` = `2`    |\n| `%`, `MOD`, `REMAINDER`   | Modulu                 | `"$$math(7,%,3)"` = `1`     |\n| `^`, `**`, `POW`, `POWER` | Power                  | `"$$math(2,^,3)"` = `8`     |\n| `&`, `AND`                | Bit-wise AND           | `"$$math(6,&,3)"` = `2`     |\n| `\\|`, `OR`      | Bit-wise OR            | `"$$math(6,OR,3)"` = `7`    |\n| `~`, `XOR`                | Bit-wise XOR           | `"$$math(6,~,3)"` = `5`     |\n| `<<`, `SHL`               | Shift left (bit-wise)  | `"$$math(6,>>,1)"` = `3`    |\n| `>>`, `SHR`               | Shift right (bit-wise) | `"$$math(6,<<,3)"` = `48`   |\n| `MIN`                     | Minimum                | `"$$math(MIN,4,2)"` = `2`   |\n| `MAX`                     | Maximum                | `"$$math(MAX,4,2)"` = `4`   |\n| `SQRT`                    | Square root            | `"$$math(SQRT,81)"` = `9`   |\n| `ROUND`                   | Round                  | `"$$math(ROUND,4.6)"` = `5` |\n| `FLOOR`                   | Floor                  | `"$$math(FLOOR,4.6)"` = `4` |\n| `CEIL`                    | Ceil                   | `"$$math(CEIL,4.2)"` = `5`  |\n| `ABS`                     | Absolute               | `"$$math(ABS,-10)"` = `10`  |\n| `NEG`, `NEGATE`           | Negation               | `"$$math(NEG,4)"` = `-4`    |\n| `SIG`, `SIGNUM`           | Sign Number            | `"$$math(SIG,-42)"` = `-1`  |\n',
     outputSchema: { type: "number", $comment: "BigDecimal" },
+    argumentsAsInputSchema: true,
     arguments: [
       { name: "op1", description: "First operand", type: "BigDecimal", position: 0, required: true },
       {
@@ -1526,11 +1527,7 @@ export default {
       ":::note\nAlternative form is available using \n```transformers \n{\n" +
       '  "$$range": [ /* start */, /* end */, /* step ? */]\n' +
       "}\n```\nIf `start` is used, the primary argument is ignored and can be of any value\n:::",
-    inputSchema: {
-      type: "array",
-      items: { type: "number", $comment: "BigDecimal" },
-      description: "Optionally the values: 'start', 'end' and 'step' (only if not specified as arguments)",
-    },
+    argumentsAsInputSchema: true,
     outputSchema: { type: "array", items: { type: "number", $comment: "BigDecimal" } },
     arguments: [
       { name: "start", description: "First value", type: "BigDecimal", position: 0, required: true },

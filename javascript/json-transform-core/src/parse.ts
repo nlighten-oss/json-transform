@@ -176,7 +176,7 @@ class TransformerParser {
           objFunc.name,
           objFunc.func,
           objFunc.value,
-          objFunc.spec,
+          objFunc.args,
           targetPath,
           localPath,
           previousPaths,

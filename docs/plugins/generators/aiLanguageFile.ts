@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { definitions, examples } from "@nlighten/json-transform-core";
+import { definitions, examples, FunctionDefinition } from "@nlighten/json-transform-core";
 
 const fixType = (arg: any) => {
   const result: any = {
@@ -8,6 +8,9 @@ const fixType = (arg: any) => {
     description: arg.description,
     default: arg.default,
   };
+  // if (typeof arg.position === "number") {
+  //   result.$comment = `pos=${arg.position}`;
+  // }
   if (result.type === "long") result.type = "integer";
   else if (result.type === "BigDecimal") result.type = "number";
   else if (result.type === "string[]") {
@@ -36,23 +39,19 @@ const fixType = (arg: any) => {
 
   return result;
 };
-const RANGE_FIX = {
-  type: "array",
-  minLength: 2,
-  items: [
-    {
-      type: "number",
-      name: "start",
-    },
-    {
-      type: "number",
-      name: "end",
-    },
-    {
-      type: "number",
-      name: "step",
-    },
-  ],
+
+const argumentsAsInputSchema = (func: FunctionDefinition) => {
+  let result = { type: "array", minLength: 0, maxLength: 0, items: [] as any[] };
+  func.arguments
+    ?.slice()
+    .sort((a, b) => (a.position ?? Infinity) - (b.position ?? Infinity))
+    .forEach((arg: any) => {
+      result.maxLength++;
+      if (arg.required) {
+        result.minLength++;
+      }
+      result.items.push(fixType(arg));
+    });
 };
 
 export default function () {
@@ -80,11 +79,30 @@ export default function () {
     const inputSchema: any = {
       type: "object",
       properties: {
-        ["$$" + key]: key === "range" ? RANGE_FIX : fixType(func.inputSchema),
+        ["$$" + key]: func.argumentsAsInputSchema ? argumentsAsInputSchema(func) : fixType(func.inputSchema),
       },
       required: ["$$" + key],
     };
-    if (key !== "range") {
+    if (func.argumentsAsInputSchema) {
+      let minItems = 0,
+        maxItems = 0;
+      const items: any[] = [];
+      func.arguments?.forEach((arg: any) => {
+        if (typeof arg.position === "number") {
+          maxItems++;
+          if (arg.required) {
+            minItems++;
+          }
+          items.push(fixType(arg));
+        }
+      });
+      inputSchema.properties["$$" + key] = {
+        type: "array",
+        minItems,
+        maxItems,
+        items,
+      };
+    } else {
       func.arguments?.forEach((arg: any) => {
         if (arg.required) inputSchema.required.push(arg.name);
         inputSchema.properties[arg.name] = fixType(arg);

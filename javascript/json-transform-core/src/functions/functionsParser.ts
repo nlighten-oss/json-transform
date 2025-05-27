@@ -7,7 +7,7 @@ type ObjectFunctionMatchResult = {
   name: string;
   func: FunctionDescriptor;
   value: any;
-  spec: any;
+  args: Record<string, any>;
 };
 
 function compareArgumentPosition(a: Argument, b: Argument) {
@@ -157,11 +157,22 @@ class FunctionsParser {
           if (match) return match;
         }
         const func = getSubfunction(this.get(funcName), data);
+        const args = { ...data };
+        delete args[key]; // remove the function key from args
+        if (func.argumentsAsInputSchema && Object.keys(args).length === 0 && Array.isArray(value)) {
+          value.forEach((argVal, position) => {
+            const arg = func.arguments?.find(a => a.position === position);
+            if (arg) {
+              args[arg.name] = argVal;
+            }
+          });
+        }
+
         return {
           name: func.aliasTo ?? funcName,
           func,
           value,
-          spec: data,
+          args,
         };
       }
     }

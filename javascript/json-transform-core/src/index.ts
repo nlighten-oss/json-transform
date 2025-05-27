@@ -1,5 +1,3 @@
-import { tryConvertFunctionsToInline } from "./utils/convert";
-
 export { ContextVariablesSchemas } from "./functions/ContextVariablesSchemas";
 export {
   getFunctionInlineSignature,

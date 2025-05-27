@@ -1,7 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {} from "@docusaurus/BrowserOnly";
 import { JSONSchemaUtils } from "@nlighten/json-schema-utils";
-import { ContextVariablesSchemas, jsonpathJoin } from "@nlighten/json-transform-core";
+import {
+  ContextVariablesSchemas,
+  convertFunctionsToObjects,
+  jsonpathJoin,
+  tryConvertFunctionsToInline,
+} from "@nlighten/json-transform-core";
 import { DebuggableTransformerFunctions, JsonTransformer } from "@nlighten/json-transform";
 import { useLocation, useHistory } from "@docusaurus/router";
 import MonacoEditor from "./monaco/MonacoEditor";
@@ -19,24 +24,27 @@ const DEFAULT_INPUT_VALUE = `{
   "date_of_birth": "1980-01-01"
 }`,
   DEFAULT_DEFINITION_VALUE = `{
-    "*": "$",
-    "full_name": {
-      "$$join": ["$.first_name", "$.last_name"],
-      "delimiter": " "
-    },
-    "age": {
-      "$$math": [ 
-        {
-          "$$math": [
-            "$$date(EPOCH):#now",
-            "-",
-            "$$date(EPOCH):$.date_of_birth"
-          ]
-        },
-        "//",
-        "$$math(365,*,'$$math(24,*,3600)')"
-      ]
-    }
+  "*": "$",
+  "full_name": {
+    "$$join": [
+      "$.first_name",
+      "$.last_name"
+    ],
+    "delimiter": " "
+  },
+  "age": {
+    "$$math": [
+      {
+        "$$math": [
+          "$$date(EPOCH):#now",
+          "-",
+          "$$date(EPOCH):$.date_of_birth"
+        ]
+      },
+      "//",
+      "$$math(365,*,'$$math(24,*,3600)')"
+    ]
+  }
 }`;
 
 const transformAsync = async (input: any, definition: any) => {
@@ -138,6 +146,14 @@ const TransformerTester = () => {
     setModalOpen(true);
   };
 
+  const handleToInline = () => {
+    setTransformerString(JSON.stringify(tryConvertFunctionsToInline(parsedTransformer), null, 2));
+  };
+
+  const handleToObject = () => {
+    setTransformerString(JSON.stringify(convertFunctionsToObjects(parsedTransformer), null, 2));
+  };
+
   const markmapRoot = useMemo(() => {
     return transformerToMarkmap(parsedTransformer, "output");
   }, [parsedTransformer]);
@@ -161,6 +177,27 @@ const TransformerTester = () => {
               Visualize Transformer
             </span>
           </button>
+
+          <button
+            type="button"
+            className="button button--primary button--sm share-button shadow--lw"
+            disabled={!parsedTransformer}
+            onClick={handleToInline}
+            title="Try converting functions inside transformer to their inline forms"
+          >
+            Make inline
+          </button>
+
+          <button
+            type="button"
+            className="button button--primary button--sm share-button shadow--lw"
+            disabled={!parsedTransformer}
+            onClick={handleToObject}
+            title="Convert all functions inside transformer to their object forms"
+          >
+            Make object
+          </button>
+
           <span className="hide-on-mobile">Transformer</span>
         </h3>
         <h3 style={{ display: "flex", flexDirection: "row-reverse", justifyContent: "space-between" }}>

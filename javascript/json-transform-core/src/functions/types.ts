@@ -151,6 +151,7 @@ export type FunctionDefinition = {
   aliases?: string[];
   inputSchema?: Omit<Argument, "name">;
   arguments?: Argument[];
+  argumentsAsInputSchema?: boolean;
   description: string;
   notes?: string;
   usageNotes?: string;
@@ -163,6 +164,8 @@ export type FunctionDefinition = {
   deprecatedInFavorOf?: string;
   /** If set, this function does not alter the type of its primary argument */
   pipedType?: boolean;
+
+  schema?: TypeSchema;
 };
 
 export type FunctionDescriptor = Omit<FunctionDefinition, "subfunctions"> & {
